@@ -11,8 +11,6 @@ class SiteController extends Controller
     //
     public function index()
     {
-        $wilayas=Wilaya::all();
-        dd($wilayas);
         return view('site.index');
     }
     //show_suppliers_plans
