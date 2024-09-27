@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Http\Controllers\Controller;
+use App\Models\Wilaya;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SiteController extends Controller
 {
     //
     public function index()
     {
+        $wilayas=Wilaya::all();
+        dd($wilayas);
         return view('site.index');
     }
     //show_suppliers_plans
