@@ -1,0 +1,13 @@
+/* this is the defaulte theme */
+.search-box,.cart-badge,.footer
+{
+    background-color: #343035 !important;
+}
+.item-details a
+{
+    color:black;
+}
+.footer,.footer-footer a,.footer-li a,.footer-li a:hover
+{
+    color: #fff;
+}

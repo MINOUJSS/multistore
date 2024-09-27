@@ -1,0 +1,15 @@
+body {
+    font-family: "Open Sans", sans-serif;
+  }
+  h1,h2,h3,h4,h5,h6,#hero .btn-get-started,
+  .cta .cta-btn,.pricing h4,.pricing .buy-btn,
+  #footer .footer-top .footer-contact p
+{
+    font-family: "Jost", sans-serif;
+}
+.about .content .btn-learn-more,.why-us .accordion-list a,
+.skills .content h3,.skills .progress .skill,
+.portfolio #portfolio-flters li,.faq .faq-list a
+{
+    font-family: "Poppins", sans-serif;
+}

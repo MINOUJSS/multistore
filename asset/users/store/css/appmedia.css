@@ -1,0 +1,29 @@
+/*****************************************
+                  header 
+ *****************************************/
+/* for mobile */
+/* --------------Nav bar----------------- */
+@media(max-width: 768px)
+{
+    .navbar {padding: 0px;}
+    .cart{display: none;}
+    .search-btn{display: none;}
+    .item-details a{padding-left:35px;}
+    .slide img{height:200px;}
+}
+
+/* for tablet  */
+
+/*****************************************
+                  main 
+ *****************************************/
+ /* for mobile */
+
+/* for tablet  */
+
+/*****************************************
+                  footer 
+ *****************************************/
+ /* for mobile */
+
+/* for tablet  */

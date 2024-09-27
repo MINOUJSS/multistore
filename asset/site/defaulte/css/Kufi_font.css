@@ -1,0 +1,19 @@
+@font-face {
+    font-family:"Noto Kufi Arabic";
+    src: url('../fonts/Noto_Kufi_Arabic/NotoKufiArabic-VariableFont_wght.ttf');
+}
+body {
+    font-family: "Noto Kufi Arabic", sans-serif !important;
+  }
+  h1,h2,h3,h4,h5,h6,#hero .btn-get-started,
+  .cta .cta-btn,.pricing h4,.pricing .buy-btn,
+  #footer .footer-top .footer-contact p
+{
+    font-family: "Noto Kufi Arabic", sans-serif !important;
+}
+.about .content .btn-learn-more,.why-us .accordion-list a,
+.skills .content h3,.skills .progress .skill,
+.portfolio #portfolio-flters li,.faq .faq-list a
+{
+    font-family: "Noto Kufi Arabic", sans-serif !important;
+}

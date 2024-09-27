@@ -1,0 +1,77 @@
+/*****************************************
+                  general 
+ *****************************************/
+ *{margin: 0px;padding: 0px;box-sizing: border-box;}
+ body,html{min-height: 100vh;height: auto;}
+/*****************************************
+                 left side
+ *****************************************/
+ .logo-box
+ {
+  margin-bottom: 20px;
+ }
+ .dz-center-box
+ {
+  margin-top: 200px;
+  margin-left: 150px;
+  margin-right: 150px;
+ }
+ .dz-auth-bg
+ {
+  position: fixed;
+  left:0px;
+  background: #c10792;
+  height:100vh;
+  color:#ffffff;
+ }
+ .rounded-full
+ {
+  width:30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-left:-15px;
+ }
+ .dz-text-sm
+ {
+  font-size: small;
+ }
+ .dz-float-right
+ {
+  margin-right: 30px;
+ display: inline-block;
+ }
+ .dz-text-color-gris
+ {
+  color:#cac8c8;
+ }
+/*****************************************
+                 right side
+ *****************************************/
+ .dz-auth-box
+ {
+  margin: 100px 200px 0px 200px;
+ }
+ input:focus
+ {
+  direction: rtl;
+  border:1px solid #c10792 !important;
+  box-shadow: 0px 0px 3px 1px #ea47c1 !important;
+ }
+ .dz-btn-primary
+ {
+  background: #c10792;
+  border: 1px #c10792;
+  color: #ffffff;
+  width: 100%;
+ }
+ .dz-btn-primary:hover
+ {
+  color: #ffffff;
+  background: #8f036c;  
+ }
+ .forget-link
+ {
+  color:black;
+  text-decoration: none;
+  float: left;
+ }

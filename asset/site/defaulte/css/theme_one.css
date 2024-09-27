@@ -1,0 +1,351 @@
+/*--------------------------------------------------------------
+# General
+--------------------------------------------------------------*/
+body,.portfolio #portfolio-flters li,#footer .footer-newsletter {
+    color: #444444;
+  }  
+ a,.navbar a:hover,
+  .navbar .active,
+  .navbar .active:focus,
+  .navbar li:hover>a,.navbar .dropdown ul a:hover,
+  .navbar .dropdown ul .active:hover,
+  .navbar .dropdown ul li:hover>a,.navbar-mobile a:hover,
+  .navbar-mobile .active,
+  .navbar-mobile li:hover>a,.navbar-mobile .dropdown ul a:hover,
+  .navbar-mobile .dropdown ul .active:hover,
+  .navbar-mobile .dropdown ul li:hover>a,#hero .btn-watch-video:hover i,
+  .about .content ul i,.about .content .btn-learn-more,
+  .why-us .accordion-list span,.why-us .accordion-list a.collapsed:hover,
+  .skills .content ul i,.services .icon-box .icon i,
+  .services .icon-box:hover h4 a,  .portfolio .portfolio-item .portfolio-info .preview-link:hover,
+  .portfolio .portfolio-item .portfolio-info .details-link:hover,.pricing h4 span,
+  .pricing .buy-btn,.faq .faq-list .icon-help,.faq .faq-list a.collapsed:hover,
+  .contact .info i,#footer .footer-top .footer-links ul i,
+  #footer .footer-top .footer-links ul a:hover {
+    color: #DE47A4;
+  } 
+  a:hover {
+    color: #FF52BD;
+  }
+  /*--------------------------------------------------------------
+  # Preloader 
+  --------------------------------------------------------------*/
+  #preloader,#hero,#footer {
+    background: #B03882;
+  }
+  #preloader:before {
+    border: 6px solid #B03882;
+    border-top-color: #fff;
+    border-bottom-color: #fff;
+  } 
+  /*--------------------------------------------------------------
+  # Back to top button
+  --------------------------------------------------------------*/
+  .back-to-top,#hero .btn-get-started,.section-title h2::after,
+  .about .content .btn-learn-more:hover,.portfolio #portfolio-flters li:hover,
+  .portfolio #portfolio-flters li.filter-active,.cta .cta-btn:hover,
+  .team .member .social a:hover,.pricing .buy-btn:hover,
+  .pricing .featured .buy-btn,.contact .info .social-links a:hover,
+  .contact .info .email:hover i,
+  .contact .info .address:hover i,
+  .contact .info .phone:hover i,.contact .php-email-form button[type=submit],
+  #footer .footer-newsletter form input[type=submit],#footer .footer-top .social-links a {
+    background: #DE47A4;
+    color:#fff !important;
+  }
+  .back-to-top:hover {
+    background: #FF52BD;
+  }
+  .back-to-top i,.back-to-top:hover,#header .logo a,
+  .navbar a,
+  .navbar a:focus,.navbar .getstarted,
+  .navbar .getstarted:focus,.navbar .getstarted:hover,
+  .navbar .getstarted:focus:hover,.mobile-nav-toggle,
+  .mobile-nav-toggle.bi-x,#hero h1,#hero .btn-watch-video,
+  #hero .btn-watch-video i,.about .content .btn-learn-more:hover,
+  .cta h3 ,.cta p,.cta .cta-btn,.portfolio #portfolio-flters li:hover,
+  .portfolio #portfolio-flters li.filter-active,.cta .cta-btn:hover,
+  .portfolio .portfolio-item .portfolio-info h4, .portfolio .portfolio-item .portfolio-info .preview-link,
+  .portfolio .portfolio-item .portfolio-info .details-link,
+  .team .member .social a:hover i,.pricing .buy-btn:hover,
+  .pricing .featured .buy-btn,.contact .info .social-links a,
+  .contact .info .social-links a:hover,.contact .info .email:hover i,
+  .contact .info .address:hover i,
+  .contact .info .phone:hover i,.contact .php-email-form .error-message,
+  .contact .php-email-form .sent-message,.contact .php-email-form button[type=submit],
+  #footer .footer-newsletter form input[type=submit],
+  #footer .footer-top .social-links a,#footer .footer-top .social-links a:hover,
+  #footer .footer-bottom {
+    color: #fff;
+  } 
+  /*--------------------------------------------------------------
+  # Header
+  --------------------------------------------------------------*/
+  #header.header-scrolled,
+  #header.header-inner-pages,.navbar-mobile {
+    background: rgba(169, 10, 148, 0.9);
+  } 
+  /*--------------------------------------------------------------
+  # Navigation Menu
+  --------------------------------------------------------------*/
+  /**
+  * Desktop Navigation 
+  */
+  .navbar .getstarted:hover,
+  .navbar .getstarted:focus:hover {
+    background: #FF52BD;
+  }
+  .navbar .dropdown ul a {
+    color: #B03882;
+  }
+  .navbar .getstarted,
+  .navbar .getstarted:focus,.about .content .btn-learn-more,
+  .cta .cta-btn:hover {
+    border: 2px solid #DE47A4;
+  } 
+  .navbar .dropdown ul,.navbar-mobile .dropdown ul {
+    box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
+  }  
+  /**
+  * Mobile Navigation 
+  */
+  .navbar-mobile ul,.portfolio-details .portfolio-details-slider .swiper-pagination .swiper-pagination-bullet { 
+    background-color: #fff;
+  }
+  
+  .navbar-mobile a,
+  .navbar-mobile a:focus,.navbar-mobile .getstarted,
+  .navbar-mobile .getstarted:focus,.section-title h2,
+  .why-us .content h3,.skills .content h3,.skills .progress .skill,
+  .services .icon-box h4 a,.team .member h4,
+  .team .member .social a i,.pricing h3,.pricing h4,
+  .faq .faq-list a.collapsed,.contact .info h4,.breadcrumbs h2,
+  #footer .footer-newsletter h4,#footer .footer-top .footer-contact h3,
+  #footer .footer-top h4 {
+    color: #B03882;
+  }
+  /*--------------------------------------------------------------
+  # Hero Section
+  --------------------------------------------------------------*/
+  #hero h2 {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  #hero .btn-get-started:hover,.contact .php-email-form button[type=submit]:hover,
+  #footer .footer-newsletter form input[type=submit]:hover,
+  #footer .footer-top .social-links a:hover {
+    background: #FF52BD;
+  }
+
+  /*--------------------------------------------------------------
+  # Sections General
+  --------------------------------------------------------------*/
+  .section-bg {
+    background-color: #f3f5fa;
+  }
+  
+  .section-title h2::before {
+    background: #ddd;
+  }
+  
+  /*--------------------------------------------------------------
+  # Why Us
+  --------------------------------------------------------------*/
+  .why-us .accordion-list li,.navbar .dropdown ul,
+  .navbar-mobile .dropdown ul,.services .icon-box,.team .member,
+  .pricing .box ,.faq .faq-list li,.contact .info,.contact .php-email-form,
+  .contact .php-email-form .loading,#footer .footer-newsletter form,
+  #footer .footer-top {
+    background: #fff;
+  } 
+  .why-us .content p {
+    color: #848484;
+  }  
+  .why-us .accordion-list a.collapsed {
+    color: #343a40;
+  }
+  
+  /*--------------------------------------------------------------
+  # Skills
+  --------------------------------------------------------------*/
+  .skills .progress-bar-wrap {
+    background: #e8edf5;
+  }
+  
+  .skills .progress-bar {
+    background-color: #DE47A4;
+  }
+  
+  /*--------------------------------------------------------------
+  # Services
+  --------------------------------------------------------------*/
+  .services .icon-box {
+    box-shadow: 0px 0 25px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  /*--------------------------------------------------------------
+  # Cta
+  --------------------------------------------------------------*/
+  .cta {
+    background: linear-gradient(rgba(169, 10, 148, 0.9), rgba(169, 10, 148, 0.9)), url("../img/cta-bg.jpg") fixed center center;
+  }
+  
+  .cta .cta-btn {
+    border: 2px solid #fff;
+  }
+
+  /*--------------------------------------------------------------
+  # Portfolio
+  --------------------------------------------------------------*/ 
+  .portfolio .portfolio-item .portfolio-info {
+    background: rgba(55, 81, 126, 0.8);
+  }
+   
+  .portfolio .portfolio-item .portfolio-info p {
+    color: #f9fcfe;
+  }
+
+  /*--------------------------------------------------------------
+  # Portfolio Details
+  --------------------------------------------------------------*/
+  
+  .portfolio-details .portfolio-details-slider .swiper-pagination .swiper-pagination-bullet-active {
+    background-color: #DE47A4;
+  }
+  
+  .portfolio-details .portfolio-info {
+    box-shadow: 0px 0 30px rgba(55, 81, 126, 0.08);
+  }
+  
+  .portfolio-details .portfolio-info h3 {
+    border-bottom: 1px solid #eee;
+  } 
+  /*--------------------------------------------------------------
+  # Team
+  --------------------------------------------------------------*/
+  .team .member,#footer .footer-newsletter form input[type=submit] {
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+  }
+    
+  .team .member span::after {
+    background: #cbd6e9;
+  }
+  
+  .team .member .social a {
+    background: #eff2f8;
+  }
+  
+  /*--------------------------------------------------------------
+  # Pricing
+  --------------------------------------------------------------*/
+  .pricing .box {
+    box-shadow: 0 3px 20px -2px rgba(20, 45, 100, 0.1);
+    border-top: 4px solid #fff;
+  }
+  
+  .pricing ul {
+    color: #999;
+  }
+  
+  .pricing ul i {
+    color: #28a745;
+  }
+  
+  .pricing ul .na {
+    color: #ccc;
+  }
+  
+  .pricing ul .na i {
+    color: #ccc;
+  }
+  
+  .pricing .buy-btn,.portfolio-details .portfolio-details-slider .swiper-pagination .swiper-pagination-bullet {
+    border: 1px solid #DE47A4;
+  }
+  
+  .pricing .featured {
+    border-top-color: #DE47A4;
+  }
+  
+  .pricing .featured .buy-btn:hover {
+    background: #FF52BD;
+  }
+  
+  /*--------------------------------------------------------------
+  # Contact
+  --------------------------------------------------------------*/
+  .contact .info,.contact .php-email-form  {
+    border-top: 3px solid #DE47A4;
+    border-bottom: 3px solid #DE47A4;
+    box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .contact .info i {
+    background: #e7f5fb;
+  }
+  
+  .contact .info p {
+    color: #DE47A4;
+  }
+  
+  .contact .info .social-links a {
+    background: #333;
+  }
+  
+
+  
+  
+  .contact .php-email-form .error-message {
+    background: #ed3c0d;
+  }
+  
+  .contact .php-email-form .sent-message {
+    background: #18d26e;
+  }
+  
+  
+  .contact .php-email-form .loading:before {
+    border: 3px solid #18d26e;
+    border-top-color: #eee;
+  }
+  
+  
+  .contact .php-email-form input:focus,
+  .contact .php-email-form textarea:focus {
+    border-color: #DE47A4;
+  }
+
+
+  
+  
+  /*--------------------------------------------------------------
+  # Breadcrumbs
+  --------------------------------------------------------------*/
+  
+  .breadcrumbs ol li+li::before {
+    color: #DE47A4;
+  }
+  
+  /*--------------------------------------------------------------
+  # Footer
+  --------------------------------------------------------------*/
+  
+  #footer .footer-newsletter,.breadcrumbs {
+    background: #f3f5fa;
+  }
+  
+  #footer .footer-newsletter form {
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.06);
+  }
+  
+  
+  
+  
+  #footer .footer-top .footer-contact p {
+    color: #5e5e5e;
+  }
+  
+   
+  #footer .footer-top .footer-links ul a {
+    color: #777777;
+  }

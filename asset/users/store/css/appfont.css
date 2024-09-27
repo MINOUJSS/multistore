@@ -1,0 +1,7 @@
+@font-face {
+    font-family:"Kufi";
+    src: url(../fonts/NotoKufiArabic-VariableFont_wght.ttf);
+}
+body {
+    font-family:"Kufi";
+}
