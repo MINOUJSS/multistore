@@ -20,6 +20,8 @@ return [
         '127.0.0.1',
         'localhost',
         'multistore.test',
+        'saouralelaqarat.com',
+        'saouradelivery.com',
     ],
 
     /**
