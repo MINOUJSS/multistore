@@ -99,6 +99,11 @@ class TenancyServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        //
+        \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::$onFail = function () {
+            return redirect('https://saouradelivery.com');
+        };
+        //
         $this->bootEvents();
         $this->mapRoutes();
 
@@ -107,11 +112,6 @@ class TenancyServiceProvider extends ServiceProvider
 
     protected function bootEvents()
     {
-        //
-        \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::$onFail = function () {
-            return redirect('https://saouradelivery.com');
-        };
-        //
         foreach ($this->events() as $event => $listeners) {
             foreach ($listeners as $listener) {
                 if ($listener instanceof JobPipeline) {
