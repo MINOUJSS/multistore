@@ -107,6 +107,11 @@ class TenancyServiceProvider extends ServiceProvider
 
     protected function bootEvents()
     {
+        //
+        \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::$onFail = function () {
+            return redirect('https://saouradelivery.com');
+        };
+        //
         foreach ($this->events() as $event => $listeners) {
             foreach ($listeners as $listener) {
                 if ($listener instanceof JobPipeline) {
