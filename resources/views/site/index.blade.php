@@ -21,7 +21,7 @@
 
   </section><!-- End Hero -->
 @endsection
-{{dd(get_supplier_list())}}
+
 {{-- @section('cliens')
     <!-- ======= Clients Section ======= -->
 <section id="clients" class="clients section-bg">
