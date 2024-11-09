@@ -14,3 +14,9 @@ function supplier_folder_exists($store_name)
     }
 
 }
+//get_supplier_list()
+function get_supplier_list()
+{
+    $suppliers=App\Models\Tenant::all();
+    return $suppliers;
+}
