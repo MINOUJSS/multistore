@@ -2,25 +2,48 @@
 
 namespace App\Http\Controllers\Users\Suppliers\Auth;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Tenant;
+use App\Models\Supplier;
+use Illuminate\View\View;
+use App\Models\SupplierPlan;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Auth\Events\Registered;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Storage;
+use App\Models\SupplierPlanSubscription;
 
 class RegistredSupplierController extends Controller
 {
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('users.suppliers.auth.register');
+        //get palns from plans table
+        $plan_array=[];
+        //add items to the plan array
+        $plans=SupplierPlan::all();
+        foreach($plans as $plan)
+        {
+            $plan_array[]=$plan->name;
+        }
+        //check if the request has the name of the plan
+        if(in_array($request->plan,$plan_array))
+        {
+            $plan=$request->plan; 
+        }else
+        {
+            $plan=$plan_array[0];
+        }
+        return view('users.suppliers.auth.register',compact('plan'));
     }
 
     /**
@@ -32,37 +55,119 @@ class RegistredSupplierController extends Controller
     {
        
         $request->validate([
-            'name' => ['required', 'string','min:3','max:255'],
+            'full_name' => ['required', 'string','min:3','max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'phone' => ['required', 'regex:/^(0)(5|6|7)[0-9]{8}$/', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'terms' =>'accepted',
         ]);
-        //dd($request);
-        //verify if supplier folder exists
-        if(supplier_folder_exists($request->store_name))
+            //--------START--------------
+            //verify if supplier exists
+        if(!supplier_exists($request->store_name))
         {
             return redirect()->back();
         }else
         {
-            //if false create new supplier folder
-            dd('not existing');
-            // inserte supplier data to database
+            try
+            {      
+                // Start a transaction for atomicity
+                \DB::beginTransaction();
+                // check if supplier exists
+                $path = 'supplier/'.$request->store_name;
+                if(!Storage::disk('public')->exists($path))
+                {
+                    Storage::disk('public')->makeDirectory($path);
+                }
+                //insert data into supplier table and tenant table and domain table
+                $tenant=Tenant::create([
+                    'id' => $request->store_name.'.supplier',
+                    'type' => 'supplier',
+                ]);
+                $tenant->domains()->create(['domain'=> $request->store_name.'.'.request()->host()]);
+                // inserte supplier data to database
+                $supplier = Supplier::create([
+                'tenant_id' => $request->store_name.'.supplier',
+                'full_name' => $request->full_name,
+                'store_name' => $request->store_name,
+                 ]);      
+                 // insert data into user table
+                 $user = User::create([
+                    'name' => $request->full_name,
+                    'tenant_id' => $tenant->id,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'phone' => $request->phone,
+                 ]); 
+                 //
+                 $plan=SupplierPlan::Where('name',$request->plan)->first();             
+                 //insert in supplier_plan_subscription table
+                 $supplier_plan_subscription=SupplierPlanSubscription::create([
+                    'supplier_id' => $supplier->id,
+                    'plan_id' => $plan->id,
+                    'duration' => '30',
+                    'price' => $plan->price,
+                    'subscription_start_date'=>date('Y-m-d H:i:s'),
+                    'subscription_end_date'=>Carbon::parse(date('Y-m-d H:i:s'))->addDays(30)->format('Y-m-d H:i:s'),
+                    'status'=>'pending',
+                 ]);
+                 //check plan subscription
+                 if($plan->price==0)
+                 {
+                    $s_p_subscription=SupplierPlanSubscription::find($supplier_plan_subscription->id);
+                    $s_p_subscription->status='free';
+                    $s_p_subscription->update();
+                 }
+                  // Commit the transaction
+                 \DB::commit();
+                //
+                event(new Registered($user));
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'type' => $request->type,
-            'password' => Hash::make($request->password),
+                Auth::login($user);
+                 //redirect to dashboard of confirme plan page
+                 if($plan->price==0)
+                 {
+                    return redirect(route('supplier.dashboard'));
+                 }else
+                 {
+                    return redirect(route('supplier.subscription.confirmation'));
+                 }
+            }catch(\Exception $e)
+            {
+                //delete the folder containing
+                //check if supplier exists
+                $path = $request->store_name;
+                if(Storage::disk('public')->exists($path))
+                {
+                    Storage::disk('public')->deleteDirectory($path);
+                }
+               // Rollback the transaction
+        \DB::rollBack();
+        // Log the error for debugging
+        Log::error('Supplier Registration Error:', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
         ]);
 
-        event(new Registered($user));
+        // Return a user-friendly response
+        // return response()->json([
+        //     'message' => 'An error occurred while registering the supplier. Please try again later.',
+        // ], 500); 
+        return redirect()->back()->with('message','An error occurred while registering the supplier. Please try again later.');
+            }
+          }
+            // -----END--------------
+               
+    }
+    //
+    public function logout(Request $request)
+    {
+        dd('hi');
+        Auth::guard('web')->logout();
 
-        Auth::login($user);
+        $request->session()->invalidate();
 
-        return redirect(RouteServiceProvider::SUPPLIERHOME);
-        }
-        
-        
+        $request->session()->regenerateToken();
+
+        //return redirect('/');
     }
 }

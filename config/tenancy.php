@@ -20,8 +20,6 @@ return [
         '127.0.0.1',
         'localhost',
         'multistore.test',
-        'saouralelaqarat.com',
-        'saouradelivery.com',
     ],
 
     /**
@@ -197,6 +195,6 @@ return [
      */
     'seeder_parameters' => [
         '--class' => 'DatabaseSeeder', // root seeder class
-        //  '--force' => true,
+        '--force' => true,
     ],
 ];

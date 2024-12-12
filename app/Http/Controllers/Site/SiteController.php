@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Models\Wilaya;
+use App\Models\SupplierPlan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -16,7 +17,8 @@ class SiteController extends Controller
     //show_suppliers_plans
     public function show_suppliers_plans()
     {
-        return view('site.show_suppliers_plans');
+        $plans=SupplierPlan::all();
+        return view('site.show_suppliers_plans',compact('plans'));
     }
     //show_sellers_plans
     public function show_sellers_plans()

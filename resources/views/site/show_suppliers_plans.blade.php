@@ -32,11 +32,11 @@
       </div>
 
       <div class="row">
-
+        @foreach ($plans as $plan)
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
           <div class="box">
-            <h3>الخطة المجانية</h3>
-            <h4>0<sup>د.ج</sup><span>في الشهر</span></h4>
+            <h3>الخطة {{$plan->name}}</h3>
+            <h4>{{$plan->price}}<sup>د.ج</sup><span>في الشهر</span></h4>
             <ul>
                 <li><i class="bx bx-check"></i> متجر إلكتروني إحترافي</li>
               <li><i class="bx bx-check"></i> إضافة حتى 50 منتج</li>
@@ -47,11 +47,18 @@
               <li class="na"><i class="bx bx-x"></i> <span> دومين خاص</span></li>
               <li class="na"><i class="bx bx-x"></i> <span>حقوق النشر</span></li>
             </ul>
-            <a href="#" class="buy-btn">إبدأ الآن</a>
+            {{-- <a href="#" class="buy-btn">إبدأ الآن</a> --}}
+            <form action="{{url(request()->server('REQUEST_SCHEME').'://supplier.'.request()->server('HTTP_HOST').'/supplier/register')}}" method="GET">
+              {{-- @csrf --}}
+              <input type="hidden" name="plan" value="{{$plan->name}}">
+              <input type="submit" value="إبداء الآن" class="buy-btn">
+            </form>
           </div>
         </div>
+        @endforeach
+        
 
-        <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="200">
+        {{-- <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="200">
           <div class="box featured">
             <h3>الخطة المتقدمة</h3>
             <h4>2500<sup>د.ج</sup><span>في الشهر</span></h4>
@@ -85,7 +92,7 @@
             </ul>
             <a href="#" class="buy-btn">إبدأ الآن</a>
           </div>
-        </div>
+        </div> --}}
 
       </div>
 

@@ -9,15 +9,16 @@
           <div class="logo-box text-center">
             <img src="{{asset('asset/users/auth')}}/img/logo/store.png" width="50" height="50" alt="logo">
           </div>
-          <h5 class="text-center p-4">إنشاء حساب جديد</h5>
+          <h5 class="text-center p-4">إنشاء حساب مورد جديد</h5>
           <form method="POST" action="{{ route('supplier.register') }}">
             @csrf
             <input type="hidden" name="type" value="supplier">
+            <input type="hidden" name="plan" value="{{$plan}}">
 
             <div class="mb-3">
-                <label for="name" class="form-label">الإسم الكامل</label>
-                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" placeholder="كمل نور الدين" required >
-                @error('name')
+                <label for="full_name" class="form-label">الإسم الكامل</label>
+                <input type="text" name="full_name" class="form-control @error('full_name') is-invalid @enderror" value="{{old('full_name')}}" placeholder="كمل نور الدين" required >
+                @error('full_name')
                 <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
                 </span>
@@ -72,7 +73,7 @@
             </div>
             <button type="submit" class="btn dz-btn-primary mb-3">متابعة</button>
             <div class="mb-3 form-check">
-                <label class="form-check-label" for="exampleCheck1">لديك حساب على منصتنا؟<a href="#">سجل الدخول</a></label>
+                <label class="form-check-label" for="exampleCheck1">لديك حساب على منصتنا؟<a href="{{route('supplier.login')}}">سجل الدخول</a></label>
               </div>
           </form>
         </div>

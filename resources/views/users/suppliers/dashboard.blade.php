@@ -1,1 +1,0 @@
-@extends('layouts.users.dashboard.app')

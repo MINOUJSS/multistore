@@ -48,11 +48,23 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/marketer.php'));
-            
+            //Admin Routes
+            Route::middleware('web')
+                ->group(base_path('routes/admin.php'));
         });
+        
+
     }
     // RouteServiceProvider
-
+    // protected function mapAdminRoutes()
+    // {
+    //     foreach ($this->centralDomains() as $domain) {
+    //         Route::middleware('admin')
+    //             ->domain($domain)
+    //             ->namespace($this->namespace)
+    //             ->group(base_path('routes/admin.php'));
+    //     }
+    // }
 protected function mapWebRoutes()
 {
     foreach ($this->centralDomains() as $domain) {

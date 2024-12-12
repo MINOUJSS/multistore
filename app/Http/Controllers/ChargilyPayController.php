@@ -10,11 +10,15 @@ class ChargilyPayController extends Controller
      * The client will be redirected to the ChargilyPay payment page
      *
      */
-    public function redirect()
+    public function redirect(Request $request)
     {
+        $amount_array = explode("<sup>د.ج</sup>/", $request->price);
+        $amount = $amount_array[0];
+        $plan = get_supplier_plan_data($request->plan_id);
+
         $user = auth()->user();
         $currency = "dzd";
-        $amount = "25000";
+        // $amount = "25000";
 
         $payment = \App\Models\ChargilyPayment::create([
             "user_id"  => $user->id,
@@ -77,7 +81,8 @@ class ChargilyPayController extends Controller
                 if ($checkout) {
                     $metadata = $checkout->getMetadata();
                     $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
-
+                    //get subscription
+                    $subscription=SupplierPlanSubscription::where('supplier_id',get_supplier_data(Auth::user()->tenant_id)->id)->first();
                     if ($payment) {
                         if ($checkout->getStatus() === "paid") {
                             //update payment status in database
@@ -85,6 +90,9 @@ class ChargilyPayController extends Controller
                             $payment->update();
                             /////
                             ///// Confirm your order
+                            $subscription->status='paid';
+                            $subscription->payment_status='paid';
+                            $subscription->update(); 
                             /////
                             return response()->json(["status" => true, "message" => "Payment has been completed"]);
                         } else if ($checkout->getStatus() === "failed" or $checkout->getStatus() === "canceled") {
@@ -93,6 +101,9 @@ class ChargilyPayController extends Controller
                             $payment->update();
                             /////
                             /////  Cancel your order
+                            $subscription->status='free';
+                            $subscription->payment_status='unpaid';
+                            $subscription->update(); 
                             /////
                             return response()->json(["status" => true, "message" => "Payment has been canceled"]);
                         }

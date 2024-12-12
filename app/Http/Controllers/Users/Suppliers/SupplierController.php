@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 class SupplierController extends Controller
 {
     //
-    public function dashboard()
+    public function index()
     {
-        return view('users.suppliers.dashboard');
+        return view('users.suppliers.index');
     }
 }

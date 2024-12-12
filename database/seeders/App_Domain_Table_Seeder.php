@@ -15,55 +15,106 @@ class App_Domain_Table_Seeder extends Seeder
     public function run(): void
     {
         //suppliers
-        $tenant =Tenant::create(['id' => 'supplier']);
-        $tenant->domains()->create(['domain' => 'supplier.multistore.test']);
+        $tenant =Tenant::create([
+            'id'=>'supplier',
+            'type'=>'supplier',
+            'data'=>null,
+        ]);
+        $tenant->domains()->create(['domain' => 'supplier.'.request()->host()]);
         
-        $tenant1 =Tenant::create(['id' => 'test.supplier']);
-        $tenant1->domains()->create(['domain' => 'test.supplier.multistore.test']);
+        $tenant1 =Tenant::create([
+            'id'=>'test.supplier',
+            'type'=>'supplier',
+            'data'=>null,
+        ]);
+        $tenant1->domains()->create(['domain' => 'test.supplier.'.request()->host()]);
 
-        $tenant2 =Tenant::create(['id' => 'test1.supplier']);
-        $tenant2->domains()->create(['domain' => 'test1.supplier.multistore.test']);
+        $tenant2 =Tenant::create([
+            'id'=>'test1.supplier',
+            'type'=>'supplier',
+            'data'=>null,
+        ]);
+        $tenant2->domains()->create(['domain' => 'test1.supplier.'.request()->host()]);
 
-        $tenant3 =Tenant::create(['id' => 'test2.supplier']);
-        $tenant3->domains()->create(['domain' => 'test2.supplier.multistore.test']);
+        $tenant3 =Tenant::create([
+            'id'=>'test2.supplier',
+            'type'=>'supplier',
+        ]);
+        $tenant3->domains()->create(['domain' => 'test2.supplier.'.request()->host()]);
 
         //sellers
-        $seller =Tenant::create(['id' => 'seller']);
-        $seller->domains()->create(['domain' => 'seller.multistore.test']);
+        $seller =Tenant::create([
+            'id' => 'seller',
+            'type' => 'seller',
+        ]);
+        $seller->domains()->create(['domain' => 'seller.'.request()->host()]);
         
-        $seller1 =Tenant::create(['id' => 'test']);
-        $seller1->domains()->create(['domain' => 'test.multistore.test']);
+        $seller1 =Tenant::create([
+            'id' => 'test',
+            'type' => 'seller',
+        ]);
+        $seller1->domains()->create(['domain' => 'test.'.request()->host()]);
 
-        $seller2 =Tenant::create(['id' => 'test1']);
-        $seller2->domains()->create(['domain' => 'test1.multistore.test']);
+        $seller2 =Tenant::create([
+            'id' => 'test1',
+            'type' => 'seller',
+        ]);
+        $seller2->domains()->create(['domain' => 'test1.'.request()->host()]);
 
-        $seller3 =Tenant::create(['id' => 'test2']);
-        $seller3->domains()->create(['domain' => 'test2.multistore.test']);
+        $seller3 =Tenant::create([
+            'id' => 'test2',
+            'type' => 'seller',
+        ]);
+        $seller3->domains()->create(['domain' => 'test2.'.request()->host()]);
 
         //shipers
-        $shiper =Tenant::create(['id' => 'shiper']);
-        $shiper->domains()->create(['domain' => 'shiper.multistore.test']);
+        $shiper =Tenant::create([
+            'id' => 'shiper',
+            'type' => 'shiper',
+        ]);
+        $shiper->domains()->create(['domain' => 'shiper.'.request()->host()]);
         
-        $shiper1 =Tenant::create(['id' => 'test.shiper']);
-        $shiper1->domains()->create(['domain' => 'test.shiper.multistore.test']);
+        $shiper1 =Tenant::create([
+            'id' => 'test.shiper',
+            'type' => 'shipper',
+        ]);
+        $shiper1->domains()->create(['domain' => 'test.shiper.'.request()->host()]);
 
-        $shiper2 =Tenant::create(['id' => 'test1.shiper']);
-        $shiper2->domains()->create(['domain' => 'test1.shiper.multistore.test']);
+        $shiper2 =Tenant::create([
+            'id' => 'test1.shiper',
+            'type' => 'shipper',
+        ]);
+        $shiper2->domains()->create(['domain' => 'test1.shiper.'.request()->host()]);
 
-        $shiper3 =Tenant::create(['id' => 'test2.shiper']);
-        $shiper3->domains()->create(['domain' => 'test2.shiper.multistore.test']);
+        $shiper3 =Tenant::create([
+            'id' => 'test2.shiper',
+            'type' => 'shipper',
+        ]);
+        $shiper3->domains()->create(['domain' => 'test2.shiper.'.request()->host()]);
 
-        //suppliers
-        $marketer =Tenant::create(['id' => 'marketer']);
-        $marketer->domains()->create(['domain' => 'marketer.multistore.test']);
+        //markerters
+        $marketer =Tenant::create([
+            'id' => 'marketer',
+            'type' => 'marketer',
+        ]);
+        $marketer->domains()->create(['domain' => 'marketer.'.request()->host()]);
         
-        $marketer1 =Tenant::create(['id' => 'test.marketer']);
-        $marketer1->domains()->create(['domain' => 'test.marketer.multistore.test']);
+        $marketer1 =Tenant::create([
+            'id' => 'test.marketer',
+            'type' => 'marketer',
+        ]);
+        $marketer1->domains()->create(['domain' => 'test.marketer.'.request()->host()]);
 
-        $marketer2 =Tenant::create(['id' => 'test1.marketer']);
-        $marketer2->domains()->create(['domain' => 'test1.marketer.multistore.test']);
+        $marketer2 =Tenant::create([
+            'id' => 'test1.marketer',
+            'type' => 'marketer',
+        ]);
+        $marketer2->domains()->create(['domain' => 'test1.marketer.'.request()->host()]);
 
-        $marketer3 =Tenant::create(['id' => 'test2.marketer']);
-        $marketer3->domains()->create(['domain' => 'test2.marketer.multistore.test']);
+        $marketer3 =Tenant::create([
+            'id' => 'test2.marketer',
+            'type' => 'marketer',
+        ]);
+        $marketer3->domains()->create(['domain' => 'test2.marketer.'.request()->host()]);
     }
 }

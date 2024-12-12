@@ -13,5 +13,20 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     protected $fillable = [
         'id',
+        'data',
     ];
+    /**
+     * Get the users of this tenant
+     */
+    public function users():HasMany
+    {
+        return $this->hasMany(User::class);
+    }
+    /**
+     * Get the suppliers of this tenant
+     */
+    public function suppliers():HasMany
+    {
+        return $this->hasMany(Supplier::class);
+    }
 }

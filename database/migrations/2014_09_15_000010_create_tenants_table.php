@@ -17,9 +17,8 @@ class CreateTenantsTable extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->string('id')->primary();
-
             // your custom columns may go here
-
+            // $table->enum('type',['seller','supplier','shiper','marketer']);
             $table->timestamps();
             $table->json('data')->nullable();
         });

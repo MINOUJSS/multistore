@@ -101,7 +101,7 @@ class TenancyServiceProvider extends ServiceProvider
     {
         //
         \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::$onFail = function () {
-            return redirect('https://saouradelivery.com');
+            return redirect(request()->host());
         };
         //
         $this->bootEvents();

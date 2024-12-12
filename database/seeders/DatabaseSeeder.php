@@ -19,10 +19,12 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $this->call([
+            Admin_Table_Seeder::class,
             Wilaya_Table_Seeder::class,
             Dayra_Table_Seeder::class,
             Baladia_Table_Seeder::class,
             App_Domain_Table_Seeder::class,
+            SupplierPlan_Table_Seeder::class,
         ]);
     }
 }
