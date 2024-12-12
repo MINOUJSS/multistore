@@ -13,7 +13,6 @@ class ChargilyPayController extends Controller
      */
     public function redirect(Request $request)
     {
-        dd($subscription);
         $amount_array = explode("<sup>د.ج</sup>/", $request->amount);
         $amount = $amount_array[0];
         $plan = get_supplier_plan_data($request->plan_id);
