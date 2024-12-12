@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ChargilyPayment;
 use App\Models\SupplierPlanSubscription;
 
 class ChargilyPayController extends Controller
@@ -83,7 +84,7 @@ class ChargilyPayController extends Controller
             if ($checkout and $checkout instanceof \Chargily\ChargilyPay\Elements\CheckoutElement) {
                 if ($checkout) {
                     $metadata = $checkout->getMetadata();
-                    $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
+                    $payment = ChargilyPayment::find($metadata['payment_id']);
                     if ($payment) {
                         if ($checkout->getStatus() === "paid") {
                             //update payment status in database
