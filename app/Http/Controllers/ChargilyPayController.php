@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ChargilyPayment;
 use App\Models\SupplierPlanSubscription;
 
 class ChargilyPayController extends Controller
