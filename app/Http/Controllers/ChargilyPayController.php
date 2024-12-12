@@ -84,6 +84,8 @@ class ChargilyPayController extends Controller
                 if ($checkout) {
                     $metadata = $checkout->getMetadata();
                     $payment = ChargilyPayment::find($metadata['payment_id']);
+                    //get subscription
+                    $subscription=SupplierPlanSubscription::where('supplier_id',$metadata['supplier_id'])->first();
                     if ($payment) {
                         if ($checkout->getStatus() === "paid") {
                             //update payment status in database
@@ -91,8 +93,6 @@ class ChargilyPayController extends Controller
                             $payment->update();
                             /////
                             ///// Confirm your order
-                            //get subscription
-                    $subscription=SupplierPlanSubscription::where('supplier_id',$metadata['supplier_id'])->first();
                             $subscription->status='paid';
                             $subscription->payment_status='paid';
                             $subscription->update(); 
@@ -104,8 +104,6 @@ class ChargilyPayController extends Controller
                             $payment->update();
                             /////
                             /////  Cancel your order
-                            //get subscription
-                    $subscription=SupplierPlanSubscription::where('supplier_id',$metadata['supplier_id'])->first();
                             $subscription->status='free';
                             $subscription->payment_status='unpaid';
                             $subscription->update(); 

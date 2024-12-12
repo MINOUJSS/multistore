@@ -13,5 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'https://supplier.saouradelivery.com/supplier/chargilypay/webhook',
+        '/supplier/chargilypay/webhook',
+        'chargilypay/webhook',
     ];
 }
