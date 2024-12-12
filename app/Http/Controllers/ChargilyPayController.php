@@ -31,6 +31,7 @@ class ChargilyPayController extends Controller
             $checkout = $this->chargilyPayInstance()->checkouts()->create([
                 "metadata" => [
                     "payment_id" => $payment->id,
+                    "supplier_id" => get_supplier_data($user->tenant_id)->id,
                 ],
                 "locale" => "ar",
                 "amount" => $payment->amount,
@@ -83,7 +84,7 @@ class ChargilyPayController extends Controller
                     $metadata = $checkout->getMetadata();
                     $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
                     //get subscription
-                    $subscription=SupplierPlanSubscription::where('supplier_id',get_supplier_data(Auth::user()->tenant_id)->id)->first();
+                    $subscription=SupplierPlanSubscription::where('supplier_id',$metadata['supplier_id'])->first();
                     if ($payment) {
                         if ($checkout->getStatus() === "paid") {
                             //update payment status in database
