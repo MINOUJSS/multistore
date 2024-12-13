@@ -38,7 +38,6 @@ foreach (config('tenancy.central_domains') as $domain) {
         //chargily routes
      Route::post('chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
      Route::get('chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
-     Route::post('chargilypay/webhook', [ChargilyPayController::class, "webhook"])->name("chargilypay.webhook_endpoint");
         
         //site routes
         Route::name('site.')->group(function(){
@@ -50,4 +49,5 @@ foreach (config('tenancy.central_domains') as $domain) {
         });
 
     });
+    Route::post('chargilypay/webhook', [ChargilyPayController::class, "webhook"])->name("chargilypay.webhook_endpoint");
 }
