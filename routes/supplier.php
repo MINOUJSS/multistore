@@ -62,12 +62,12 @@ Route::middleware([
     Route::post('/supplier/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
     Route::get('/supplier/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('/supplier/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
+    //chargily routes
+    Route::post('supplier/chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
+    Route::get('supplier/chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
+    Route::post('supplier/chargilypay/webhook', [ChargilyPayController::class, "webhook"])->name("chargilypay.webhook_endpoint");
     });
     });
-      //chargily routes
-      Route::post('supplier/chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
-      Route::get('supplier/chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
-      Route::post('supplier/chargilypay/webhook', [ChargilyPayController::class, "webhook"])->name("chargilypay.webhook_endpoint");
     //store routes here
 
 });
