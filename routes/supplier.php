@@ -50,6 +50,10 @@ Route::middleware([
             Route::get('/supplier/payment/algerian_credit_card',[SupplierPaymentController::class, 'algerian_credit_card'])->name('payment.algerian_credit_card');
             Route::get('/supplier/payment/baridimob',[SupplierPaymentController::class, 'baridimob'])->name('payment.baridimob');
             Route::get('/supplier/payment/ccp',[SupplierPaymentController::class, 'ccp'])->name('payment.ccp');
+            //chargily routes
+     Route::post('supplier/chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
+     Route::get('supplier/chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
+     Route::post('chargilypay/webhook', [ChargilyPayController::class, "webhook"])->name("chargilypay.webhook_endpoint");
         });
     //authentication routes here
     Route::middleware('guest')->group(function () {

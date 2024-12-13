@@ -12,7 +12,7 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <form action="{{route('chargilypay.redirect')}}" method="POST">
+            <form action="{{route('supplier.chargilypay.redirect')}}" method="POST">
                 @csrf
                 <input type="hidden" name="plan_id" value="{{$payment_data['plan']}}">
                 <input type="hidden" name="amount" value="{{$payment_data['plan_price']}}">
