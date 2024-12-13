@@ -37,9 +37,9 @@ class ChargilyPayController extends Controller
                 "amount" => $payment->amount,
                 "currency" => $payment->currency,
                 "description" => "Payment ID={$payment->id}",
-                "success_url" => route("supplier.chargilypay.back"),
-                "failure_url" => route("supplier.chargilypay.back"),
-                "webhook_endpoint" => route("supplier.chargilypay.webhook_endpoint"),
+                "success_url" => route("chargilypay.back"),
+                "failure_url" => route("chargilypay.back"),
+                "webhook_endpoint" => route("chargilypay.webhook_endpoint"),
             ]);
             if ($checkout) {
                 return redirect($checkout->getUrl());
