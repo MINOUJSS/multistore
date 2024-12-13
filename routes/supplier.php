@@ -50,6 +50,9 @@ Route::middleware([
             Route::get('/supplier/payment/algerian_credit_card',[SupplierPaymentController::class, 'algerian_credit_card'])->name('payment.algerian_credit_card');
             Route::get('/supplier/payment/baridimob',[SupplierPaymentController::class, 'baridimob'])->name('payment.baridimob');
             Route::get('/supplier/payment/ccp',[SupplierPaymentController::class, 'ccp'])->name('payment.ccp');
+               //chargily routes
+    Route::post('supplier/chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
+    Route::get('supplier/chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
         });
     //authentication routes here
     Route::middleware('guest')->group(function () {
@@ -62,9 +65,7 @@ Route::middleware([
     Route::post('/supplier/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
     Route::get('/supplier/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('/supplier/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
-    //chargily routes
-    Route::post('supplier/chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
-    Route::get('supplier/chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
+    //chargily webhook routes here
     Route::post('supplier/chargilypay/webhook', [ChargilyPayController::class, "webhook"])->name("chargilypay.webhook_endpoint");
     });
     });
