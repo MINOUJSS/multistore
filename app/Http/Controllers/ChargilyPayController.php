@@ -82,9 +82,8 @@ class ChargilyPayController extends Controller
             if ($checkout and $checkout instanceof \Chargily\ChargilyPay\Elements\CheckoutElement) {
                 if ($checkout) {
                     $metadata = $checkout->getMetadata();
-                    $payment = ChargilyPayment::find($metadata['payment_id']);
-                    //get subscription
-                    // $subscription=SupplierPlanSubscription::where('supplier_id',$metadata['supplier_id'])->first();
+                    $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
+
                     if ($payment) {
                         if ($checkout->getStatus() === "paid") {
                             //update payment status in database
@@ -92,9 +91,6 @@ class ChargilyPayController extends Controller
                             $payment->update();
                             /////
                             ///// Confirm your order
-                            // $subscription->status='paid';
-                            // $subscription->payment_status='paid';
-                            // $subscription->update(); 
                             /////
                             return response()->json(["status" => true, "message" => "Payment has been completed"]);
                         } else if ($checkout->getStatus() === "failed" or $checkout->getStatus() === "canceled") {
@@ -103,9 +99,6 @@ class ChargilyPayController extends Controller
                             $payment->update();
                             /////
                             /////  Cancel your order
-                            // $subscription->status='free';
-                            // $subscription->payment_status='unpaid';
-                            // $subscription->update(); 
                             /////
                             return response()->json(["status" => true, "message" => "Payment has been canceled"]);
                         }
@@ -115,7 +108,7 @@ class ChargilyPayController extends Controller
         }
         return response()->json([
             "status" => false,
-            "message" => "Invalid Webhook request FROM MY_WEBHOOK",
+            "message" => "Invalid Webhook request",
         ], 403);
     }
 
