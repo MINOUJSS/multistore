@@ -83,7 +83,7 @@ class ChargilyPayController extends Controller
                 if ($checkout) {
                     $metadata = $checkout->getMetadata();
                     $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
-
+                    $supplier_subscription=SupplierPlanSubscription::where('supplier_id',$metadata['supplier_id'])->first();
                     if ($payment) {
                         if ($checkout->getStatus() === "paid") {
                             //update payment status in database
@@ -91,6 +91,9 @@ class ChargilyPayController extends Controller
                             $payment->update();
                             /////
                             ///// Confirm your order
+                            $supplier_subscription->payment_status='paid';
+                            $supplier_subscription->status='paid';
+                            $supplier_subscription->update();
                             /////
                             return response()->json(["status" => true, "message" => "Payment has been completed"]);
                         } else if ($checkout->getStatus() === "failed" or $checkout->getStatus() === "canceled") {
@@ -99,6 +102,9 @@ class ChargilyPayController extends Controller
                             $payment->update();
                             /////
                             /////  Cancel your order
+                            $supplier_subscription->payment_status='unpaid';
+                            $supplier_subscription->status='free';
+                            $supplier_subscription->update();
                             /////
                             return response()->json(["status" => true, "message" => "Payment has been canceled"]);
                         }
