@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\SupplierPlanSubscription;
 
 class ChargilyPayController extends Controller
 {
@@ -83,7 +82,7 @@ class ChargilyPayController extends Controller
                 if ($checkout) {
                     $metadata = $checkout->getMetadata();
                     $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
-                    $supplier_subscription=SupplierPlanSubscription::where('supplier_id',$metadata['supplier_id'])->first();
+                    $supplier_subscription=\App\Models\SupplierPlanSubscription::where('supplier_id',$metadata['supplier_id'])->first();
                     if ($payment) {
                         if ($checkout->getStatus() === "paid") {
                             //update payment status in database
@@ -102,7 +101,7 @@ class ChargilyPayController extends Controller
                             $payment->update();
                             /////
                             /////  Cancel your order
-                            $supplier_subscription->payment_status='unpaid';
+                            $supplier_subscription->payment_status='failed';
                             $supplier_subscription->status='free';
                             $supplier_subscription->update();
                             /////
