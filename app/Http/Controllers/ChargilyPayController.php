@@ -65,7 +65,14 @@ class ChargilyPayController extends Controller
             //// Doing payment processing in webhook for best practices
             ////
         }
-        dd($checkout,$payment);
+        //dd($checkout,$payment);
+        if($payment!==null && $payment->status=='paid') 
+        {
+            return redirect()->route('supplier.dashboard')->with('success','تمت عملية الدفع بنجاح');
+        }else
+        {
+            return redirect()->route('supplier.dashboard')->with('error','خطأ في عملية الدفع...لقد إنتقلت إلى الخطة المجانية آلياً.يمكنك ترقية حسابك في أي وقت');
+        }
     }
     /**
      * This action will be processed in the background
