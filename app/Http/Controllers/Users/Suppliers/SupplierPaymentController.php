@@ -34,7 +34,8 @@ class SupplierPaymentController extends Controller
             if($request->pay_method=='algerian_credit_card')
             {
                 //redirect to algerian credit card payment page
-                return redirect()->route('supplier.payment.algerian_credit_card')->with('payment_data',$payment_data);
+                //return redirect()->route('supplier.payment.algerian_credit_card')->with('payment_data',$payment_data);
+                return view('users.suppliers.payments.cib.index',compact('payment_data'));
             }else if($request->pay_method=='baridimob')
             {
                 //redirect to baridimob payment page
