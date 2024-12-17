@@ -35,40 +35,40 @@ Route::middleware([
         Route::middleware('auth')->group(function () {
             //unusing routes withoute verification payment
             Route::middleware('verifysupplierpaiment')->group(function () {
-                Route::get('/admin',[SupplierController::class,'index'])->name('admin');
-                Route::get('/supplier/dashboard',[SupplierController::class,'index'])->name('dashboard');
-                Route::post('/supplier/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout'); 
+                Route::get('/supplier-panel/admin',[SupplierController::class,'index'])->name('admin');
+                Route::get('/supplier-panel/dashboard',[SupplierController::class,'index'])->name('dashboard');
+                Route::post('/supplier-panel/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout'); 
                   
             });
             //subscription routes here
-            Route::get('/supplier/subscription',[SupplierSubscriptionController::class, 'index'])->name('subscription');
-            Route::get('/supplier/subscription/confirmation',[SupplierSubscriptionController::class, 'confirmation'])->name('subscription.confirmation');
+            Route::get('/supplier-panel/subscription',[SupplierSubscriptionController::class, 'index'])->name('subscription');
+            Route::get('/supplier-panel/subscription/confirmation',[SupplierSubscriptionController::class, 'confirmation'])->name('subscription.confirmation');
             //supplier plan routes here
-            Route::get('/supplier/plan-pricing/{plan_id}',[SupplierPlanController::class, 'plan_pricing'])->name('plan_pricing');
+            Route::get('/supplier-panel/plan-pricing/{plan_id}',[SupplierPlanController::class, 'plan_pricing'])->name('plan_pricing');
             //supplier payment routes here
-            Route::post('/supplier/payment/redirect',[SupplierPaymentController::class, 'redirect'])->name('payment.redirect');
-            Route::get('/supplier/payment/algerian_credit_card',[SupplierPaymentController::class, 'algerian_credit_card'])->name('payment.algerian_credit_card');
-            Route::get('/supplier/payment/baridimob',[SupplierPaymentController::class, 'baridimob'])->name('payment.baridimob');
-            Route::get('/supplier/payment/ccp',[SupplierPaymentController::class, 'ccp'])->name('payment.ccp');
+            Route::post('/supplier-panel/payment/redirect',[SupplierPaymentController::class, 'redirect'])->name('payment.redirect');
+            Route::get('/supplier-panel/payment/algerian_credit_card',[SupplierPaymentController::class, 'algerian_credit_card'])->name('payment.algerian_credit_card');
+            Route::get('/supplier-panel/payment/baridimob',[SupplierPaymentController::class, 'baridimob'])->name('payment.baridimob');
+            Route::get('/supplier-panel/payment/ccp',[SupplierPaymentController::class, 'ccp'])->name('payment.ccp');
                //chargily routes
-    Route::post('supplier/chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
-    Route::get('supplier/chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
+    Route::post('supplier-panel/chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
+    Route::get('supplier-panel/chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
         });
     //authentication routes here
     Route::middleware('guest')->group(function () {
-    Route::get('/supplier/register',[RegistredSupplierController::class,'create'])->name('register');
-    Route::post('/supplier/register', [RegistredSupplierController::class, 'store']);
-    Route::get('/supplier/login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('/supplier/login', [AuthenticatedSessionController::class, 'login']);
+    Route::get('/supplier-panel/register',[RegistredSupplierController::class,'create'])->name('register');
+    Route::post('/supplier-panel/register', [RegistredSupplierController::class, 'store']);
+    Route::get('/supplier-panel/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/supplier-panel/login', [AuthenticatedSessionController::class, 'login']);
     //forget password routes here
-    Route::get('/supplier/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
-    Route::post('/supplier/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
-    Route::get('/supplier/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
-    Route::post('/supplier/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
+    Route::get('/supplier-panel/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+    Route::post('/supplier-panel/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+    Route::get('/supplier-panel/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::post('/supplier-panel/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
     //chargily webhook routes here
-    Route::post('supplier/chargilypay/webhook', [ChargilyPayController::class, "webhook"])->name("chargilypay.webhook_endpoint");
+    Route::post('supplier-panel/chargilypay/webhook', [ChargilyPayController::class, "webhook"])->name("chargilypay.webhook_endpoint");
     });
     });
     //store routes here
-
+    
 });
