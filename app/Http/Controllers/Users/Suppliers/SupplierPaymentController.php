@@ -35,15 +35,15 @@ class SupplierPaymentController extends Controller
             {
                 //redirect to algerian credit card payment page
                 //return redirect()->route('supplier.payment.algerian_credit_card')->with('payment_data',$payment_data);
-                return view('users.suppliers.payments.cib.index',compact('payment_data'));
+                return view('users.suppliers.payments.cib.index',compact('request'));
             }else if($request->pay_method=='baridimob')
             {
                 //redirect to baridimob payment page
-                return redirect()->route('supplier.payment.baridimob');
+                return redirect()->route('supplier.payment.baridimob',compact('request'));
             }else
             {
                 //redirect to ccp payment page
-                return redirect()->route('supplier.payment.ccp');
+                return redirect()->route('supplier.payment.ccp',compact('request'));
             }
         }
 

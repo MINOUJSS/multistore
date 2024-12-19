@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             Baladia_Table_Seeder::class,
             App_Domain_Table_Seeder::class,
             SupplierPlan_Table_Seeder::class,
+            PlatformSetting_Table_Seeder::class,
         ]);
     }
 }

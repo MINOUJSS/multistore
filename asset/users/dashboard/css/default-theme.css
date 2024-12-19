@@ -9,7 +9,7 @@
 .item a:hover
 {background: #c31689;border:2px solid #a40c72;}
 .sub-item{background: #be068180;}
-.active{background: #be0681;border-left:5px solid #790853;}
+.item.active{background: #be0681;border-left:5px solid #790853;}
 /* main  */
 .app-wraper{background: #e1cfdb;}
 /*footer*/

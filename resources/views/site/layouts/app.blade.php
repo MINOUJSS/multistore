@@ -34,7 +34,8 @@
   <link href="{{asset('asset/site/defaulte')}}/css/mystyle.css" rel="stylesheet">
   {{-- My Fonts --}}
   <link rel="stylesheet" href="{{asset('asset/site/defaulte')}}/css/kufi_font.css">
-
+  <!--google analitices-->
+  {!!get_platform_data('google_analitics')->value!!}
   <!-- =======================================================
   * Template Name: Arsha
   * Updated: Sep 18 2023 with Bootstrap v5.3.2

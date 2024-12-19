@@ -18,7 +18,7 @@
             </a>
             <ul class="dropdown-menu position-absolute">
               <div class="dz-nav-profile-info" >
-                <p class="text-center">email@email.com</p>
+                <p class="text-center">{{Auth::user()->email}}</p>
                 <hr>
               </div>
               <li><a class="dropdown-item" href="#"><i class="fa-solid fa-boxes-packing"></i> بقاتي</a></li>
@@ -36,12 +36,12 @@
           <li class="nav-item">
               <div class="rasidi-box text-center">
                   <a class="nav-link dz-small-nav-text" aria-current="page" href="#">الرصيد</a>
-                  <span class="text-success">1000.00 د.ج</span>
+                  <span class="text-success">{{get_user_data(Auth::user()->tenant->id)->balance->balance}} د.ج</span>
 
                   <div class="vr m-2"></div>
 
                   <a class="nav-link dz-small-nav-text" aria-current="page" href="#">مستحقات الدفع</a>
-                  <span class="text-danger">0.00 د.ج</span>
+                  <span class="text-danger">{{get_user_data(Auth::user()->tenant->id)->balance->outstanding_amount}} د.ج</span>
               </div>
             </li>
             <div class="vr m-2"></div>

@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="item"><a href="#"><i class="fa-solid fa-box-open"></i> المنتجات</a></div>
-        <div class="item"><a href="#"><i class="fa-solid fa-gear"></i> الإعدادت</a></div>
+        <div class="item"><a href="{{route('admin.settings')}}"><i class="fa-solid fa-gear"></i> الإعدادت</a></div>
     </div>
     <!--End Menu-->
 </div>

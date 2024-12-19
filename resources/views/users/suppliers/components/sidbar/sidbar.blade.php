@@ -9,6 +9,9 @@
     <hr>
     <!--Start Menu-->
     <div class="menu">
+        <div class="item">
+            <a class="btn btn-primary" href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(Auth::user()->tenant_id)->domains[0]->domain)}}" target="_blank">الإنتقال إلى المتجر</a>
+        </div>
         <div class="item"><a href="#"><i class="fa-solid fa-gauge"></i> الرئيسية</a></div>
         <div class="item">
             <a class="sub-btn" href="#"><i class="fa-solid fa-cart-shopping"></i> الطلبات <i class="fa-solid fa-angle-left dropdown"></i></a>

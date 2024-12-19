@@ -48,7 +48,7 @@
               <li class="na"><i class="bx bx-x"></i> <span>حقوق النشر</span></li>
             </ul>
             {{-- <a href="#" class="buy-btn">إبدأ الآن</a> --}}
-            <form action="{{url(request()->server('REQUEST_SCHEME').'://supplier.'.request()->server('HTTP_HOST').'/supplier/register')}}" method="GET">
+            <form action="{{url(request()->server('REQUEST_SCHEME').'://supplier.'.request()->server('HTTP_HOST').'/supplier-panel/register')}}" method="GET">
               {{-- @csrf --}}
               <input type="hidden" name="plan" value="{{$plan->name}}">
               <input type="submit" value="إبداء الآن" class="buy-btn">

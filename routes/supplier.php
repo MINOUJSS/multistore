@@ -36,10 +36,10 @@ Route::middleware([
             //unusing routes withoute verification payment
             Route::middleware('verifysupplierpaiment')->group(function () {
                 Route::get('/supplier-panel/admin',[SupplierController::class,'index'])->name('admin');
-                Route::get('/supplier-panel/dashboard',[SupplierController::class,'index'])->name('dashboard');
-                Route::post('/supplier-panel/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout'); 
+                Route::get('/supplier-panel/dashboard',[SupplierController::class,'index'])->name('dashboard'); 
                   
             });
+            Route::post('/supplier-panel/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
             //subscription routes here
             Route::get('/supplier-panel/subscription',[SupplierSubscriptionController::class, 'index'])->name('subscription');
             Route::get('/supplier-panel/subscription/confirmation',[SupplierSubscriptionController::class, 'confirmation'])->name('subscription.confirmation');

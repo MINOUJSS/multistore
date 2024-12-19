@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admins\Admin\AdminController;
+use App\Http\Controllers\Admins\Admin\SettingController;
 use App\Http\Controllers\Admins\Admin\SupplierController;
 use App\Http\Controllers\Admins\Admin\Auth\AuthenticatedSessionController;
 
@@ -28,6 +29,8 @@ foreach (config('tenancy.central_domains') as $domain) {
             Route::middleware('admin')->group(function () {
             Route::get('/ah-admin',[AdminController::class,'index'])->name('dashboard');
             Route::post('/ah-logout',[AuthenticatedSessionController::class,'logout'])->name('logout');
+            //setting admin routes here
+            Route::get('/ah-admin/settings',[SettingController::class,'index'])->name('settings');
             //suppliers actions
             Route::get('/ah-admin/suppliers',[SupplierController::class,'index'])->name('suppliers');
             Route::delete('/ah-admin/supplier/destroy/{id}',[SupplierController::class,'destroy'])->name('supplier.destroy');

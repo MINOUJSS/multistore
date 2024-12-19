@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use App\Models\SupplierPlan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
+use App\Models\BalanceTransaction;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -98,6 +99,11 @@ class RegistredSupplierController extends Controller
                     'password' => Hash::make($request->password),
                     'phone' => $request->phone,
                  ]); 
+                 //create user balance
+                 $user->balance()->create([
+                     'balance' => '0',
+                     'outstanding_amount' => '0',
+                 ]);
                  //
                  $plan=SupplierPlan::Where('name',$request->plan)->first();             
                  //insert in supplier_plan_subscription table
@@ -116,6 +122,17 @@ class RegistredSupplierController extends Controller
                     $s_p_subscription=SupplierPlanSubscription::find($supplier_plan_subscription->id);
                     $s_p_subscription->status='free';
                     $s_p_subscription->update();
+                    //add balance to subscription
+                    $user->balance()->update([
+                        'balance'=> '1000',
+                    ]);
+                    //commit this transaction in balance transaction table
+                    BalanceTransaction::create([
+                        'user_id' => $user->id,
+                        'transaction_type' => 'إضافة',
+                        'amount' => '1000',
+                        'description' => 'تسجيل مجاني للمورد',
+                    ]);
                  }
                   // Commit the transaction
                  \DB::commit();

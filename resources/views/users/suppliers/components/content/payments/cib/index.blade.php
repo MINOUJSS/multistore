@@ -1,5 +1,5 @@
 @php
- $payment_data= session('payment_data') ; 
+  $price=explode('<sup>د.ج</sup>/',$request->plan_price);
 @endphp
 <div class="container">
     <h1>بيانات الدفع</h1>
@@ -14,8 +14,8 @@
         <div class="card-body">
             <form action="{{route('supplier.chargilypay.redirect')}}" method="POST">
                 @csrf
-                <input type="hidden" name="plan_id" value="{{$payment_data['plan']}}">
-                <input type="hidden" name="amount" value="{{$payment_data['plan_price']}}">
+                <input type="hidden" name="plan_id" value="{{$request->plan}}">
+                <input type="hidden" name="amount" value="{{$price[0]}}">
                 <input type="hidden" name="supplier_id" value="{{get_supplier_data(Auth::user()->tenant->id)->id}}">
                 {{-- <input type="hidden" name="email" value="{{$payment_data['email']}}">
                 <input type="hidden" name="full_name" value="{{$payment_data['full_name']}}">

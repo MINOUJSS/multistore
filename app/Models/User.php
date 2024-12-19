@@ -51,5 +51,19 @@ class User extends Authenticatable
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
-    }    
+    }   
+    /**
+     * Get user balance.
+     */
+    public function balance()
+    {
+        return $this->hasOne(UserBalance::class);
+    }
+    /**
+     * Get user transactions.
+     */
+    public function transactions()
+    {
+        return $this->hasMany(BalanceTransaction::class);
+    }
 }

@@ -27,7 +27,7 @@ Route::middleware([
     // Route::get('/', function () {
     //     return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     // });
-    Route::get('/',[TenantsController::class,'index'])->name('index');
+    Route::get('/',[TenantsController::class,'index'])->name('store');
 });
 
 // Route::get('/', function () {
