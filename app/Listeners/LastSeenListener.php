@@ -29,7 +29,7 @@ class LastSeenListener
             'ip_address' => Request::ip(),
             'device' => Request::header('User-Agent'),
             'browser' => Request::header('User-Agent'),
-            'logged_in_at' => now(),
+            'last_seen_at' => now(),
         ]);
     }
 }
