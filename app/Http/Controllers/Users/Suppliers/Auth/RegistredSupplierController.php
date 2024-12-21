@@ -9,6 +9,7 @@ use App\Models\Supplier;
 use Illuminate\View\View;
 use App\Models\SupplierPlan;
 use Illuminate\Http\Request;
+use App\Events\UserLogedInEvent;
 use Illuminate\Validation\Rules;
 use App\Models\BalanceTransaction;
 use Illuminate\Support\Facades\Log;
@@ -136,10 +137,13 @@ class RegistredSupplierController extends Controller
                  }
                   // Commit the transaction
                  \DB::commit();
-                //
+                //send verification email
                 event(new Registered($user));
+               
 
                 Auth::login($user);
+                 //seed last seen table
+                 event(new UserLogedInEvent(auth()->user()));
                  //redirect to dashboard of confirme plan page
                  if($plan->price==0)
                  {

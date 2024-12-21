@@ -19,6 +19,7 @@
       <!-- js files -->
       @yield('header_js')
       <!-- google analitics -->
+      @yield('google_analitics')
       
     <title>@yield('title')</title>
   </head>

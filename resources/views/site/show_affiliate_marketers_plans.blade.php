@@ -1,4 +1,9 @@
 @extends('site.layouts.app')
+
+@section('google_analitics')
+{!!get_platform_data('google_analitics')->value!!}
+@endsection
+
 @section('hero')
     <!-- ======= Hero Section ======= -->
 <section id="hero" class="d-flex align-items-center">
