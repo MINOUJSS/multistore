@@ -11,7 +11,7 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 class TenantsController extends Controller
 {
     //genral index
-    public function index()
+    public function index(Request $request)
     {
         //check user type
         if(get_user_data(tenant('id'))!=null && get_user_data(tenant('id'))->type=='supplier'){

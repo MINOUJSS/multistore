@@ -26,7 +26,7 @@ class LastSeenListener
         //
         LastSeen::create([
             'user_id' => $event->user->id,
-            'ip_address' => Request::ip(),
+            'ip_address' => request()->ip(),
             'device' => Request::header('User-Agent'),
             'browser' => Request::header('User-Agent'),
             'last_seen_at' => now(),
