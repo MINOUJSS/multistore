@@ -18,14 +18,14 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     /**
      * Get the users of this tenant
      */
-    public function users():HasMany
+    public function users()
     {
         return $this->hasMany(User::class);
     }
     /**
      * Get the suppliers of this tenant
      */
-    public function suppliers():HasMany
+    public function suppliers()
     {
         return $this->hasMany(Supplier::class);
     }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('last_seens', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id'); // معرف المستخدم
-            $table->ipAddress('ip_address')->nullable(); // عنوان IP المستخدم
+            $table->string('ip_address')->nullable(); // عنوان IP المستخدم
             $table->string('device')->nullable(); // الجهاز المستخدم (اختياري)
             $table->string('browser')->nullable(); // المتصفح المستخدم (اختياري)
             $table->timestamp('last_seen_at')->useCurrent(); // توقيت تسجيل الدخول

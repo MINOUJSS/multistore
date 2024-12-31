@@ -1,4 +1,7 @@
 /* this is the defaulte theme */
+/* bottons */
+.app-btn-primary{background-color:#790853;border:1px solid #a40c72;}
+.app-btn-primary:hover{background-color:#a40c72;border:1px solid #790853;}
 /* nav bar  */
 .dz-nav-icon{color: #000;}
 .dz-badge-color{background: #a40c72 !important;}

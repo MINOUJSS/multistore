@@ -23,10 +23,11 @@ class LastSeenListener
      */
     public function handle(UserLogedInEvent $event): void
     {
+        $ip_address = request()->server('REMOTE_ADDR');
         //
         LastSeen::create([
             'user_id' => $event->user->id,
-            'ip_address' => request()->ip(),
+            'ip_address' => $ip_address,
             'device' => Request::header('User-Agent'),
             'browser' => Request::header('User-Agent'),
             'last_seen_at' => now(),

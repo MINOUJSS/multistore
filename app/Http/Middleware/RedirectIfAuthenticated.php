@@ -24,7 +24,11 @@ class RedirectIfAuthenticated
                 return redirect(route('admin.dashboard'));
             }
             if(Auth::guard('web')->check()){
-                return redirect(RouteServiceProvider::HOME);
+                if(auth()->user()->type=='supplier')
+                {
+                    return redirect(route('supplier.dashboard'));
+                }
+                // return redirect(RouteServiceProvider::HOME);
             }
             // if (Auth::guard($guard)->check()) {
             //         return redirect(RouteServiceProvider::HOME);

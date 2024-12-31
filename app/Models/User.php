@@ -66,4 +66,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(BalanceTransaction::class);
     }
+    //
+    public function store_settings()
+    {
+        $this->hasMany(UserStoreSetting::class);
+    }
+    //
+    public function dashboard_settings()
+    {
+        $this->hasMany(UserDashboardSetting::class);
+    }
 }

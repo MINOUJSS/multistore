@@ -22,28 +22,30 @@
       @yield('google_analitics')
       
     <title>@yield('title')</title>
+    <!--page style-->
+    @yield('style')
   </head>
   <body>
- @yield('sidbar')
-     <!-- Start Main  -->
-    <div class="app-wraper">
-        <!-- Start Nav Bar-->
-            @yield('navbar')
-        <!-- end Nav Bar-->
+     <!-- Start Main  -->     
+    <div class="container-fluid app-wraper">
+        @yield('sidbar')
+           <!-- Start Nav Bar-->
+          @yield('navbar')
+          <!-- end Nav Bar-->
+          <!-- Start Content-->
+          <div class="content">
+            @yield('content')
+          </div>
+          <!-- End Content-->  
 
-         <!-- Start Content-->
-            <div class="content">
-              @yield('content')
+          <!--Start Footer-->
+          <div class="footer">
+            <div class="text-center">
+                <small>جميع الحقوق محفوظة لمنصة <a href="#">متاجر ديزاد</a> @ <script>document.write(new Date().getFullYear())</script></small>
             </div>
-         <!-- End Content-->
-         
-        <!--Start Footer-->
-            <div class="footer">
-                <div class="text-center">
-                    <small>جميع الحقوق محفوظة لمنصة <a href="#">متاجر ديزاد</a> @ <script>document.write(new Date().getFullYear())</script></small>
-                </div>
-            </div>
-        <!--End Footer-->
+          </div>
+          <!--End Footer-->
+
     </div>
     <!-- End Main  -->
 

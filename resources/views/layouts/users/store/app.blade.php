@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--supplier meta-->
     @yield('meta')
-    <link rel="icon" type="image/png" href="{{asset('asset/users/store')}}/img/logo/store.png">
+    <link rel="icon" type="image/png" href="{{asset(get_store_logo(tenant('id')))}}">
     <title>@yield('title')</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" integrity="sha384-dpuaG1suU0eT09tx5plTaGMLBsfDLzUCCUXOY2j/LSvXYuG6Bqs43ALlhIqAJVRb" crossorigin="anonymous">    <!-- fonts -->
     <!-- font -->
@@ -18,13 +18,15 @@
      <link rel="stylesheet" href="{{asset('asset/users/store')}}/css/default-theme.css">
      <link rel="stylesheet" href="{{asset('asset/users/store')}}/css/appmedia.css">
     <!-- supplier style -->
-     @yield('style')
+     @yield('header_style')
      <!-- js files -->
      @yield('header_js')
     <!-- fcb pixle -->
     @yield('fcb_pixle')
     <!-- google analytics -->
     @yield('google_analytics')
+    <!---->
+    @yield('style')
   </head>
   <body>
     <!-- end general container -->
@@ -51,7 +53,7 @@
      <section class="footer">
         <div class="container">
         <div class="footer-brand text-center">
-            <a href="#"><img src="{{asset('asset/users/store')}}/img/logo/store.png" width="50px" height="50px" alt="logo"></a>
+            <a href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(tenant('id'))->domains[0]->domain)}}"><img src="{{asset(get_store_logo(tenant('id')))}}" width="50px" height="50px" alt="logo"></a>
         </div>
         <hr>
         <div class="row footer-body">
@@ -59,9 +61,9 @@
                 <h5 class="footer-title">عن المتجر</h5>
                 <hr class="title-underline">
                 <ul class="footer-ul">
-                    <li class="footer-li"><a href="#">عن المتجر</a></li>                    
-                    <li class="footer-li"><a href="#">الشحن و التسليم</a></li>
-                    <li class="footer-li"><a href="#">طرق الدفع</a></li>
+                    <li class="footer-li"><a href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(tenant('id'))->domains[0]->domain)}}/about">عن المتجر</a></li>                    
+                    <li class="footer-li"><a href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(tenant('id'))->domains[0]->domain)}}/shipping-policy">الشحن و التسليم</a></li>
+                    <li class="footer-li"><a href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(tenant('id'))->domains[0]->domain)}}/payment-policy">طرق الدفع</a></li>
                 </ul>
                 <ul class="footer-ul d-flex">
                     <li class="footer-li p-1"><img src="{{asset('asset/users/store')}}/img/payments/eldhahabia.png" alt="" width="30px"></li>
@@ -76,9 +78,9 @@
                 <h5 class="footer-title">الشروط والسياسات</h5>
                 <hr class="title-underline">
                 <ul class="footer-ul">
-                    <li class="footer-li"><a href="#">شروط الإستخدام</a></li>
-                    <li class="footer-li"><a href="#">سياسة الإستبدال و الإسترجاع</a></li>
-                    <li class="footer-li"><a href="#">السياسة الخصوصية</a></li>
+                    <li class="footer-li"><a href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(tenant('id'))->domains[0]->domain)}}/terms-of-use">شروط الإستخدام</a></li>
+                    <li class="footer-li"><a href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(tenant('id'))->domains[0]->domain)}}/exchange-policy">سياسة الإستبدال و الإسترجاع</a></li>
+                    <li class="footer-li"><a href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(tenant('id'))->domains[0]->domain)}}/privacy-policy">السياسة الخصوصية</a></li>
                 </ul>
             </div>
 
@@ -86,8 +88,8 @@
                 <h5 class="footer-title">اتصل بنا</h5>
                 <hr class="title-underline">
                 <ul class="footer-ul">
-                    <li class="footer-li"><a href="#">اتصل بنا</a></li>
-                    <li class="footer-li"><a href="#">الأسئلة الشائعة</a></li>
+                    <li class="footer-li"><a href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(tenant('id'))->domains[0]->domain)}}/contact-us">اتصل بنا</a></li>
+                    <li class="footer-li"><a href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(tenant('id'))->domains[0]->domain)}}/faq">الأسئلة الشائعة</a></li>
                 </ul>
             </div>
 
@@ -96,7 +98,7 @@
                 <hr class="title-underline">
                 <ul class="footer-ul">
                     <li class="footer-li"><i class="fa-solid fa-location-dot"></i> العنوان : حي200 مسكن الجزائر</li>
-                    <li class="footer-li"><i class="fa-solid fa-envelope"></i> البريد الإلكتروني : email@email.com</li>
+                    <li class="footer-li"><i class="fa-solid fa-envelope"></i> البريد الإلكتروني : {{get_supplier_data(tenant('id'))->tenant->users[0]->email}}</li>
                 </ul>
                 <ul class="footer-ul d-flex">
                     <li class="footer-li p-2"><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
@@ -109,7 +111,7 @@
         <div class="row footer-footer">
             <hr style="width:50%;margin-right: 25%;">
             <div class="col-12 text-center">
-                جميع الحقوق محفوظة @ لمنصة <a href="#">متاجر ديزاد</a>
+                جميع الحقوق محفوظة @ لمنصة <a href="{{route('site.index')}}">متاجر ديزاد</a>
             </div>
         </div>
         </div>

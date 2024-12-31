@@ -13,7 +13,7 @@
                 </span>
                 </button>
       </div>
-      <a class="navbar-brand" href="#"><img src="{{asset('asset/users/store')}}/img/logo/store.png" width="50px" height="50px" alt="logo"></a>
+      <a class="navbar-brand" href="{{url(request()->server('REQUEST_SCHEME').'://'.get_tenant_data(tenant('id'))->domains[0]->domain)}}"><img src="{{asset(get_store_logo(tenant('id')))}}" width="50px" height="50px" alt="logo"></a>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav hstacks gap-3 mx-auto">
           <a class="nav-link active" aria-current="page" href="#">الرئيسية</a>

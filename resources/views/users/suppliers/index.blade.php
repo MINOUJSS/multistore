@@ -8,12 +8,12 @@
   الصفحة الرئيسية
 @endsection
 
-@section('sidbar')
-    @include('users.suppliers.components.sidbar.sidbar')
-@endsection
-
 @section('navbar')
     @include('users.suppliers.components.navbar.navbar')
+@endsection
+
+@section('sidbar')
+    @include('users.suppliers.components.sidbar.sidbar')
 @endsection
 
 @section('content')

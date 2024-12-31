@@ -105,6 +105,8 @@ class RegistredSupplierController extends Controller
                      'balance' => '0',
                      'outstanding_amount' => '0',
                  ]);
+                 //create user store settings
+                 create_supplier_store_settings($user,$request);
                  //
                  $plan=SupplierPlan::Where('name',$request->plan)->first();             
                  //insert in supplier_plan_subscription table
