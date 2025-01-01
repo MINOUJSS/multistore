@@ -36,10 +36,30 @@ class SupplierStoreDesignController extends Controller
             }
             $image->storeAs($path,$image_name ,'public');
             $supplier_logo=UserStoreSetting::where('user_id',$user_id)->where('key','store_logo')->first();
+            if($supplier_logo==null)
+            {
+                $supplier_logo=new UserStoreSetting();
+                $supplier_logo->user_id=$user_id;
+                $supplier_logo->key='store_logo';
+                $supplier_logo->value='/storage/tenantsupplier/app/public/'.$path.'/'.$image_name;
+                $supplier_logo->save();
+            }
             $supplier_logo->value='/storage/tenantsupplier/app/public/'.$path.'/'.$image_name;
             $supplier_logo->update();
         }   
         $supplier_theme=UserStoreSetting::where('user_id',$user_id)->where('key','store_theme')->first();
+        if($supplier_theme==null)
+        {
+            $supplier_theme=new UserStoreSetting();
+            $supplier_theme->user_id=$user_id;
+            $supplier_theme->key='store_theme';
+            $supplier_theme->value=json_encode(
+                ['primarycolor'=>$request->primarycollor,
+                'bodytextcolor'=>$request->bodytextcolor,
+                'footertextcolor'=>$request->footertextcolor]
+            );
+            $supplier_theme->save();
+        }
         $supplier_theme->value=json_encode(
         ['primarycolor'=>$request->primarycollor,
             'bodytextcolor'=>$request->bodytextcolor,
