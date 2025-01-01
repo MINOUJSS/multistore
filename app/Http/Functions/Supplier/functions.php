@@ -236,6 +236,10 @@ function get_store_parimary_color($tenant_id)
 {
     $user=App\Models\User::where('tenant_id',$tenant_id)->first();
     $setting=App\Models\UserStoreSetting::where('user_id',$user->id)->where('key','store_theme')->first();
+    if($setting==null)
+    {
+        return '#343035';
+    }
     return json_decode($setting->value)->primarycolor ?? '#343035';
 }
 //get store color logo
@@ -243,6 +247,10 @@ function get_store_logo($tenant_id)
 {
     $user=App\Models\User::where('tenant_id',$tenant_id)->first();
     $setting=App\Models\UserStoreSetting::where('user_id',$user->id)->where('key','store_logo')->first();
+    if($setting==null)
+    {
+        return '/asset/users/store/img/logo/store.png';
+    }
     return $setting->value ?? '/asset/users/store/img/logo/store.png';
 }
 //
@@ -250,6 +258,10 @@ function get_store_body_text_color($tenant_id)
 {
     $user=App\Models\User::where('tenant_id',$tenant_id)->first();
     $setting=App\Models\UserStoreSetting::where('user_id',$user->id)->where('key','store_theme')->first();
+    if($setting==null)
+    {
+        return '#000000';
+    }
     return json_decode($setting->value)->bodytextcolor ?? '#000000';
 }
 //
@@ -257,6 +269,10 @@ function get_store_footer_text_color($tenant_id)
 {
     $user=App\Models\User::where('tenant_id',$tenant_id)->first();
     $setting=App\Models\UserStoreSetting::where('user_id',$user->id)->where('key','store_theme')->first();
+    if($setting==null)
+    {
+        return '#ffffff';
+    }
     return json_decode($setting->value)->footertextcolor ?? '#ffffff';
 }
 //create default supplier dashboard settings
