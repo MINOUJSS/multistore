@@ -1,3 +1,3 @@
 <div class="container">
-    this is shipping and handling page 
+    {!!$page->content!!}
 </div>

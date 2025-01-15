@@ -37,9 +37,11 @@ Route::middleware([
     Route::get('/shipping-policy',[TenantsController::class,'shipping_policy'])->name('shipping-policy');
     Route::get('/payment-policy',[TenantsController::class,'payment_policy'])->name('payment-policy');
     Route::get('/faq',[TenantsController::class,'faq'])->name('faq');
+    Route::get('/categories',[TenantsController::class,'categories'])->name('categories');
     //store products
     Route::get('/products',[TenantsController::class,'products'])->name('products');
     Route::get('/product/{id}',[TenantsController::class,'product'])->name('product');
+    Route::get('/products-by-category/{id}',[TenantsController::class,'products_by_category'])->name('products-by-category');
     //store cart
     Route::get('/cart',[TenantsController::class,'cart'])->name('cart');
     //store checkout
@@ -50,6 +52,10 @@ Route::middleware([
     Route::get('/checkout/cancel',[TenantsController::class,'checkout_cancel'])->name('checkout-cancel');
     //order
     Route::get('/order',[TenantsController::class,'order'])->name('order');
+    //get dayra response 
+    Route::post('/get-dayras/{wilaya_id}',[TenantsController::class,'get_dayras'])->name('get-dayras');
+     //get baladia response 
+     Route::post('/get-baladias/{dayra_id}',[TenantsController::class,'get_baladias'])->name('get-baladias');
     
 
 

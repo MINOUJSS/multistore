@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_store_settings', function (Blueprint $table) {
             $table->bigIncrements('id');// المفتاح الأساسي
             $table->unsignedBigInteger('user_id');
-            $table->string('key')->unique(); // مفتاح الإعداد (مثل: site_name، contact_email)
+            $table->string('key')->nullable(); // مفتاح الإعداد (مثل: site_name، contact_email)
             $table->text('value')->nullable(); // قيمة الإعداد
             $table->string('type')->default('string'); // نوع القيمة (string، integer، boolean، json)
             $table->text('description')->nullable(); // وصف الإعداد

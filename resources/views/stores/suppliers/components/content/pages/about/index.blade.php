@@ -1,1 +1,3 @@
-this is about page
+<div class="container">
+    {!!$page->content!!}
+</div>

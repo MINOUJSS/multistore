@@ -176,6 +176,24 @@ function create_supplier_store_settings($user,$request)
         'description' => 'صفحة فيسبوك المتجر',
         'status' => 'active',
     ]);
+    //add store telegram
+    $setting->create([
+        'user_id' => $user->id,
+        'key' => 'store_telegram',
+        'value' => 'telegram.com',
+        'type' => 'string',
+        'description' => 'صفحة تيليجرام المتجر',
+        'status' => 'active',
+    ]);
+    //add store tiktok
+    $setting->create([
+        'user_id' => $user->id,
+        'key' => 'store_tiktok',
+        'value' => 'tiktok.com',
+        'type' => 'string',
+        'description' => 'صفحة تيك توك المتجر',
+        'status' => 'active',
+    ]);
     //add store twitter
     $setting->create([
         'user_id' => $user->id,
@@ -295,13 +313,42 @@ function create_supplier_dashboard_settings($user,$request)
             'status' => 'active',
         ]);
 }
-//create default supplier categories
-function create_default_supplier_categories($user)
+//get_supplier_product_category
+function get_supplier_product_category($product_id)
 {
-
+    $product=App\models\SupplierProducts::findOrFail($product_id);
+    $category=App\models\Category::findOrFail($product->category_id);
+    if ($category)
+    {
+        return $category->name;
+    }else
+    {
+        return 'بدون تصنيف';
+    }
+   
 }
-//create default supplier products
-function create_default_supplier_products($user)
+//get_supplier_product_price
+function get_supplier_product_price($product_id)
 {
-
+  $product=App\models\SupplierProducts::findOrFail($product_id);
+  if($product->activeDiscount)
+  {
+    $price=$product->price - $product->activeDiscount->discount_amount;
+    return $price;
+  }else
+  {
+    return $product->price;
+  }
+}
+//s_p_has_free_shipping(
+function s_p_has_free_shipping($product_id)
+{
+    $product=App\models\SupplierProducts::findOrFail($product_id);
+    if($product->free_shipping=='yes')
+    {
+        return 'نعم';
+    }else
+    {
+        return 'لا';
+    }
 }

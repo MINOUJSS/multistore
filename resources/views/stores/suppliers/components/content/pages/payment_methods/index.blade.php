@@ -1,3 +1,3 @@
 <div class="container">
-    this is payment methods page 
+    {!!$page->content!!}
 </div>

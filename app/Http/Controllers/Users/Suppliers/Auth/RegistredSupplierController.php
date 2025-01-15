@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Events\UserLogedInEvent;
 use Illuminate\Validation\Rules;
 use App\Models\BalanceTransaction;
+use App\Events\CreateSupplierEvent;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -107,7 +108,17 @@ class RegistredSupplierController extends Controller
                  ]);
                  //create user store settings
                  create_supplier_store_settings($user,$request);
-                 //
+                 //create default store contents for supplier
+                 
+                 //create default category
+
+                 //ctreate default products
+
+                 //create default fqy
+
+                 //create default pages
+
+                 //get selected plan data
                  $plan=SupplierPlan::Where('name',$request->plan)->first();             
                  //insert in supplier_plan_subscription table
                  $supplier_plan_subscription=SupplierPlanSubscription::create([
@@ -146,6 +157,8 @@ class RegistredSupplierController extends Controller
                 Auth::login($user);
                  //seed last seen table
                  event(new UserLogedInEvent(auth()->user()));
+                 //
+                 event(new CreateSupplierEvent($supplier));
                  //redirect to dashboard of confirme plan page
                  if($plan->price==0)
                  {
@@ -184,7 +197,6 @@ class RegistredSupplierController extends Controller
     //
     public function logout(Request $request)
     {
-        dd('hi');
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

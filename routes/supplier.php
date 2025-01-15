@@ -49,6 +49,8 @@ Route::middleware([
                 Route::get('/supplier-panel/settings',[SupplierSettingController::class,'index'])->name('settings');
                 //supplier products routes
                 Route::get('/supplier-panel/products',[SupplierProductController::class,'index'])->name('products'); 
+                Route::get('/supplier-panel/product/edit/{id}',[SupplierProductController::class,'edit'])->name('product.edit');
+                Route::post('/supplier-panel/product/update/{id}',[SupplierProductController::class,'update'])->name('product.update');
                 //supplier orders routes
                 Route::get('/supplier-panel/orders',[SupplierOrderController::class,'index'])->name('orders'); 
                 //supplier order abandoned routes

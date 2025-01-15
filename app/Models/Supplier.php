@@ -35,4 +35,9 @@ class Supplier extends Model
     {
         return $this->hasOne(SupplierPlanSubscription::class);
     }
+    //
+    public function products()
+    {
+        return $this->hasMany(SupplierProducts::class);
+    }
 }

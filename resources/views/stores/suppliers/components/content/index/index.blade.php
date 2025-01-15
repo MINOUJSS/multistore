@@ -10,88 +10,72 @@
 </section>
 
 {{-- slider section  --}}
+@if (!empty($sliders))
 <section>
     <div class="container">
         <div class="row">
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
-                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    @foreach ($sliders as $key => $slider)
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{$key}}" @if ($key == 0){{"class=active aria-current=true"}} @endif aria-label="Slide {{$key+1}}"></button>
+                    @endforeach
                 </div>
                 <div class="carousel-inner">
-                  <div class="carousel-item active">
-                    <img src="{{asset('asset/users/store/img/slider/pc-slider1.png')}}" class="d-block w-100" alt="...">
+                    @foreach ($sliders as $key => $slider)
+                  <div class="carousel-item @if ($key == 0){{"active"}} @endif">
+                    <img src="{{asset($slider->image)}}" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{$slider->title}}</h5>
+                        <p>{{$slider->description}}</p>
+                      </div>
                   </div>
-                  <div class="carousel-item">
-                    <img src="{{asset('asset/users/store/img/slider/pc-silder2.png')}}" class="d-block w-100" alt="...">
-                  </div>
-                  <div class="carousel-item">
-                    <img src="{{asset('asset/users/store/img/slider/pc-slider3.png')}}" class="d-block w-100" alt="...">
-                  </div>
+                    @endforeach
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
                   <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">السابق</span>
+                  <span class="visually-hidden">Previous</span>
                 </button>
                 <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
                   <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">التالي</span>
+                  <span class="visually-hidden">Next</span>
                 </button>
               </div>
-            
+        </div>  
+    </div>
+</section>
+@endif        
               {{-- category section  --}}
-            <section class="featured-products py-5">
-                <div class="container">
-                    <h2 class="text-center mb-5 fade-in">الفئات المميزة</h2>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="card category-card zoom-hover">
-                                <img src="{{asset('asset/users/store/img/categories/all.png')}}" class="card-img-top" alt="إلكترونيات">
-                                <div class="card-body">
-                                    <h5 class="card-title">كل الفآت</h5>
-                                    <p class="card-text">أحدث المنتجات</p>
-                                    <a href="products.html" class="btn btn-outline-primary btn-ripple">استعرض المنتجات</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card category-card zoom-hover">
-                                <img src="{{asset('asset/users/store/img/categories/clothe.png')}}" class="card-img-top" alt="أزياء">
-                                <div class="card-body">
-                                    <h5 class="card-title">أزياء</h5>
-                                    <p class="card-text">أحدث صيحات الموضة</p>
-                                    <a href="products.html" class="btn btn-outline-primary btn-ripple">استعرض المنتجات</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card category-card zoom-hover">
-                                <img src="{{asset('asset/users/store/img/categories/clean.png')}}" class="card-img-top" alt="منزل">
-                                <div class="card-body">
-                                    <h5 class="card-title">مستلزمات النظافة</h5>
-                                    <p class="card-text">كل ما يلزم النظافة</p>
-                                    <a href="products.html" class="btn btn-outline-primary btn-ripple">استعرض المنتجات</a>
-                                </div>
-                            </div>
-                        </div>
-            
-                        <div class="col-md-3">
-                            <div class="card category-card zoom-hover">
-                                <img src="{{asset('asset/users/store/img/categories/baby.png')}}" class="card-img-top" alt="منزل">
-                                <div class="card-body">
-                                    <h5 class="card-title">مستلزمات الأطفال</h5>
-                                    <p class="card-text">كل ما يلزم طفلك</p>
-                                    <a href="products.html" class="btn btn-outline-primary btn-ripple">استعرض المنتجات</a>
-                                </div>
-                            </div>
-                        </div>
+@if (!empty($categories))
+<section class="featured-products py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 fade-in">الأصناف المميزة</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card category-card zoom-hover">
+                    <img src="{{asset('asset/users/store/img/categories/0.png')}}" class="card-img-top" alt="إلكترونيات">
+                    <div class="card-body">
+                        <h5 class="card-title">كل الأصناف</h5>
+                        <p class="card-text">أحدث المنتجات</p>
+                        <a href="/products" class="btn btn-outline-primary btn-ripple">استعرض المنتجات</a>
                     </div>
                 </div>
-            </section>
+            </div>
+            @foreach ($categories as $key => $category)
+            <div class="col-md-3">
+                <div class="card category-card zoom-hover">
+                    <img src="{{asset($category->image)}}" class="card-img-top" alt="إلكترونيات">
+                    <div class="card-body">
+                        <h5 class="card-title">{{$category->category->name}}</h5>
+                        <p class="card-text">{{$category->category->description}}</p>
+                        <a href="/category/{{$category->category_id}}" class="btn btn-outline-primary btn-ripple">استعرض المنتجات</a>
+                    </div>
+                </div>
+            </div>
+            @endforeach
         </div>
     </div>
 </section>
+@endif
 {{-- benefits section  --}}
 <section>
     <div class="container">
@@ -130,22 +114,24 @@
 
 
 {{-- last product section  --}}
+@if (!empty($products))
 <section>
     <div class="container">
         <div class="row">
             <div class="row products-container">
                 <h2 class="text-center mb-5">احدث المنتجات</h2>
                 <!-- Product Card Template -->
+                @foreach ($products as $key => $product)
                 <div class="col-md-3 mb-4">
                     <div class="card product-card product-hover">
                         <div class="position-relative zoom-hover">
-                            <img src="{{asset('asset/users/store/img/products/product.webp')}}" class="card-img-top" alt="منتج">
-                            <button class="quick-view-btn btn btn-light btn-ripple" data-product-id="1">
+                            <img src="{{asset($product->image)}}" class="card-img-top" alt="{{$product->name}}">
+                            <button class="quick-view-btn btn btn-light btn-ripple" data-product-id="{{$key}}">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">اسم المنتج</h5>
+                            <h5 class="card-title">{{$product->name}}</h5>
                             <div class="mb-2">
                                 <i class="fas fa-star text-warning"></i>
                                 <i class="fas fa-star text-warning"></i>
@@ -154,9 +140,9 @@
                                 <i class="far fa-star text-warning"></i>
                                 <span class="ms-1">(4.0)</span>
                             </div>
-                            <p class="price mb-3">2999 د.ج</p>
+                            <p class="price mb-3">{{$product->price}} <sup>د.ج</sup></p>
                             <div class="product-actions">
-                                <a href="product-details.html" class="btn btn-outline-primary btn-ripple">عرض التفاصيل</a>
+                                <a href="/product/{{$product->id}}" class="btn btn-outline-primary btn-ripple">عرض التفاصيل</a>
                                 <button class="btn btn-primary btn-ripple" onclick="addToCartAnimation(this)">
                                     <i class="fas fa-cart-plus"></i>
                                 </button>
@@ -164,98 +150,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- Repeat product cards as needed -->
-                <div class="col-md-3 mb-4">
-                    <div class="card product-card product-hover">
-                        <div class="position-relative zoom-hover">
-                            <img src="{{asset('asset/users/store/img/products/product.webp')}}" class="card-img-top" alt="منتج">
-                            <button class="quick-view-btn btn btn-light btn-ripple" data-product-id="1">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">اسم المنتج</h5>
-                            <div class="mb-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="far fa-star text-warning"></i>
-                                <span class="ms-1">(4.0)</span>
-                            </div>
-                            <p class="price mb-3">2999 د.ج</p>
-                            <div class="product-actions">
-                                <a href="product-details.html" class="btn btn-outline-primary btn-ripple">عرض التفاصيل</a>
-                                <button class="btn btn-primary btn-ripple" onclick="addToCartAnimation(this)">
-                                    <i class="fas fa-cart-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    <div class="col-md-3 mb-4">
-                    <div class="card product-card product-hover">
-                        <div class="position-relative zoom-hover">
-                            <img src="{{asset('asset/users/store/img/products/product.webp')}}" class="card-img-top" alt="منتج">
-                            <button class="quick-view-btn btn btn-light btn-ripple" data-product-id="1">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">اسم المنتج</h5>
-                            <div class="mb-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="far fa-star text-warning"></i>
-                                <span class="ms-1">(4.0)</span>
-                            </div>
-                            <p class="price mb-3">2999 د.ج</p>
-                            <div class="product-actions">
-                                <a href="product-details.html" class="btn btn-outline-primary btn-ripple">عرض التفاصيل</a>
-                                <button class="btn btn-primary btn-ripple" onclick="addToCartAnimation(this)">
-                                    <i class="fas fa-cart-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="col-md-3 mb-4">
-                    <div class="card product-card product-hover">
-                        <div class="position-relative zoom-hover">
-                            <img src="{{asset('asset/users/store/img/products/product.webp')}}" class="card-img-top" alt="منتج">
-                            <button class="quick-view-btn btn btn-light btn-ripple" data-product-id="1">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">اسم المنتج</h5>
-                            <div class="mb-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="far fa-star text-warning"></i>
-                                <span class="ms-1">(4.0)</span>
-                            </div>
-                            <p class="price mb-3">2999 د.ج</p>
-                            <div class="product-actions">
-                                <a href="product-details.html" class="btn btn-outline-primary btn-ripple">عرض التفاصيل</a>
-                                <button class="btn btn-primary btn-ripple" onclick="addToCartAnimation(this)">
-                                    <i class="fas fa-cart-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            
+                @endforeach     
             </div>
         </div>
     </div>
 </section>
-
+@endif
 
 {{-- fqa section  --}}
 <section>
@@ -264,42 +164,20 @@
             <div class="row fqa-container mb-5">
                 <h2 class="text-center mb-5">الاسئلة الشائعة</h2>
                 <div class="accordion" id="accordionPanelsStayOpenExample">
+                    @foreach ($faqs as $key => $faq)
                     <div class="accordion-item">
-                      <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                          Accordion Item #1
+                      <h2 class="accordion-header" id="panelsStayOpen-heading{{$key}}">
+                        <button class="accordion-button @if($key !== 0){{'collapsed'}}@endif" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse{{$key}}" @if($key == 0){{'aria-expanded=true'}}@else{{'aria-expanded=false'}}@endif aria-controls="panelsStayOpen-collapse{{$key}}">
+                          {{$faq->question}}
                         </button>
                       </h2>
-                      <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                      <div id="panelsStayOpen-collapse{{$key}}" class="accordion-collapse collapse @if($key == 0){{'show'}}@else{{'collapsed'}}@endif" @if($key == 0){{'aria-labelledby=panelsStayOpen-headingshow'}}@endif aria-labelledby="panelsStayOpen-heading{{$key}}">
                         <div class="accordion-body">
-                          <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                          {{$faq->answer}}
                         </div>
                       </div>
                     </div>
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                          Accordion Item #2
-                        </button>
-                      </h2>
-                      <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
-                        <div class="accordion-body">
-                          <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                        </div>
-                      </div>
-                    </div>
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-                          Accordion Item #3
-                        </button>
-                      </h2>
-                      <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
-                        <div class="accordion-body">
-                          <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                        </div>
-                      </div>
-                    </div>
+                    @endforeach
                   </div>
                 
                 </div>

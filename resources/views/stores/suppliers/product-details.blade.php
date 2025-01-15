@@ -1,6 +1,9 @@
 @extends('layouts.users.store.app')
+@section('meta')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
 @section('title')
-   {{tenant('domain')}} | منتجاتنا
+   {{tenant('domain')}} | {{$product->name}}
 @endsection
 
 @section('style')
@@ -32,4 +35,8 @@
 
 @section('content')
     @include('stores.suppliers.components.content.products.product-details')
+@endsection
+
+@section('footer-js')
+    @include('stores.suppliers.components.content.products.product-details-js')
 @endsection

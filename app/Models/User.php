@@ -76,4 +76,14 @@ class User extends Authenticatable
     {
         $this->hasMany(UserDashboardSetting::class);
     }
+    //
+    public function sliders()
+    {
+        $this->hasMany(UserSlider::class);
+    }
+    //
+    public function storeCategories()
+    {
+        return $this->hasMany(UserStoreCategory::class);
+    }
 }

@@ -41,7 +41,7 @@
                                   <i class="fa fa-cloud-upload"></i>
                                   <input type="file" name="image"class="form-control" id="storeLogo" accept="image/*" style="display: none;">
                               </div>
-                            </div>
+                          </div>
                       </td>
                       <td>
                           <div class="m-4">

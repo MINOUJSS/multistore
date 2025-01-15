@@ -1,3 +1,3 @@
 <div class="container">
-    this is termas of use page 
+    {!!$page->content!!}
 </div>

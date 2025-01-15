@@ -1,3 +1,3 @@
 <div class="container">
-    this is faq page 
+    {!!$page->content!!}
 </div>

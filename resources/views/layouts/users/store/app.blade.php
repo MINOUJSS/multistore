@@ -101,10 +101,18 @@
                     <li class="footer-li"><i class="fa-solid fa-envelope"></i> البريد الإلكتروني : {{get_supplier_data(tenant('id'))->tenant->users[0]->email}}</li>
                 </ul>
                 <ul class="footer-ul d-flex">
-                    <li class="footer-li p-2"><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
-                    <li class="footer-li p-2"><a href="#"><i class="fa-brands fa-square-instagram"></i></a></li>
-                    <li class="footer-li p-2"><a href="#"><i class="fa-brands fa-telegram"></i></a></li>
-                    <li class="footer-li p-2"><a href="#"><i class="fa-brands fa-tiktok"></i></a></li>
+                    @if(get_user_store_settings(tenant('id'),'store_facebook')!==null && get_user_store_settings(tenant('id'),'store_facebook')->status=='active')
+                    <li class="footer-li p-2"><a href="{{get_user_store_settings(tenant('id'),'store_facebook')->value}}"><i class="fa-brands fa-facebook"></i></a></li>
+                    @endif
+                    @if(get_user_store_settings(tenant('id'),'store_instagram')!==null &&get_user_store_settings(tenant('id'),'store_instagram')->status=='active')
+                    <li class="footer-li p-2"><a href="{{get_user_store_settings(tenant('id'),'store_instagram')->value}}"><i class="fa-brands fa-square-instagram"></i></a></li>
+                    @endif
+                    @if(get_user_store_settings(tenant('id'),'store_telegram')!==null &&get_user_store_settings(tenant('id'),'store_telegram')->status=='active')
+                    <li class="footer-li p-2"><a href="{{get_user_store_settings(tenant('id'),'store_telegram')->value}}"><i class="fa-brands fa-telegram"></i></a></li>
+                    @endif
+                    @if(get_user_store_settings(tenant('id'),'store_tiktok')!==null &&get_user_store_settings(tenant('id'),'store_tiktok')->status=='active')
+                    <li class="footer-li p-2"><a href="{{get_user_store_settings(tenant('id'),'store_tiktok')->value}}"><i class="fa-brands fa-tiktok"></i></a></li>
+                    @endif
                 </ul>
             </div>
         </div>
@@ -123,5 +131,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="{{asset('asset/users/store')}}/js/jQuery-v3-7-1.js"></script>
     <script src="{{asset('asset/users/store')}}/js/app.js"></script>
+    @yield('footer-js')
   </body>
 </html>

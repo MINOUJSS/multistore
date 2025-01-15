@@ -1,3 +1,3 @@
 <div class="container">
-    this is privacy policy
+    {!!$page->content!!}
 </div>
