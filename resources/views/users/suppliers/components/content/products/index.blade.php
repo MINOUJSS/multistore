@@ -104,8 +104,33 @@
     {{-- add product modela  --}}
 
     
-  
-  <!-- add Modal -->
+    <!-- add product attribut Modal -->
+    <div class="modal fade" id="addProductAttributModal" tabindex="-1" aria-labelledby="addAtrributModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">إضافة خاصية</h5>
+            <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#editModal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="attributeForm" action="" method="post">
+              @csrf
+              <div class="col-md-12">
+                <label for="attribute_name" class="form-label">إسم الخاصية</label>
+                <input type="text" class="form-control" id="attribute_name" name="attribute_name" placeholder="الماركة،النوع،الحجم...إلخ">
+                <span class="text-danger error-atrribute_name"></span>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancel_atrribute">إلغاء</button> --}}
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editModal">إلغاء</button>
+            <button type="button" class="btn btn-primary" id="save_atrribute" data-bs-toggle="modal" data-bs-target="#editModal">حفظ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- add product Modal -->
   <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -124,7 +149,7 @@
     </div>
   </div>
 
-  <!-- edit Modal -->
+  <!-- edit product Modal -->
   <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -132,13 +157,16 @@
           <h5 class="modal-title" id="exampleModalLabel">تعديل المنتج</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body"> 
+            <div id="editFormErrors"></div>      
             <form id="editForm" method="POST" enctype="application/x-www-form-urlencoded" class="row g-3">
                 @csrf
                 <div class="col-12 bg-primary rounded ronded p-2 text-center">معلومات المنتج</div>
+                <input type="hidden" name="product_id" id="product_id">
                 <div class="col-md-6">
                   <label for="product_name" class="form-label">إسم المنتج</label>
                   <input type="text" class="form-control" id="product_name" name="product_name">
+                  <span class="text-danger error-product_name"></span>
                 </div>
                 <div class="col-md-6">
                     <label for="inputCategory" class="form-label">الأصناف</label>
@@ -147,23 +175,49 @@
                       <option value="{{$category->id}}" id="p_cat_{{$category->id}}">{{$category->name}}</option>   
                       @endforeach
                     </select>
+                    <span class="text-danger error-product_category"></span>
                   </div>
                   <div class="col-md-6">
                     <label for="inputCost" class="form-label">التكلفة</label>
-                    <input type="text" class="form-control" id="inputCost" name="product_cost">
+                    <input type="text" class="form-control" id="inputCost" name="product_cost" required>
+                    <span class="text-danger error-product_cost"></span>
                   </div>
                 <div class="col-md-6">
                   <label for="inputPrice" class="form-label">السعر</label>
-                  <input type="text" class="form-control" id="inputPrice" name="product_price">
+                  <input type="text" class="form-control" id="inputPrice" name="product_price" required>
+                  <span class="text-danger error-product_price"></span>
                 </div>
                 <div class="col-md-6">
                     <label for="inputQty" class="form-label">الكمية المتوفرة</label>
-                    <input type="text" class="form-control" id="inputQty" name="product_qty">
+                    <input type="text" class="form-control" id="inputQty" name="product_qty" required>
+                    <span class="text-danger error-product_qty"></span>
                   </div>
                 <div class="col-md-6">
                   <label for="inputMiniQty" class="form-label">أقل كمية ممكنة للطلب</label>
-                  <input type="text" class="form-control" id="inputMinQty" name="product_min_qty">
+                  <input type="text" class="form-control" id="inputMinQty" name="product_min_qty" required>
+                  <span class="text-danger error-product_min_qty"></span>
                 </div>
+                <div class="col-md-6">
+                  <label for="inputCondition" class="form-label">حالة المنتج</label>
+                  <select id="inputCondition" class="form-select" name="product_condition">
+                    <option value="new" id="product_status_new">جديد</option>
+                    <option value="used" id="product_status_used">مستعمل</option> 
+                    <option value="refurbished" id="product_status_refurbished">تم تجديده</option>   
+                  </select>
+                  <span class="text-danger error-product_category"></span>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" name="free_shipping" id="free_shipping" type="checkbox" checked>
+                      <label class="form-check-label" for="free_shipping">توصيل مجاني</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" name="status" id="product_status" type="checkbox" checked>
+                    <label class="form-check-label" for="status">عرض المنتج</label>
+                  </div>
+              </div>
                 <div class="col-12 bg-primary rounded ronded p-2 text-center">الصورة و المعرض</div>
                 <div class="col-md-6">
                     <ul class="p-3" style="float:right;">
@@ -176,17 +230,67 @@
                         </ul>
                     <div id="dropzone" onclick="browsdialog()" onchange="previewLogo(event)">
                         <i class="fa fa-cloud-upload"></i>
-                        <input type="file" name="image"class="form-control" id="storeLogo" accept="image/*" style="display: none;">
+                        <input type="file" name="image"class="form-control" id="product_image" accept="image/*" style="display: none;">
                     </div>
+                    <span class="text-danger error-product_image"></span>
                 </div>
                 <div class=" col-md-6">
                     <div id="logoPreview" class="preview" style="background-size: contain; background-repeat: no-repeat;">
                     </div>
                   </div>
                   <hr>
+                  <div class="col-md-12">
+                    <div id="multi_image" class="dropzone dragover" onclick="browsdialogmultifile()">
+                      <i class="fa fa-cloud-upload"></i>
+                      <input type="file" name="images[]"class="form-control" id="product_images" accept="image/*" multiple style="display: none;">
+                  </div>
+                  <span class="text-danger error-product_images"></span>
+                <div class=" col-md-12">
+                  <div class="images_container" id="images_container">
+                    {{-- <div class="image">
+                      <img src="{{asset('asset/site/defaulte/img/cta-bg.jpg')}}" alt="image">
+                        <span>&times</span>
+                    </div>
+                    <div class="image">
+                    <img src="{{asset('asset/site/defaulte/img/cta-bg.jpg')}}" alt="image">
+                      <span>&times</span>
+                    </div> --}}
+                  </div>
+                </div>
+                  </div>
+                  <div class="col-12 bg-primary rounded ronded p-2 text-center">خصائص المنتج</div>
+                  <div class="container mb-5">
+                    <div class="d-flex justify-content-center m-3"><a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductAttributModal"><i class="fa fa-add"></i>إضافة خاصية جديدة</a></div>
+                    <div class="d-flex justify-content-center m-3"><a class="btn btn-primary" id="add_attribute"><i class="fa fa-add"></i></a></div>
+                    <div class="container" id="product_attribute"> 
+                        <!---->                   
+                        {{-- <div class="attribute_container border position-relative p-3 mt-3 mb-3 row">
+                          <div class="col-6">
+                          <label for="inputSku" class="form-label">إختر الخاصية</label>
+                          <select class="form-select porduct_attribute" name="porduct_attribute[]" id="porduct_attribute"></select>
+                          </div>
+                          <div class="col-3">
+                          <label for="inputColor" class="form-label">قيمة الخاصية</label>
+                          <input class="form-control" type="text" name="attribute_value[]" id="attribute_value" required>
+                          </div>
+                          <div class="col-3">
+                          <label for="inputSize" class="form-label">السعر الإضافي</label>
+                          <input class="form-control" type="number" class="form-control" min="0" name="atrribute_add_price[]" id="atrribute_add_price">
+                          </div>
+                          <div class="col-3">
+                          <label for="inputAddPrice" class="form-label">الكمية  في المخزن</label>
+                          <input type="number" class="form-control" min="0" name="attribute_stock_qty[]" id="attribute_stock_qty">
+                          </div>
+                          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger p-2 remove_attribute" style="width:30px;cursor:pointer">X</span>
+                          </div> --}}
+                        <!---->
+                    </div>
+                  </div>
                   <div class="col-12 bg-primary rounded ronded p-2 text-center">خيارات المنتج</div>
+                  <div class="container mb-5">
+                  <div class="d-flex justify-content-center m-3"><a class="btn btn-primary" id="add_variation"><i class="fa fa-add"></i></a></div> 
                   <div class="container" id="product_variation">
-                    <div class="d-flex justify-content-center m-3"><a class="btn btn-primary" id="add_variation"><i class="fa fa-add"></i></a></div> 
+                    
                     {{--<div class="variation_container border position-relative p-3 mt-3 mb-3 row">
                      <div class="col-6">
                         <label for="inputSku" class="form-label">اسم المنتج مع اللون و المقاس..</label>
@@ -218,10 +322,12 @@
                       </span>
                     </div> --}}
                   </div>
+                  </div>
                   
                   <div class="col-12 bg-primary rounded ronded p-2 text-center">تخفيضات للمنتج</div>
+                  <div class="container mb-5">
+                  <div class="d-flex justify-content-center m-3"><a class="btn btn-primary" id="add_discount" onclick="add_discount();"><i class="fa fa-add"></i></a></div> 
                   <div class="container" id="product_discount">
-                  <div class="d-flex justify-content-center m-3"><a class="btn btn-primary" id="add_discount"><i class="fa fa-add"></i></a></div> 
                   {{-- <div class="discount_container border position-relative p-3 mt-3 mb-3 row">
                   <div class="col-3">
                     <label for="inputStock" class="form-label">سعر البيع بالتخفيض</label>
@@ -246,11 +352,13 @@
                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger p-2 remove_discount" style="width:30px;cursor:pointer">X</span>
                   </div> --}}
                   </div>
+                  </div>
                
                 <div class="col-12 bg-primary rounded ronded p-2 text-center">وصف المنتج</div>
                 <div class="col-12">
                   <label for="inputShortDescription" class="form-label">وصف قصير عن المنتج</label>
-                 <textarea class="form-control" name="short_description" rows="5" id="inputShortDescription"></textarea>
+                 <textarea class="form-control" name="product_short_description" rows="5" id="inputShortDescription"></textarea>
+                 <span class="text-danger error-product_short_description error-validation"></span>
                 </div>
                 <!--    -->
                 <div class="col-12 mb-5 pb-5">
@@ -259,15 +367,13 @@
                     <!-- Create the editor container -->
                       <div class="" id="editor">
                       </div>
-                        
+                      <span class="text-danger error-product_description error-validation"></span>
                   </div>
-                <!--    -->
-                <input type="submit" value="save">
               </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-          <button type="button" class="btn btn-primary">حفظ</button>
+          <button type="button" class="btn btn-primary" id="save">حفظ</button>
         </div>
       </div>
     </div>

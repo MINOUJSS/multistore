@@ -317,9 +317,9 @@ function create_supplier_dashboard_settings($user,$request)
 function get_supplier_product_category($product_id)
 {
     $product=App\models\SupplierProducts::findOrFail($product_id);
-    $category=App\models\Category::findOrFail($product->category_id);
-    if ($category)
+    if ($product->category_id!==null)
     {
+        $category=App\models\Category::findOrFail($product->category_id);
         return $category->name;
     }else
     {

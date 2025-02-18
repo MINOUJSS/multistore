@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('sku')->unique();
             $table->string('color')->nullable();
             $table->string('size')->nullable();
-            $table->decimal('weight', 8, 2)->nullable();
+            $table->string('weight')->nullable();
             $table->decimal('additional_price', 10, 2)->nullable();
             $table->integer('stock_quantity')->default(0);
             $table->timestamps();

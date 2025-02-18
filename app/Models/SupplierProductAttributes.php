@@ -13,6 +13,8 @@ class SupplierProductAttributes extends Model
         'product_id',
         'attribute_id',
         'value',
+        'additional_price',
+        'stock_quantity',
     ];
     //
     public function product()

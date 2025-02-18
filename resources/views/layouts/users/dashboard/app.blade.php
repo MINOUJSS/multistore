@@ -17,6 +17,7 @@
       <link rel="stylesheet" href="{{asset('asset/users/dashboard')}}/css/appfont.css">
       @yield('fonts')
       <!-- js files -->
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       @yield('header_js')
       <!-- google analitics -->
       @yield('google_analitics')
@@ -54,6 +55,7 @@
     <!--App js-->
     <script src="{{asset('asset/users/dashboard')}}/js/jQuery-v3-7-1.js"></script>
     <script src="{{asset('asset/users/dashboard')}}/js/app.js"></script>
+    @include('sweetalert::alert')
     @yield('footer_js')
   </body>
 </html>

@@ -42,6 +42,7 @@ class CteateDefaultContentForSupplierListener
 
         //create default category
         $defaultCategories = [
+            ['name' => 'بدون تصنيف', 'description' => 'صنف عام لكل المنتجات', 'slug' => tenant_to_slug($supplier->tenant_id).'-cat0'],
             ['name' => 'الصنف-1', 'description' => 'وصف الصنف الأول', 'slug' => tenant_to_slug($supplier->tenant_id).'-cat1'],
             ['name' => 'الصنف-2', 'description' => 'وصف الصنف الثاني', 'slug' => tenant_to_slug($supplier->tenant_id).'-cat2'],
             ['name' => 'الصنف-3', 'description' => 'وصف الصنف الثالث', 'slug' => tenant_to_slug($supplier->tenant_id).'-cat3'],
@@ -69,7 +70,7 @@ class CteateDefaultContentForSupplierListener
                 'description' => 'وصف مفصل للمنتج الأول.',
                 'price' => 100.00,
                 'cost' => 70.00,
-                'image' => 'asset/users/store/img/products/product.webp',
+                'image' => asset('asset/users/store/img/products/product.webp'),
                 'qty' => 50,
                 'minimum_order_qty' => 1,
                 'condition' => 'new',

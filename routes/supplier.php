@@ -15,6 +15,7 @@ use App\Http\Controllers\Users\Suppliers\SupplierProductController;
 use App\Http\Controllers\Users\Suppliers\SupplierSettingController;
 use App\Http\Controllers\Users\Suppliers\Auth\NewPasswordController;
 use App\Http\Controllers\Users\Suppliers\SupplierShippingController;
+use App\Http\Controllers\Users\Suppliers\SupplierAttributeController;
 use App\Http\Controllers\Users\Suppliers\SupplierStoreDesignController;
 use App\Http\Controllers\Users\Suppliers\SupplierSubscriptionController;
 use App\Http\Controllers\Users\Suppliers\Auth\PasswordResetLinkController;
@@ -51,6 +52,14 @@ Route::middleware([
                 Route::get('/supplier-panel/products',[SupplierProductController::class,'index'])->name('products'); 
                 Route::get('/supplier-panel/product/edit/{id}',[SupplierProductController::class,'edit'])->name('product.edit');
                 Route::post('/supplier-panel/product/update/{id}',[SupplierProductController::class,'update'])->name('product.update');
+                Route::delete('/supplier-panel/product/image/delete/{id}',[SupplierProductController::class,'delete_product_image'])->name('product.delete_product_image');
+                Route::delete('/supplier-panel/product/variant/delete/{id}',[SupplierProductController::class,'delete_product_variation'])->name('product.delete_product_variation');
+                Route::delete('/supplier-panel/product/discount/delete/{id}',[SupplierProductController::class,'delete_product_discount'])->name('product.delete_product_discount');
+                Route::delete('/supplier-panel/product/attributes/delete/{id}',[SupplierProductController::class,'delete_product_attribute'])->name('product.delete_product_attribute');
+                // supplier attribute routes
+                Route::post('/supplier-panel/attributes/create',[SupplierAttributeController::class,'create'])->name('attribute.create_attribute');
+                Route::post('/supplier-panel/attributes/user/{id}',[SupplierAttributeController::class,'get_user_attributes'])->name('attribute.get_user_attribute');
+                Route::delete('/supplier-panel/attributes/delete/{id}',[SupplierAttributeController::class,'delete_attribute'])->name('attribute.delete_attribute');
                 //supplier orders routes
                 Route::get('/supplier-panel/orders',[SupplierOrderController::class,'index'])->name('orders'); 
                 //supplier order abandoned routes

@@ -21,7 +21,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{$category->category->name}}</h5>
                             <p class="card-text">{{$category->category->description}}</p>
-                            <a href="/category/{{$category->category_id}}" class="btn btn-outline-primary btn-ripple">استعرض المنتجات</a>
+                            <a href="/products-by-category/{{$category->category_id}}" class="btn btn-outline-primary btn-ripple">استعرض المنتجات</a>
                         </div>
                     </div>
                 </div>
