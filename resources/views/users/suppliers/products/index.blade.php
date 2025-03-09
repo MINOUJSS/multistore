@@ -23,6 +23,11 @@
         height: 100px;
         width:100px;
       }
+      #add_logoPreview
+      {
+        height: 100px;
+        width:100px;
+      }
       #dropzone {
         height: 100px;
         width:100px;
@@ -32,7 +37,25 @@
         align-content: center;
         text-align: center;
       }
+      #add_dropzone {
+        height: 100px;
+        width:100px;
+        cursor: pointer;
+        border: 2px dashed #706c6cfd;
+        border-radius: 5px;
+        align-content: center;
+        text-align: center;
+      }
       .dropzone {
+        height: 100px;
+        width:100%;
+        cursor: pointer;
+        border: 2px dashed #706c6cfd;
+        border-radius: 5px;
+        align-content: center;
+        text-align: center;
+      }
+      .add_dropzone {
         height: 100px;
         width:100%;
         cursor: pointer;
@@ -67,4 +90,6 @@
 @include('users.suppliers.components.content.products.js.single-upload-image-js')
 @include('users.suppliers.components.content.products.js.show-product-attribute-js')
 @include('users.suppliers.components.content.products.js.add-product-attribute-js')
+@include('users.suppliers.components.content.products.js.delete-product-js')
+@include('users.suppliers.components.content.products.js.save-product-js')
 @endsection

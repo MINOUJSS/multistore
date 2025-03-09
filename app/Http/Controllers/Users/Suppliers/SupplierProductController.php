@@ -36,7 +36,158 @@ class SupplierProductController extends Controller
         $products=SupplierProducts::orderBy('id', 'desc')->get();
         return view('users.suppliers.products.index', compact('products', 'categories'));
     }
-    //
+    //create
+    public function create(Request $request)
+    {
+        //validation
+        $validator = Validator::make($request->all(),[
+            'add_product_name' => 'required',
+            'add_product_category' => 'required',
+            'add_product_cost' => 'required',
+            'add_product_price' => 'required',
+            'add_product_qty' => 'required',
+            'add_product_min_qty' => 'required',
+            'add_product_short_description' => 'required',
+            'add_product_description' =>'required',
+            'add_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'add_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // التحقق من كل صورة
+            'add_product_sku.*' => 'required|string|min:3',
+            'add_product_color.*' => 'required|string',
+            'add_product_size.*' => 'required|string',
+            'add_product_weight.*' => 'required|string',
+            'add_product_variation_add_price.*' => 'required|numeric',
+            'add_product_variation_stock.*' => 'required|integer',
+            'add_discount_amount.*' => 'required|numeric',
+            'add_discount_percentage.*' => 'required|numeric',
+            'add_discount_start_date.*' => 'required|date',
+            'add_discount_end_date.*' => 'required|date',
+            'add_attribute_value.*' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // add the product to data base 
+        $product=new SupplierProducts();
+        $product->supplier_id=get_supplier_data(auth()->user()->tenant_id)->id;
+        $product->category_id=$request->add_product_category;
+        $product->name=$request->add_product_name;
+        $product->slug=get_supplier_store_name(auth()->user()->tenant_id).'-'.product_name_to_slug($request->add_product_name);
+        $product->short_description=$request->add_product_short_description;
+        $product->description=$request->add_product_description;
+        $product->price=$request->add_product_price;
+        $product->cost=$request->add_product_cost;
+
+        $product->qty=$request->add_product_qty;
+        $product->minimum_order_qty=$request->add_product_min_qty;
+        $product->condition=$request->add_product_condition;
+
+
+        if($request->add_free_shipping != null && $request->add_free_shipping=="on")
+        {
+        $product->free_shipping='yes';
+        }else
+        {
+            $product->free_shipping='no';
+        }
+
+        if($request->add_status != null && $request->add_status=="on")
+        {
+        $product->status='active';
+        }else
+        {
+            $product->status='inactive';
+        }
+        $product->save();
+
+                // رفع الصورة إلى نطاق المستأجر
+                if ($request->hasFile('add_image')) {
+
+                    $path = $request->file('add_image')->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/products/'.$product->id, 'public'); // التخزين في قرص المستأجر
+                    $url = Storage::disk('public')->url('tenantsupplier/app/public/'.$path); // رابط الصورة
+                    $this_product=SupplierProducts::find($product->id);
+                    $this_product->image=$url;
+                    $this_product->update();
+                }
+               
+                //رفع الصور      
+                $imageUrls = [];
+                if ($request->hasFile('add_images')) {
+                    foreach ($request->file('add_images') as $image) {
+                        $path = $image->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/products/'.$product->id, 'public'); // حفظ الصور في storage/app/public/uploads/products
+                        $url = Storage::disk('public')->url('tenantsupplier/app/public/'.$path); // رابط الصورة
+                        $imageUrls[] = $url;
+                        // insert into product images table
+                        $p_image= new SupplierProductImages();
+                        $p_image->product_id = $product->id;
+                        $p_image->image_path =$url;
+                        $p_image->save();
+                    }
+                }
+        
+        // add product attribute
+        if($request->add_attribute_value !=null)
+        {
+            foreach($request->add_attribute_value as $index =>$attribute)
+            {
+                $product_atrribute=new SupplierProductAttributes;
+                $product_atrribute->product_id=$product->id;                ;
+                $product_atrribute->attribute_id=$request->add_porduct_attribute[$index];
+                $product_atrribute->value=$request->add_attribute_value[$index];
+                $product_atrribute->additional_price=$request->add_atrribute_add_price[$index];
+                $product_atrribute->stock_quantity=$request->add_attribute_stock_qty[$index];
+                $product_atrribute->save();
+            }
+        }
+        
+        //add product variation information
+        if($request->add_product_color != null)
+        {
+            foreach($request->add_product_color as $index =>$color)
+            {
+                $product_variation=new SupplierProductVariations;
+                $product_variation->product_id=$product->id;
+                $product_variation->sku=$request->add_product_sku[$index];
+                $product_variation->color=$request->add_product_color[$index];
+                $product_variation->size=$request->add_product_size[$index];
+                $product_variation->weight=$request->add_product_weight[$index];
+                $product_variation->additional_price=$request->add_product_variation_add_price[$index];
+                $product_variation->stock_quantity=$request->add_product_variation_stock[$index];
+                $product_variation->save();
+            }
+        }
+        // add product discounts information
+        if($request->add_discount_amount !=null)
+        {
+            if($request->add_discount_status=="on")
+            {
+                $status="active";
+            }else
+            {
+                $status="inactive";
+            }
+            $discount=SupplierProductDiscounts::updateOrCreate(
+                ['product_id' => $product->id],
+                [
+                  'discount_amount' => $request->add_discount_amount,
+                  'discount_percentage' => $request->add_discount_percentage,
+                  'start_date' => $request->add_discount_start_date,
+                  'end_date' => $request->add_discount_end_date,
+                  'status' => $status,
+                ]
+            );
+        }
+        
+
+        return response()->json([
+            'status' => 'success',
+            'result' =>$request->all(),
+        ]);
+    }
+    //edit
     public function edit($product_id)
     {
         $product=SupplierProducts::find($product_id);
@@ -242,6 +393,25 @@ class SupplierProductController extends Controller
             'result'=>$request->all(),
         ]);
         
+    }
+    //delete product
+    function delete($id)
+    {
+        //get product folder
+        $product=SupplierProducts::findOrfail($id);
+        //delete product images folder
+        $store_name=get_supplier_store_name(get_tenant_id_from_supplier($product->supplier_id));
+        $folderPath='/supplier/'.$store_name.'/images/products/'.$product->id;
+        if(Storage::disk('public')->exists($folderPath))
+        {
+            Storage::disk('public')->deleteDirectory($folderPath); // حذف المجلد بالكامل
+        }
+        //delete product frome database
+        $product->delete();
+        return response()->json([
+            'success' => true,
+            'message' => "تم حذف مجلد المنتج $id بنجاح"
+        ]);
     }
     //function delete_product_image()
     function delete_product_image($id)

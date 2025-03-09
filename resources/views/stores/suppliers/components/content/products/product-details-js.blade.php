@@ -97,10 +97,13 @@ function countTotalPrice()
     //get variables data
     var totalPriceVlue =0;
     var totalPrice =document.getElementById('total_price');
+    var formtotalamount=document.getElementById('form_total_amount');
     var b_qty =document.getElementById('qty');
+    var hidden_qty=document.getElementById('hidden_qty');
     //var qty=parseInt(document.getElementById('hidden_qty').value);
     qty=parseInt(document.getElementById('livewier_qty').innerHTML);
-    b_qty.innerHTML=qty
+    b_qty.innerHTML=qty;
+    hidden_qty.value=qty;
     var product_price=parseInt(document.getElementById('product_price').innerHTML)
     var shipping=parseInt(document.getElementById('shipping_price').innerHTML);
     // alert(shipping);
@@ -108,5 +111,6 @@ function countTotalPrice()
     totalPriceVlue =(qty * product_price) + shipping;
     //print total price
     totalPrice.innerHTML = totalPriceVlue;
+    formtotalamount.value = totalPriceVlue;
 }
 </script>

@@ -5,9 +5,9 @@
       
       <div class="dz-mobile-nav d-lg-block d-lg-none d-xl-block d-xl-none d-xxl-block d-xxl-none">
         <div style="padding: 10px;">
-          <a class="dz-nav-icon" href="#"><i class="fa-solid fa-cart-shopping"></i></a>
+          <a class="dz-nav-icon" href="{{route('supplier.orders')}}"><i class="fa-solid fa-cart-shopping"></i></a>
               <span class="top-0 start-100 translate-middle badge rounded-pill bg-danger dz-badge-color">
-                  0
+                  {{supplier_orders_unreaded()}}
                 </span>
         </div>
         <ul class="navbar-nav">
@@ -58,9 +58,9 @@
             </span>
       </li> -->
         <li class="nav-item position-relative">
-          <a class="dz-nav-icon" href="#"><i class="fa-solid fa-cart-shopping"></i></a>
+          <a class="dz-nav-icon" href="{{route('supplier.orders')}}"><i class="fa-solid fa-cart-shopping"></i></a>
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger dz-badge-color">
-              0
+            {{supplier_orders_unreaded()}}
             </span>
         </li>
       </div>

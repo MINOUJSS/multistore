@@ -20,3 +20,6 @@
 {{-- Your Content Here   --}}
   @include('users.suppliers.components.content.orders.index')
 @endsection
+@section('footer_js')
+  @include('users.suppliers.components.content.orders.js.get_order_data_js')
+@endsection

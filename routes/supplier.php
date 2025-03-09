@@ -50,8 +50,10 @@ Route::middleware([
                 Route::get('/supplier-panel/settings',[SupplierSettingController::class,'index'])->name('settings');
                 //supplier products routes
                 Route::get('/supplier-panel/products',[SupplierProductController::class,'index'])->name('products'); 
+                Route::post('/supplier-panel/product/create',[SupplierProductController::class,'create'])->name('product.create');
                 Route::get('/supplier-panel/product/edit/{id}',[SupplierProductController::class,'edit'])->name('product.edit');
                 Route::post('/supplier-panel/product/update/{id}',[SupplierProductController::class,'update'])->name('product.update');
+                Route::delete('/supplier-panel/product/delete/{id}',[SupplierProductController::class,'delete'])->name('product.delete');
                 Route::delete('/supplier-panel/product/image/delete/{id}',[SupplierProductController::class,'delete_product_image'])->name('product.delete_product_image');
                 Route::delete('/supplier-panel/product/variant/delete/{id}',[SupplierProductController::class,'delete_product_variation'])->name('product.delete_product_variation');
                 Route::delete('/supplier-panel/product/discount/delete/{id}',[SupplierProductController::class,'delete_product_discount'])->name('product.delete_product_discount');
@@ -62,6 +64,7 @@ Route::middleware([
                 Route::delete('/supplier-panel/attributes/delete/{id}',[SupplierAttributeController::class,'delete_attribute'])->name('attribute.delete_attribute');
                 //supplier orders routes
                 Route::get('/supplier-panel/orders',[SupplierOrderController::class,'index'])->name('orders'); 
+                Route::get('/supplier-panel/order/{id}',[SupplierOrderController::class,'order'])->name('order');
                 //supplier order abandoned routes
                 Route::get('/supplier-panel/orders-abandoned',[SupplierOrderAbandonedController::class,'index'])->name('orders-abandoned');
                 //supplier shipping routes

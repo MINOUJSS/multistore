@@ -1,4 +1,6 @@
 <?php
+
+use App\models\SupplierProductVariations;
 //function to chicke if supplier folder exists
 function supplier_exists($store_name)
 {
@@ -13,6 +15,12 @@ function supplier_exists($store_name)
         return false;
     }
 
+}
+//get tenant id from supplier id
+function get_tenant_id_from_supplier($supplier_id)
+{
+    $supplier=App\Models\Supplier::findOrfail($supplier_id);
+    return $supplier->tenant_id;
 }
 //get supplier store name
 function get_supplier_store_name($tenant_id)
@@ -351,4 +359,85 @@ function s_p_has_free_shipping($product_id)
     {
         return 'لا';
     }
+}
+//supplier_product_has_discount
+function supplier_product_has_discount($id)
+{
+    $product=App\models\SupplierProducts::findOrFail($id);
+    $discount=App\models\SupplierProductDiscounts::where('product_id',$product->id)->where('status','active')
+                                                    ->whereDate('start_date', '<=', now())
+                                                    ->whereDate('end_date', '>=', now())  
+                                                    ->first();
+    if($discount!==null)
+    {
+        return true;
+    }else
+    {
+        return false;
+    }
+}
+//
+function supplier_product_has_variations($id)
+{
+    $product=App\models\SupplierProducts::findOrFail($id);
+    $vartiations=App\models\SupplierProductVariations::where('product_id',$product->id)->get();
+    if($vartiations!==null)
+    {
+        return true;
+    }else
+    {
+        return false;
+    }
+}
+//
+function supplier_product_has_attributes($id)
+{
+    $product=App\models\SupplierProducts::findOrFail($id);
+    $attributes=App\models\SupplierProductAttributes::where('product_id',$product->id)->get();
+    if($attributes!==null)
+    {
+        return true;
+    }else
+    {
+        return false;
+    }
+}
+//
+function get_supplier_attribute_name($attribute_id)
+{
+    $attribute=App\Models\SupplierAttribute::find($attribute_id);
+    if($attribute!==null)
+    {
+        return $attribute->name;
+    }else
+    {
+        return null;
+    }
+}
+//
+function atrribute_has_more_values($attribute_id)
+{
+    $p_attr=App\Models\SupplierProductAttributes::where('attribute_id',$attribute_id)->get();
+    if(count($p_attr)>1)
+    {
+        return true;
+    }else
+    {
+        return false;
+    }
+}
+//
+function supplier_orders_unreaded()
+{
+    //get_supplier_data
+    $supplier=get_supplier_data(auth()->user()->tenant_id);
+    //get supplier orders
+    $orders=App\Models\SupplierOrders::where('supplier_id',$supplier->id)->where('is_readed','false')->get();
+    return count($orders);;
+}
+//
+function get_supplier_product_data($product_id)
+{
+    $product=App\Models\SupplierProducts::findOrfail($product_id);
+    return $product;
 }

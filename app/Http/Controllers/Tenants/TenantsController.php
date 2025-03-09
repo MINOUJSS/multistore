@@ -2,17 +2,29 @@
 
 namespace App\Http\Controllers\Tenants;
 
+use Google_Client;
 use App\Models\Dayra;
 use App\Models\Wilaya;
+use GuzzleHttp\Client;
 use App\Models\Baladia;
 use App\Models\UserSlider;
+use Google_Service_Sheets;
 use App\Models\SupplierFqa;
+use App\Models\UserBalance;
 use App\Models\SupplierPage;
 use Illuminate\Http\Request;
+use App\Models\SupplierOrders;
 use App\Models\SupplierProducts;
 use App\Models\UserStoreCategory;
+use App\Models\SupplierOrderItems;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use App\Models\SupplierProductImages;
+use Google_Service_Sheets_ValueRange;
+use App\Models\SupplierProductAttributes;
+use App\Models\SupplierProductVariations;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -172,8 +184,11 @@ class TenantsController extends Controller
             //get user data
             $wilayas=Wilaya::all();
             $product= SupplierProducts::where('supplier_id',get_supplier_data(tenant('id'))->id)->where('id',$id)->first();
+            $product_images=SupplierProductImages::where('product_id',$product->id)->get();
+            $product_variations=SupplierProductVariations::where('product_id',$product->id)->get();
+            $product_attributes=SupplierProductAttributes::where('product_id',$product->id)->get();
             //return idex view with user data
-        return view('stores.suppliers.product-details',compact('product','wilayas'));
+        return view('stores.suppliers.product-details',compact('product','wilayas','product_images','product_variations','product_attributes'));
         }
 
         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
@@ -204,6 +219,157 @@ class TenantsController extends Controller
 
         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     }
+    //order
+    public function order(Request $request)
+    {
+          // التحقق من نوع المستخدم
+    if (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'supplier') {
+        // التحقق من صحة البيانات
+        $validatedData = $request->validate([
+            'supplier_id' => 'required|exists:suppliers,id',
+            // 'user_id' => 'nullable|exists:users,id',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|regex:/^0[5-7][0-9]{8}$/',
+            'address' => 'required|string|max:500',
+            // 'wilaya' => 'required|integer|exists:wilayas,id',
+            // 'dayrea' => 'required|integer|exists:dayreas,id',
+            // 'baladia' => 'required|integer|exists:baladias,id',
+            // 'shipping_and_point' => 'required|in:home,store',
+            // 'product_id' => 'required|exists:supplier_products,id',
+            // 'product_varition' => 'nullable|exists:supplier_product_variations,id',
+            // 'product_attribute' => 'nullable|exists:supplier_product_attributes,id',
+            'qty' => 'required|integer|min:1',
+            // 'price' => 'required|numeric|min:0',
+            // 'form_total_amount' => 'required|numeric|min:0',
+            // 'shipping_cost' => 'required|numeric|min:0',
+            // 'payment_method' => 'required|in:cash_on_delivery,credit_card,bank_transfer',
+        ]);
+
+        try {
+            DB::beginTransaction(); // بدء المعاملة
+
+            // توليد رقم طلب فريد
+            $orderNumber = 'ORD-' . strtoupper(uniqid());
+
+            // إنشاء الطلب
+            $supplierOrder = SupplierOrders::create([
+                'supplier_id' => $request->supplier_id,
+                'order_number' => $orderNumber,
+                'customer_name'=>$request->name,
+                'phone' => $request->phone,
+                'status' => 'pending',
+                'total_price' => $request->form_total_amount,
+                'shipping_cost' => $request->shipping_cost,
+                'payment_method' => $request->payment_method,
+                'payment_status' => 'pending',
+                'shipping_address' => $request->address,
+                'billing_address' => $request->billing_address ?? $request->address,
+            ]);
+
+            // إدراج عنصر الطلب
+            SupplierOrderItems::create([
+                'order_id' => $supplierOrder->id,
+                'product_id' => $request->product_id,
+                'variation_id' => $request->product_varition,
+                'attribute_id' => $request->product_attribute,
+                'quantity' => $request->qty,
+                'unit_price' => $request->price,
+                'total_price' => $request->form_total_amount,
+            ]);
+
+                        
+            //add 10 d.a to user balance 
+            //get user
+            $user=get_user_data(tenant('id'));
+            //update user balance
+            $balance=UserBalance::where('user_id',$user->id)->first();
+            $balance->outstanding_amount=$balance->outstanding_amount+get_platform_comition($request->price);
+            $balance->update();
+
+            DB::commit(); // تأكيد العملية
+
+            // إدراج الطلب في Google Sheets
+            $this->insertOrderToGoogleSheet($supplierOrder);
+
+            //notify the supplier about this order
+            
+            //with telegram api call
+
+
+
+
+
+            // return response()->json([
+            //     'message' => 'تم إنشاء الطلب بنجاح!',
+            //     'order' => $supplierOrder
+            // ], 201);
+
+            // إعادة المستخدم إلى صفحة الشكر
+           return redirect()->route('tenant.thanks')->with('success', 'شكراً لطلبك! سيتم التواصل معك قريبًا.');;
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // التراجع في حالة حدوث خطأ
+            // return response()->json([
+            //     'message' => 'حدث خطأ أثناء إنشاء الطلب',
+            //     'error' => $e->getMessage()
+            // ], 500);
+        }
+
+
+    }
+    }
+    //function thanks
+    function thanks() 
+    {
+        if(!session()->has('success'))
+        {
+            return redirect()->back();
+        }
+        return view('stores.suppliers.pages.thanks');
+    }
+    /**
+     * إدراج الطلب في Google Sheets عبر Webhook
+     */
+    private function insertOrderToGoogleSheet($order)
+    {
+        try {
+            $spreadsheetId = "1XOfN-5TI0LBDRFefQLemlkOjyCVTaF8jqwLt7wIbr9Y"; // Google Sheet ID
+            $range = "Orders"; // اسم الورقة داخل الملف
+    
+            $client = new Google_Client();
+            $client->setApplicationName("Google Sheets API Laravel");
+            $client->setAuthConfig(base_path('/asset/googleSheet/credentials.json')); 
+            $client->setScopes([Google_Service_Sheets::SPREADSHEETS]);
+    
+            $service = new Google_Service_Sheets($client);
+    
+            $values = [
+                [
+                    now()->format('Y-m-d H:i:s'), // الوقت الحالي
+                    $order->order_number ?? 'N/A',
+                    $order->customer_name ?? 'N/A',
+                    $order->phone ?? 'N/A',
+                    $order->shipping_address ?? 'N/A',
+                    $order->total_price ?? 0,
+                    $order->shipping_cost ?? 0,
+                    $order->payment_method ?? 'Unknown',
+                    $order->status ?? 'Pending'
+                ]
+            ];
+    
+            $body = new Google_Service_Sheets_ValueRange([
+                'values' => $values
+            ]);
+    
+            $params = ['valueInputOption' => 'RAW'];
+    
+            $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
+    
+        } catch (\Exception $e) {
+            \Log::error("Error inserting order to Google Sheets: " . $e->getMessage());
+        }
+    }
+    
     //checkout
     public function checkout()
     {

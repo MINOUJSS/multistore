@@ -24,6 +24,7 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
+    Route::name('tenant.')->group(function(){     
     // Route::get('/', function () {
     //     return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     // });
@@ -51,13 +52,15 @@ Route::middleware([
     //store checkout
     Route::get('/checkout/cancel',[TenantsController::class,'checkout_cancel'])->name('checkout-cancel');
     //order
-    Route::get('/order',[TenantsController::class,'order'])->name('order');
+    Route::post('/order',[TenantsController::class,'order'])->name('order');
+    //thanks
+    Route::get('/thanks',[TenantsController::class,'thanks'])->name('thanks');
     //get dayra response 
     Route::post('/get-dayras/{wilaya_id}',[TenantsController::class,'get_dayras'])->name('get-dayras');
      //get baladia response 
      Route::post('/get-baladias/{dayra_id}',[TenantsController::class,'get_baladias'])->name('get-baladias');
     
-
+    });
 
 });
 

@@ -49,6 +49,7 @@
                         <tr>
                             <th>رقم الطلب</th>
                             <th>العميل</th>
+                            <th>رقم الهاتف</th>
                             <th>المنتجات</th>
                             <th>الإجمالي</th>
                             <th>تاريخ الطلب</th>
@@ -57,54 +58,37 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @forelse($orders as $order)
                         <tr>
-                            <td>#12345</td>
-                            <td>محمد أحمد</td>
-                            <td>3 منتجات</td>
-                            <td>750 ر.س</td>
-                            <td>2024-12-23</td>
+                            <td>#{{ $order->order_number }}</td>
+                            <td>{{ $order->customer_name }}</td>
+                            <td>{{ $order->phone }}</td>
+                            <td>{{ $order->items_count }} منتجات</td>
+                            <td>{{ number_format($order->total_price, 2) }} د.ج</td>
+                            <td>{{ $order->created_at->format('Y-m-d') }}</td>
                             <td>
-                                <select class="form-select form-select-sm">
-                                    <option>جديد</option>
-                                    <option>قيد المعالجة</option>
-                                    <option>تم الشحن</option>
-                                    <option>مكتمل</option>
-                                    <option>ملغي</option>
+                                <select class="form-select form-select-sm order-status" data-order-id="{{ $order->id }}">
+                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>جديد</option>
+                                    <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>قيد المعالجة</option>
+                                    <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>تم الشحن</option>
+                                    <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>مكتمل</option>
+                                    <option value="canceled" {{ $order->status == 'canceled' ? 'selected' : '' }}>ملغي</option>
                                 </select>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewOrderModal">
+                                <button class="btn btn-sm btn-info view-order" data-order-id="{{ $order->id }}">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger">
+                                <button class="btn btn-sm btn-danger delete-order" data-order-id="{{ $order->id }}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
                         </tr>
+                        @empty
                         <tr>
-                            <td>#12344</td>
-                            <td>سارة خالد</td>
-                            <td>1 منتج</td>
-                            <td>250 ر.س</td>
-                            <td>2024-12-23</td>
-                            <td>
-                                <select class="form-select form-select-sm">
-                                    <option>جديد</option>
-                                    <option selected="">قيد المعالجة</option>
-                                    <option>تم الشحن</option>
-                                    <option>مكتمل</option>
-                                    <option>ملغي</option>
-                                </select>
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewOrderModal">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
+                            <td colspan="8" class="text-center">لا توجد طلبات متاحة</td>
                         </tr>
+                        @endforelse                      
                     </tbody>
                 </table>
             </div>
@@ -125,15 +109,79 @@
             </nav>
         </div>
     </div>
-
-    <div class="modal fade" id="viewOrderModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    {{-- order details --}}
+    <div class="modal fade" id="viewOrderModal" aria-labelledby="viewOrderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تفاصيل الطلب <span id="order-number"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>معلومات العميل</h6>
+                            <p>
+                                الاسم: <span id="customer-name"></span><br>
+                                الهاتف: <span id="customer-phone"></span><br>
+                                البريد الإلكتروني: <span id="customer-email"></span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>معلومات الشحن</h6>
+                            <p>
+                                العنوان: <span id="shipping-address"></span><br>
+                                المدينة: <span id="shipping-city"></span><br>
+                                الرمز البريدي: <span id="shipping-zipcode"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6>المنتجات</h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>الكمية</th>
+                                    <th>السعر</th>
+                                    <th>الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody id="order-items">
+                                <!-- سيتم ملء البيانات هنا عبر AJAX -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-start">المجموع</td>
+                                    <td id="subtotal-price"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-start">الشحن</td>
+                                    <td id="shipping-cost"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-start">الإجمالي</td>
+                                    <td><strong id="total-price"></strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary" onclick="printInvoice()">طباعة الفاتورة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {{-- <div class="modal fade" id="viewOrderModal" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">تفاصيل الطلب #12345</h5>
-                    <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal" style="
-    /* direction: rtl; */
-"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -199,6 +247,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 </div>

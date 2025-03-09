@@ -19,3 +19,8 @@ function product_name_to_slug($product_name)
     }
     return $slug;
 }
+//
+function get_platform_comition($product_price)
+{
+    return 10;
+}
