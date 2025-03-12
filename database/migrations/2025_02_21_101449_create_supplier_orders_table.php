@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('order_number')->unique(); // رقم الطلب الفريد
             $table->string('customer_name');
             $table->string('phone');
+            $table->boolean('phone_visiblity')->default(false);
             $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'canceled', 'returned'])
                   ->default('pending'); // حالة الطلب
             $table->decimal('total_price', 10, 2); // إجمالي السعر

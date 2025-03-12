@@ -4,6 +4,10 @@
   {!!get_platform_data('google_analitics')->value!!}    
 @endsection
 
+@section('meta')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
+
 @section('title')
   الصفحة الطلبات
 @endsection
@@ -22,4 +26,5 @@
 @endsection
 @section('footer_js')
   @include('users.suppliers.components.content.orders.js.get_order_data_js')
+  @include('users.suppliers.components.content.orders.js.unlock_phone_number_js')
 @endsection

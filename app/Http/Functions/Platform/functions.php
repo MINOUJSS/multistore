@@ -24,3 +24,15 @@ function get_platform_comition($product_price)
 {
     return 10;
 }
+//plan phone visibilty autorization in normal order
+function plan_phone_visibilty_autorization($plan_id)
+{
+    $plan=App\Models\SupplierPlan::where('id',$plan_id)->first();
+    if($plan->price===0)
+    {
+        return false;
+    }else
+    {
+        return true;
+    }
+}

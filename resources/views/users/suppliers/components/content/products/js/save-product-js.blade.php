@@ -187,7 +187,7 @@
         // print the html code
           $(add_product_attribute).append(filesHtml)
         //send ajax request to get product attribute       
-        get_product_attribute({{auth()->user()->id}})
+        add_get_product_attribute({{auth()->user()->id}})
     });
 
     // On click remove_atrribute
@@ -198,7 +198,7 @@
         });
 
     //functions
-    function get_product_attribute(user_id)
+    function add_get_product_attribute(user_id)
     {
          // Set CSRF token for Laravel
             $.ajaxSetup({
@@ -336,7 +336,7 @@ function add_browsdialog()
     }
 //-------------------multi upload images---------------------------------------------
 let add_files=[],
-    add_container=document.querySelector('.images_container'),
+    add_container=document.querySelector('.add_images_container'),
     add_input=document.getElementById('add_product_images');
     //
     add_input.addEventListener('change', () =>{

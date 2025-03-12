@@ -225,6 +225,7 @@
                   <span class="text-danger error-add_image error-validation"></span>
                 </div>
                 <hr>
+                <h5 class="mb-3 text-center">صور إضافية للمنتج</h5>
                 <div class="col-md-12">
                   <div id="add_multi_image" class="dropzone dragover" onclick="add_browsdialogmultifile()">
                     <i class="fa fa-cloud-upload"></i>
@@ -232,7 +233,7 @@
                 </div>
                 <span class="text-danger error-add_product_images error-validation"></span>
               <div class=" col-md-12">
-                <div class="images_container" id="add_images_container">
+                <div class="add_images_container" id="add_images_container">
 
                 </div>
               </div>
@@ -377,6 +378,7 @@
                     </div>
                   </div>
                   <hr>
+                  <h5 class="mb-3 text-center">صور إضافية للمنتج</h5>
                   <div class="col-md-12">
                     <div id="multi_image" class="dropzone dragover" onclick="browsdialogmultifile()">
                       <i class="fa fa-cloud-upload"></i>

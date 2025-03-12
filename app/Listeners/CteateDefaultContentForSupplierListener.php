@@ -8,6 +8,8 @@ use App\Models\SupplierFqa;
 use App\Models\SupplierPage;
 use App\Models\SupplierProducts;
 use App\Models\UserStoreCategory;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -29,7 +31,7 @@ class CteateDefaultContentForSupplierListener
         // create default slider
         $supplier = $event->supplier;
         $user_id = auth()->user()->id;
-
+        
         $defaultSliders = [
             ['user_id'=> auth()->user()->id,'title' => 'مرحبًا بكم في متجرك', 'description' => 'اكتشف...', 'image' => 'asset/users/store/img/slider/pc-slider1.png', 'status' => 'active', 'order' => 1],
             ['user_id'=> auth()->user()->id,'title' => 'أضف منتجاتك بسهولة', 'description' => 'ابدأ...', 'image' => 'asset/users/store/img/slider/pc-slider2.png', 'status' => 'active', 'order' => 2],
@@ -61,11 +63,12 @@ class CteateDefaultContentForSupplierListener
                 ]);
         }
 
+
         //ctreate default products
         $defaultProducts = [
             [
                 'name' => 'منتج 1',
-                'slug' => 'product-1',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-product-1',
                 'short_description' => 'وصف قصير للمنتج الأول.',
                 'description' => 'وصف مفصل للمنتج الأول.',
                 'price' => 100.00,
@@ -79,12 +82,12 @@ class CteateDefaultContentForSupplierListener
             ],
             [
                 'name' => 'منتج 2',
-                'slug' => 'product-2',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-product-2',
                 'short_description' => 'وصف قصير للمنتج الثاني.',
                 'description' => 'وصف مفصل للمنتج الثاني.',
                 'price' => 200.00,
                 'cost' => 150.00,
-                'image' => 'asset/users/store/img/products/product.webp',
+                'image' => asset('asset/users/store/img/products/product.webp'),
                 'qty' => 30,
                 'minimum_order_qty' => 2,
                 'condition' => 'new',
@@ -93,12 +96,12 @@ class CteateDefaultContentForSupplierListener
             ],
             [
                 'name' => 'منتج 3',
-                'slug' => 'product-3',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-product-3',
                 'short_description' => 'وصف قصير للمنتج الثالث.',
                 'description' => 'وصف مفصل للمنتج الثالث.',
                 'price' => 300.00,
                 'cost' => 250.00,
-                'image' => 'asset/users/store/img/products/product.webp',
+                'image' => asset('asset/users/store/img/products/product.webp'),
                 'qty' => 20,
                 'minimum_order_qty' => 1,
                 'condition' => 'new',
@@ -107,12 +110,12 @@ class CteateDefaultContentForSupplierListener
             ],
             [
                 'name' => 'منتج 4',
-                'slug' => 'product-4',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-product-4',
                 'short_description' => 'وصف قصير للمنتج الرابع.',
                 'description' => 'وصف مفصل للمنتج الرابع.',
                 'price' => 400.00,
                 'cost' => 300.00,
-                'image' => 'asset/users/store/img/products/product.webp',
+                'image' => asset('asset/users/store/img/products/product.webp'),
                 'qty' => 10,
                 'minimum_order_qty' => 1,
                 'condition' => 'new',
@@ -127,6 +130,7 @@ class CteateDefaultContentForSupplierListener
                 'category_id' => null,          // يمكن تحديثه لاحقًا أو تحديده عند الإنشاء
             ]));
         }
+
         //create default fqy
         $defaultFqa = [
             [

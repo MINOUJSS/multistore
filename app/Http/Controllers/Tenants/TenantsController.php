@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Tenants;
 
-use Google_Client;
+
 use App\Models\Dayra;
 use App\Models\Wilaya;
 use GuzzleHttp\Client;
 use App\Models\Baladia;
 use App\Models\UserSlider;
-use Google_Service_Sheets;
 use App\Models\SupplierFqa;
 use App\Models\UserBalance;
 use App\Models\SupplierPage;
@@ -22,7 +21,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Models\SupplierProductImages;
-use Google_Service_Sheets_ValueRange;
 use App\Models\SupplierProductAttributes;
 use App\Models\SupplierProductVariations;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -252,11 +250,15 @@ class TenantsController extends Controller
             $orderNumber = 'ORD-' . strtoupper(uniqid());
 
             // إنشاء الطلب
+            $supplierId = $request->supplier_id;
+            $planId = get_supplier_subscription_data($supplierId)->plan_id;
+            $phoneVisibility = plan_phone_visibilty_autorization($planId) ? true : false;
             $supplierOrder = SupplierOrders::create([
                 'supplier_id' => $request->supplier_id,
                 'order_number' => $orderNumber,
                 'customer_name'=>$request->name,
                 'phone' => $request->phone,
+                'phone_visiblity' => $phoneVisibility,
                 'status' => 'pending',
                 'total_price' => $request->form_total_amount,
                 'shipping_cost' => $request->shipping_cost,
@@ -278,13 +280,13 @@ class TenantsController extends Controller
             ]);
 
                         
-            //add 10 d.a to user balance 
-            //get user
-            $user=get_user_data(tenant('id'));
-            //update user balance
-            $balance=UserBalance::where('user_id',$user->id)->first();
-            $balance->outstanding_amount=$balance->outstanding_amount+get_platform_comition($request->price);
-            $balance->update();
+            // //add 10 d.a to user balance 
+            // //get user
+            // $user=get_user_data(tenant('id'));
+            // //update user balance
+            // $balance=UserBalance::where('user_id',$user->id)->first();
+            // $balance->outstanding_amount=$balance->outstanding_amount+get_platform_comition($request->price);
+            // $balance->update();
 
             DB::commit(); // تأكيد العملية
 
@@ -326,48 +328,6 @@ class TenantsController extends Controller
             return redirect()->back();
         }
         return view('stores.suppliers.pages.thanks');
-    }
-    /**
-     * إدراج الطلب في Google Sheets عبر Webhook
-     */
-    private function insertOrderToGoogleSheet($order)
-    {
-        try {
-            $spreadsheetId = "1XOfN-5TI0LBDRFefQLemlkOjyCVTaF8jqwLt7wIbr9Y"; // Google Sheet ID
-            $range = "Orders"; // اسم الورقة داخل الملف
-    
-            $client = new Google_Client();
-            $client->setApplicationName("Google Sheets API Laravel");
-            $client->setAuthConfig(base_path('/asset/googleSheet/credentials.json')); 
-            $client->setScopes([Google_Service_Sheets::SPREADSHEETS]);
-    
-            $service = new Google_Service_Sheets($client);
-    
-            $values = [
-                [
-                    now()->format('Y-m-d H:i:s'), // الوقت الحالي
-                    $order->order_number ?? 'N/A',
-                    $order->customer_name ?? 'N/A',
-                    $order->phone ?? 'N/A',
-                    $order->shipping_address ?? 'N/A',
-                    $order->total_price ?? 0,
-                    $order->shipping_cost ?? 0,
-                    $order->payment_method ?? 'Unknown',
-                    $order->status ?? 'Pending'
-                ]
-            ];
-    
-            $body = new Google_Service_Sheets_ValueRange([
-                'values' => $values
-            ]);
-    
-            $params = ['valueInputOption' => 'RAW'];
-    
-            $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
-    
-        } catch (\Exception $e) {
-            \Log::error("Error inserting order to Google Sheets: " . $e->getMessage());
-        }
     }
     
     //checkout

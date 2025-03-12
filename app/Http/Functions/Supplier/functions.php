@@ -441,3 +441,26 @@ function get_supplier_product_data($product_id)
     $product=App\Models\SupplierProducts::findOrfail($product_id);
     return $product;
 }
+//
+function get_supplier_subscription_data($supplier_id)
+{
+    $subscription=App\Models\SupplierPlanSubscription::where('supplier_id',$supplier_id)->first();
+    return $subscription;
+}
+//
+function get_supplier_categories($supplier_id,$tenant_id)
+{
+    $slug=tenant_to_slug($tenant_id);
+    $categories=App\Models\Category::where('slug','like',$slug.'-%')->get();
+    return $categories;
+}
+//check phone visibility autorization
+function supplier_order_display_phone($order_id)
+{
+    $order = App\Models\SupplierOrders::findOrFail($order_id);
+    if ($order->phone_visiblity==true) {
+        return $order->phone;
+    } else {
+        return '<img src="' . asset('asset/users/dashboard/img/other/lock.png') . '" alt="phone" onclick="unlock_phone_number(' . $order->id . ')" style="cursor: pointer;" />';
+    }
+}

@@ -10,7 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     // تحديث معلومات الطلب
                     document.getElementById("order-number").textContent = `#${order.order_number}`;
                     document.getElementById("customer-name").textContent = order.customer_name;
-                    document.getElementById("customer-phone").textContent = order.phone;
+                    if (order.phone_visiblity) {
+                        document.getElementById("customer-phone").textContent = order.phone;
+                    } else {
+                        document.getElementById("customer-phone").innerHTML = '<img src="/asset/users/dashboard/img/other/lock.png" alt="phone" style="cursor: pointer;" />';
+                    }
+                    // document.getElementById("customer-phone").textContent = order.phone;
                     document.getElementById("customer-email").textContent = order.email ?? "غير متوفر";
                     document.getElementById("shipping-address").textContent = order.shipping_address;
                     document.getElementById("shipping-city").textContent = order.city;

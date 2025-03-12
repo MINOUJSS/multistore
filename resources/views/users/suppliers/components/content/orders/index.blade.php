@@ -62,7 +62,7 @@
                         <tr>
                             <td>#{{ $order->order_number }}</td>
                             <td>{{ $order->customer_name }}</td>
-                            <td>{{ $order->phone }}</td>
+                            <td>{!! supplier_order_display_phone($order->id) !!}</td>
                             <td>{{ $order->items_count }} منتجات</td>
                             <td>{{ number_format($order->total_price, 2) }} د.ج</td>
                             <td>{{ $order->created_at->format('Y-m-d') }}</td>

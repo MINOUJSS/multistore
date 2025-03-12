@@ -21,7 +21,7 @@
                 <p class="text-center">{{Auth::user()->email}}</p>
                 <hr>
               </div>
-              <li><a class="dropdown-item" href="#"><i class="fa-solid fa-boxes-packing"></i> بقاتي</a></li>
+              <li><a class="dropdown-item" href="#"><i class="fa-solid fa-boxes-packing"></i> الخطة</a></li>
               <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> حسابي</a></li>
               <li><a class="dropdown-item text-danger" href="#"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a></li>
             </ul>
@@ -74,7 +74,7 @@
               <p class="text-center">{{Auth::user()->email}}</p>
               <hr>
             </div>
-            <li><a class="dropdown-item" href="#"><i class="fa-solid fa-boxes-packing"></i> بقاتي</a></li>
+            <li><a class="dropdown-item" href="#"><i class="fa-solid fa-boxes-packing"></i> الخطة {{get_supplier_plan_data(get_supplier_subscription_data(get_supplier_data(auth()->user()->tenant_id)->id)->plan_id)->name}}</a></li>
             <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> حسابي</a></li>
             <li>
               {{-- <a class="dropdown-item text-danger" href="{{ route('supplier.logout') }}"><i class="fa-solid fa-right-from-bracket"></i>

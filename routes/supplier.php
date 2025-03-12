@@ -65,6 +65,8 @@ Route::middleware([
                 //supplier orders routes
                 Route::get('/supplier-panel/orders',[SupplierOrderController::class,'index'])->name('orders'); 
                 Route::get('/supplier-panel/order/{id}',[SupplierOrderController::class,'order'])->name('order');
+                //unlock phone number
+                Route::post('/supplier-panel/unlock-phone-number/{order_id}',[SupplierOrderController::class,'unlock_phone_number'])->name('unlock-phone-number');
                 //supplier order abandoned routes
                 Route::get('/supplier-panel/orders-abandoned',[SupplierOrderAbandonedController::class,'index'])->name('orders-abandoned');
                 //supplier shipping routes

@@ -32,6 +32,11 @@ class SupplierController extends Controller
         }
         //get supplier
         $supplier=Tenant::find($user->tenant_id);
+        //delete supplier categories
+        foreach(get_supplier_categories($supplier->id,$user->tenant_id) as $category)
+        {
+            $category->delete();
+        };
         //delete supplier
         $supplier->delete();
              // Commit the transaction

@@ -138,19 +138,21 @@ class RegistredSupplierController extends Controller
                     $s_p_subscription->update();
                     //add balance to subscription
                     $user->balance()->update([
-                        'balance'=> '1000',
+                        'balance'=> '500',
                     ]);
                     //commit this transaction in balance transaction table
                     BalanceTransaction::create([
                         'user_id' => $user->id,
                         'transaction_type' => 'إضافة',
-                        'amount' => '1000',
+                        'amount' => '500',
                         'description' => 'تسجيل مجاني للمورد',
                     ]);
                  }
+                                   
                   // Commit the transaction
                  \DB::commit();
-                //send verification email
+
+                 //send verification email
                 event(new Registered($user));
                
 
@@ -159,6 +161,7 @@ class RegistredSupplierController extends Controller
                  event(new UserLogedInEvent(auth()->user()));
                  //
                  event(new CreateSupplierEvent($supplier));
+                
                  //redirect to dashboard of confirme plan page
                  if($plan->price==0)
                  {
