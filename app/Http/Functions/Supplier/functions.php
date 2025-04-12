@@ -363,8 +363,8 @@ function s_p_has_free_shipping($product_id)
 //supplier_product_has_discount
 function supplier_product_has_discount($id)
 {
-    $product=App\models\SupplierProducts::findOrFail($id);
-    $discount=App\models\SupplierProductDiscounts::where('product_id',$product->id)->where('status','active')
+    $product=App\Models\SupplierProducts::findOrFail($id);
+    $discount=App\Models\SupplierProductDiscounts::where('product_id',$product->id)->where('status','active')
                                                     ->whereDate('start_date', '<=', now())
                                                     ->whereDate('end_date', '>=', now())  
                                                     ->first();
