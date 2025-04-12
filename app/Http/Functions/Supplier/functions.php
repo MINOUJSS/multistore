@@ -1,6 +1,6 @@
 <?php
 
-use App\models\SupplierProductVariations;
+use App\Models\SupplierProductVariations;
 //function to chicke if supplier folder exists
 function supplier_exists($store_name)
 {
@@ -324,10 +324,10 @@ function create_supplier_dashboard_settings($user,$request)
 //get_supplier_product_category
 function get_supplier_product_category($product_id)
 {
-    $product=App\models\SupplierProducts::findOrFail($product_id);
+    $product=App\Models\SupplierProducts::findOrFail($product_id);
     if ($product->category_id!==null)
     {
-        $category=App\models\Category::findOrFail($product->category_id);
+        $category=App\Models\Category::findOrFail($product->category_id);
         return $category->name;
     }else
     {
@@ -338,7 +338,7 @@ function get_supplier_product_category($product_id)
 //get_supplier_product_price
 function get_supplier_product_price($product_id)
 {
-  $product=App\models\SupplierProducts::findOrFail($product_id);
+  $product=App\Models\SupplierProducts::findOrFail($product_id);
   if($product->activeDiscount)
   {
     $price=$product->price - $product->activeDiscount->discount_amount;
@@ -351,7 +351,7 @@ function get_supplier_product_price($product_id)
 //s_p_has_free_shipping(
 function s_p_has_free_shipping($product_id)
 {
-    $product=App\models\SupplierProducts::findOrFail($product_id);
+    $product=App\Models\SupplierProducts::findOrFail($product_id);
     if($product->free_shipping=='yes')
     {
         return 'نعم';
@@ -379,8 +379,8 @@ function supplier_product_has_discount($id)
 //
 function supplier_product_has_variations($id)
 {
-    $product=App\models\SupplierProducts::findOrFail($id);
-    $vartiations=App\models\SupplierProductVariations::where('product_id',$product->id)->get();
+    $product=App\Models\SupplierProducts::findOrFail($id);
+    $vartiations=App\Models\SupplierProductVariations::where('product_id',$product->id)->get();
     if($vartiations!==null)
     {
         return true;
@@ -392,8 +392,8 @@ function supplier_product_has_variations($id)
 //
 function supplier_product_has_attributes($id)
 {
-    $product=App\models\SupplierProducts::findOrFail($id);
-    $attributes=App\models\SupplierProductAttributes::where('product_id',$product->id)->get();
+    $product=App\Models\SupplierProducts::findOrFail($id);
+    $attributes=App\Models\SupplierProductAttributes::where('product_id',$product->id)->get();
     if($attributes!==null)
     {
         return true;
