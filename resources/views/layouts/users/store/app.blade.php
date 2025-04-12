@@ -22,11 +22,13 @@
      @yield('header_style')
      <!-- js files -->
      @yield('header_js')
-    <!-- fcb pixle -->
-    @yield('fcb_pixle')
+    <!-- fcb pixles -->
+    {!!display_facebook_pixel()!!}
     <!-- google analytics -->
-    @yield('google_analytics')
-    <!---->
+    {!!display_google_analytics()!!}
+    <!-- tiktok pixel -->
+    {!!display_tiktok_pixel()!!}
+    <!--style-->
     @yield('style')
   </head>
   <body>

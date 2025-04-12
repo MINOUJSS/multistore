@@ -92,4 +92,5 @@
 @include('users.suppliers.components.content.products.js.add-product-attribute-js')
 @include('users.suppliers.components.content.products.js.delete-product-js')
 @include('users.suppliers.components.content.products.js.save-product-js')
+@include('users.suppliers.components.content.products.js.search-product-js')
 @endsection

@@ -21,11 +21,11 @@
             </div>
         </div>
         <div class="item"><a href="{{route('supplier.products')}}"><i class="fa-solid fa-box-open"></i> المنتجات</a></div>
-        <div class="item"><a href="{{route('supplier.store-design')}}"><i class="fa-solid fa-palette"></i> تصميم المتجر</a></div>
+        {{-- <div class="item"><a href="{{route('supplier.store-design')}}"><i class="fa-solid fa-palette"></i> تصميم المتجر</a></div> --}}
         <div class="item"><a href="{{route('supplier.shipping')}}"><i class="fa-solid fa-truck-fast"></i> الشحن</a></div>
         <div class="item"><a href="{{route('supplier.apps')}}"><i class="fa-brands fa-sketch"></i> التطبيقات</a></div>
         <div class="item"><a href="{{route('supplier.subscription')}}"><i class="fa-regular fa-address-card"></i> الإشتراك</a></div>
-        <div class="item"><a href="#"><i class="fa-regular fa-credit-card"></i> الدفع</a></div>
+        <div class="item"><a href="{{route('supplier.billing')}}"><i class="fa-regular fa-credit-card"></i> الدفع</a></div>
         <div class="item"><a href="{{route('supplier.settings')}}"><i class="fa-solid fa-gear"></i> الإعدادت</a></div>
     </div>
     <!--End Menu-->

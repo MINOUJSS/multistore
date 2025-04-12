@@ -1,327 +1,193 @@
 <div class="container">
-    <h1 class="h3 mb-0 text-gray-800">إعدادات النظام</h1>
+    <h1 class="h3 mb-0 text-gray-800"><i class="fa-solid fa-gear me-2"></i>إعدادات</h1>
+    @if (session()->has('success'))
+    <div class="alert alert-success">
+        {{ session()->get('success') }}
+        <button type="button" class="btn-close left" data-bs-dismiss="alert" aria-label="Close" style="float: left;"></button>
+    </div>     
+    @endif
     <div class="card">
-        <div class="card-body">
-            <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#general" aria-selected="true" role="tab">
-                        <i class="fas fa-store me-2"></i>إعدادات المتجر
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipping" aria-selected="false" tabindex="-1" role="tab">
-                        <i class="fas fa-truck me-2"></i>الشحن والتوصيل
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#payment" aria-selected="false" tabindex="-1" role="tab">
-                        <i class="fas fa-credit-card me-2"></i>طرق الدفع
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#email" aria-selected="false" tabindex="-1" role="tab">
-                        <i class="fas fa-envelope me-2"></i>إعدادات البريد
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appearance" aria-selected="false" tabindex="-1" role="tab">
-                        <i class="fas fa-paint-brush me-2"></i>المظهر
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#security" aria-selected="false" tabindex="-1" role="tab">
-                        <i class="fas fa-shield-alt me-2"></i>الأمان
-                    </button>
-                </li>
-            </ul>
+       {{-- start tab  --}}
+       <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <!--start theme-->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="theme-tab" data-bs-toggle="tab" data-bs-target="#theme" type="button" role="tab" aria-controls="theme" aria-selected="true"><i class="fa-solid fa-palette me-2"></i>الثيم</button>
+        </li>
+        <!--end theme-->
 
-            <div class="tab-content mt-4" id="settingsTabContent">
-                <!-- General Settings -->
-                <div class="tab-pane fade show active" id="general" role="tabpanel">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">اسم المتجر</label>
-                                <input type="text" class="form-control" value="المتجر الإلكتروني">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">شعار المتجر</label>
-                                <input type="file" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">عملة المتجر</label>
-                                <select class="form-select">
-                                    <option>ريال سعودي (SAR)</option>
-                                    <option>دولار أمريكي (USD)</option>
-                                    <option>يورو (EUR)</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">المنطقة الزمنية</label>
-                                <select class="form-select">
-                                    <option>توقيت مكة المكرمة (UTC+3)</option>
-                                    <option>توقيت جرينتش (UTC)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">عنوان المتجر</label>
-                                <textarea class="form-control" rows="3"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">رقم الهاتف</label>
-                                <input type="tel" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">البريد الإلكتروني</label>
-                                <input type="email" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">الضريبة (%)</label>
-                                <input type="number" class="form-control" value="15">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!--start store setting -->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="store-setting-tab" data-bs-toggle="tab" data-bs-target="#store-setting" type="button" role="tab" aria-controls="store-setting" aria-selected="false">إعدادات المتجر</button>
+        </li>
+        <!--end store setting-->
 
-                <!-- Shipping Settings -->
-                <div class="tab-pane fade" id="shipping" role="tabpanel">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">شركات الشحن</label>
-                                <div class="form-check mb-2">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">أرامكس</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">DHL</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input">
-                                    <label class="form-check-label">فيديكس</label>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">تكلفة الشحن الافتراضية</label>
-                                <input type="number" class="form-control" value="30">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">مناطق التوصيل</label>
-                                <select class="form-select" multiple="" size="5">
-                                    <option selected="">الرياض</option>
-                                    <option selected="">جدة</option>
-                                    <option selected="">الدمام</option>
-                                    <option>مكة</option>
-                                    <option>المدينة</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">الشحن المجاني للطلبات فوق</label>
-                                <input type="number" class="form-control" value="500">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!--start about store-->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="about-store-tab" data-bs-toggle="tab" data-bs-target="#about-store" type="button" role="tab" aria-controls="about-store" aria-selected="false">عن المتجر</button>
+        </li>
+        <!--end about store-->
 
-                <!-- Payment Settings -->
-                <div class="tab-pane fade" id="payment" role="tabpanel">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">بوابات الدفع</label>
-                                <div class="form-check mb-2">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">مدى</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">فيزا/ماستركارد</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">آبل باي</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">الدفع عند الاستلام</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">معرف التاجر</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">المفتاح السري</label>
-                                <input type="password" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">وضع التشغيل</label>
-                                <select class="form-select">
-                                    <option>تجريبي</option>
-                                    <option>إنتاج</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!--start shipping-policy-->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="shipping-policy-tab" data-bs-toggle="tab" data-bs-target="#shipping-policy" type="button" role="tab" aria-controls="shipping-policy" aria-selected="false">الشحن و التسليم</button>
+        </li>
+        <!--end shipping-policy-->
 
-                <!-- Email Settings -->
-                <div class="tab-pane fade" id="email" role="tabpanel">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">خادم SMTP</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">المنفذ</label>
-                                <input type="number" class="form-control" value="587">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">اسم المستخدم</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">كلمة المرور</label>
-                                <input type="password" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">البريد المرسل</label>
-                                <input type="email" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">اسم المرسل</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">تشفير SSL</label>
-                                <div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">تفعيل</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!--start payment-policy-->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="payment-policy-tab" data-bs-toggle="tab" data-bs-target="#payment-policy" type="button" role="tab" aria-controls="payment-policy" aria-selected="false">طرق الدفع</button>
+        </li>
+        <!--end payment-policy-->
 
-                <!-- Appearance Settings -->
-                <div class="tab-pane fade" id="appearance" role="tabpanel">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">النمط</label>
-                                <select class="form-select">
-                                    <option>فاتح</option>
-                                    <option>داكن</option>
-                                    <option>تلقائي</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">اللون الرئيسي</label>
-                                <input type="color" class="form-control form-control-color" value="#4e73df">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">الخط</label>
-                                <select class="form-select">
-                                    <option>Tajawal</option>
-                                    <option>Cairo</option>
-                                    <option>Almarai</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">حجم الخط</label>
-                                <select class="form-select">
-                                    <option>صغير</option>
-                                    <option selected="">متوسط</option>
-                                    <option>كبير</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">تخطيط القائمة</label>
-                                <select class="form-select">
-                                    <option>ثابت</option>
-                                    <option selected="">قابل للطي</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">الأيقونات</label>
-                                <select class="form-select">
-                                    <option selected="">Font Awesome</option>
-                                    <option>Material Icons</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!--start terms-of-use-->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="terms-of-use-tab" data-bs-toggle="tab" data-bs-target="#terms-of-use" type="button" role="tab" aria-controls="terms-of-use" aria-selected="false">شروط الإستخدام</button>
+        </li>
+        <!--end terms-of-use-->
 
-                <!-- Security Settings -->
-                <div class="tab-pane fade" id="security" role="tabpanel">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">المصادقة الثنائية</label>
-                                <div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input">
-                                    <label class="form-check-label">تفعيل</label>
-                                </div>
+        <!--start exchange-policy-->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="exchange-policy-tab" data-bs-toggle="tab" data-bs-target="#exchange-policy" type="button" role="tab" aria-controls="exchange-policy" aria-selected="false">سياسة الإستبدال و الإسترجاع</button>
+        </li>
+        <!--end exchange-policy-->
+
+        <!--start privacy-policy-->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="privacy-policy-tab" data-bs-toggle="tab" data-bs-target="#privacy-policy" type="button" role="tab" aria-controls="privacy-policy" aria-selected="false">السياسة الخصوصية</button>
+        </li>
+        <!--end privacy-policy-->
+
+        <!--start contact-us-->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="contact-us-tab" data-bs-toggle="tab" data-bs-target="#contact-us" type="button" role="tab" aria-controls="contact-us" aria-selected="false">اتصل بنا</button>
+        </li>
+        <!--end contact-us-->
+
+        <!--start faq-->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="faq-tab" data-bs-toggle="tab" data-bs-target="#faq" type="button" role="tab" aria-controls="faq" aria-selected="false">الأسئلة الشائعة</button>
+        </li>
+        <!--end faq-->
+
+
+      </ul>
+      <!--start theme-->
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="theme" role="tabpanel" aria-labelledby="theme-tab">
+            <form action="{{route('supplier.theme-update',Auth::user()->id)}}" method="POST" enctype="multipart/form-data">
+              @csrf  
+              <!-- رفع الشعار -->
+                <table>
+                  <tr>
+                      <td>
+                          <div class="m-4">
+                              <label for="storeLogo" class="form-label">شعار المتجر</label>
+                              <ul>
+                                  <li>الحجم المسموح: 300x300 بيكسل</li>
+                                  <li>النوع المسموح: JPEG, PNG, JPG</li>
+                              </ul>
+                          </div>
+                      </td>
+                      <td>
+                          <div class="m-4">
+                              <div id="dropzone" onclick="browsdialog()" onchange="previewLogo(event)">
+                                  <i class="fa fa-cloud-upload"></i>
+                                  <input type="file" name="image"class="form-control" id="storeLogo" accept="image/*" style="display: none;">
+                              </div>
+                          </div>
+                      </td>
+                      <td>
+                          <div class="m-4">
+                              <div id="logoPreview" class="preview" style="background-image: url('{{get_store_logo(Auth::user()->tenant_id)}}'); background-size: contain; background-repeat: no-repeat;">
+                              </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">مدة الجلسة (دقيقة)</label>
-                                <input type="number" class="form-control" value="30">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">حظر IP بعد</label>
-                                <input type="number" class="form-control" value="5">
-                                <small class="text-muted">عدد المحاولات الفاشلة</small>
-                            </div>
+                      </td>
+                  </tr>
+                </table>
+          
+                <!-- قسم الألوان -->
+                <table>
+                  <tr>
+                      <td>
+                          <div class="m-4">
+                          <label for="primaryColor" class="form-label">اللون الرئيسي</label>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">تعقيد كلمة المرور</label>
-                                <div class="form-check mb-2">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">أحرف كبيرة وصغيرة</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">أرقام</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">رموز خاصة</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" checked="">
-                                    <label class="form-check-label">8 أحرف على الأقل</label>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">تغيير كلمة المرور كل</label>
-                                <select class="form-select">
-                                    <option>30 يوم</option>
-                                    <option>60 يوم</option>
-                                    <option>90 يوم</option>
-                                    <option selected="">لا يلزم</option>
-                                </select>
-                            </div>
+                      </td>
+                      <td>
+                          <div class="m-4">
+                          <input type="color" class="form-control form-control-color" id="primaryColor" value="{{get_store_parimary_color(Auth::user()->tenant_id)}}">
+                          <input type="hidden" name="primarycollor" id="hiddenPrimaryCollor" value="{{get_store_parimary_color(Auth::user()->tenant_id)}}">
                         </div>
-                    </div>
-                </div>
-            </div>
+                      </td>
+                      <td>
+                        <div class="m-4">
+                            <label for="bodytextcolor" class="form-label">لون الخط الرئيسي</label>                  </div>
+                    </td>
+                    <td>
+                        <div class="m-4">
+                            <input type="color" class="form-control form-control-color" id="bodytextcolor" value="{{get_store_body_text_color(Auth::user()->tenant_id)}}">
+                            <input type="hidden" name="bodytextcolor" id="hiddenbodytextcolor" value="{{get_store_body_text_color(Auth::user()->tenant_id)}}">
+                          </div>
+                    </td>
+                      <td>
+                          <div class="m-4">
+                          <label for="footertextcolor" class="form-label">لون الخط على الفوتر</label>
+                        </div>
+                      </td>
+                      <td>
+                          <div class="m-4">
+                          <input type="color" class="form-control form-control-color" id="footertextcolor" value="{{get_store_footer_text_color(Auth::user()->tenant_id)}}">
+                          <input type="hidden" name="footertextcolor" id="hiddenfootertextcolor" value="{{get_store_footer_text_color(Auth::user()->tenant_id)}}">
+                        </div>
+                      </td>
+                  </tr>
+                </table>
+          
+                <!-- زر الحفظ -->
+                <button type="submit" class="btn btn-primary m-4">حفظ الإعدادات</button>
+              </form>
         </div>
-        <button class="btn btn-primary" id="saveSettings">
-            <i class="fas fa-save me-2"></i>حفظ التغييرات
-        </button>
-    </div>
+        <!--end theme-->
+
+        <!--start store setting-->
+        <div class="tab-pane fade" id="store-setting" role="tabpanel" aria-labelledby="store-setting-tab">...</div>
+        <!--end store setting-->
+
+        <!--start about store-->
+        <div class="tab-pane fade" id="about-store" role="tabpanel" aria-labelledby="about-store-tab">...</div>
+        <!--end about store-->
+
+        <!--start shipping-policy-->
+        <div class="tab-pane fade" id="shipping-policy" role="tabpanel" aria-labelledby="shipping-policy-tab">...</div>
+        <!--end shipping-policy-->
+
+        <!--start payment-policy-->
+        <div class="tab-pane fade" id="payment-policy" role="tabpanel" aria-labelledby="payment-policy-tab">...</div>
+        <!--end payment-policy-->
+
+        <!--start terms-of-use-->
+        <div class="tab-pane fade" id="terms-of-use" role="tabpanel" aria-labelledby="terms-of-use-tab">...</div>
+        <!--end terms-of-use-->
+
+        <!--start exchange-policy-->
+        <div class="tab-pane fade" id="exchange-policy" role="tabpanel" aria-labelledby="exchange-policy-tab">...</div>
+        <!--end exchange-policy-->
+
+        <!--start privacy-policy-->
+        <div class="tab-pane fade" id="privacy-policy" role="tabpanel" aria-labelledby="privacy-policy-tab">...</div>
+        <!--end privacy-policy-->
+
+        <!--start contact-us-->
+        <div class="tab-pane fade" id="contact-us" role="tabpanel" aria-labelledby="contact-us-tab">...</div>
+        <!--end contact-us-->
+
+        <!--start faq-->
+        <div class="tab-pane fade" id="faq" role="tabpanel" aria-labelledby="faq-tab">...</div>
+        <!--end faq-->
+
+      </div>
+       {{-- end tab  --}}
+    
+  </div>
 </div>
+  

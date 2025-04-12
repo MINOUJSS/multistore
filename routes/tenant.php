@@ -53,12 +53,20 @@ Route::middleware([
     Route::get('/checkout/cancel',[TenantsController::class,'checkout_cancel'])->name('checkout-cancel');
     //order
     Route::post('/order',[TenantsController::class,'order'])->name('order');
+    //order abandoned
+    Route::post('/order-abandoned',[TenantsController::class,'order_abandoned'])->name('order-abandoned');
     //thanks
     Route::get('/thanks',[TenantsController::class,'thanks'])->name('thanks');
     //get dayra response 
     Route::post('/get-dayras/{wilaya_id}',[TenantsController::class,'get_dayras'])->name('get-dayras');
+    //get wilaya data
+    Route::post('get-wilaya-data/{wilaya_id}',[TenantsController::class,'get_wilaya_data'])->name('get-wilaya-data');
+    //get wilaya data
+    Route::post('get-dayra-data/{dayra_id}',[TenantsController::class,'get_dayra_data'])->name('get-dayra-data');
      //get baladia response 
      Route::post('/get-baladias/{dayra_id}',[TenantsController::class,'get_baladias'])->name('get-baladias');
+     //get shipping price
+     Route::post('/get-shipping-prices/{wilaya_id}',[TenantsController::class,'get_shipping_prices'])->name('get-shipping-prices');
     
     });
 

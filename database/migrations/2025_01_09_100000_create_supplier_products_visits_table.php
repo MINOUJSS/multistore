@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('user_agent')->nullable(); // معلومات المتصفح أو الجهاز
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); // إذا كان المستخدم مسجلاً
             $table->timestamp('visited_at')->useCurrent(); // وقت الزيارة
+            $table->timestamps();
         });
     }
 

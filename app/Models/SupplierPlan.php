@@ -13,7 +13,7 @@ class SupplierPlan extends Model
 
     public function features()
     {
-        return $this->hasMany(SupplierPlanFeature::class);
+        return $this->hasMany(SupplierPlanFeature::class,'plan_id');
     }
     //
     public function pricing()

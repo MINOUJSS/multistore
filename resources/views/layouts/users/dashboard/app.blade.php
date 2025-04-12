@@ -28,6 +28,7 @@
     @yield('style')
   </head>
   <body>
+    {{last_seen_user()}}
      <!-- Start Main  -->     
     <div class="container-fluid app-wraper">
         @yield('sidbar')
@@ -43,7 +44,7 @@
           <!--Start Footer-->
           <div class="footer">
             <div class="text-center">
-                <small>جميع الحقوق محفوظة لمنصة <a href="#">متاجر ديزاد</a> @ <script>document.write(new Date().getFullYear())</script></small>
+                <small>جميع الحقوق محفوظة لمنصة <a href="{{route('site.index')}}" target="black">متاجر ديزاد</a> @ <script>document.write(new Date().getFullYear())</script></small>
             </div>
           </div>
           <!--End Footer-->

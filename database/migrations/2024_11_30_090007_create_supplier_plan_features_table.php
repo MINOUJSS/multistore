@@ -12,11 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('supplier_plan_features', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->unsignedBigInteger('plan_id');
-            $table->string('feature_name');
-            $table->string('feature_value');
-            $table->boolean('status')->default(true);
+            $table->string('name');
+            $table->boolean('available')->default(true);
             $table->timestamps();
         
             $table->foreign('plan_id')->references('id')->on('supplier_plans')->onDelete('cascade');

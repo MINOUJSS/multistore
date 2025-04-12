@@ -40,5 +40,36 @@ class Supplier extends Model
     {
         return $this->hasMany(SupplierProducts::class);
     }
+    //
+    public function orders()
+    {
+        return $this->hasMany(SupplierOrders::class,'supplier_id');
+    }
+    //order today
+    public function orderToDay()
+    {
+        return $this->hasMany(SupplierOrders::class,'supplier_id')
+                    ->whereDate('created_at','=',now());
+    }
+    //order confirmed today
+    public function orderConfirmedToDay()
+    {
+        return $this->hasMany(SupplierOrders::class,'supplier_id')
+                    ->whereDate('updated_at','=',now())
+                    ->where('status','=','processing');
+    }
+    //order canceled today 
+    public function orderCanceledToDay()
+    {
+        return $this->hasMany(SupplierOrders::class,'supplier_id')
+                    ->whereDate('updated_at','=',now())            
+                    ->where('status','=','canceled');
+    } 
+    //order abandonte order to day
+    public function orderAbandonedToDay()
+    {
+        return $this->hasMany(SupplierOrderAbandoned::class,'supplier_id')
+                    ->whereDate('created_at','=',now());
+    }
 
 }

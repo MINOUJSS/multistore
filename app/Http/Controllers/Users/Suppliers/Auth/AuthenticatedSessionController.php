@@ -31,7 +31,6 @@ class AuthenticatedSessionController extends Controller
         'email' => 'required|email',
         'password' => 'required',
     ]);
-
     // Extract credentials and 'remember me' value
     $credentials = $request->only('email', 'password');
     $remember = $request->boolean('remember'); // Get the boolean value of 'remember'
@@ -41,7 +40,8 @@ class AuthenticatedSessionController extends Controller
         // Regenerate session to prevent fixation attacks
         $request->session()->regenerate();
         //seed last seen table
-        event(new UserLogedInEvent(auth()->user()));
+        last_seen_user();
+        // event(new UserLogedInEvent(auth()->user()));
         // Redirect to intended location or dashboard
         return redirect()->intended(route('supplier.dashboard'));
     }

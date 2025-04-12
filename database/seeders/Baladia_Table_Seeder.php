@@ -155,7 +155,7 @@ class Baladia_Table_Seeder extends Seeder
         $Baladia=Baladia::create(['dayra_id'=>35,'ar_name'=>'سيقوس','en_name'=>'Sigus','zip_code'=>'0406',]);
         $Baladia=Baladia::create(['dayra_id'=>35,'ar_name'=>'العامرية','en_name'=>'El Amiria','zip_code'=>'0405',]);
         //--- dayra_id=36 | dayra_name=الضلعة---//
-        $Baladia=Baladia::create(['dayra_id'=>36,'ar_name'=>'','en_name'=>'','zip_code'=>'',]);
+        $Baladia=Baladia::create(['dayra_id'=>36,'ar_name'=>'الضلعة','en_name'=>'','zip_code'=>'',]);
         //--- dayra_id=37 | dayra_name=عين البيضاء---//
         $Baladia=Baladia::create(['dayra_id'=>37,'ar_name'=>'عين البيضاء','en_name'=>'Aïn Beïda','zip_code'=>'0402',]);
         $Baladia=Baladia::create(['dayra_id'=>37,'ar_name'=>'بريش','en_name'=>'Berriche','zip_code'=>'0409',]);

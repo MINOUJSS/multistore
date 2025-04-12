@@ -10,13 +10,13 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Users\Suppliers\SupplierAppsController;
 use App\Http\Controllers\Users\Suppliers\SupplierPlanController;
 use App\Http\Controllers\Users\Suppliers\SupplierOrderController;
+use App\Http\Controllers\Users\Suppliers\SupplierBillingController;
 use App\Http\Controllers\Users\Suppliers\SupplierPaymentController;
 use App\Http\Controllers\Users\Suppliers\SupplierProductController;
 use App\Http\Controllers\Users\Suppliers\SupplierSettingController;
 use App\Http\Controllers\Users\Suppliers\Auth\NewPasswordController;
 use App\Http\Controllers\Users\Suppliers\SupplierShippingController;
 use App\Http\Controllers\Users\Suppliers\SupplierAttributeController;
-use App\Http\Controllers\Users\Suppliers\SupplierStoreDesignController;
 use App\Http\Controllers\Users\Suppliers\SupplierSubscriptionController;
 use App\Http\Controllers\Users\Suppliers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Users\Suppliers\Auth\RegistredSupplierController;
@@ -48,6 +48,7 @@ Route::middleware([
                 Route::get('/supplier-panel/dashboard',[SupplierController::class,'index'])->name('dashboard'); 
                 //supplier settings routes
                 Route::get('/supplier-panel/settings',[SupplierSettingController::class,'index'])->name('settings');
+                Route::post('/supplier-panel/settings/theme-update/{user_id}',[SupplierSettingController::class,'theme_update'])->name('theme-update');
                 //supplier products routes
                 Route::get('/supplier-panel/products',[SupplierProductController::class,'index'])->name('products'); 
                 Route::post('/supplier-panel/product/create',[SupplierProductController::class,'create'])->name('product.create');
@@ -58,6 +59,7 @@ Route::middleware([
                 Route::delete('/supplier-panel/product/variant/delete/{id}',[SupplierProductController::class,'delete_product_variation'])->name('product.delete_product_variation');
                 Route::delete('/supplier-panel/product/discount/delete/{id}',[SupplierProductController::class,'delete_product_discount'])->name('product.delete_product_discount');
                 Route::delete('/supplier-panel/product/attributes/delete/{id}',[SupplierProductController::class,'delete_product_attribute'])->name('product.delete_product_attribute');
+                Route::get('/supplier-panel/filter-products',[SupplierProductController::class,'filterProducts'])->name('product.filterProducts');
                 // supplier attribute routes
                 Route::post('/supplier-panel/attributes/create',[SupplierAttributeController::class,'create'])->name('attribute.create_attribute');
                 Route::post('/supplier-panel/attributes/user/{id}',[SupplierAttributeController::class,'get_user_attributes'])->name('attribute.get_user_attribute');
@@ -65,17 +67,51 @@ Route::middleware([
                 //supplier orders routes
                 Route::get('/supplier-panel/orders',[SupplierOrderController::class,'index'])->name('orders'); 
                 Route::get('/supplier-panel/order/{id}',[SupplierOrderController::class,'order'])->name('order');
-                //unlock phone number
-                Route::post('/supplier-panel/unlock-phone-number/{order_id}',[SupplierOrderController::class,'unlock_phone_number'])->name('unlock-phone-number');
-                //supplier order abandoned routes
+                Route::delete('/supplier-panel/order/delete/{id}',[SupplierOrderController::class,'delete_order'])->name('order.delete');                
+                Route::get('/supplier-panel/filter-orders',[SupplierOrderController::class,'filterOrders'])->name('order.filterOrders'); 
+                Route::post('/supplier-panel/update-order-status', [SupplierOrderController::class, 'updateOrderStatus'])->name('order.updateOrderStatus');       
+                //supplier orders abandoned routes
                 Route::get('/supplier-panel/orders-abandoned',[SupplierOrderAbandonedController::class,'index'])->name('orders-abandoned');
+                Route::get('/supplier-panel/order-abandoned/{id}',[SupplierOrderAbandonedController::class,'order'])->name('order-abandoned');
+                Route::delete('/supplier-panel/order-abadoned/delete/{id}',[SupplierOrderAbandonedController::class,'delete_order'])->name('order-abandoned.delete');
+                Route::get('/supplier-panel/filter-orders-abandoned',[SupplierOrderAbandonedController::class,'filterOrders'])->name('order.filterOrdersAbandoned');
+                Route::post('/supplier-panel/update-order-abandoned-status', [SupplierOrderAbandonedController::class, 'updateOrderStatus'])->name('order.updateOrderAbandonedStatus');
+                //unlock phone number
+                Route::post('/supplier-panel/order/unlock-phone-number/{order_id}',[SupplierOrderController::class,'unlock_phone_number'])->name('order.unlock-phone-number');
+                Route::post('/supplier-panel/order-abandoned/unlock-phone-number/{order_id}',[SupplierOrderAbandonedController::class,'unlock_phone_number'])->name('order-abandoned.unlock-phone-number');
                 //supplier shipping routes
                 Route::get('/supplier-panel/shipping',[SupplierShippingController::class,'index'])->name('shipping');
+                Route::get('/supplier-panel/shipping/pricing/edit',[SupplierShippingController::class,'edit'])->name('shipping.edit');
+                Route::post('/supplier-panel/shipping/pricing/update',[SupplierShippingController::class,'update'])->name('shipping.update');
+                //supplier shipping company routes
+                Route::post('/supplier-panel/shipping-company/create',[SupplierShippingController::class,'add_shipping_company'])->name('shipping-company.create');
+                Route::post('/supplier-panel/update-shipping-status', [SupplierShippingController::class, 'updateShippingStatus'])->name('shipping-company.update-status');
                 //supplier application routes
                 Route::get('/supplier-panel/apps',[SupplierAppsController::class,'index'])->name('apps');
-                //supplier design routes
-                Route::get('/supplier-panel/store-design',[SupplierStoreDesignController::class,'index'])->name('store-design');
-                Route::post('/supplier-panel/store-design/theme-update/{user_id}',[SupplierStoreDesignController::class,'theme_update'])->name('theme-update');
+                Route::get('/supplier-panel/apps/google-analytics',[SupplierAppsController::class,'google_analytics'])->name('app.google-analytics');
+                Route::post('/supplier-panel/apps/google-analytics/store',[SupplierAppsController::class,'store_google_analytics'])->name('app.store-google-analytics');
+                Route::post('/supplier-panel/apps/google-analytics/update/{id}',[SupplierAppsController::class,'update_google_analytics'])->name('app.update-google-analytics');
+                Route::delete('/supplier-panel/apps/google-analytics/delete/{id}',[SupplierAppsController::class,'delete_google_analytics'])->name('app.delete-google-analytics');
+                Route::post('/supplier-panel/apps/google-analytics/get',[SupplierAppsController::class,'get_google_analytics'])->name('app.get-google-analytics');
+                Route::get('/supplier-panel/apps/facebook-pixel',[SupplierAppsController::class,'facebook_pixel'])->name('app.facebook-pixel');
+                Route::post('/supplier-panel/apps/facebook-pixel/store',[SupplierAppsController::class,'store_facebook_pixel'])->name('app.store-facebook-pixel');
+                Route::post('/supplier-panel/apps/facebook-pixel/update/{id}',[SupplierAppsController::class,'update_facebook_pixel'])->name('app.update-facebook-pixel');
+                Route::delete('/supplier-panel/apps/facebook-pixel/delete/{id}',[SupplierAppsController::class,'delete_facebook_pixel'])->name('app.delete-facebook-pixel');
+                Route::get('/supplier-panel/apps/tiktok-pixel',[SupplierAppsController::class,'tiktok_pixel'])->name('app.tiktok-pixel');
+                Route::post('/supplier-panel/apps/tiktok-pixel/store',[SupplierAppsController::class,'store_tiktok_pixel'])->name('app.store-tiktok-pixel');
+                Route::post('/supplier-panel/apps/tiktok-pixel/update/{id}',[SupplierAppsController::class,'update_tiktok_pixel'])->name('app.update-tiktok-pixel');
+                Route::delete('/supplier-panel/apps/tiktok-pixel/delete/{id}',[SupplierAppsController::class,'delete_tiktok_pixel'])->name('app.delete-tiktok-pixel');
+                Route::get('/supplier-panel/apps/google-sheet',[SupplierAppsController::class,'google_sheet'])->name('app.google-sheet');
+                Route::post('/supplier-panel/apps/google-sheet/store',[SupplierAppsController::class,'store_google_sheets'])->name('app.store-google-sheet');
+                Route::post('/supplier-panel/apps/google-sheet/update/{id}',[SupplierAppsController::class,'update_google_sheets'])->name('app.update-google-sheet');
+                Route::delete('/supplier-panel/apps/google-sheet/delete/{id}',[SupplierAppsController::class,'delete_google_sheets'])->name('app.delete-google-sheet');
+                Route::get('/supplier-panel/apps/telegram-notifications',[SupplierAppsController::class,'telegram_notifications'])->name('app.telegram-notifications');
+                Route::post('/supplier-panel/apps/telegram/store', [SupplierAppsController::class, 'store_telegram_notification'])->name('app.store-telegram-notification');
+                Route::post('/supplier-panel/apps/telegram/update/{id}', [SupplierAppsController::class, 'update_telegram_notification'])->name('app.update-telegram-notification');
+                Route::delete('/supplier-panel/apps/telegram/delete/{id}', [SupplierAppsController::class, 'delete_telegram_notification'])->name('app.delete-telegram-notification');
+                //supplier billing routes
+                Route::get('/supplier-panel/billing',[SupplierBillingController::class,'index'])->name('billing');
+
             });
             Route::post('/supplier-panel/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
             //subscription routes here

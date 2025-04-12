@@ -2,14 +2,512 @@
     <!-- Page Title -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>إدارة الشحن</h2>
-        <button class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>
-            إضافة شحنة جديدة
-        </button>
+        <div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ShippingCompaniesModal"><i class="fas fa-plus me-2"></i>إضافة شركة شحن</button>
+            <a class="btn btn-success" href="{{route('supplier.shipping.edit')}}"><i class="fas fa-plus me-2"></i>تسعير الشحن</a>  
+        </div>
     </div>
 
-    <!-- Shipping Stats -->
-    <div class="row mb-4">
+    <!-- Start Shipping companies -->
+    <div class="modal fade" id="ShippingCompaniesModal" tabindex="-1" aria-labelledby="ShippingCompaniesModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">ربط شركات الشحن</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <ul class="list-group text-center">
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#YalidinModal" style="cursor: pointer;"><img src="https://i.imgur.com/LNDFb1h.png" alt="yalidin" height="50px"/> </li>
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#ZrexpressModal" style="cursor: pointer;"><img src="https://i.imgur.com/eL1fmUM.jpeg" alt="Zrexpress" height="50px"/> </li>
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#EcotrackModal" style="cursor: pointer;"><img src="https://i.imgur.com/aNXHaac.png" alt="Ecotrack" height="50px"/> </li>
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#YalitecModal" style="cursor: pointer;"><img src="https://i.imgur.com/IsBfZGd.png" alt="Yalitec" height="50px"/> </li>
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#MaystroModal" style="cursor: pointer;"><img src="https://i.imgur.com/Pjv1wp2.png" alt="Maystro" height="50px"/> </li>
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#ProColisModal" style="cursor: pointer;"><img src="https://i.imgur.com/DJqdUc3.png" alt="Procolis" height="50px"/> </li>
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#NoestModal" style="cursor: pointer;"><img src="https://noest-dz.com/assets/img/logo_colors_new.png" alt="Noest" height="50px"/> </li>
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#ExpedigoModal" style="cursor: pointer;"><img src="https://i.imgur.com/P7Yma2X.png" alt="Expedigo" height="50px"/> </li>
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#ElogistiaModal" style="cursor: pointer;"><img src="https://i.imgur.com/aHASodC.png" alt="Elogistia" height="50px"/> </li>
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#GuepexModal" style="cursor: pointer;"><img src="https://www.guepex.com/assets/images/logo/logo-dark.webp" alt="Guepex" height="50px"/> </li>
+                <li class="list-group-item" data-bs-toggle="modal" data-bs-target="#DHDModal" style="cursor: pointer;"><img src="https://i.imgur.com/PrM01pT.png" alt="DHD" height="50px"/> </li>
+            </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    <!-- End Shipping companies -->
+
+    <!---->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">شركات الشحن المدمجة</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @if ($companies->count() > 0)
+                        @foreach ($companies as $company)
+                        <div class="col-md-4 mb-4">
+                            <div class="card integration-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">مفعل</span>
+                                <div class="card-body text-center">
+                                    <div class="integration-icon text-primary">
+                                        @php
+                                            $companyData = json_decode($company->data);
+                                        @endphp
+                                        <img src="{{ $companyData->logo ?? asset('default-logo.png') }}" alt="{{ $company->name }}" height="50px"/>
+                                    </div>
+                                    <h5 class="card-title">{{ $company->name }}</h5>
+                                    <p class="card-text">رفع طلبات العملاء إلى شركة الشحن {{ $company->name }} بضغطة زر واحدة</p>
+                    
+                                    <div class="form-check form-switch mb-3 d-flex justify-content-center">
+                                        <input class="form-check-input ms-2 toggle-shipping" type="checkbox" 
+                                            data-company-id="{{ $company->id }}" 
+                                            {{ $company->status == 'active' ? 'checked' : '' }}>
+                                        <label class="form-check-label">تفعيل الشحن</label>
+                                        <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#{{$company->name}}Modal">
+                                            <i class="fa-solid fa-gear"></i> إعدادات
+                                        </button>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                <!---->
+                <div class="col-12 mb-4" bis_skin_checked="1">
+                    <div class="card h-100 text-center p-4 shadow-sm border-dashed" bis_skin_checked="1">
+                        <div class="card-body" bis_skin_checked="1">
+                            <div class="integration-icon text-primary mb" bis_skin_checked="1">
+                                                                <img src="{{asset('asset/users/dashboard/img/other/Delivery-1.png')}}" alt="Yalidin" height="60px">
+                            </div>
+                            <h5 class="card-title mb-3">لا توجد شركات شحن مرتبطة بالمنصة</h5>
+                            <p class="text-muted mb-4">قم بإضافة شركة شحن لتمكين خيارات الشحن لعملائك.</p>
+            
+                            <div class="form-check form-switch mb-3 d-flex justify-content-center" bis_skin_checked="1">
+                                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ShippingCompaniesModal">
+                                    <i class="fa-solid fa-gear"></i> إضافة شركة شحن
+                                </button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <!---->
+                @endif
+                                
+            </div>
+        </div>
+    </div>
+    <!--/-->
+
+    <!-- Start Yalidin Modal -->
+    <div class="modal fade" id="YalidinModal" tabindex="-1" aria-labelledby="YalidinModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="yalidinForm">
+                    @csrf
+                    <input type="hidden" name="name" value="Yalidin">
+    
+                    <div class="modal-header">
+                        <h5 class="modal-title">ربط شركات Yalidin</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+    
+                    <div class="modal-body">
+                        <div class="mb-3 text-center">
+                            <img src="https://i.imgur.com/LNDFb1h.png" alt="yalidin" height="50px"/>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">ولاية الشحن :</label>
+                            <input type="text" class="form-control" id="yl-wilaya" name="wilaya" value="{{ old('wilaya', isset($yalidin) && $yalidin->count() ? json_decode($yalidin->data)->wilaya : '') }}">
+                            <div class="invalid-feedback" id="error-yl-wilaya"></div>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="api_id" class="col-form-label">API ID:</label>
+                            <input type="text" class="form-control" id="yl-api_id" name="api_id" value="{{ old('api_id', isset($yalidin) && $yalidin->count() ? json_decode($yalidin->data)->api_id : '')}}">
+                            <div class="invalid-feedback" id="error-yl-api_id"></div>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="api_token" class="col-form-label">API TOKEN:</label>
+                            <input type="text" class="form-control" id="yl-api_token" name="api_token" value="{{ old('api_token', isset($yalidin) && $yalidin->count() ? json_decode($yalidin->data)->api_token : '')}}">
+                            <div class="invalid-feedback" id="error-yl-api_token"></div>
+                        </div>
+                    </div>
+    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                        <button type="submit" class="btn btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>    
+    <!-- End Yalidin Modal -->
+
+        <!-- Start ZRexpress Modal -->
+        <div class="modal fade" id="ZrexpressModal" tabindex="-1" aria-labelledby="ZrexpressModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <form id="zrexpressForm">
+                    @csrf
+                    <input type="hidden" name="name" value="Zrexpress">
+    
+                    <div class="modal-header">
+                        <h5 class="modal-title">ربط شركات zexpress</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+    
+                    <div class="modal-body">
+                        <div class="mb-3 text-center">
+                            <img src="https://i.imgur.com/eL1fmUM.jpeg" alt="zexpress" height="50px"/>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="api_id" class="col-form-label">Token:</label>
+                            <input type="text" class="form-control" id="zr-token" name="token" value="{{ old('token', isset($zexpress) && $zexpress->count() ? json_decode($zexpress->data)->token : '')}}">
+                            <div class="invalid-feedback" id="error-zr-token"></div>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="api_token" class="col-form-label">Cle:</label>
+                            <input type="text" class="form-control" id="zr-cle" name="cle" value="{{ old('cle', isset($zexpress) && $zexpress->count() ? json_decode($zexpress->data)->cle : '')}}">
+                            <div class="invalid-feedback" id="error-zr-cle"></div>
+                        </div>
+                    </div>
+    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                        <button type="submit" class="btn btn-primary">حفظ</button>
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        <!-- End ZRexpress Modal -->
+
+        <!-- Start Ecotrack Modal -->
+        <div class="modal fade" id="EcotrackModal" tabindex="-1" aria-labelledby="EcotrackModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">ربط شركات Ecotrack</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post">
+                        <div class="mb-3 text-center">
+                            <img src="https://i.imgur.com/aNXHaac.png" alt="Ecotrack" height="50px"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">ولاية الشحن :</label>
+                            <input type="text" class="form-control" id="wilaya" name="wilaya">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">API ID:</label>
+                            <input type="text" class="form-control" id="api_id" name="api_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">API TOKEN:</label>
+                            <input type="text" class="form-control" id="api_token" name="api_token">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                  <button type="button" class="btn btn-primary">حفظ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- End Ecotrack Modal -->
+
+                <!-- Start Yalitec Modal -->
+                <div class="modal fade" id="YalitecModal" tabindex="-1" aria-labelledby="YalitecModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">ربط شركات Yalitec</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post">
+                                <div class="mb-3 text-center">
+                                    <img src="https://i.imgur.com/IsBfZGd.png" alt="Yalitec" height="50px"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">ولاية الشحن :</label>
+                                    <input type="text" class="form-control" id="wilaya" name="wilaya">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">API ID:</label>
+                                    <input type="text" class="form-control" id="api_id" name="api_id">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">API TOKEN:</label>
+                                    <input type="text" class="form-control" id="api_token" name="api_token">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                          <button type="button" class="btn btn-primary">حفظ</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <!-- End Yalitec Modal -->
+                        <!-- Start Maystro Modal -->
+        <div class="modal fade" id="MaystroModal" tabindex="-1" aria-labelledby="MaystroModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">ربط شركات Maystro</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post">
+                        <div class="mb-3 text-center">
+                            <img src="https://i.imgur.com/Pjv1wp2.pngs" alt="Maystro" height="50px"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">ولاية الشحن :</label>
+                            <input type="text" class="form-control" id="wilaya" name="wilaya">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">API ID:</label>
+                            <input type="text" class="form-control" id="api_id" name="api_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">API TOKEN:</label>
+                            <input type="text" class="form-control" id="api_token" name="api_token">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                  <button type="button" class="btn btn-primary">حفظ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- End Maystro Modal -->
+                <!-- Start ProColis Modal -->
+                <div class="modal fade" id="ProColisModal" tabindex="-1" aria-labelledby="ProColisModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">ربط شركات ProColis</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post">
+                                <div class="mb-3 text-center">
+                                    <img src="https://i.imgur.com/DJqdUc3.png" alt="ProColis" height="50px"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">ولاية الشحن :</label>
+                                    <input type="text" class="form-control" id="wilaya" name="wilaya">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">API ID:</label>
+                                    <input type="text" class="form-control" id="api_id" name="api_id">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">API TOKEN:</label>
+                                    <input type="text" class="form-control" id="api_token" name="api_token">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                          <button type="button" class="btn btn-primary">حفظ</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <!-- End ProColis Modal -->
+                        <!-- Start Noest Modal -->
+        <div class="modal fade" id="NoestModal" tabindex="-1" aria-labelledby="NoestModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">ربط شركات Noest</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post">
+                        <div class="mb-3 text-center">
+                            <img src="https://noest-dz.com/assets/img/logo_colors_new.png" alt="Noest" height="50px"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">ولاية الشحن :</label>
+                            <input type="text" class="form-control" id="wilaya" name="wilaya">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">API ID:</label>
+                            <input type="text" class="form-control" id="api_id" name="api_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">API TOKEN:</label>
+                            <input type="text" class="form-control" id="api_token" name="api_token">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                  <button type="button" class="btn btn-primary">حفظ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- End Noest Modal -->
+                <!-- Start Expedigo Modal -->
+                <div class="modal fade" id="ExpedigoModal" tabindex="-1" aria-labelledby="ExpedigoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">ربط شركات Expedigo</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post">
+                                <div class="mb-3 text-center">
+                                    <img src="https://i.imgur.com/P7Yma2X.png" alt="Expedigo" height="50px"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">ولاية الشحن :</label>
+                                    <input type="text" class="form-control" id="wilaya" name="wilaya">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">API ID:</label>
+                                    <input type="text" class="form-control" id="api_id" name="api_id">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">API TOKEN:</label>
+                                    <input type="text" class="form-control" id="api_token" name="api_token">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                          <button type="button" class="btn btn-primary">حفظ</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <!-- End Expedigo Modal -->
+                        <!-- Start Elogistia Modal -->
+        <div class="modal fade" id="ElogistiaModal" tabindex="-1" aria-labelledby="ElogistiaModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">ربط شركات Elogistia</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post">
+                        <div class="mb-3 text-center">
+                            <img src="https://i.imgur.com/aHASodC.png" alt="Elogistia" height="50px"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">ولاية الشحن :</label>
+                            <input type="text" class="form-control" id="wilaya" name="wilaya">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">API ID:</label>
+                            <input type="text" class="form-control" id="api_id" name="api_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">API TOKEN:</label>
+                            <input type="text" class="form-control" id="api_token" name="api_token">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                  <button type="button" class="btn btn-primary">حفظ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- End Elogistia Modal -->
+                <!-- Start Guepex Modal -->
+                <div class="modal fade" id="GuepexModal" tabindex="-1" aria-labelledby="GuepexModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">ربط شركات Guepex</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post">
+                                <div class="mb-3 text-center">
+                                    <img src="https://www.guepex.com/assets/images/logo/logo-dark.webp" alt="Guepex" height="50px"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">ولاية الشحن :</label>
+                                    <input type="text" class="form-control" id="wilaya" name="wilaya">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">API ID:</label>
+                                    <input type="text" class="form-control" id="api_id" name="api_id">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wilaya" class="col-form-label">API TOKEN:</label>
+                                    <input type="text" class="form-control" id="api_token" name="api_token">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                          <button type="button" class="btn btn-primary">حفظ</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <!-- End Guepex Modal -->
+                        <!-- Start DHD Modal -->
+        <div class="modal fade" id="DHDModal" tabindex="-1" aria-labelledby="DHDModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">ربط شركات DHD</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post">
+                        <div class="mb-3 text-center">
+                            <img src="https://i.imgur.com/PrM01pT.png" alt="DHD" height="50px"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">ولاية الشحن :</label>
+                            <input type="text" class="form-control" id="wilaya" name="wilaya">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">API ID:</label>
+                            <input type="text" class="form-control" id="api_id" name="api_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="wilaya" class="col-form-label">API TOKEN:</label>
+                            <input type="text" class="form-control" id="api_token" name="api_token">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                  <button type="button" class="btn btn-primary">حفظ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- End DHD Modal -->
+        
+
+    {{-- <div class="row mb-4">
         <div class="col-md-3">
             <div class="card text-white bg-primary">
                 <div class="card-body">
@@ -46,10 +544,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Shipping Table -->
-    <div class="card">
+    {{-- <div class="card">
         <div class="card-body">
             <!-- Filters -->
             <div class="row mb-3">
@@ -177,5 +675,5 @@
                 </ul>
             </nav>
         </div>
-    </div>
+    </div> --}}
 </div>

@@ -4,6 +4,14 @@
   {!!get_platform_data('google_analitics')->value!!}    
 @endsection
 
+@section('style')
+@include('users.suppliers.components.content.shipping.css.style')
+@endsection
+
+@section('meta')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
+
 @section('title')
   الصفحة الشحن
 @endsection
@@ -19,4 +27,9 @@
 @section('content')
 {{-- Your Content Here   --}}
   @include('users.suppliers.components.content.shipping.index')
+@endsection
+
+@section('footer_js')
+    @include('users.suppliers.components.content.shipping.js.yalidin_js')
+    @include('users.suppliers.components.content.shipping.js.zrexpress_js')
 @endsection

@@ -10,29 +10,28 @@
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label class="form-label">التصنيف</label>
-                    <select class="form-select">
-                        <option value="">جميع التصنيفات</option>
-                        <option>إلكترونيات</option>
-                        <option>ملابس</option>
-                        <option>أثاث</option>
-                        <option>كتب</option>
+                    <select id="categoryFilter" class="form-select">
+                        <option value="">جميع التصنيفات</option>     
+                        @foreach ($categories as $category)
+                          <option value="{{$category->id}}">{{$category->name}}</option>  
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">الحالة</label>
-                    <select class="form-select">
-                        <option value="">جميع الحالات</option>
-                        <option>متوفر</option>
-                        <option>غير متوفر</option>
+                    <select id="statusFilter" class="form-select">
+                        <option value="all">جميع الحالات</option>
+                        <option value="active">نشط</option>
+                        <option value="inactive">غير نشط</option>
                     </select>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">بحث</label>
-                    <input type="text" class="form-control" placeholder="ابحث عن منتج...">
+                    <input id="searchFilter" type="text" class="form-control" placeholder="ابحث عن منتج...">
                 </div>
                 <div class="col-md-2 mb-3">
                     <label class="form-label">&nbsp;</label>
-                    <button class="btn btn-primary w-100">بحث</button>
+                    <button id="searchBtn" class="btn btn-primary w-100">بحث</button>
                 </div>
             </div>
         </div>
@@ -58,7 +57,7 @@
                             <th>الإجراءات</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="productList">
                         @foreach ($products as $product)
                         <tr>
                             <td><img src="{{asset($product->image)}}" alt="Product" width="50"></td>
@@ -85,7 +84,7 @@
             </div>
 
             <!-- Pagination -->
-            <nav aria-label="Page navigation" class="mt-4">
+            {{-- <nav aria-label="Page navigation" class="mt-4">
                 <ul class="pagination justify-content-center">
                     <li class="page-item disabled">
                         <a class="page-link" href="#" tabindex="-1">السابق</a>
@@ -97,7 +96,8 @@
                         <a class="page-link" href="#">التالي</a>
                     </li>
                 </ul>
-            </nav>
+            </nav> --}}
+            {{$products->links('vendor.pagination.dashboard-pagination')}}
         </div>
     </div>
     

@@ -2,11 +2,11 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">إدارة الطلبات</h1>
-        <div class="btn-group">
+        {{-- <div class="btn-group">
             <button class="btn btn-primary">
                 <i class="fas fa-file-export me-2"></i>تصدير التقرير
             </button>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Filters -->
@@ -15,26 +15,26 @@
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <label class="form-label">حالة الطلب</label>
-                    <select class="form-select">
-                        <option value="">جميع الحالات</option>
-                        <option>جديد</option>
-                        <option>قيد المعالجة</option>
-                        <option>تم الشحن</option>
-                        <option>مكتمل</option>
-                        <option>ملغي</option>
+                    <select id="orderStatusFilter" class="form-select">
+                        <option value="all">جميع الحالات</option>
+                        <option value="pending">جديد</option>
+                        <option value="processing">قيد المعالجة</option>
+                        <option value="shipped">تم الشحن</option>
+                        <option value="delivered">مكتمل</option>
+                        <option value="canceled">ملغي</option>
                     </select>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">تاريخ الطلب</label>
-                    <input type="date" class="form-control">
+                    <input id="orderDateFilter" type="date" class="form-control">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">بحث</label>
-                    <input type="text" class="form-control" placeholder="رقم الطلب، اسم العميل...">
+                    <input id="searchFilter" type="text" class="form-control" placeholder="رقم الطلب، اسم العميل...">
                 </div>
                 <div class="col-md-2 mb-3">
                     <label class="form-label">&nbsp;</label>
-                    <button class="btn btn-primary w-100">بحث</button>
+                    <button id="searchBtn" class="btn btn-primary w-100">بحث</button>
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
                             <td>#{{ $order->order_number }}</td>
                             <td>{{ $order->customer_name }}</td>
                             <td>{!! supplier_order_display_phone($order->id) !!}</td>
-                            <td>{{ $order->items_count }} منتجات</td>
+                            <td>{{ $order->items->count() }} منتجات</td>
                             <td>{{ number_format($order->total_price, 2) }} د.ج</td>
                             <td>{{ $order->created_at->format('Y-m-d') }}</td>
                             <td>
@@ -79,7 +79,7 @@
                                 <button class="btn btn-sm btn-info view-order" data-order-id="{{ $order->id }}">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger delete-order" data-order-id="{{ $order->id }}">
+                                <button class="btn btn-sm btn-danger delete-order" data-order-id="{{ $order->id }}" onclick="delete_supplier_order({{ $order->id }});">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -94,7 +94,7 @@
             </div>
 
             <!-- Pagination -->
-            <nav aria-label="Page navigation" class="mt-4">
+            {{-- <nav aria-label="Page navigation" class="mt-4">
                 <ul class="pagination justify-content-center">
                     <li class="page-item disabled">
                         <a class="page-link" href="#" tabindex="-1">السابق</a>
@@ -108,6 +108,9 @@
                 </ul>
             </nav>
         </div>
+    </div> --}}
+    <div class="mt-4">
+    {{$orders->links('vendor.pagination.dashboard-pagination')}}
     </div>
     {{-- order details --}}
     <div class="modal fade" id="viewOrderModal" aria-labelledby="viewOrderModal" tabindex="-1" aria-hidden="true">
@@ -245,8 +248,8 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
                     <button type="button" class="btn btn-primary">طباعة الفاتورة</button>
                 </div>
-            </div>
-        </div>
-    </div> --}}
+            </div>--}}
+        </div> 
+    </div> 
 
 </div>

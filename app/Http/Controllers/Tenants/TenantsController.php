@@ -12,6 +12,7 @@ use App\Models\SupplierFqa;
 use App\Models\UserBalance;
 use App\Models\SupplierPage;
 use Illuminate\Http\Request;
+use App\Models\ShippingPrice;
 use App\Models\SupplierOrders;
 use App\Models\SupplierProducts;
 use App\Models\UserStoreCategory;
@@ -21,8 +22,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Models\SupplierProductImages;
+use App\Models\SupplierOrderAbandoned;
+use App\Models\SupplierProductsVisits;
 use App\Models\SupplierProductAttributes;
 use App\Models\SupplierProductVariations;
+use App\Models\SupplierOrderAbandonedItems;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -175,12 +179,34 @@ class TenantsController extends Controller
         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     }
     //product details
-    public function product($id)
+    public function product($id,Request $request)
     {
         //check user type
         if(get_user_data(tenant('id'))!=null && get_user_data(tenant('id'))->type=='supplier'){
-            //get user data
-            $wilayas=Wilaya::all();
+        //insert this visit to supplier product visit table
+        // جلب عنوان IP ومعلومات المتصفح
+        $ipAddress = $request->ip();
+        $userAgent = $request->header('User-Agent');
+        $userId = Auth::check() ? Auth::id() : null;
+
+        // التحقق من عدم تسجيل الزيارة سابقًا لتجنب التكرار غير الضروري
+        $existingVisit = SupplierProductsVisits::where('product_id', $id)
+            ->where('ip_address', $ipAddress)
+            ->whereDate('visited_at', now()->toDateString()) // نفس اليوم
+            ->first();
+
+            if (!$existingVisit) {
+                // إنشاء سجل جديد
+                SupplierProductsVisits::create([
+                    'product_id'  => $id,
+                    'ip_address'  => $ipAddress,
+                    'user_agent'  => $userAgent,
+                    'user_id'     => $userId,
+                    'visited_at'  => now(),
+                ]);
+            }
+            //
+            $wilayas=ShippingPrice::where('user_id',get_user_data(tenant('id'))->id)->where('shipping_available_to_wilaya',1)->get();
             $product= SupplierProducts::where('supplier_id',get_supplier_data(tenant('id'))->id)->where('id',$id)->first();
             $product_images=SupplierProductImages::where('product_id',$product->id)->get();
             $product_variations=SupplierProductVariations::where('product_id',$product->id)->get();
@@ -224,44 +250,52 @@ class TenantsController extends Controller
     if (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'supplier') {
         // التحقق من صحة البيانات
         $validatedData = $request->validate([
-            'supplier_id' => 'required|exists:suppliers,id',
+            // 'supplier_id' => 'required|exists:suppliers,id',
             // 'user_id' => 'nullable|exists:users,id',
             'name' => 'required|string|max:255',
             'phone' => 'required|string|regex:/^0[5-7][0-9]{8}$/',
             'address' => 'required|string|max:500',
-            // 'wilaya' => 'required|integer|exists:wilayas,id',
+            'wilaya' => 'required|integer|exists:wilayas,id',
             // 'dayrea' => 'required|integer|exists:dayreas,id',
             // 'baladia' => 'required|integer|exists:baladias,id',
-            // 'shipping_and_point' => 'required|in:home,store',
-            // 'product_id' => 'required|exists:supplier_products,id',
-            // 'product_varition' => 'nullable|exists:supplier_product_variations,id',
-            // 'product_attribute' => 'nullable|exists:supplier_product_attributes,id',
+            'shipping_and_point' => 'required|in:home,descktop',
+            'product_id' => 'required|exists:supplier_products,id',
+            'product_varition' => 'nullable|exists:supplier_product_variations,id',
+            'product_attribute' => 'nullable|exists:supplier_product_attributes,id',
             'qty' => 'required|integer|min:1',
             // 'price' => 'required|numeric|min:0',
             // 'form_total_amount' => 'required|numeric|min:0',
             // 'shipping_cost' => 'required|numeric|min:0',
-            // 'payment_method' => 'required|in:cash_on_delivery,credit_card,bank_transfer',
+            'payment_method' => 'required|in:cod,chargily,baridimob',
         ]);
 
         try {
             DB::beginTransaction(); // بدء المعاملة
-
+            //delete order abandoned from data base
+            $order_abandoned=SupplierOrderAbandoned::where('phone',$request->phone)->first();
+            $order_abandoned->delete();
+            //get product data
+            $product=SupplierProducts::findOrfail($request->product_id);
             // توليد رقم طلب فريد
             $orderNumber = 'ORD-' . strtoupper(uniqid());
 
             // إنشاء الطلب
-            $supplierId = $request->supplier_id;
+            $supplierId = $product->supplier_id;
             $planId = get_supplier_subscription_data($supplierId)->plan_id;
             $phoneVisibility = plan_phone_visibilty_autorization($planId) ? true : false;
+            // get total price
+            $total_price=($product->price * $request->qty) + get_shipping_cost($request->shipping_and_point,$request->wilaya,$request->dayra,$request->baladia);
+            //get shipping cost
+            $shipping_cost=get_shipping_cost($request->shipping_and_point,$request->wilaya,$request->dayra,$request->baladia);
             $supplierOrder = SupplierOrders::create([
-                'supplier_id' => $request->supplier_id,
+                'supplier_id' => $product->supplier_id,
                 'order_number' => $orderNumber,
                 'customer_name'=>$request->name,
                 'phone' => $request->phone,
                 'phone_visiblity' => $phoneVisibility,
                 'status' => 'pending',
-                'total_price' => $request->form_total_amount,
-                'shipping_cost' => $request->shipping_cost,
+                'total_price' => $total_price,
+                'shipping_cost' => $shipping_cost,
                 'payment_method' => $request->payment_method,
                 'payment_status' => 'pending',
                 'shipping_address' => $request->address,
@@ -275,30 +309,16 @@ class TenantsController extends Controller
                 'variation_id' => $request->product_varition,
                 'attribute_id' => $request->product_attribute,
                 'quantity' => $request->qty,
-                'unit_price' => $request->price,
-                'total_price' => $request->form_total_amount,
+                'unit_price' => $product->price,
+                'total_price' => $total_price,
             ]);
-
-                        
-            // //add 10 d.a to user balance 
-            // //get user
-            // $user=get_user_data(tenant('id'));
-            // //update user balance
-            // $balance=UserBalance::where('user_id',$user->id)->first();
-            // $balance->outstanding_amount=$balance->outstanding_amount+get_platform_comition($request->price);
-            // $balance->update();
 
             DB::commit(); // تأكيد العملية
 
-            // إدراج الطلب في Google Sheets
-            $this->insertOrderToGoogleSheet($supplierOrder);
 
             //notify the supplier about this order
             
             //with telegram api call
-
-
-
 
 
             // return response()->json([
@@ -317,11 +337,86 @@ class TenantsController extends Controller
             // ], 500);
         }
 
-
     }
+    }
+    //order abandoned
+    public function order_abandoned(Request $request)
+    {
+           // التحقق من نوع المستخدم
+    if (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'supplier') {
+            // التحقق من صحة البيانات
+            $validatedData = $request->validate([
+                'phone' => 'required|string|regex:/^0[5-7][0-9]{8}$/',
+            ]);
+
+            try {
+                DB::beginTransaction(); // بدء المعاملة
+                $product=SupplierProducts::findOrfail($request->product_id);
+                // توليد رقم طلب فريد
+                $orderNumber = 'ORD-' . strtoupper(uniqid());
+
+                // إنشاء الطلب
+                $supplierId = $product->supplier_id;
+                $planId = get_supplier_subscription_data($supplierId)->plan_id;
+                $phoneVisibility = plan_phone_visibilty_autorization($planId) ? true : false;
+                // get total price
+                $total_price=($product->price * $request->qty) + get_shipping_cost($request->shipping_and_point,$request->wilaya,$request->dayra,$request->baladia);
+                //get shipping cost
+                $shipping_cost=get_shipping_cost($request->shipping_and_point,$request->wilaya,$request->dayra,$request->baladia);
+                $supplierOrder = SupplierOrderAbandoned::create([
+                    'supplier_id' => $product->supplier_id,
+                    'order_number' => $orderNumber,
+                    'customer_name'=>$request->name,
+                    'phone' => $request->phone,
+                    'phone_visiblity' => $phoneVisibility,
+                    'status' => 'pending',
+                    'total_price' => $total_price,
+                    'shipping_cost' => $shipping_cost,
+                    'payment_method' => $request->payment_method,
+                    'payment_status' => 'pending',
+                    'shipping_address' => $request->address,
+                    'billing_address' => $request->billing_address ?? $request->address,
+                ]);
+
+                // إدراج عنصر الطلب
+                SupplierOrderAbandonedItems::create([
+                    'order_id' => $supplierOrder->id,
+                    'product_id' => $request->product_id,
+                    'variation_id' => $request->product_varition,
+                    'attribute_id' => $request->product_attribute,
+                    'quantity' => $request->qty,
+                    'unit_price' => $product->price,
+                    'total_price' => $total_price,
+                ]);
+
+                DB::commit(); // تأكيد العملية
+
+
+                //notify the supplier about this order
+                
+                //with telegram api call
+
+
+                return response()->json([
+                    'message' => 'تم إنشاء الطلب بنجاح!',
+                    'order' => $supplierOrder
+                ], 201);
+
+                // إعادة المستخدم إلى صفحة الشكر
+    
+
+            } catch (\Exception $e) {
+                DB::rollBack(); // التراجع في حالة حدوث خطأ
+                return response()->json([
+                    'message' => 'حدث خطأ أثناء إنشاء الطلب',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+
+        }  
     }
     //function thanks
-    function thanks() 
+    public function thanks() 
     {
         if(!session()->has('success'))
         {
@@ -344,10 +439,10 @@ class TenantsController extends Controller
         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     }
     //get dayras
-    function get_dayras($wilaya_id)
+    public function get_dayras($wilaya_id)
     {
         $dayras=Dayra::where('wilaya_id',$wilaya_id)->get();
-        $html='<option selected>إختر الدائرة...</option>';
+        $html='<option value="0" selected>إختر الدائرة...</option>';
         foreach($dayras as $dayra)
         {
             $html.='<option value="'.$dayra->id.'">'.$dayra->ar_name.'</option>';
@@ -355,14 +450,46 @@ class TenantsController extends Controller
         return $html;
     }
     //get baladias
-    function get_baladias($dayra_id)
+    public function get_baladias($dayra_id)
     {
         $baladias=Baladia::where('dayra_id',$dayra_id)->get();
-        $html='<option selected>إختر البلدية...</option>';
+        $html='<option value="0" selected>إختر البلدية...</option>';
         foreach($baladias as $baladia)
         {
             $html.='<option value="'.$baladia->id.'">'.$baladia->ar_name.'</option>';
         }
         return $html;
+    }
+    //get shipping prices
+    public function get_shipping_prices($wilaya_id)
+    {
+        $prices=ShippingPrice::where('user_id',get_user_data(tenant('id'))->id)->where('wilaya_id',$wilaya_id)->first();
+        return response()->json([
+            'prices' =>$prices,
+        ]);
+    }
+    //get_wilaya_data
+    public function get_wilaya_data($wilaya_id)
+    {
+        $wilaya=Wilaya::findOrfail($wilaya_id);
+        if($wilaya==null)
+        {
+            $wilaya=['ar_name'=>'ولاية غير معروفة'];
+        }
+        return response()->json([
+            'wilaya' => $wilaya,
+        ]);
+    }
+    //get_wilaya_data
+    public function get_dayra_data($wilaya_id)
+    {
+        $dayra=Dayra::findOrfail($wilaya_id);
+        if($dayra==null)
+        {
+            $dayra=['ar_name'=>'دائرة غير معروفة'];
+        }
+        return response()->json([
+            'dayra' => $dayra,
+        ]);
     }
 }

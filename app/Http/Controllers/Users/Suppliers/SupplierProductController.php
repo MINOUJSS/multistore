@@ -22,6 +22,7 @@ class SupplierProductController extends Controller
     //
     public function index()
     {
+        // dd(get_supplier_data(auth()->user()->tenant_id)->id);
         $store_categories=UserStoreCategory::where('user_id',auth()->user()->id)->get();
         $categories_ids=[];
         foreach($store_categories as $category)
@@ -33,7 +34,7 @@ class SupplierProductController extends Controller
         {
             $categories[]=Category::find($id);
         }
-        $products=SupplierProducts::orderBy('id', 'desc')->where('supplier_id',get_supplier_data(auth()->user()->tenant_id)->id)->get();
+        $products=SupplierProducts::orderBy('id', 'desc')->where('supplier_id',get_supplier_data(auth()->user()->tenant_id)->id)->paginate(10);
         return view('users.suppliers.products.index', compact('products', 'categories'));
     }
     //create
@@ -569,5 +570,28 @@ class SupplierProductController extends Controller
             'message' => 'attribute deleted successfully',
         ]);
     }
+
+    ///filter products
+    public function filterProducts(Request $request)
+    {
+        $query = SupplierProducts::query();
+
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->status && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->search) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $products = $query->where('supplier_id',get_supplier_data(auth()->user()->tenant_id)->id)->get();
+
+        return view('users.suppliers.components.content.products.partials.product_table', compact('products'))->render();
+    }
+
 
 }

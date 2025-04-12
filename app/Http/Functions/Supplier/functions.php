@@ -464,3 +464,41 @@ function supplier_order_display_phone($order_id)
         return '<img src="' . asset('asset/users/dashboard/img/other/lock.png') . '" alt="phone" onclick="unlock_phone_number(' . $order->id . ')" style="cursor: pointer;" />';
     }
 }
+//check phone visibility autorization
+function supplier_order_abandoned_display_phone($order_id)
+{
+    $order = App\Models\SupplierOrderAbandoned::findOrFail($order_id);
+    if ($order->phone_visiblity==true) {
+        return $order->phone;
+    } else {
+        return '<img src="' . asset('asset/users/dashboard/img/other/lock.png') . '" alt="phone" onclick="unlock_phone_number(' . $order->id . ')" style="cursor: pointer;" />';
+    }
+}
+//
+function get_shipping_cost($end_point, $wilaya_id, $dayra_id = 0, $baladia_id = 0)
+{
+    $cost = App\Models\ShippingPrice::where('user_id', get_user_data(tenant('id'))->id)
+                                    ->where('wilaya_id', $wilaya_id)
+                                    ->first();
+
+    // التأكد من وجود بيانات التسعير
+    if (!$cost) {
+        return 0; // أو أي قيمة افتراضية مناسبة
+    }
+
+    if ($end_point === "home") {
+        if ($dayra_id == 0 && $baladia_id == 0) {
+            return $cost->to_home_price ?? 0;
+        } else {
+            if(get_dayra_data($dayra_id)->ar_name === get_wilaya_data($wilaya_id)->ar_name)
+            {
+                return $cost->to_home_price ?? 0;
+            }else
+            {
+                return ($cost->to_home_price ?? 0) + ($cost->additional_price ?? 0);
+            }
+        }
+    }
+
+    return $cost->stop_desck_price ?? 0;
+}

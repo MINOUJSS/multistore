@@ -25,10 +25,11 @@ class SupplierController extends Controller
             //select user
         $user=User::find($id);
         // Define the folder path
-        $folderPath = get_supplier_store_name('supplier/'.$user->tenant_id);
+        // $folderPath = get_supplier_store_name('supplier/'.$user->tenant_id);
+        $folderPath = get_supplier_store_name($user->tenant_id);
         // Delete the folder from storage
-        if (Storage::disk('public')->exists($folderPath)) {
-            Storage::disk('public')->deleteDirectory($folderPath);
+        if (Storage::disk('supplier')->exists($folderPath)) {
+            Storage::disk('supplier')->deleteDirectory($folderPath);
         }
         //get supplier
         $supplier=Tenant::find($user->tenant_id);

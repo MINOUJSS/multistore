@@ -11,7 +11,7 @@ class LastSeen extends Model
     //
     protected $fillable=[
         'user_id',
-        'ip-address',
+        'ip_address',
         'device',
         'browser',
         'logged_in_at',

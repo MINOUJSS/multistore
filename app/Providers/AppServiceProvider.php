@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Tenancy\Affects\Filesystems\Events\ConfigureDisk;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
+        // Paginator::useBootstrapFive();
+        // Paginator::useBootstrapFour();
+        // Paginator::defaultView('vendor.pagination.default');
+ 
+        // Paginator::defaultSimpleView('vendor.pagination.simple-default');
     }
 }

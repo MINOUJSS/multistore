@@ -59,7 +59,7 @@
             </h3>
             <p class="">{{$product->short_description}}</p>
             {{-- order form  --}}
-            <form action="/order" class="row g-3 border p-3 rounded mt-3 mb-3" method="POST">
+            <form id="orderForm" action="/order" class="row g-3 border p-3 rounded mt-3 mb-3" method="POST">
               @csrf  
               <div class="col-md-6">
                   <label for="name" class="form-label">الإسم الكامل</label>
@@ -70,7 +70,7 @@
                 </div>
                 <div class="col-md-6">
                   <label for="phone" class="form-label">رقم الهاتف</label>
-                  <input type="phone"  name="phone" class="form-control @error('phone') is-invalid @enderror" id="phone" value="{{ old('phone') }}">
+                  <input type="phone"  name="phone" class="form-control @error('phone') is-invalid @enderror" id="phone" value="{{ old('phone') }}" onchange="create_abandoned_order();">
                   @error('phone')
                   <div class="invalid-feedback">{{ $message }}</div>
                   @enderror
@@ -84,21 +84,24 @@
                 </div>
                 <div class="col-md-4">
                     <label for="inputWilaya" class="form-label">الولاية</label>
-                    <select id="inputWilaya" name="wilaya" class="form-select @error('wilaya') is-invalid @enderror">
-                      <option selected>إختر الولاية...</option>
+                    <select id="inputWilaya" name="wilaya" class="form-select @error('wilaya') is-invalid @enderror" onchange="show_shipping_prices(this.value);">
+                      <option value="0" selected>إختر الولاية...</option>
                       @foreach ($wilayas as $wilaya)
-                      <option value="{{$wilaya->id}}" {{ old('wilaya') == $wilaya->id ? 'selected' : '' }}>{{$wilaya->ar_name}}</option>
+                          <option value="{{ $wilaya->wilaya_id }}" {{ old('wilaya') == $wilaya->wilaya_id ? 'selected' : '' }}>
+                              {{ get_wilaya_data($wilaya->wilaya_id)->ar_name }}
+                          </option>
                       @endforeach
-                    </select>
+                  </select>
+           
                     @error('wilaya')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                   </div>
                 <div class="col-md-4">
                   <label for="inputDayra" class="form-label">الدئرة</label>
-                  <select id="inputDayra" name="dayrea" class="form-select @error('dayrea') is-invalid @enderror">
-                    <option selected>إختر الدائرة...</option>
-                    <option>...</option>
+                  <select id="inputDayra" name="dayra" class="form-select @error('dayrea') is-invalid @enderror">
+                    <option value="0" selected>إختر الدائرة...</option>
+                    <option value="0">...</option>
                   </select>
                   @error('dayrea')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -107,8 +110,8 @@
                 <div class="col-md-4">
                     <label for="inputBaladia" class="form-label">البلدية</label>
                     <select id="inputBaladia" name="baladia" class="form-select @error('baladia') is-invalid @enderror">
-                        <option selected>إختر البلدية...</option>
-                        <option>...</option>
+                        <option value="0" selected>إختر البلدية...</option>
+                        <option value="0">...</option>
                       </select>
                       @error('baladia')
                       <div class="invalid-feedback">{{ $message }}</div>
@@ -116,11 +119,32 @@
                   </div>
                   <div class="row mt-3 mb-3">
                     <div class="col-md-12">
-                      <h5>التوصيل</h5>
-                      <input class="form-check-input" type="radio" name="shipping_and_point" value="descktop" {{ old('shipping_and_point') == 'descktop' ? 'checked' : '' }}/>
-                      <label for="to_descktop">للمكتب</label>
-                      <input class="form-check-input" type="radio" name="shipping_and_point" value="home" {{ old('shipping_and_point') == 'home' ? 'checked' : '' }}/>
-                      <label for="to_home">للمنزل</label>
+                      <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5>التوصيل</h5>
+                        <p id="show_shipping_price">إختر الولاية</p>
+                      </div>
+                      <div id="shipping_method" class="row d-flex justify-content-between align-items-center" style="display: none !important;">
+ 
+                        <div class="col-md-6">
+                            <div class="card p-3 text-center border option-card" id="card_home" onclick="selectOption('home');show_to_home_price();countTotalPrice();">
+                                <input class="form-check-input d-none" type="radio" id="to_home" name="shipping_and_point" value="home" 
+                                    {{ old('shipping_and_point','home') == 'home' ? 'checked' : '' }}>
+                                <label class="form-check-label fw-bold" for="to_home">التوصيل للمنزل</label>
+                                <p id="to_home_price">00</p><sup> د.ج</sup>
+                            </div>
+                        </div> 
+                        
+                        <div class="col-md-6">
+                          <div class="card p-3 text-center border option-card" id="card_descktop" onclick="selectOption('descktop');show_to_desck_price();countTotalPrice();">
+                              <input class="form-check-input d-none" type="radio" id="to_descktop" name="shipping_and_point" value="descktop" 
+                                  {{ old('shipping_and_point') == 'descktop' ? 'checked' : '' }}>
+                              <label class="form-check-label fw-bold" for="to_descktop">التوصيل للمكتب</label>
+                              <p id="to_desck_price">00</p><sup> د.ج</sup>
+                          </div>
+                      </div>
+
+                    </div>
+                    
                       @error('shipping_and_point')
                       <div class="text-danger">{{ $message }}</div>
                       @enderror
@@ -180,10 +204,10 @@
                           </div>
                     </div>
                 <div class="col-md-8">
-                  <input type="hidden" name="supplier_id" value="{{$product->supplier_id}}" />
-                  <input type="hidden" name="user_id" value="{{(auth()->user())? auth()->user()->id : 'null' }}"/>
+                  {{-- <input type="hidden" name="supplier_id" value="{{$product->supplier_id}}" /> --}}
+                  {{-- <input type="hidden" name="user_id" value="{{(auth()->user())? auth()->user()->id : 'null' }}"/> --}}
                   <input type="hidden" name="product_id" value="{{$product->id}}"/>
-                  <input type="hidden" name="product_name" value="{{$product->name}}"/>
+                  {{-- <input type="hidden" name="product_name" value="{{$product->name}}"/>
                   @if(supplier_product_has_discount($product->id))
                   <input type="hidden" name="price" value="{{$product->activeDiscount->discount_amount}}" />
                   @else
@@ -194,7 +218,7 @@
                   <input type="hidden" name="form_total_amount" id="form_total_amount" value="{{($product->minimum_order_qty * $product->activeDiscount->discount_amount)+300}}" />
                   @else
                   <input type="hidden" name="form_total_amount" id="form_total_amount" value="{{($product->minimum_order_qty * $product->price)+300}}" />
-                  @endif
+                  @endif --}}
                   <button type="submit" class="form-control btn btn-primary"><i class="fas fa-shopping-cart"></i>اشتري الآن</button>
                 </div>
                   </div>
@@ -232,7 +256,7 @@
                                         <i class="fas fa-truck"></i> التوصيل
                                     </div>
                                     <div class="shipping-price" style="width: 20%;">
-                                        <span id="shipping_price" class="price" >300</span> <sup>د.ج</sup>
+                                        <span id="shipping_price" class="price" >إختر الولاية</span><sup> د.ج</sup>
                                     </div>
                                 </div>
                                 <hr>
@@ -242,9 +266,9 @@
                                     </div>
                                     <div class="sum-value" style="width: 20%;">
                                       @if(supplier_product_has_discount($product->id))
-                                      <span id="total_price">{{($product->minimum_order_qty * $product->activeDiscount->discount_amount)+300}}</span> <sup>د.ج</sup>
+                                      <span id="total_price">{{($product->minimum_order_qty * $product->activeDiscount->discount_amount)}}</span> <sup>د.ج</sup>
                                       @else
-                                      <span id="total_price">{{($product->minimum_order_qty * $product->price)+300}}</span> <sup>د.ج</sup>
+                                      <span id="total_price">{{($product->minimum_order_qty * $product->price)}}</span> <sup>د.ج</sup>
                                       @endif
                                     </div>
                                 </div>

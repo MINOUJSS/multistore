@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\UserSlider;
 use App\Models\SupplierFqa;
 use App\Models\SupplierPage;
+use App\Models\ShippingPrice;
 use App\Models\SupplierProducts;
 use App\Models\UserStoreCategory;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +64,8 @@ class CteateDefaultContentForSupplierListener
                 ]);
         }
 
-
+        //get supplier default category
+        $default_category=Category::where('slug',tenant_to_slug($supplier->tenant_id).'-cat0')->first();
         //ctreate default products
         $defaultProducts = [
             [
@@ -127,9 +129,79 @@ class CteateDefaultContentForSupplierListener
         foreach ($defaultProducts as $productData) {
             SupplierProducts::create(array_merge($productData, [
                 'supplier_id' => $supplier->id, // ربط المنتج بالمورد
-                'category_id' => null,          // يمكن تحديثه لاحقًا أو تحديده عند الإنشاء
+                'category_id' => $default_category->id,          // يمكن تحديثه لاحقًا أو تحديده عند الإنشاء
             ]));
         }
+
+        // إنشاء تسعيرات افتراضية لكل الولايات
+        $defaultShippingPrices = [
+            ['wilaya_id' => 1,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 2,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 3,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 4,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 5,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 6,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 7,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 8,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 9,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 10,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 11,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 12,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 13,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 14,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 15,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 16,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 17,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 18,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 19,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 20,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 21,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 22,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 23,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 24,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 25,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 26,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 27,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 28,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 29,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 30,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 31,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 32,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 33,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 34,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 35,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 36,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 37,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 38,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 39,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 40,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 41,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 42,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 43,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 44,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 45,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 46,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 47,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 48,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 49,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 50,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 51,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 52,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 53,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 54,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 55,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 56,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 57,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 58,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            // يمكنك إضافة جميع ولايات الجزائر الـ 58 هنا بنفس النمط
+        ];
+
+        foreach ($defaultShippingPrices as $shippingData) {
+            ShippingPrice::create(array_merge($shippingData, [
+                'user_id' => $user_id, // ربط تسعيرة التوصيل بالمستخدم (المورد)
+            ]));
+        }
+
 
         //create default fqy
         $defaultFqa = [

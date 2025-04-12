@@ -27,4 +27,7 @@
 @section('footer_js')
   @include('users.suppliers.components.content.orders.js.get_order_data_js')
   @include('users.suppliers.components.content.orders.js.unlock_phone_number_js')
+  @include('users.suppliers.components.content.orders.js.delete_order_js')
+  @include('users.suppliers.components.content.orders.js.search_order_js')
+  @include('users.suppliers.components.content.orders.js.change_order_statu_js')
 @endsection

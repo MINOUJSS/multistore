@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('customer_name');
             $table->string('phone');
             $table->boolean('phone_visiblity')->default(false);
-            $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'canceled', 'returned'])
+            $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'canceled'])
                   ->default('pending'); // حالة الطلب
             $table->decimal('total_price', 10, 2); // إجمالي السعر
             $table->decimal('shipping_cost', 10, 2)->default(0.00); // تكلفة الشحن
