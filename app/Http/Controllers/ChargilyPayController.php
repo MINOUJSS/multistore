@@ -104,6 +104,10 @@ class ChargilyPayController extends Controller
                                 if ($invoice && $status === 'paid') {
                                     $invoice->status = 'paid';
                                     $invoice->update();
+                                    get_user_data_from_id($invoice->user_id)->balance()->update([
+                                        'balance' => auth()->user()->balance->balance - $invoice->amount,
+                                        'outstanding_amount' =>auth()->user()->balance->outstanding_amount - $invoice->amount,
+                                    ]);
                                 }
                                 break;
 
