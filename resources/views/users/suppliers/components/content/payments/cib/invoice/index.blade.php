@@ -29,11 +29,15 @@
     <!-- نموذج رفع إيصال الدفع -->
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('supplier.billing.invoice.pay') }}" method="POST" enctype="multipart/form-data">
+            {{-- <form action="{{ route('supplier.billing.invoice.pay') }}" method="POST" enctype="multipart/form-data"> --}}
+            <form action="{{ route('supplier.chargilypay.redirect') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="payment_method" value="credit-card">
+                {{-- <input type="hidden" name="payment_method" value="credit-card">
                 <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
-                <input type="hidden" name="amount" value="{{ $invoice->amount }}">
+                <input type="hidden" name="amount" value="{{ $invoice->amount }}"> --}}
+                <input type="hidden" name="amount" value="{{$invoice->amount}}">
+                <input type="hidden" name="payment_type" value="user_invoice">
+                <input type="hidden" name="reference_id" value="{{$invoice->id}}">
 
                 <button type="submit" class="btn btn-success w-100">
                     <i class="bi bi-credit-card"></i> الدفع

@@ -143,9 +143,6 @@ class SupplierBillingController extends Controller
                 ]);
                 return redirect()->route('supplier.billing')->with('paid','تم الدفع المبلغ من رصيدك في المنصة بنجاح');
             }
-        }elseif($request->payment_method == 'credit-card')
-        {
-            return app()->call('App\Http\Controllers\ChargilyPayController@redirect', ['request' => new Request($request->all())]);
         }
         else
         {
