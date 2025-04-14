@@ -143,7 +143,7 @@ class RegistredSupplierController extends Controller
                     //commit this transaction in balance transaction table
                     BalanceTransaction::create([
                         'user_id' => $user->id,
-                        'transaction_type' => 'إضافة',
+                        'transaction_type' => 'addition',
                         'amount' => '500',
                         'description' => 'تسجيل مجاني للمورد',
                     ]);

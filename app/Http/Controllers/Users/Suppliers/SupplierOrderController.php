@@ -63,8 +63,8 @@ class SupplierOrderController extends Controller
              //commit this transaction in balance transaction table
              BalanceTransaction::create([
                 'user_id' => $user->id,
-                'transaction_type' => 'إقتطاع',
-                'amount' => '-'.get_platform_comition($order->total_price),
+                'transaction_type' => 'deduction',
+                'amount' => get_platform_comition($order->total_price),
                 'description' => 'مستحقات المنصة على الطلب رقم '.$order->id,
             ]);
             // إدراج الطلب في Google Sheets

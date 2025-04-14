@@ -111,6 +111,12 @@ Route::middleware([
                 Route::delete('/supplier-panel/apps/telegram/delete/{id}', [SupplierAppsController::class, 'delete_telegram_notification'])->name('app.delete-telegram-notification');
                 //supplier billing routes
                 Route::get('/supplier-panel/billing',[SupplierBillingController::class,'index'])->name('billing');
+                Route::get('/supplier-panel/billing/invoice/create', [SupplierBillingController::class, 'create'])->name('billing.invoice.create');
+                Route::get('/supplier-panel/billing/invoice/{id}', [SupplierBillingController::class, 'show'])->name('billing.invoice.show');
+                Route::post('/supplier-panel/billing/pay/invoice/{id}/redirect', [SupplierBillingController::class, 'invoice_redirect'])->name('billing.invoice.redirect');
+                Route::post('/supplier-panel/billing/pay/invoice', [SupplierBillingController::class, 'pay_invoice'])->name('billing.invoice.pay');
+                Route::delete('/supplier-panel/billing/invoice/{invoice}/delete-proof', [SupplierBillingController::class, 'deleteProof'])->name('billing.invoice.deleteProof');
+
 
             });
             Route::post('/supplier-panel/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
@@ -124,9 +130,9 @@ Route::middleware([
             Route::get('/supplier-panel/payment/algerian_credit_card',[SupplierPaymentController::class, 'algerian_credit_card'])->name('payment.algerian_credit_card');
             Route::get('/supplier-panel/payment/baridimob',[SupplierPaymentController::class, 'baridimob'])->name('payment.baridimob');
             Route::get('/supplier-panel/payment/ccp',[SupplierPaymentController::class, 'ccp'])->name('payment.ccp');
-               //chargily routes
-    Route::post('supplier-panel/chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
-    Route::get('supplier-panel/chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
+            //chargily routes
+            Route::post('supplier-panel/chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
+            Route::get('supplier-panel/chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
         });
     //authentication routes here
     Route::middleware('guest')->group(function () {

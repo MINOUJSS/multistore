@@ -86,4 +86,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserStoreCategory::class);
     }
+    //
+    public function invoices()
+    {
+        return $this->hasMany(UserInvoice::class);
+    }
+
 }

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->enum("status", ["pending", "paid", "failed"])->default("pending");
             $table->string("currency");
             $table->string("amount");
+            $table->string('payment_type')->nullable(); // 'user_invoice', 'supplier_subscription', 'other'
+            $table->unsignedBigInteger('payment_reference_id')->nullable(); // ID of the user_invoice or supplier_subscription
             $table->timestamps();
         });
     }

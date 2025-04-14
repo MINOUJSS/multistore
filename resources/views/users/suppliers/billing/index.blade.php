@@ -26,5 +26,5 @@
 @endsection
 
 @section('footer_js')
-
+ @include('users.suppliers.components.content.billing.js.load_invoice_details_js')
 @endsection

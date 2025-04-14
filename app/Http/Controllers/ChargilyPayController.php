@@ -12,30 +12,37 @@ class ChargilyPayController extends Controller
      */
     public function redirect(Request $request)
     {
-        $amount_array = explode("<sup>د.ج</sup>/", $request->amount);
-        $amount = $amount_array[0];
+        dd($request->amount);
+
         $plan = get_supplier_plan_data($request->plan_id);
 
         $user = auth()->user();
         $currency = "dzd";
-        // $amount = "25000";
-
+        $amount = $request->amount;
+        $type = $request->payment_type; // 'invoice' | 'subscription' | 'other'
+        $referenceId = $request->reference_id;
+    
         $payment = \App\Models\ChargilyPayment::create([
             "user_id"  => $user->id,
             "status"   => "pending",
             "currency" => $currency,
             "amount"   => $amount,
+            "payment_type" => $type,
+            "payment_reference_id" => $referenceId,
         ]);
+
         if ($payment) {
             $checkout = $this->chargilyPayInstance()->checkouts()->create([
                 "metadata" => [
                     "payment_id" => $payment->id,
-                    "supplier_id" => get_supplier_data($user->tenant_id)->id,
+                    "payment_type" => $type,
+                    "reference_id" => $referenceId,
+                    // "supplier_id" => get_supplier_data($user->tenant_id)->id,
                 ],
                 "locale" => "ar",
                 "amount" => $payment->amount,
                 "currency" => $payment->currency,
-                "description" => "Payment ID={$payment->id}",
+                "description" => "دفع من نوع {$type} رقم {$referenceId}",
                 "success_url" => route("supplier.chargilypay.back"),
                 "failure_url" => route("supplier.chargilypay.back"),
                 "webhook_endpoint" => route("chargilypay.webhook_endpoint"),
@@ -89,32 +96,67 @@ class ChargilyPayController extends Controller
                 if ($checkout) {
                     $metadata = $checkout->getMetadata();
                     $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
-                    $supplier_subscription=\App\Models\SupplierPlanSubscription::where('supplier_id',$metadata['supplier_id'])->first();
+
                     if ($payment) {
-                        if ($checkout->getStatus() === "paid") {
-                            //update payment status in database
-                            $payment->status = "paid";
-                            $payment->update();
-                            /////
-                            ///// Confirm your order
-                            $supplier_subscription->payment_status='paid';
-                            $supplier_subscription->status='paid';
-                            $supplier_subscription->update();
-                            /////
-                            return response()->json(["status" => true, "message" => "Payment has been completed"]);
-                        } else if ($checkout->getStatus() === "failed" or $checkout->getStatus() === "canceled") {
-                            //update payment status in database
-                            $payment->status = "failed";
-                            $payment->update();
-                            /////
-                            /////  Cancel your order
-                            $supplier_subscription->payment_status='failed';
-                            $supplier_subscription->status='free';
-                            $supplier_subscription->update();
-                            /////
-                            return response()->json(["status" => true, "message" => "Payment has been canceled"]);
+                        $status = $checkout->getStatus();
+                        $payment->status = $status === 'paid' ? 'paid' : 'failed';
+                        $payment->update();
+
+                        // معالجة حسب نوع الدفع
+                        switch ($payment->payment_type) {
+                            case 'user_invoice':
+                                $invoice = \App\Models\UserInvoice::find($payment->payment_reference_id);
+                                if ($invoice && $status === 'paid') {
+                                    $invoice->status = 'paid';
+                                    $invoice->update();
+                                }
+                                break;
+
+                            case 'supplier_subscription':
+                                $subscription = \App\Models\SupplierPlanSubscription::find($payment->payment_reference_id);
+                                if ($subscription) {
+                                    $subscription->payment_status = $status;
+                                    $subscription->status = $status === 'paid' ? 'paid' : 'free';
+                                    $subscription->update();
+                                }
+                                break;
+
+                            case 'other':
+                                // في المستقبل يمكن إضافة أنواع أخرى هنا
+                                break;
                         }
+
+                        return response()->json(["status" => true, "message" => "تمت معالجة الدفع بنجاح"]);
                     }
+
+                    // $metadata = $checkout->getMetadata();
+                    // $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
+                    // $supplier_subscription=\App\Models\SupplierPlanSubscription::where('supplier_id',$metadata['supplier_id'])->first();
+                    // if ($payment) {
+                    //     if ($checkout->getStatus() === "paid") {
+                    //         //update payment status in database
+                    //         $payment->status = "paid";
+                    //         $payment->update();
+                    //         /////
+                    //         ///// Confirm your order
+                    //         $supplier_subscription->payment_status='paid';
+                    //         $supplier_subscription->status='paid';
+                    //         $supplier_subscription->update();
+                    //         /////
+                    //         return response()->json(["status" => true, "message" => "Payment has been completed"]);
+                    //     } else if ($checkout->getStatus() === "failed" or $checkout->getStatus() === "canceled") {
+                    //         //update payment status in database
+                    //         $payment->status = "failed";
+                    //         $payment->update();
+                    //         /////
+                    //         /////  Cancel your order
+                    //         $supplier_subscription->payment_status='failed';
+                    //         $supplier_subscription->status='free';
+                    //         $supplier_subscription->update();
+                    //         /////
+                    //         return response()->json(["status" => true, "message" => "Payment has been canceled"]);
+                    //     }
+                    // }
                 }
             }
         }
@@ -135,4 +177,5 @@ class ChargilyPayController extends Controller
             "secret" => "test_sk_gpdoJktjYvibE4ydPsWQs6tf062lu6Rj5N4hQCo3",
         ]));
     }
+
 }

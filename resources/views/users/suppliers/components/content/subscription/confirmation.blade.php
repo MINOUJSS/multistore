@@ -12,6 +12,8 @@
         {{-- <h5>الخصائص</h5> --}}
         <form id="regForm" action="{{route('supplier.payment.redirect')}}" method="POST">
           @csrf  
+          <input type="hidden" name="payment_type" value="supplier_subscription">
+          <input type="hidden" name="reference_id" value="{{get_supplier_data(auth()->user()->tenant_id)->id}}">
           <h1 class="text-center">تأكيد الإشتراك</h1>         
             <!-- One "tab" for each step in the form: -->
             <div class="tab" style="display:block">إختر الخطة المناسبة لك:

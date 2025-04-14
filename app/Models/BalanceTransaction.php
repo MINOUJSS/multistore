@@ -13,5 +13,6 @@ class BalanceTransaction extends Model
         'transaction_type',
         'amount',
         'description',
+        'invoiced',
     ];
 }

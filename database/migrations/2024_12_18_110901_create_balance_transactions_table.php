@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('balance_transactions', function (Blueprint $table) {
             $table->bigIncrements('id'); // المفتاح الأساسي
             $table->unsignedBigInteger('user_id'); // معرف المستخدم
-            $table->string('transaction_type'); // نوع العملية: إضافة، خصم، مستحقات
+            $table->enum('transaction_type', ['addition', 'deduction']); // نوع العملية: إضافة، خصم، مستحقات
             $table->decimal('amount', 15, 2); // المبلغ
             $table->text('description')->nullable(); // وصف العملية
+            $table->boolean('invoiced')->default(false);
             $table->timestamps();      
             // الربط بجدول المستخدمين
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

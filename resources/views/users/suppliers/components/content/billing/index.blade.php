@@ -1,7 +1,18 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">فواتير تاجر الجملة</h2>
-
-    <!-- جدول عرض الفواتير -->
+<!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                        <a href="{{route('supplier.billing.invoice.create')}}" class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i>تحرير فاتورة جديدة
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!---->
     <div class="card">
         <div class="card-body">
             <table class="table table-bordered text-center">
@@ -11,28 +22,43 @@
                         <th>رقم الفاتورة</th>
                         <th>التاريخ</th>
                         <th>المبلغ الإجمالي</th>
+                        <th>طريقة الدفع</th>
                         <th>الحالة</th>
                         <th>الإجراء</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- بيانات الفواتير -->
-                    <tr>
-                        <td>1</td>
-                        <td>INV-001</td>
-                        <td>2025-04-03</td>
-                        <td>15,000 د.ج</td>
-                        <td><span class="badge bg-warning">غير مدفوعة</span></td>
-                        <td><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#invoiceDetailsModal" onclick="loadInvoiceDetails(1)">عرض التفاصيل</button></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>INV-002</td>
-                        <td>2025-03-28</td>
-                        <td>20,000 د.ج</td>
-                        <td><span class="badge bg-success">مدفوعة</span></td>
-                        <td><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#invoiceDetailsModal" onclick="loadInvoiceDetails(2)">عرض التفاصيل</button></td>
-                    </tr>
+                    @foreach ($invoices as $index => $invoice)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $invoice->invoice_number }}</td>
+                            <td>{{ $invoice->created_at->format('Y-m-d') }}</td>
+                            <td>{{ number_format($invoice->amount, 2, ',', '.') }} د.ج</td>
+                            <td>{{ $invoice->payment_method }}</td>
+                            <td>
+                                <span class="badge {{ $invoice->status == 'paid' ? 'bg-success' : 'bg-warning' }}">
+                                    {{ $invoice->status }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#invoiceDetailsModal"
+                                    onclick="loadInvoiceDetails({{ $invoice->id }})">
+                                    عرض التفاصيل
+                                </button>
+                                @if($invoice->payment_proof && $invoice->status != 'paid')
+                                <form action="{{ route('supplier.billing.invoice.deleteProof', $invoice->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من حذف إثبات الدفع؟');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i> حذف الإثبات
+                                    </button>
+                                </form>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -41,48 +67,54 @@
 
 <!-- مودال تفاصيل الفاتورة -->
 <div class="modal fade" id="invoiceDetailsModal" tabindex="-1" aria-labelledby="invoiceDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg"> <!-- أكبر قليلاً لعرض التفاصيل -->
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="invoiceDetailsModalLabel">تفاصيل الفاتورة</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
             </div>
             <div class="modal-body">
-                <h5>رقم الفاتورة: <span id="invoice-number">INV-001</span></h5>
-                <p><strong>التاريخ:</strong> <span id="invoice-date">2025-04-03</span></p>
-                <p><strong>المبلغ الإجمالي:</strong> <span id="invoice-amount">15,000 د.ج</span></p>
-                <p><strong>الحالة:</strong> <span class="badge bg-warning" id="invoice-status">غير مدفوعة</span></p>
-
-                <hr>
-                <h5>اختر طريقة الدفع</h5>
-                <select class="form-select mb-3" id="payment-method">
-                    <option value="credit-card">بطاقة ائتمان</option>
-                    <option value="paypal">باي بال</option>
-                    <option value="bank-transfer">تحويل بنكي</option>
-                </select>
-                <button class="btn btn-success w-100">إتمام الدفع</button>
+                <div id="invoice-details-content">
+                    <div class="text-center">جاري التحميل...</div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!--sweet alert-->
+@if(session()->has('success'))
 <script>
-    function loadInvoiceDetails(invoiceId) {
-        // بيانات الفواتير التجريبية (في التطبيق الفعلي، يجب جلبها من API أو قاعدة البيانات)
-        const invoices = {
-            1: { number: 'INV-001', date: '2025-04-03', amount: '15,000 د.ج', status: 'غير مدفوعة', statusClass: 'bg-warning' },
-            2: { number: 'INV-002', date: '2025-03-28', amount: '20,000 د.ج', status: 'مدفوعة', statusClass: 'bg-success' }
-        };
-
-        const invoice = invoices[invoiceId];
-
-        document.getElementById('invoice-number').innerText = invoice.number;
-        document.getElementById('invoice-date').innerText = invoice.date;
-        document.getElementById('invoice-amount').innerText = invoice.amount;
-
-        let statusElement = document.getElementById('invoice-status');
-        statusElement.innerText = invoice.status;
-        statusElement.className = `badge ${invoice.statusClass}`;
-    }
+    Swal.fire({
+        icon: 'success',
+        title: 'تم تحرير الفاتوترة بنجاح',
+        text: '{{ session('success') }}',
+        confirmButtonText: 'حسناً',
+        timer: 3000
+    });
 </script>
+@endif
 
+@if(session()->has('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'خطاء',
+        text: '{{ session('error') }}',
+        confirmButtonText: 'حسناً',
+        timer: 3000
+    });
+</script>
+@endif
+
+@if(session()->has('paid'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'تم  الدفع بنجاح',
+        text: '{{ session('success') }}',
+        confirmButtonText: 'حسناً',
+        timer: 3000
+    });
+</script>
+@endif
