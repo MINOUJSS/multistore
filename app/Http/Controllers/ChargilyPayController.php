@@ -12,7 +12,7 @@ class ChargilyPayController extends Controller
      */
     public function redirect(Request $request)
     {
-        // dd($request->amount);
+        // dd($request);
 
         // $plan = get_supplier_plan_data($request->plan_id);
 

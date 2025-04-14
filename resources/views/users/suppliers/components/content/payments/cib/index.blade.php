@@ -16,7 +16,9 @@
                 @csrf
                 <input type="hidden" name="plan_id" value="{{$request->plan}}">
                 <input type="hidden" name="amount" value="{{$price[0]}}">
-                <input type="hidden" name="supplier_id" value="{{get_supplier_data(Auth::user()->tenant->id)->id}}">
+                {{-- <input type="hidden" name="supplier_id" value="{{get_supplier_data(Auth::user()->tenant->id)->id}}"> --}}
+                <input type="hidden" name="payment_type" value="supplier_subscription">
+                <input type="hidden" name="reference_id" value="{{get_supplier_data(auth()->user()->tenant_id)->id}}">
                 {{-- <input type="hidden" name="email" value="{{$payment_data['email']}}">
                 <input type="hidden" name="full_name" value="{{$payment_data['full_name']}}">
                 <input type="hidden" name="phone_number" value="{{$payment_data['phone_number']}}"> --}}

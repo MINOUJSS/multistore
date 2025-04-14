@@ -35,6 +35,7 @@ class SupplierPaymentController extends Controller
             {
                 //redirect to algerian credit card payment page
                 //return redirect()->route('supplier.payment.algerian_credit_card')->with('payment_data',$payment_data);
+                // return app()->call('App\Http\Controllers\ChargilyPayController@redirect', ['request' => new Request($request->all())]);
                 return view('users.suppliers.payments.cib.index',compact('request'));
             }else if($request->pay_method=='baridimob')
             {
