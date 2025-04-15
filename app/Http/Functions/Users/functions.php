@@ -19,7 +19,7 @@ function tenant_to_slug($tenant_id)
 //get user data
 function get_user_data_from_id($user_id)
 {
-    $user=App\Model\User::find($user_id);
+    $user=App\Models\User::find($user_id);
     return $user;
 }
 function get_user_data($tenant_id)

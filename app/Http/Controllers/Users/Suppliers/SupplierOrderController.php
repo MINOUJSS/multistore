@@ -68,7 +68,7 @@ class SupplierOrderController extends Controller
                 'description' => 'مستحقات المنصة على الطلب رقم '.$order->id,
             ]);
             // إدراج الطلب في Google Sheets
-            $this->insertOrderToGoogleSheet($order);
+           // $this->insertOrderToGoogleSheet($order);
          
             return response()->json([
                 'message'=>'success'
