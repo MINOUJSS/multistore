@@ -116,6 +116,7 @@ Route::middleware([
                 Route::post('/supplier-panel/billing/pay/invoice/{id}/redirect', [SupplierBillingController::class, 'invoice_redirect'])->name('billing.invoice.redirect');
                 Route::post('/supplier-panel/billing/pay/invoice', [SupplierBillingController::class, 'pay_invoice'])->name('billing.invoice.pay');
                 Route::delete('/supplier-panel/billing/invoice/{invoice}/delete-proof', [SupplierBillingController::class, 'deleteProof'])->name('billing.invoice.deleteProof');
+                Route::post('/supplier-panel/billing/wallet/charge',[SupplierBillingController::class,'wallet_charge'])->name('wallet.charge');
 
 
             });

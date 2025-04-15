@@ -17,6 +17,14 @@ class ChargilyPayController extends Controller
         $amount = $request->amount;
         $type = $request->payment_type; // 'invoice' | 'subscription' | 'other'
         $referenceId = $request->reference_id;
+
+        //validation 
+        if($type=='wallet_topup')
+        {
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:50',
+            ]); 
+        }
     
         $payment = \App\Models\ChargilyPayment::create([
             "user_id"  => $user->id,
@@ -118,12 +126,29 @@ class ChargilyPayController extends Controller
                                 break;
 
                             case 'supplier_subscription':
+                                //update subscription status
                                 $subscription = \App\Models\SupplierPlanSubscription::find($payment->payment_reference_id);
                                 if ($subscription) {
                                     $subscription->payment_status = $status;
                                     $subscription->status = $status === 'paid' ? 'paid' : 'free';
                                     $subscription->update();
                                 }
+                                break;
+
+                            case 'wallet_topup':
+                                //update balance 
+                                $user = get_user_data_from_id($payment->payment_reference_id);
+                                $balance=\App\Models\UserBalance::where('user_id',$user->id)->first();
+                                $balance->balance=$balance->balance + $checkout->getAmount();
+                                $balance->update();
+                                //insert new balance transaction
+                                $balanceTransaction=\App\Models\BalanceTransaction::class;
+                                $balanceTransaction->user_id=$user->id;
+                                $balanceTransaction->transaction_type='addition';
+                                $balanceTransaction->amount=$checkout->getAmount();
+                                $balanceTransaction->description='شحن الرصيد بواسطة '.$checkout->getPaymentMethod().' رابط العملية: <a href="'.$checkout->getUrl().'" target="_blank">إضغط هنا</a>';
+                                $balanceTransaction->save();
+
                                 break;
 
                             case 'other':

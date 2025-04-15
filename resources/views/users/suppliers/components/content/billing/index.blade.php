@@ -8,6 +8,9 @@
                         <a href="{{route('supplier.billing.invoice.create')}}" class="btn btn-primary">
                             <i class="fa-solid fa-plus"></i>تحرير فاتورة جديدة
                         </a>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#selectPaymentMethodModal">
+                            شحن الرصيد
+                        </button>                          
                     </div>
                 </div>
             </div>
@@ -118,3 +121,62 @@
     });
 </script>
 @endif
+<!-- Modal: اختيار طريقة الدفع -->
+<div class="modal fade" id="selectPaymentMethodModal" tabindex="-1" aria-labelledby="selectPaymentMethodModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header border-0">
+          <h5 class="modal-title" id="selectPaymentMethodModalLabel">اختر طريقة شحن الرصيد</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body text-center">
+  
+          <p class="mb-4 text-muted">يرجى اختيار وسيلة الدفع المناسبة:</p>
+  
+          <!-- طريقة 1: Chargily -->
+          <button class="btn btn-outline-primary w-100 mb-3" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#chargeBalanceModal">
+            <i class="bi bi-phone-fill me-2"></i>الدفع عبر تطبيق Chargily
+          </button>
+  
+          <!-- طريقة 2: CIB -->
+          <button class="btn btn-outline-success w-100 mb-3 disabled" disabled>
+            <i class="bi bi-credit-card-2-back-fill me-2"></i>الدفع عبر بطاقة CIB (قريبًا)
+          </button>
+  
+          <!-- طريقة 3: CCP -->
+          <button class="btn btn-outline-warning w-100 mb-3 disabled" disabled>
+            <i class="bi bi-envelope-fill me-2"></i>الدفع عبر CCP / بريد الجزائر (قريبًا)
+          </button>
+  
+          <!-- طريقة 4: PayPal -->
+          <button class="btn btn-outline-dark w-100 mb-3 disabled" disabled>
+            <i class="bi bi-paypal me-2"></i>الدفع عبر PayPal (قريبًا)
+          </button>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: شحن الرصيد عبر Chargily -->
+<div class="modal fade" id="chargeBalanceModal" tabindex="-1" aria-labelledby="chargeBalanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header border-0">
+          <h5 class="modal-title" id="chargeBalanceModalLabel">شحن الرصيد عبر Chargily</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body text-center">
+          <form id="chargilyForm" method="POST" action="{{ route('supplier.wallet.charge') }}">
+            @csrf
+            <div class="mb-3">
+              <label for="amount" class="form-label">أدخل المبلغ (د.ج)</label>
+              <input type="number" min="50" step="10" class="form-control text-center" name="amount" id="amount" placeholder="مثال: 1000" required>
+              <small class="text-muted d-block mt-2">الحد الأدنى: 50 د.ج</small>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">متابعة الدفع</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
