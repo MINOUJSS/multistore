@@ -142,12 +142,12 @@ class ChargilyPayController extends Controller
                                 $balance->balance=$balance->balance + $checkout->getAmount();
                                 $balance->update();
                                 //insert new balance transaction
-                                $balanceTransaction=\App\Models\BalanceTransaction::class;
-                                $balanceTransaction->user_id=$user->id;
-                                $balanceTransaction->transaction_type='addition';
-                                $balanceTransaction->amount=$checkout->getAmount();
-                                $balanceTransaction->description='شحن الرصيد بواسطة '.$checkout->getPaymentMethod().' رابط العملية: <a href="'.$checkout->getUrl().'" target="_blank">إضغط هنا</a>';
-                                $balanceTransaction->save();
+                                \App\Models\BalanceTransaction::create([
+                                    'user_id' => $user->id,
+                                    'transaction_type' => 'addition',
+                                    'amount' => $checkout->getAmount(),
+                                    'description' => 'شحن الرصيد بواسطة '.$checkout->getPaymentMethod().' رابط العملية: <a href="'.$checkout->getUrl().'" target="_blank">إضغط هنا</a>',
+                                ]);
 
                                 break;
 
