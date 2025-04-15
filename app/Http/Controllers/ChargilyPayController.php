@@ -107,11 +107,11 @@ class ChargilyPayController extends Controller
                                     $invoice->payment_method=$checkout->getPaymentMethod();
                                     $invoice->update();
                                     $user = get_user_data_from_id($invoice->user_id);
+                                    $outstanding=$user->balance->outstanding_amount - $invoice->amount;
 
                                     if ($user && $user->balance) {
                                         $user->balance()->update([
-                                            'balance' => $user->balance->balance - $invoice->amount,
-                                            'outstanding_amount' => $user->balance->outstanding_amount - $invoice->amount,
+                                            'outstanding_amount' =>$outstanding,
                                         ]);
                                     }
                                 }

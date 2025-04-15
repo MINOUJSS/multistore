@@ -17,6 +17,7 @@ class SupplierBillingController extends Controller
     //
     public function index()
     {
+        dd(get_user_data_from_id(auth()->user()->id)->balance->outstanding_amount);
         $invoices = UserInvoice::all();
         return view('users.suppliers.billing.index',compact('invoices'));
     }
