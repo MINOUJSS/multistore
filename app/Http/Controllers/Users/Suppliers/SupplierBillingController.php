@@ -29,9 +29,16 @@ class SupplierBillingController extends Controller
             ->where('invoiced', 0)
             ->get();
     
-        if ($billings->isEmpty()) {
-            return redirect()->back()->with('error', 'لا توجد عمليات غير مفوترة');
-            // return response()->json(['message' => 'لا توجد عمليات غير مفوترة'], 404);
+        // if ($billings->isEmpty()) {
+        //     return redirect()->back()->with('error', 'تم تسديد جميع فواتيرك لاتوجد فواتير جديدة');
+        //     // return response()->json(['message' => 'لا توجد عمليات غير مفوترة'], 404);
+        // }
+
+        $totalAmount = $billings->sum('amount');
+
+        // ✅ التحقق من أن إجمالي المعاملات يفوق 50 د.ج
+        if ($totalAmount < 50) {
+            return redirect()->back()->with('error', 'يجب أن تتجاوز قيمة الفاتورة 50 د.ج لإنشائها');
         }
     
         DB::beginTransaction();
