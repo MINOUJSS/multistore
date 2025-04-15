@@ -166,7 +166,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
         </div>
         <div class="modal-body text-center">
-          <form id="chargilyForm" method="POST" action="{{ route('supplier.wallet.charge') }}">
+          <form id="chargilyForm" method="POST" action="{{ route('supplier.chargilypay.redirect') }}">
             @csrf
             <div class="mb-3">
               <label for="amount" class="form-label">أدخل المبلغ (د.ج)</label>
