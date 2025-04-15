@@ -168,6 +168,8 @@
         <div class="modal-body text-center">
           <form id="chargilyForm" method="POST" action="{{ route('supplier.chargilypay.redirect') }}">
             @csrf
+            <input type="hidden" name="payment_type" value="wallet_topup">
+                <input type="hidden" name="reference_id" value="{{auth()->user()->id}}">
             <div class="mb-3">
               <label for="amount" class="form-label">أدخل المبلغ (د.ج)</label>
               <input type="number" min="50" step="10" class="form-control text-center" name="amount" id="amount" placeholder="مثال: 1000" required>
