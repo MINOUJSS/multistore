@@ -81,7 +81,7 @@ class ChargilyPayController extends Controller
             return redirect()->route('supplier.dashboard')->with('success','تمت عملية الدفع بنجاح');
         }else
         {
-            return redirect()->route('supplier.dashboard')->with('error','خطأ في عملية الدفع...لقد إنتقلت إلى الخطة المجانية آلياً.يمكنك ترقية حسابك في أي وقت');
+            return redirect()->route('supplier.dashboard')->with('error','فشل في عملية الدفع');
         }
     }
     /**

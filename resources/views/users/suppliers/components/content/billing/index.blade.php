@@ -8,9 +8,10 @@
                         <a href="{{route('supplier.billing.invoice.create')}}" class="btn btn-primary">
                             <i class="fa-solid fa-plus"></i>تحرير فاتورة جديدة
                         </a>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#selectPaymentMethodModal">
+                        <a class="btn btn-success" href="{{route('supplier.wallet')}}"><i class="bi bi-wallet"> المحفظة</i></a>
+                        {{-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#selectPaymentMethodModal">
                             شحن الرصيد
-                        </button>                          
+                        </button>                           --}}
                     </div>
                 </div>
             </div>
@@ -121,6 +122,7 @@
     });
 </script>
 @endif
+
 <!-- Modal: اختيار طريقة الدفع -->
 <div class="modal fade" id="selectPaymentMethodModal" tabindex="-1" aria-labelledby="selectPaymentMethodModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

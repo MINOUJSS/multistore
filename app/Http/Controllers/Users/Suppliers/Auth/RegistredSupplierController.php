@@ -145,7 +145,8 @@ class RegistredSupplierController extends Controller
                         'user_id' => $user->id,
                         'transaction_type' => 'addition',
                         'amount' => '500',
-                        'description' => 'تسجيل مجاني للمورد',
+                        'description' => 'منحة من النصة لكشف أرقام الزبائن عند الطلب على منتجاتك',
+                        'payment_method' =>'نظام المنصة',
                     ]);
                  }
                                    

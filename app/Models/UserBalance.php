@@ -12,6 +12,7 @@ class UserBalance extends Model
     protected $fillable = [
         'user_id',
         'balance',
+        'outstanding_amount',
         'created_at',
         'updated_at'
     ];

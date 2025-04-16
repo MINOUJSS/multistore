@@ -10,6 +10,7 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Users\Suppliers\SupplierAppsController;
 use App\Http\Controllers\Users\Suppliers\SupplierPlanController;
 use App\Http\Controllers\Users\Suppliers\SupplierOrderController;
+use App\Http\Controllers\Users\Suppliers\SupplierWalletController;
 use App\Http\Controllers\Users\Suppliers\SupplierBillingController;
 use App\Http\Controllers\Users\Suppliers\SupplierPaymentController;
 use App\Http\Controllers\Users\Suppliers\SupplierProductController;
@@ -116,7 +117,12 @@ Route::middleware([
                 Route::post('/supplier-panel/billing/pay/invoice/{id}/redirect', [SupplierBillingController::class, 'invoice_redirect'])->name('billing.invoice.redirect');
                 Route::post('/supplier-panel/billing/pay/invoice', [SupplierBillingController::class, 'pay_invoice'])->name('billing.invoice.pay');
                 Route::delete('/supplier-panel/billing/invoice/{invoice}/delete-proof', [SupplierBillingController::class, 'deleteProof'])->name('billing.invoice.deleteProof');
-                Route::post('/supplier-panel/billing/wallet/charge',[SupplierBillingController::class,'wallet_charge'])->name('wallet.charge');
+                //Wallet Routes
+                Route::get('/supplier-panel/wallet',[SupplierWalletController::class,'index'])->name('wallet');
+                // Route::post('/supplier-panel/wallet/charge',[SupplierWalletController::class,'charge'])->name('wallet.charge');
+                Route::get('/supplier-panel/wallet/addition/{id}', [SupplierWalletController::class, 'showAddition'])->name('get_wallet');
+                Route::post('/supplier-panel/wallet/recharge/baridimob', [SupplierWalletController::class, 'payWithBaridiMob'])->name('wallet.recharge.baridimob');
+                Route::post('/supplier-panel/wallet/recharge/ccp', [SupplierWalletController::class, 'payWithCcp'])->name('wallet.recharge.ccp');
 
 
             });

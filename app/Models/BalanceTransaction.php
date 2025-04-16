@@ -14,5 +14,16 @@ class BalanceTransaction extends Model
         'amount',
         'description',
         'invoiced',
+        'payment_method',
+        'payment_proof',
+        'status',
     ];
+    /**
+     * Get user information.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    } 
+
 }

@@ -164,27 +164,27 @@ class SupplierBillingController extends Controller
         
             // $invoice = UserInvoice::findOrFail($request->invoice_id);
             // التحقق من عدم وجود ملف مسبق بنفس الاسم في المجلد
-            if (Storage::disk('public')->exists('payment_proofs/'.$invoice->invoice_number)) {
+            if (Storage::disk('public')->exists('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/payment_proofs/'.$invoice->invoice_number)) {
                 return redirect()->route('supplier.billing')->with('error', 'يوجد ملف إثبات دفع بنفس الاسم تم رفعه سابقاً.');
             }
             // حفظ الملف داخل مجلد secure
-            $proofPath = $request->file('payment_proof')->store('payment_proofs/'.$invoice->invoice_number, 'public');
+            $proofPath = $request->file('payment_proof')->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/payment_proofs/'.$invoice->invoice_number, 'public');
         
             // تحديث حالة الفاتورة
             $invoice->update([
                 'status' => 'under_review',
-                'payment_method' => 'baridimob',
+                'payment_method' => $request->payment_method,
                 'payment_proof' => $proofPath, // يجب أن تضيف هذا العمود في جدول الفواتير إن لم يكن موجوداً
             ]);
         
-            return redirect()->route('supplier.billing')->with('success', 'تم إرسال إيصال الدفع بنجاح، وسيتم مراجعته قريباً.');
+            return redirect()->route('supplier.billing')->with('paid', 'تم إرسال إيصال الدفع بنجاح، وسيتم مراجعته قريباً.');
         }
         return redirect()->back();
     }
     //
     public function deleteProof(UserInvoice $invoice)
     {
-        $folderPath = 'payment_proofs/' . $invoice->invoice_number;
+        $folderPath = 'supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/payment_proofs/' . $invoice->invoice_number;
         if($invoice->status !='paid')
         {
             if ($invoice->payment_proof && Storage::disk('public')->exists($invoice->payment_proof)) {

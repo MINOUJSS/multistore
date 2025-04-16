@@ -57,7 +57,7 @@ class User extends Authenticatable
      */
     public function balance()
     {
-        return $this->hasOne(UserBalance::class);
+        return $this->hasOne(UserBalance::class,'user_id');
     }
     /**
      * Get user transactions.

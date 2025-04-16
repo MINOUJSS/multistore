@@ -17,6 +17,9 @@ return new class extends Migration
             $table->enum('transaction_type', ['addition', 'deduction']); // نوع العملية: إضافة، خصم، مستحقات
             $table->decimal('amount', 15, 2); // المبلغ
             $table->text('description')->nullable(); // وصف العملية
+            $table->string('payment_method')->nullable(); // طريقة الدفع
+            $table->string('payment_proof')->nullable();//إثبات الدفع
+            $table->string('status')->nullable()->default('null');
             $table->boolean('invoiced')->default(false);
             $table->timestamps();      
             // الربط بجدول المستخدمين

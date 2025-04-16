@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admins\Admin\AdminController;
 use App\Http\Controllers\Admins\Admin\SettingController;
+use App\Http\Controllers\Admins\Admin\PaymentsController;
 use App\Http\Controllers\Admins\Admin\SupplierController;
 use App\Http\Controllers\Admins\Admin\Auth\AuthenticatedSessionController;
 
@@ -34,6 +35,11 @@ foreach (config('tenancy.central_domains') as $domain) {
             //suppliers actions
             Route::get('/ah-admin/suppliers',[SupplierController::class,'index'])->name('suppliers');
             Route::delete('/ah-admin/supplier/destroy/{id}',[SupplierController::class,'destroy'])->name('supplier.destroy');
+            //payments Routes
+            Route::get('/ah-admin/payments/rechage-requests',[PaymentsController::class,'recharge_requests'])->name('payments.recharge_requests');
+            Route::patch('/admin/payments/recharge-request/approve/{id}', [PaymentsController::class, 'approve_recharge'])->name('payments.recharge.approve');
+            Route::get('/ah-admin/payments/inoices-payments',[PaymentsController::class,'invoices_payments'])->name('payments.invoices_payments');
+            Route::patch('/admin/payments/invoice/approve/{id}', [PaymentsController::class, 'approve_invoice_payment'])->name('payments.invoice.approve');
             });
         });
     });
