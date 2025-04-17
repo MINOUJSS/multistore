@@ -1,12 +1,17 @@
 <div class="container-fluid">
     <!-- Page Title -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 mobile-header-stack">
         <h2>إدارة الشحن</h2>
-        <div>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ShippingCompaniesModal"><i class="fas fa-plus me-2"></i>إضافة شركة شحن</button>
-            <a class="btn btn-success" href="{{route('supplier.shipping.edit')}}"><i class="fas fa-plus me-2"></i>تسعير الشحن</a>  
+        <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ShippingCompaniesModal">
+                <i class="fas fa-plus me-2"></i>إضافة شركة شحن
+            </button>
+            <a class="btn btn-success" href="{{ route('supplier.shipping.edit') }}">
+                <i class="fas fa-plus me-2"></i>تسعير الشحن
+            </a>  
         </div>
     </div>
+    
 
     <!-- Start Shipping companies -->
     <div class="modal fade" id="ShippingCompaniesModal" tabindex="-1" aria-labelledby="ShippingCompaniesModalLabel" aria-hidden="true">

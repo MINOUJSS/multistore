@@ -40,7 +40,7 @@
 
         <!-- Statistics Cards -->
         <div class="row g-3">
-            <div class="col-6 col-md-3">
+            <div class="col-sm-12 col-md-6 col-lg-3">
                 <div class="card bg-primary text-white h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
@@ -55,7 +55,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-sm-12 col-md-6 col-lg-3">
                 <div class="card bg-success text-white h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
@@ -70,7 +70,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-sm-12 col-md-6 col-lg-3">
                 <div class="card bg-danger text-white h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
@@ -85,7 +85,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-sm-12 col-md-6 col-lg-3">
                 <div class="card bg-warning text-white h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">

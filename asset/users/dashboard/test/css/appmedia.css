@@ -1,0 +1,212 @@
+/*****************************************
+                  header
+ *****************************************/
+/* for mobile */
+@media(max-width: 767px){
+    /* صفحة شركات الشحن */
+    .mobile-header-stack {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    .mobile-header-stack h2 {
+        font-size: 20px; /* أصغر شوية */
+        margin-bottom: 10px;
+    }
+
+    .mobile-header-stack .btn {
+        width: 100%; /* الزر يأخذ العرض الكامل */
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .mobile-header-stack .btn i {
+        margin-left: 5px;
+    }
+        /* صفحة الفواتير */
+        .card-body.d-flex.flex-wrap.gap-2 {
+            flex-direction: column !important;
+            gap: 10px !important;
+            align-items: stretch !important;
+        }
+    
+        .card-body.d-flex.flex-wrap.gap-2 a.btn {
+            width: 100%;
+            font-size: 15px;
+            padding: 10px 15px;
+        }
+    
+        .card-body.d-flex.flex-wrap.gap-2 a.btn i {
+            margin-left: 8px;
+        }
+}
+/* for tablet  */
+
+/*****************************************
+                  side bar 
+ *****************************************/
+/* for mobile */
+@media(max-width: 767px){
+    .app-sidebar{display: none;}
+}
+/* for tablet  */
+
+/*****************************************
+                  main 
+ *****************************************/
+ /* for mobile */
+@media (max-width: 767px) {
+    th {
+        font-size: 13px; /* حجم الخط أصغر */
+        white-space: nowrap; /* يمنع لف النص */
+        overflow: hidden; /* يخفي الزائد */
+        text-overflow: ellipsis; /* يضيف "..." لو النص طويل */
+    }
+    td {
+        font-size: 13px; /* حجم الخط أصغر */
+        white-space: nowrap; /* يمنع لف النص */
+        overflow: hidden; /* يخفي الزائد */
+        text-overflow: ellipsis; /* يضيف "..." لو النص طويل */
+    }
+    /* صفحة شركات الشحن */
+    .integration-card {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .integration-card .card-title {
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    .integration-card .card-text {
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .integration-card img {
+        height: 40px;
+        margin-bottom: 10px;
+    }
+
+    .integration-card .form-check {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .integration-card .form-check-label,
+    .integration-card .form-check-input,
+    .integration-card .btn {
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .integration-card .btn i {
+        margin-left: 5px;
+    }
+
+    .status-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+    /* -------- */
+    .card.text-center.p-4 {
+        padding: 15px !important;
+    }
+
+    .card.text-center .card-title {
+        font-size: 16px;
+    }
+
+    .card.text-center .text-muted {
+        font-size: 14px;
+    }
+
+    .card.text-center .btn {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .card.text-center img {
+        height: 50px;
+    }
+    /* صفحة التطبيقات */
+    .card.m-2.p-2 {
+        width: 100% !important;
+        margin: 10px 0 !important;
+        padding: 15px !important;
+    }
+
+    .card.m-2.p-2 img.card-img-top {
+        height: 120px !important;
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
+
+    .card.m-2.p-2 h5.card-title {
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    .card.m-2.p-2 p.card-text {
+        font-size: 14px;
+        color: #555;
+        margin: 10px 0;
+    }
+
+    .card.m-2.p-2 a.btn {
+        font-size: 14px;
+        padding: 8px 12px;
+        width: 100%;
+    }
+
+    .card.m-2.p-2 hr {
+        margin: 10px 0;
+    }
+    /* صفحة الفواتير */
+    .card-body {
+        padding: 0.5rem !important;
+    }
+
+    .card-body .table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .table th,
+    .table td {
+        font-size: 13px;
+        padding: 0.5rem 0.75rem;
+        vertical-align: middle;
+    }
+
+    .table th {
+        white-space: nowrap;
+    }
+
+    .btn-sm {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    .badge {
+        font-size: 11px;
+        padding: 4px 6px;
+    }
+  }
+  
+/* for tablet  */
+
+/*****************************************
+                  footer 
+ *****************************************/
+ /* for mobile */
+ @media (max-width: 767px) {
+   
+ }
+/* for tablet  */

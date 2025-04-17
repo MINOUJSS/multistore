@@ -1,0 +1,27 @@
+:root {
+    --color-primary: #be0681;
+    --color-primary-dark: #790853;
+    --sidebar-width: 250px;
+  }
+/* this is the defaulte theme */
+/* bottons */
+.app-btn-primary{background-color:#790853;border:1px solid #a40c72;}
+.app-btn-primary:hover{background-color:#a40c72;border:1px solid #790853;}
+/* nav bar  */
+.dz-nav-icon{color: #000;}
+.dz-badge-color{background: #a40c72 !important;}
+/* sid bar  */
+.app-sidebar,.offcanvas-header,.offcanvas-body,.item 
+{background: #a40c72;}
+.user-name,.item a{color:#fff;}
+.item a:hover
+{background: #c31689;border:2px solid #a40c72;}
+.sub-item{background: #be068180;}
+.item.active{background: #be0681;border-left:5px solid #790853;}
+/* main  */
+.app-wraper{background: #e1cfdb;}
+/*footer*/
+.footer
+{background: #fff;}
+.footer a {color:#000;text-decoration: none;}
+  
