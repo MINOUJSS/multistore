@@ -29,6 +29,8 @@ return new class extends Migration
             $table->timestamp('subscription_end_date')->nullable();
             // حالة الاشتراك
             $table->enum('status',['pending','paid','free'])->default('free');
+            //تغيير الإشتراك 
+            $table->boolean('change_subscription')->default(false);
             // إنشاء المفتاح الخارجي للمورد
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
             // إنشاء المفتاح الخارجي للخطة

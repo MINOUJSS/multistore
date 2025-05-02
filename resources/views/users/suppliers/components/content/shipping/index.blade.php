@@ -1,3 +1,15 @@
+
+@if(session('success'))
+    <script>
+        Swal.fire({
+            title: 'نجاح!',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonText: 'حسنًا'
+        });
+    </script>
+@endif
+
 <div class="container-fluid">
     <!-- Page Title -->
     <div class="d-flex justify-content-between align-items-center mb-4 mobile-header-stack">
@@ -49,7 +61,82 @@
         </div>
         <div class="card-body">
             <div class="row">
+
                 @if ($companies->count() > 0)
+                @foreach ($companies as $company)
+                    @php
+                        $companyData = json_decode($company->data);
+                    @endphp
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card integration-card h-100 shadow-sm rounded-4 position-relative border">
+                            {{-- حالة التفعيل --}}
+                            <span class="badge bg-success position-absolute top-0 end-0 m-2 px-3 py-2 rounded-pill small">مفعل</span>
+
+                            <div class="card-body text-center">
+                                {{-- شعار الشركة --}}
+                                <div class="integration-icon text-primary mb-3">
+                                    <img src="{{ $companyData->logo ?? asset('default-logo.png') }}" alt="{{ $company->name }}" height="50" class="img-fluid">
+                                </div>
+
+                                {{-- اسم الشركة --}}
+                                <h5 class="card-title fw-bold mb-2">{{ $company->name }}</h5>
+
+                                {{-- وصف --}}
+                                <p class="card-text text-muted small mb-3">
+                                    رفع طلبات العملاء إلى شركة الشحن <strong>{{ $company->name }}</strong> بضغطة زر واحدة
+                                </p>
+
+                                {{-- أدوات التحكم --}}
+                                <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 mt-3">
+                                    {{-- مفتاح التفعيل --}}
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-shipping" type="checkbox"
+                                            data-company-id="{{ $company->id }}"
+                                            {{ $company->status == 'active' ? 'checked' : '' }}>
+                                        <label class="form-check-label small">تفعيل الشحن</label>
+                                    </div>
+
+                                    {{-- زر الإعدادات --}}
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{$company->name}}Modal">
+                                        <i class="fa-solid fa-gear me-1"></i> إعدادات
+                                    </button>
+
+                                    {{-- زر الحذف --}}
+                                    <form action="{{ route('supplier.shipping-company.delete', $company->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف شركة الشحن؟')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger delete-shipping-btn">
+                                            <i class="fa-solid fa-trash me-1"></i> حذف
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="col-12 mb-4">
+                    <div class="card h-100 text-center p-4 shadow-sm border border-dashed rounded-4">
+                        <div class="card-body">
+                            <div class="integration-icon text-primary mb-3">
+                                <img src="{{ asset('asset/users/dashboard/img/other/Delivery-1.png') }}" alt="Yalidin" height="60">
+                            </div>
+
+                            <h5 class="card-title mb-3">لا توجد شركات شحن مرتبطة بالمنصة</h5>
+                            <p class="text-muted mb-4">قم بإضافة شركة شحن لتمكين خيارات الشحن لعملائك.</p>
+
+                            <div class="d-flex justify-content-center">
+                                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ShippingCompaniesModal">
+                                    <i class="fa-solid fa-plus me-1"></i> إضافة شركة شحن
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+                {{-- @if ($companies->count() > 0)
                         @foreach ($companies as $company)
                         <div class="col-md-4 mb-4">
                             <div class="card integration-card h-100 position-relative">
@@ -99,7 +186,7 @@
                     </div>
                 </div>
                 <!---->
-                @endif
+                @endif --}}
                                 
             </div>
         </div>

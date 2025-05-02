@@ -32,4 +32,5 @@
 @section('footer_js')
     @include('users.suppliers.components.content.shipping.js.yalidin_js')
     @include('users.suppliers.components.content.shipping.js.zrexpress_js')
+    @include('users.suppliers.components.content.shipping.js.delete_company_js')
 @endsection

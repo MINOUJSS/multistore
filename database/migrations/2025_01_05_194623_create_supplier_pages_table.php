@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('supplier_id')->constrained('suppliers')->onDelete('cascade');
             $table->string('title'); // عنوان الصفحة
             $table->string('slug')->unique(); // الرابط الدائم للصفحة
-            $table->text('content'); // محتوى الصفحة
+            $table->text('content')->nullable(); // محتوى الصفحة
             $table->string('meta_title')->nullable(); // عنوان ميتا لتحسين SEO
             $table->text('meta_description')->nullable(); // وصف ميتا لتحسين SEO
             $table->string('meta_keywords')->nullable(); // كلمات مفتاحية لتحسين SEO

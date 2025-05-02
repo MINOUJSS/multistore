@@ -42,4 +42,5 @@
 
 @section('footer_js')
     @include('users.suppliers.components.content.settings.js.store_design_js')
+    @include('users.suppliers.components.content.settings.js.quill_editor_js')
 @endsection

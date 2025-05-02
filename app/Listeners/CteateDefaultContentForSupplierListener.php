@@ -241,7 +241,7 @@ class CteateDefaultContentForSupplierListener
         //صفحة عن المتجر
         SupplierPage::create([
                 'title' => 'عن المتجر',
-                'slug' => 'about',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-about',
                 'content' => '<h1>عن متجرنا</h1><p>مرحبًا بكم في <strong>متجرنا</strong>، حيث نقدم لكم أفضل المنتجات والخدمات التي تلبي احتياجاتكم بأعلى مستويات الجودة. نحن نسعى دائمًا لتحقيق رضاكم من خلال تجربة تسوق فريدة ومريحة.</p><h2>رؤيتنا</h2><p>أن نكون الوجهة الأولى للتسوق الإلكتروني، مع توفير منتجات متنوعة بأسعار تنافسية وجودة عالية.</p><h2>رسالتنا</h2><p>تقديم تجربة تسوق إلكتروني مميزة تلبي احتياجات العملاء مع الحرص على تقديم خدمة عملاء استثنائية وسريعة.</p><h2>قيمنا</h2><ul><li>الشفافية والمصداقية في التعامل.</li><li>الالتزام بالجودة والتميز.</li><li>الابتكار المستمر في تقديم أفضل الحلول.</li></ul><h2>لماذا نحن؟</h2><p>- نقدم مجموعة واسعة من المنتجات التي تلبي مختلف الأذواق.<br>- نسعى لتقديم أفضل الأسعار مع الحفاظ على الجودة.<br>- نحرص على توفير خدمة عملاء متوفرة على مدار الساعة.<br>- نوفر شحنًا سريعًا وآمنًا لكل الطلبات.</p><h2>تواصل معنا</h2><p>إذا كان لديك أي استفسارات أو اقتراحات، لا تتردد في التواصل معنا عبر صفحة <a href="/contact-us">اتصل بنا</a>. نحن هنا لخدمتك دائمًا.</p>',
                 'meta_title' => 'عن المتجر',
                 'meta_description' => 'صفحة تحتوي على معلومات عن المتجر.',
@@ -252,7 +252,7 @@ class CteateDefaultContentForSupplierListener
         //الشحن و التسليم   
         SupplierPage::create([
                 'title' => 'شحن و التسليم',
-                'slug' => 'shipping-policy',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-shipping-policy',
                 'content' => '<h1>الشحن والتسليم</h1>
 <p>
     في <strong>متجرنا</strong>، نسعى لتوفير تجربة شحن مريحة وسريعة لعملائنا الكرام. نحن نعمل مع أفضل شركات الشحن لضمان وصول طلباتكم بأسرع وقت ممكن وبأعلى مستويات الجودة.
@@ -316,7 +316,7 @@ class CteateDefaultContentForSupplierListener
         //طرق الدفع
         SupplierPage::create([
                 'title' => 'طرق الدفع',
-                'slug' => 'payment-policy',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-payment-policy',
                 'content' => '<h1>طرق الدفع</h1>
 <p>
     في <strong>متجرنا</strong>، نوفر لك العديد من الخيارات المريحة والآمنة لإتمام عملية الدفع. نسعى لضمان تجربة تسوق سلسة ومناسبة لاحتياجاتك.
@@ -376,7 +376,7 @@ class CteateDefaultContentForSupplierListener
         //شروط الإستخدام
         SupplierPage::create([
                 'title' => 'شروط الإستخدام',
-                'slug' => 'terms-of-use',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-terms-of-use',
                 'content' => '<h1>شروط الاستخدام</h1>
 <p>
     مرحبًا بك في <strong>متجرنا</strong>. باستخدامك لهذا الموقع، فإنك توافق على الالتزام بالشروط والأحكام التالية. يرجى قراءة هذه الشروط بعناية قبل استخدام الموقع.
@@ -450,7 +450,7 @@ class CteateDefaultContentForSupplierListener
         //سياسة الإستبدال و الإسترجاع
         SupplierPage::create([
                 'title' => 'سياسة الإستبدال و الإسترجاع',
-                'slug' => 'exchange-policy',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-exchange-policy',
                 'content' => '<h1>سياسة الاستبدال والاسترجاع</h1>
 <p>
     نحن نسعى دائمًا لضمان رضاكم عن منتجاتنا وخدماتنا. إذا واجهتم أي مشكلة مع أحد المنتجات، فإن سياستنا للاستبدال والاسترجاع تتيح لكم خيارات مرنة ومريحة.
@@ -532,7 +532,7 @@ class CteateDefaultContentForSupplierListener
         //سياسة الخصوصية
         SupplierPage::create([
                 'title' => 'سياسة الخصوصية',
-                'slug' => 'privacy-policy',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-privacy-policy',
                 'content' => '<h1>سياسة الخصوصية</h1>
 <p>
     نحن نقدر خصوصيتك ونلتزم بحماية بياناتك الشخصية. توضح سياسة الخصوصية هذه كيفية جمع واستخدام ومشاركة معلوماتك عند استخدامك لمنصتنا.
@@ -615,7 +615,7 @@ class CteateDefaultContentForSupplierListener
         //اتصل بنا
         SupplierPage::create([
                 'title' => 'اتصل بنا',
-                'slug' => 'contact-us',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-contact-us',
                 'content' => '<h1>اتصل بنا</h1>
 <p>
     نحن هنا لمساعدتك! إذا كانت لديك أي استفسارات أو تحتاج إلى مساعدة، لا تتردد في التواصل معنا من خلال الطرق الموضحة أدناه.
@@ -636,32 +636,6 @@ class CteateDefaultContentForSupplierListener
     <li>من الأحد إلى الخميس: 9:00 صباحًا - 6:00 مساءً</li>
     <li>الجمعة والسبت: مغلق</li>
 </ul>
-
-<h2>نموذج الاتصال</h2>
-<p>
-    يمكنك أيضًا إرسال استفسارك مباشرة عبر النموذج أدناه:
-</p>
-<form action="/contact" method="post">
-    <div style="margin-bottom: 10px;">
-        <label for="name">الاسم الكامل:</label><br>
-        <input type="text" id="name" name="name" required style="width: 100%; padding: 8px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-        <label for="email">البريد الإلكتروني:</label><br>
-        <input type="email" id="email" name="email" required style="width: 100%; padding: 8px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-        <label for="subject">الموضوع:</label><br>
-        <input type="text" id="subject" name="subject" required style="width: 100%; padding: 8px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-        <label for="message">الرسالة:</label><br>
-        <textarea id="message" name="message" rows="5" required style="width: 100%; padding: 8px;"></textarea>
-    </div>
-    <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
-        إرسال
-    </button>
-</form>
 
 <h2>مواقع التواصل الاجتماعي</h2>
 <p>
@@ -686,7 +660,7 @@ class CteateDefaultContentForSupplierListener
         //الأسئلة الشائعة
         SupplierPage::create([
                 'title' => 'الأسئلة الشائعة',
-                'slug' => 'faq',
+                'slug' => tenant_to_slug($supplier->tenant_id).'-faq',
                 'content' => '<h1>الأسئلة الشائعة</h1>
 <p>
     لقد قمنا بجمع مجموعة من الأسئلة الشائعة التي قد تساعدك في الحصول على إجابات سريعة لاستفساراتك.

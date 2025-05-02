@@ -54,7 +54,7 @@ class TenantsController extends Controller
         //check user type
         if(get_user_data(tenant('id'))!=null && get_user_data(tenant('id'))->type=='supplier'){
             //get user data
-            $page= SupplierPage::where('slug','about')->first();
+            $page= SupplierPage::where('slug',tenant_to_slug(tenant('id')).'-about')->first();
             //return idex view with user data
         return view('stores.suppliers.pages.about',compact('page'));
         }

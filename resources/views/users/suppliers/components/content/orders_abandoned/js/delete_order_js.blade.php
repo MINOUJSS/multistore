@@ -12,7 +12,7 @@ function delete_supplier_order(order_id) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: `/supplier-panel/order-abandoned/delete/${order_id}`, // Adjust the route as needed
+                url: `/supplier-panel/order-abadoned/delete/${order_id}`, // Adjust the route as needed
                 method: "DELETE",
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")

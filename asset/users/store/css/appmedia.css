@@ -18,7 +18,23 @@
                   main 
  *****************************************/
  /* for mobile */
+/* تحسين التنسيق للموبايل */
+@media (max-width: 576px) {
+    .thank-you-card {
+        margin: 1rem;
+        padding: 1rem;
+    }
 
+    .thank-you-card .btn {
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .thank-you-card .card-header,
+    .thank-you-card .card-body {
+        font-size: 1.1rem;
+    }
+}
 /* for tablet  */
 
 /*****************************************

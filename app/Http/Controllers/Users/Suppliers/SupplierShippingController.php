@@ -144,6 +144,15 @@ class SupplierShippingController extends Controller
        
     }
     //
+    public function delete_shipping_company($id)
+    {
+        $shippingCompany = ShippingCompaines::findOrfail($id);
+        $shippingCompany->delete();
+        //
+        // return response()->json(['success' => true, 'message' => 'تم تحديث الحالة بنجاح']);
+        return redirect()->back()->with('success','تم حذف بيانات شركة الشحن بنجاح!');
+    }
+    //
         public function updateShippingStatus(Request $request)
     {
         $validated = $request->validate([

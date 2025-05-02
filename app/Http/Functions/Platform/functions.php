@@ -4,6 +4,21 @@ function get_platform_data($key)
 {
     return App\Models\PlatformSetting::where('key', $key)->first();
 }
+//paragraph to slug
+function paragraph_to_slug($paragraph)
+{
+    $words=explode(' ',$paragraph);
+    $slug="";
+    foreach($words as $index=>$word)
+    {
+       $slug.=$word;
+        if($index<count($words)-1)
+        {
+            $slug.='-';  
+        }
+    }
+    return $slug;
+}
 //product name to slug
 function product_name_to_slug($product_name)
 {
@@ -55,4 +70,14 @@ function get_dayra_data($id)
         return 'هذه الدائرة غير موجودة';
     }
     return $dayra;
+}
+//الفرق بين تاريخين بالأيام
+function appDiffInDays($dateA,$dateB)
+{
+
+$date1 = Carbon\Carbon::parse($dateA);
+$date2 = Carbon\Carbon::parse($dateB);
+
+$diffInDays = $date1->diffInDays($date2);
+return $diffInDays;
 }

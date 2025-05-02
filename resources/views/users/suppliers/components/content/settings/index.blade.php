@@ -21,7 +21,13 @@
         </li>
         <!--end store setting-->
 
-        <!--start about store-->
+        <!--start store pages-->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="about-store-tab" data-bs-toggle="tab" data-bs-target="#about-store" type="button" role="tab" aria-controls="about-store" aria-selected="false">صفحات المتجر</button>
+        </li>
+        <!--end store pages-->
+
+        {{-- <!--start about store-->
         <li class="nav-item" role="presentation">
           <button class="nav-link" id="about-store-tab" data-bs-toggle="tab" data-bs-target="#about-store" type="button" role="tab" aria-controls="about-store" aria-selected="false">عن المتجر</button>
         </li>
@@ -67,7 +73,7 @@
         <li class="nav-item" role="presentation">
           <button class="nav-link" id="faq-tab" data-bs-toggle="tab" data-bs-target="#faq" type="button" role="tab" aria-controls="faq" aria-selected="false">الأسئلة الشائعة</button>
         </li>
-        <!--end faq-->
+        <!--end faq--> --}}
 
 
       </ul>
@@ -150,10 +156,185 @@
         <!--end theme-->
 
         <!--start store setting-->
-        <div class="tab-pane fade" id="store-setting" role="tabpanel" aria-labelledby="store-setting-tab">...</div>
+        <div class="tab-pane fade" id="store-setting" role="tabpanel" aria-labelledby="store-setting-tab">
+          {{-- Form لإضافة إعداد جديد --}}
+    <div class="card mb-4">
+      <div class="card-body">
+          <form action="{{-- route('user-settings.store') --}}" method="POST">
+              @csrf
+              <div class="row g-3">
+                  <div class="col-md-4">
+                      <label for="key" class="form-label">مفتاح الإعداد</label>
+                      <input type="text" class="form-control" id="key" name="key" required>
+                  </div>
+
+                  <div class="col-md-4">
+                      <label for="value" class="form-label">القيمة</label>
+                      <input type="text" class="form-control" id="value" name="value" required>
+                  </div>
+
+                  <div class="col-md-2">
+                      <label for="type" class="form-label">النوع</label>
+                      <select class="form-select" id="type" name="type">
+                          <option value="string">نص</option>
+                          <option value="integer">عدد صحيح</option>
+                          <option value="boolean">قيمة منطقية</option>
+                          <option value="json">JSON</option>
+                      </select>
+                  </div>
+
+                  <div class="col-md-2">
+                      <label for="status" class="form-label">الحالة</label>
+                      <select class="form-select" id="status" name="status">
+                          <option value="active">مفعل</option>
+                          <option value="inactive">غير مفعل</option>
+                      </select>
+                  </div>
+
+                  <div class="col-12">
+                      <label for="description" class="form-label">الوصف</label>
+                      <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                  </div>
+
+                  <div class="col-12 text-end">
+                      <button type="submit" class="btn btn-primary">حفظ الإعداد</button>
+                  </div>
+              </div>
+          </form>
+      </div>
+  </div>
+        </div>
         <!--end store setting-->
 
-        <!--start about store-->
+        <!--start store pages-->
+        <div class="tab-pane fade" id="about-store" role="tabpanel" aria-labelledby="about-store-tab">
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 mb-4 p-4">
+            {{-- @php
+                $pages = [
+                    ['id' => 1, 'title' => 'من نحن', 'description' => 'صفحة تعريفية عن الشركة'],
+                    ['id' => 2, 'title' => 'سياسة الخصوصية', 'description' => 'شرح كيفية استخدام بيانات المستخدم'],
+                    ['id' => 3, 'title' => 'شروط الاستخدام', 'description' => 'قواعد استخدام المنصة والخدمات'],
+                    ['id' => 4, 'title' => 'اتصل بنا', 'description' => 'وسائل التواصل مع فريق الدعم'],
+                    ['id' => 5, 'title' => 'الأسئلة الشائعة', 'description' => 'إجابات على أهم استفسارات العملاء'],
+                    ['id' => 6, 'title' => 'طرق الدفع', 'description' => 'شرح طرق الدفع المتاحة على الموقع'],
+                    ['id' => 7, 'title' => 'سياسة الإرجاع', 'description' => 'تفاصيل سياسة استرجاع المنتجات'],
+                    ['id' => 8, 'title' => 'التوصيل والشحن', 'description' => 'معلومات حول التوصيل والشحن']
+                ];
+            @endphp --}}
+            @foreach($pages as $page)
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title">{{ $page['title'] }}</h5>
+                            <p class="card-text text-muted">{{ $page['meta_description'] }}</p>
+                        </div>
+                        <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editModal{{ $page['id'] }}">
+                            تعديل المحتوى
+                        </button>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Modal -->
+            <div class="modal fade" id="editModal{{ $page['id'] }}" tabindex="-1" aria-labelledby="editModalLabel{{ $page['id'] }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg ">
+                  {{-- modal-dialog-scrollable --}}
+                    <div class="modal-content">
+
+                      
+                      <form method="POST" action="{{ route('supplier.page.update', $page->id) }}">
+                        @csrf
+                        @method('PUT')
+                        
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel{{ $page->id }}">تعديل: {{ $page->title }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                        </div>
+                    
+                        <div class="modal-body">
+                            <!-- العنوان -->
+                            <div class="mb-3">
+                                <label class="form-label">عنوان الصفحة</label>
+                                <input type="text" class="form-control" name="title" value="{{ $page->title }}" required>
+                            </div>
+                    
+                            {{-- <!-- الرابط (Slug) -->
+                            <div class="mb-3">
+                                <label class="form-label">الرابط (Slug)</label>
+                                <input type="text" class="form-control" name="slug" value="{{ $page->slug }}" required>
+                            </div> --}}
+                    
+                            <!-- المحتوى -->
+                            <div class="mb-3">
+                                <label class="form-label">المحتوى</label>
+                                <div id="editor{{ $page->id }}" class="quill-editor" style="height: 300px;">{!! $page->content !!}</div>
+                                <input type="hidden" name="content" id="contentInput{{ $page->id }}">
+                            </div>
+                    
+                            <!-- ميتا تايتل -->
+                            <div class="mb-3">
+                                <label class="form-label">Meta Title</label>
+                                <input type="text" class="form-control" name="meta_title" value="{{ $page->meta_title }}">
+                            </div>
+                    
+                            <!-- ميتا وصف -->
+                            <div class="mb-3">
+                                <label class="form-label">Meta Description</label>
+                                <textarea class="form-control" name="meta_description">{{ $page->meta_description }}</textarea>
+                            </div>
+                    
+                            <!-- كلمات مفتاحية -->
+                            <div class="mb-3">
+                                <label class="form-label">Meta Keywords</label>
+                                <input type="text" class="form-control" name="meta_keywords" value="{{ $page->meta_keywords }}">
+                            </div>
+                    
+                            <!-- الحالة -->
+                            <div class="mb-3">
+                                <label class="form-label">الحالة</label>
+                                <select class="form-select" name="status">
+                                    <option value="published" {{ $page->status == 'published' ? 'selected' : '' }}>منشورة</option>
+                                    <option value="draft" {{ $page->status == 'draft' ? 'selected' : '' }}>مسودة</option>
+                                </select>
+                            </div>
+                    
+                        </div>
+                    
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success" onclick="saveEditorContent({{ $page->id }})">حفظ</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                        </div>
+                      </form>
+                    
+                        {{-- <form method="POST" action="{{ route('supplier.page.update', $page['id']) }}">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel{{ $page['id'] }}">تعديل: {{ $page['title'] }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="editor{{ $page['id'] }}" class="quill-editor" style="height: 300px;">{!!$page['content']!!}</div>
+                                <input type="hidden" name="content" id="contentInput{{ $page['id'] }}">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success" onclick="saveEditorContent({{ $page['id'] }})">حفظ</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                            </div>
+                        </form> --}}
+
+
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        
+        </div>
+        <!--end store pages-->
+
+        {{-- <!--start about store-->
         <div class="tab-pane fade" id="about-store" role="tabpanel" aria-labelledby="about-store-tab">...</div>
         <!--end about store-->
 
@@ -183,7 +364,7 @@
 
         <!--start faq-->
         <div class="tab-pane fade" id="faq" role="tabpanel" aria-labelledby="faq-tab">...</div>
-        <!--end faq-->
+        <!--end faq--> --}}
 
       </div>
        {{-- end tab  --}}

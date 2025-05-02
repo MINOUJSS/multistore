@@ -76,6 +76,12 @@ class SupplierOrderController extends Controller
 
           }else
           {
+            //جعل الإشتراك قديم 
+            $supplier=get_supplier_data($user->tenant_id);
+            $supplier_subscription=$supplier->plan_subscription;
+            $supplier_subscription->change_subscription=1;
+            $supplier_subscription->update();
+            //رسالة للمستخدم بعدم كفاية الرصيد
             return response()->json([
                 'status' => 'error',
                 'message' => 'رصيدك غير كاف لفتح هذا الرقم،عليك بتعبئت رصيدك أولاً.',

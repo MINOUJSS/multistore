@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users\Suppliers;
 
+use App\Models\SupplierPage;
 use Illuminate\Http\Request;
 use App\Models\UserStoreSetting;
 use App\Http\Controllers\Controller;
@@ -12,7 +13,9 @@ class SupplierSettingController extends Controller
     //
     public function index()
     {
-        return view('users.suppliers.settings.index');
+        $pages=SupplierPage::where('supplier_id',get_supplier_data(auth()->user()->tenant_id)->id)->get();
+        // dd($pages);
+        return view('users.suppliers.settings.index',compact('pages'));
     }
     //update theme
     public function theme_update(Request $request,$user_id)

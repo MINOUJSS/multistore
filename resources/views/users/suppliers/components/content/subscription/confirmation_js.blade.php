@@ -25,7 +25,7 @@ function get_selected_plan()
 {
     var planId = $('input[name="plan"]:checked').val();
     $.ajax({
-            url: `/supplier/plan-pricing/${planId}`,
+            url: `/supplier-panel/plan-pricing/${planId}`,
             method: 'GET',
             success: function (response) {
                  //add the plan name to the

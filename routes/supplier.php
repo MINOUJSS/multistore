@@ -8,6 +8,7 @@ use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use App\Http\Controllers\Users\Suppliers\SupplierController;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Users\Suppliers\SupplierAppsController;
+use App\Http\Controllers\Users\Suppliers\SupplierPageController;
 use App\Http\Controllers\Users\Suppliers\SupplierPlanController;
 use App\Http\Controllers\Users\Suppliers\SupplierOrderController;
 use App\Http\Controllers\Users\Suppliers\SupplierWalletController;
@@ -86,6 +87,7 @@ Route::middleware([
                 Route::post('/supplier-panel/shipping/pricing/update',[SupplierShippingController::class,'update'])->name('shipping.update');
                 //supplier shipping company routes
                 Route::post('/supplier-panel/shipping-company/create',[SupplierShippingController::class,'add_shipping_company'])->name('shipping-company.create');
+                Route::delete('/supplier-panel/shipping-company/delete/{id}',[SupplierShippingController::class,'delete_shipping_company'])->name('shipping-company.delete');
                 Route::post('/supplier-panel/update-shipping-status', [SupplierShippingController::class, 'updateShippingStatus'])->name('shipping-company.update-status');
                 //supplier application routes
                 Route::get('/supplier-panel/apps',[SupplierAppsController::class,'index'])->name('apps');
@@ -123,13 +125,15 @@ Route::middleware([
                 Route::get('/supplier-panel/wallet/addition/{id}', [SupplierWalletController::class, 'showAddition'])->name('get_wallet');
                 Route::post('/supplier-panel/wallet/recharge/baridimob', [SupplierWalletController::class, 'payWithBaridiMob'])->name('wallet.recharge.baridimob');
                 Route::post('/supplier-panel/wallet/recharge/ccp', [SupplierWalletController::class, 'payWithCcp'])->name('wallet.recharge.ccp');
-
+                //Page Routes
+                Route::put('/supplier-panel/page/update/{id}',[SupplierPageController::class,'update'])->name('page.update');
 
             });
             Route::post('/supplier-panel/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
             //subscription routes here
             Route::get('/supplier-panel/subscription',[SupplierSubscriptionController::class, 'index'])->name('subscription');
             Route::get('/supplier-panel/subscription/confirmation',[SupplierSubscriptionController::class, 'confirmation'])->name('subscription.confirmation');
+            Route::post('/supplier-panel/order/plan/{id}',[SupplierSubscriptionController::class,'order_plan'])->name('subscription.order.plan');
             //supplier plan routes here
             Route::get('/supplier-panel/plan-pricing/{plan_id}',[SupplierPlanController::class, 'plan_pricing'])->name('plan_pricing');
             //supplier payment routes here

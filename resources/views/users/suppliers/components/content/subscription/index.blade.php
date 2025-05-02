@@ -57,7 +57,7 @@
                                         </li>
                                     @endforeach
                                 </ul>
-                                <form action="" method="POST" class="text-center">
+                                <form action="{{route('supplier.subscription.order.plan',$plan->id)}}" method="POST" class="text-center">
                                     @csrf
                                     <button type="submit" class="btn btn-success w-100" {{ $isActive ? 'Disabled' : '' }}>اشترك الآن</button>
                                 </form>

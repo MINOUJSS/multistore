@@ -1,5 +1,5 @@
 <div class="container mt-5">
-    <h2 class="text-center mb-4">فواتير تاجر الجملة</h2>
+    <h2 class="text-center mb-4">الفواتير </h2>
 <!-- Quick Actions -->
         <div class="row mb-4">
             <div class="col-12">
@@ -8,10 +8,6 @@
                         <a href="{{route('supplier.billing.invoice.create')}}" class="btn btn-primary">
                             <i class="fa-solid fa-plus"></i>تحرير فاتورة جديدة
                         </a>
-                        <a class="btn btn-success" href="{{route('supplier.wallet')}}"><i class="bi bi-wallet"> المحفظة</i></a>
-                        {{-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#selectPaymentMethodModal">
-                            شحن الرصيد
-                        </button>                           --}}
                     </div>
                 </div>
             </div>

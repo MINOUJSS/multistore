@@ -1,5 +1,5 @@
 <div class="container d-flex justify-content-center align-items-center">
-    <div class="card m-5 col-4">
+    <div class="card mt-4 mb-4 col-md-6 thank-you-card">
         <div class="card-header">شكراً</div>
         <div class="card-body">شكراً لطلبك!❤️ سيتم التواصل معك قريبًا.</div>
         <a class="btn btn-primary m-5" href="{{route('tenant.products')}}">العودة للتسوق</a>
