@@ -29,16 +29,19 @@ class ChargilyPayController extends Controller
             ]); 
         }elseif($type=='supplier_subscription')
         {
+            $old_subscription =\App\Models\SupplierPlanSubscription::where('supplier_id', $request->reference_id)->first();
+            $rest_days = $old_subscription->duration - appDiffInDays(now(), $old_subscription->subscription_start_date);
+            dd($rest_days);
             $order=\App\Models\SupplierPlanOrder::findOrFail($request->order_id);
-            $plan=\App\Models\SupplierPlan::findOrFail($order->plan_id);
-            $amount=$plan->price;
+            $new_plan=\App\Models\SupplierPlan::findOrFail($order->plan_id);
+            // $amount=$new_plan->price;
             $duration='30';
             if($request->sub_plan_id != 0)
             {
             $sub_plan=\App\Models\SupplierPlanPrices::find($request->sub_plan_id);
                 if($sub_plan)
                 {
-                    $amount=$sub_plan->price;
+                    // $amount=$sub_plan->price;
                     $duration=$sub_plan->duration;
                 }
             }
@@ -53,6 +56,34 @@ class ChargilyPayController extends Controller
                     'status' => 'cancelled',
                 ]);
             }
+
+            // If switching from basic plan (1) to plan 2 or 3, apply full new plan price
+            if (($old_subscription->plan_id == 1 && in_array($new_plan->id, [2, 3]))) {
+                if( empty($request->sub_plan_id) || $request->sub_plan_id == 0)
+                {
+                    $amount = $new_plan->price;
+                }
+                else
+                {
+                    $sub_plan = SupplierPlanPrices::findOrFail($request->sub_plan_id);
+                    $amount = $sub_plan->price;
+                }
+                
+            }elseif($old_subscription->plan_id == 2 && $new_plan->id == 3)
+            {
+                $rest = get_rest_off_current_supplier_plan(
+                    $supplierId,
+                    $old_subscription->plan_id,
+                    $new_plan->id,
+                    $rest_days
+                );
+                //$amount = $new_plan->price - $rest; 
+                $amount = $new_plan->price - $rest; 
+            }
+            else{   
+                $amount=0;              
+            }
+
             //create order 
             $order=\App\Models\SupplierPlanOrder::create([
                 'plan_id' => $order->plan_id,
