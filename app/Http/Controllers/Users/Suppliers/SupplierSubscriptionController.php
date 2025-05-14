@@ -113,7 +113,8 @@ class SupplierSubscriptionController extends Controller
     //
     function redirect(Request $request)
     {
-                $order = SupplierPlanOrder::findOrFail($request->order_id);
+        $order = SupplierPlanOrder::findOrFail($request->order_id);
+        $sub_plan_id=$request->sub_plan_id;
     
         $old_subscription = SupplierPlanSubscription::where('supplier_id', $order->supplier_id)->first();
         if (!$old_subscription) {
@@ -199,7 +200,7 @@ class SupplierSubscriptionController extends Controller
         $viewBase = 'users.suppliers.payments';
     
         return match ($request->paymentMethod) {
-            'Chargily' => view("$viewBase.cib.subscribtion.index", compact('order', 'old_subscription', 'rest_days')),
+            'Chargily' => view("$viewBase.cib.subscribtion.index", compact('order', 'old_subscription', 'rest_days','sub_plan_id')),
             'baridimob' => view("$viewBase.baridimob.subscribtion.index", compact('order', 'old_subscription', 'rest_days')),
             'wallet' => view("$viewBase.wallet.subscribtion.index", compact('order', 'old_subscription', 'rest_days')),
             default => view("$viewBase.ccp.subscribtion.index", compact('order', 'old_subscription', 'rest_days')),
