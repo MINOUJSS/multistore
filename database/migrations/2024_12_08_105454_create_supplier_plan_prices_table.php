@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('supplier_plan_prices', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('plan_id');
-            $table->enum('duration', ['شهر', '3 أشهر', '6 أشهر', '9 أشهر', 'سنة']);
+            $table->integer('duration');
             $table->decimal('price', 10, 2);
             $table->decimal('discount', 10, 2)->nullable();
             $table->timestamps();

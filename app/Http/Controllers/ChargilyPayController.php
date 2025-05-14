@@ -24,6 +24,19 @@ class ChargilyPayController extends Controller
             $validated = $request->validate([
                 'amount' => 'required|numeric|min:50',
             ]); 
+        }elseif($type=='supplier_subscription')
+        {
+            $plan=\App\Models\SupplierPlan::findOrFail($request->plan_id);
+            $amount=$plan->price;
+            if($request->sub_plan_id != 0)
+            {
+            $sub_plan=\App\Models\SupplierPlanPrices::find($request->sub_plan_id);
+                if($sub_plan)
+                {
+                    $amount=$sub_plan->price;
+                }
+            }
+
         }
     
         $payment = \App\Models\ChargilyPayment::create([

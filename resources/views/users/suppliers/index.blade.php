@@ -1,7 +1,7 @@
 @extends('layouts.users.dashboard.app')
 
 @section('google_analitics')
-  {!!get_platform_data('google_analitics')->value!!}    
+  {!!get_platform_data('google_analitics')->value!!}  
 @endsection
 
 @section('title')

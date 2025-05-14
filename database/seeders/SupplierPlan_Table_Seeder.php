@@ -17,25 +17,25 @@ class SupplierPlan_Table_Seeder extends Seeder
         //
         $plan1=SupplierPlan::create([
             'name' => 'المجانية',
-            'description' => 'free plan',
+            'description' => 'أفضل خيار للمبتدئين',
             'price' => '0',
         ]);
         $plan2=SupplierPlan::create([
             'name' => 'المتقدمة',
-            'description' => 'free plan',
+            'description' => 'أفضل خيار للشركات النامية',
             'price' => '2500',
         ]);
         $plan2->pricing()->create([
-            'duration' => '3 أشهر',
+            'duration' => '90',
             'price' => '6500',
         ]);
         $plan2->pricing()->create([
-            'duration' => '6 أشهر',
+            'duration' => '180',
             'price' => '10000',
         ]);
         $plan3=SupplierPlan::create([
             'name' => 'الإحترافية',
-            'description' => 'free plan',
+            'description' => 'أفضل خيار للشركات الرائدة في التجارة الإلكترونية',
             'price' => '5000',
         ]);
     }

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('payment_method')->nullable(); // طريقة الدفع
             $table->enum('status', ['pending', 'approved', 'cancelled'])->default('pending'); // حالة الطلب
             $table->enum('payment_status', ['unpaid', 'paid', 'failed'])->default('unpaid'); // حالة الدفع
+            $table->string('payment_proof')->nullable();
             $table->timestamp('start_date')->nullable(); // تاريخ بدء الاشتراك
             $table->timestamp('end_date')->nullable(); // تاريخ انتهاء الاشتراك
             $table->timestamps(); // الوقت

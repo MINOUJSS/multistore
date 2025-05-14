@@ -35,12 +35,12 @@
           <div class="dz-nav-box">
           <li class="nav-item">
               <div class="rasidi-box text-center">
-                  <a class="nav-link dz-small-nav-text" aria-current="page" href="#">الرصيد</a>
+                  <a class="nav-link dz-small-nav-text" aria-current="page" href="{{route('supplier.wallet')}}">الرصيد</a>
                   <span class="text-success">{{get_user_data(Auth::user()->tenant->id)->balance->balance}} د.ج</span>
 
                   <div class="vr m-2"></div>
 
-                  <a class="nav-link dz-small-nav-text" aria-current="page" href="#">مستحقات الدفع</a>
+                  <a class="nav-link dz-small-nav-text" aria-current="page" href="{{route('supplier.billing')}}">مستحقات الدفع</a>
                   <span class="text-danger">{{get_user_data(Auth::user()->tenant->id)->balance->outstanding_amount}} د.ج</span>
               </div>
             </li>
@@ -74,7 +74,15 @@
               <p class="text-center">{{Auth::user()->email}}</p>
               <hr>
             </div>
-            <li><a class="dropdown-item" href="#"><i class="fa-solid fa-boxes-packing"></i> الخطة {{get_supplier_plan_data(get_supplier_subscription_data(get_supplier_data(auth()->user()->tenant_id)->id)->plan_id)->name}}</a></li>
+            <li class="text-center"><a class="dropdown-item" href="#"><i class="fa-solid fa-boxes-packing"></i> الخطة {{get_supplier_plan_data(get_supplier_subscription_data(get_supplier_data(auth()->user()->tenant_id)->id)->plan_id)->name}}</a>
+            <span>
+              @if (get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id ==1)
+              (صلاحية الخطة مدى الحياة)
+              @else
+              (صلاحية الخطة {{appDiffInDays(now(),get_supplier_data(auth()->user()->tenant_id)->plan_subscription->subscription_end_date)}} يوم)
+              @endif
+            </span>
+            </li>
             <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> حسابي</a></li>
             <li>
               {{-- <a class="dropdown-item text-danger" href="{{ route('supplier.logout') }}"><i class="fa-solid fa-right-from-bracket"></i>

@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             SupplierPlan_Table_Seeder::class,
             PlatformSetting_Table_Seeder::class,
             Supplier_Plan_Features_Table_Seeder::class,
+            Supplier_Plan_Authorization_Table_Seeder::class,
         ]);
     }
 }

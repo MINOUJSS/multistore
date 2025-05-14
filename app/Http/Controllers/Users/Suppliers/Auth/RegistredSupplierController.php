@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Events\UserLogedInEvent;
 use Illuminate\Validation\Rules;
 use App\Models\BalanceTransaction;
+use App\Models\SupplierPlanPrices;
 use App\Events\CreateSupplierEvent;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -32,6 +33,8 @@ class RegistredSupplierController extends Controller
     {
         //get palns from plans table
         $plan_array=[];
+        $plan_data=null;
+        $sub_plan_data=null;
         //add items to the plan array
         $plans=SupplierPlan::all();
         foreach($plans as $plan)
@@ -42,11 +45,24 @@ class RegistredSupplierController extends Controller
         if(in_array($request->plan,$plan_array))
         {
             $plan=$request->plan; 
+            $plan_data=SupplierPlan::where('name',$plan)->first();
+            if($request->sub_plan_id)
+            {
+                foreach($plan_data->pricing as $price)
+                {
+                    if($price->id==$request->sub_plan_id)
+                    {
+                        $sub_plan_data=$price;
+                    }
+                }
+            }
         }else
         {
             $plan=$plan_array[0];
+            $plan_data=SupplierPlan::findOrFail(1);
         }
-        return view('users.suppliers.auth.register',compact('plan'));
+        // dd($plan_data,$sub_plan_data);
+        return view('users.suppliers.auth.register',compact('plan','plan_data','sub_plan_data'));
     }
 
     /**
@@ -56,7 +72,7 @@ class RegistredSupplierController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-       
+
         $request->validate([
             'full_name' => ['required', 'string','min:3','max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
@@ -108,26 +124,28 @@ class RegistredSupplierController extends Controller
                  ]);
                  //create user store settings
                  create_supplier_store_settings($user,$request);
-                 //create default store contents for supplier
-                 
-                 //create default category
-
-                 //ctreate default products
-
-                 //create default fqy
-
-                 //create default pages
 
                  //get selected plan data
-                 $plan=SupplierPlan::Where('name',$request->plan)->first();             
+                 $plan=SupplierPlan::Where('name',$request->plan)->first(); 
+                 //get duration and price
+                 if($request->sub_plan_id)
+                 {
+                    $sub_plan_data=SupplierPlanPrices::findOrFail($request->sub_plan_id);
+                    $duration=$sub_plan_data->duration;
+                    $price=$sub_plan_data->price; 
+                 }else
+                 {
+                    $duration=$plan->duration;
+                    $price=$plan->price;
+                 }            
                  //insert in supplier_plan_subscription table
                  $supplier_plan_subscription=SupplierPlanSubscription::create([
                     'supplier_id' => $supplier->id,
                     'plan_id' => $plan->id,
-                    'duration' => '30',
-                    'price' => $plan->price,
-                    'subscription_start_date'=>date('Y-m-d H:i:s'),
-                    'subscription_end_date'=>Carbon::parse(date('Y-m-d H:i:s'))->addDays(30)->format('Y-m-d H:i:s'),
+                    'duration' => $duration,//'30',
+                    'price' => $price,//$plan->price,
+                    'subscription_start_date'=>now(),//date('Y-m-d H:i:s'),
+                    'subscription_end_date'=>now()->addDays($duration),//Carbon::parse(date('Y-m-d H:i:s'))->addDays(30)->format('Y-m-d H:i:s'),
                     'status'=>'pending',
                  ]);
                  //check plan subscription
@@ -136,18 +154,18 @@ class RegistredSupplierController extends Controller
                     $s_p_subscription=SupplierPlanSubscription::find($supplier_plan_subscription->id);
                     $s_p_subscription->status='free';
                     $s_p_subscription->update();
-                    //add balance to subscription
-                    $user->balance()->update([
-                        'balance'=> '500',
-                    ]);
-                    //commit this transaction in balance transaction table
-                    BalanceTransaction::create([
-                        'user_id' => $user->id,
-                        'transaction_type' => 'addition',
-                        'amount' => '500',
-                        'description' => 'منحة من النصة لكشف أرقام الزبائن عند الطلب على منتجاتك',
-                        'payment_method' =>'نظام المنصة',
-                    ]);
+                    // //add balance to subscription
+                    // $user->balance()->update([
+                    //     'balance'=> '500',
+                    // ]);
+                    // //commit this transaction in balance transaction table
+                    // BalanceTransaction::create([
+                    //     'user_id' => $user->id,
+                    //     'transaction_type' => 'addition',
+                    //     'amount' => '500',
+                    //     'description' => 'منحة من النصة لكشف أرقام الزبائن عند الطلب على منتجاتك',
+                    //     'payment_method' =>'نظام المنصة',
+                    // ]);
                  }
                                    
                   // Commit the transaction

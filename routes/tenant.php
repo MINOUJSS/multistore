@@ -28,6 +28,8 @@ Route::middleware([
     // Route::get('/', function () {
     //     return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     // });
+      Route::middleware('StoreVisibility')->group(function(){
+
     Route::get('/',[TenantsController::class,'index'])->name('store');
     // store pages
     Route::get('/about',[TenantsController::class,'about'])->name('about');
@@ -67,7 +69,7 @@ Route::middleware([
      Route::post('/get-baladias/{dayra_id}',[TenantsController::class,'get_baladias'])->name('get-baladias');
      //get shipping price
      Route::post('/get-shipping-prices/{wilaya_id}',[TenantsController::class,'get_shipping_prices'])->name('get-shipping-prices');
-    
+       });
     });
 
 });

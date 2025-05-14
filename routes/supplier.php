@@ -125,17 +125,27 @@ Route::middleware([
                 Route::get('/supplier-panel/wallet/addition/{id}', [SupplierWalletController::class, 'showAddition'])->name('get_wallet');
                 Route::post('/supplier-panel/wallet/recharge/baridimob', [SupplierWalletController::class, 'payWithBaridiMob'])->name('wallet.recharge.baridimob');
                 Route::post('/supplier-panel/wallet/recharge/ccp', [SupplierWalletController::class, 'payWithCcp'])->name('wallet.recharge.ccp');
+                //supplier pay subscription routes here
+                Route::get('/supplier-panel/subscription',[SupplierSubscriptionController::class, 'index'])->name('subscription');
+            Route::post('/supplier-panel/subscription/pay_method/redirect',[SupplierSubscriptionController::class,'redirect'])->name('subscription.paymethod.redirect');
+            Route::post('/supplier-panel/subscription/pay/baridimob', [SupplierSubscriptionController::class, 'baridimob'])->name('subscription.payment.baridimob');
+            Route::post('/supplier-panel/subscription/pay/ccp', [SupplierSubscriptionController::class, 'ccp'])->name('subscription.payment.ccp');
+            Route::post('/supplier-panel/subscription/pay/wallet', [SupplierSubscriptionController::class, 'wallet'])->name('subscription.payment.wallet');
                 //Page Routes
                 Route::put('/supplier-panel/page/update/{id}',[SupplierPageController::class,'update'])->name('page.update');
 
             });
             Route::post('/supplier-panel/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
             //subscription routes here
-            Route::get('/supplier-panel/subscription',[SupplierSubscriptionController::class, 'index'])->name('subscription');
+            Route::post('/supplier-panel/subscription/pay/new-subscription/baridimob',[SupplierSubscriptionController::class,'new_subscription_by_baridimob'])->name('new.subscription.payment.baridimob');
+            Route::post('/supplier-panel/subscription/pay/new-subscription/ccp',[SupplierSubscriptionController::class,'new_subscription_by_ccp'])->name('new.subscription.payment.ccp');
             Route::get('/supplier-panel/subscription/confirmation',[SupplierSubscriptionController::class, 'confirmation'])->name('subscription.confirmation');
             Route::post('/supplier-panel/order/plan/{id}',[SupplierSubscriptionController::class,'order_plan'])->name('subscription.order.plan');
+            
             //supplier plan routes here
             Route::get('/supplier-panel/plan-pricing/{plan_id}',[SupplierPlanController::class, 'plan_pricing'])->name('plan_pricing');
+            //supplier plan Authorization routes here
+            Route::get('/supplier-panel/plan-authorization/{plan_id}',[SupplierPlanController::class, 'plan_authorization'])->name('plan_authorization');
             //supplier payment routes here
             Route::post('/supplier-panel/payment/redirect',[SupplierPaymentController::class, 'redirect'])->name('payment.redirect');
             Route::get('/supplier-panel/payment/algerian_credit_card',[SupplierPaymentController::class, 'algerian_credit_card'])->name('payment.algerian_credit_card');

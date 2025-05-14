@@ -14,7 +14,9 @@
         <div class="card-body">
             <form action="{{route('supplier.chargilypay.redirect')}}" method="POST">
                 @csrf
-                <input type="hidden" name="plan_id" value="{{$request->plan}}">
+                {{-- <input type="hidden" name="plan_id" value="{{$request->plan}}"> --}}
+                <input type="hidden" name="plan_id" value="{{$plan->id}}">
+                <input type="hidden" name="sub_plan_id" value="{{$sub_plan_id}}">
                 <input type="hidden" name="amount" value="{{$price[0]}}">
                 {{-- <input type="hidden" name="supplier_id" value="{{get_supplier_data(Auth::user()->tenant->id)->id}}"> --}}
                 <input type="hidden" name="payment_type" value="supplier_subscription">

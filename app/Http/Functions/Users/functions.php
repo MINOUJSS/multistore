@@ -22,6 +22,13 @@ function get_user_data_from_id($user_id)
     $user=App\Models\User::find($user_id);
     return $user;
 }
+//
+function get_user_data_from_supplier_id($supplier_id)
+{
+    $supplier=App\Models\Supplier::findOrfail($supplier_id);
+    $user=get_user_data($supplier->tenant_id);
+    return $user;
+}
 function get_user_data($tenant_id)
 {
     $user=App\Models\User::where('tenant_id',$tenant_id)->first();

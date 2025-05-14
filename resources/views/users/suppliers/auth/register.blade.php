@@ -14,6 +14,9 @@
             @csrf
             <input type="hidden" name="type" value="supplier">
             <input type="hidden" name="plan" value="{{$plan}}">
+            @if ($sub_plan_data)
+            <input type="hidden" name="sub_plan_id" value="{{$sub_plan_data->id}}"> 
+            @endif
 
             <div class="mb-3">
                 <label for="full_name" class="form-label">الإسم الكامل</label>

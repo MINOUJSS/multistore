@@ -17,9 +17,20 @@ class SupplierPlanOrder extends Model
         'price',
         'discount',
         'payment_method',
+        'payment_proof',
         'status',
         'payment_status',
         'start_date',
         'end_date'
     ];
+    //
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class,'supplier_id');
+    }
+    //
+    public function plan()
+    {
+        return $this->belongsTo(SupplierPlan::class,'plan_id');
+    }
 }

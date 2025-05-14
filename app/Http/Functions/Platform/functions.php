@@ -81,3 +81,36 @@ $date2 = Carbon\Carbon::parse($dateB);
 $diffInDays = $date1->diffInDays($date2);
 return $diffInDays;
 }
+// الأموال المتبقية من الإشتراك الحالي
+function get_rest_off_current_supplier_plan($supplier_id, $current_plan_id, $new_plan_id, $rest_days)
+{
+    $current_plan = App\Models\SupplierPlan::findOrFail($current_plan_id);
+    $new_plan = App\Models\SupplierPlan::findOrFail($new_plan_id);
+
+
+    $current_subscription = App\Models\SupplierPlanSubscription::where('supplier_id', $supplier_id)->first();
+
+    if (!$current_subscription || $current_subscription->duration == 0 || $current_subscription->plan_id==1) {
+        return 0;
+    }
+
+    // حساب السعر اليومي للاشتراك الحالي
+    //$day_price = $current_plan->price / $current_subscription->duration;
+    $day_price = $current_subscription->price / $current_subscription->duration;
+
+    // القيمة المتبقية
+    $rest_off_current_plan = $day_price * $rest_days;
+
+    // تقريب لرقمين بعد الفاصلة
+    return round($rest_off_current_plan, 2);
+}
+//
+function get_plan_price_from_id_and_duration($plan_id, $duration)
+{
+    $plan = App\Models\SupplierPlan::findOrFail($plan_id);
+    if($plan->prices != null)
+    {
+        return $plan->prices->where('duration', $duration)->first()->price;
+    }
+    return $plan->price ;
+}

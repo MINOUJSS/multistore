@@ -26,6 +26,30 @@
 .active-plan .list-group-item {
     background-color: #f4fdf4; /* خلفية فاتحة للمميزات */
 }
+/*----------------------------*/
+.subscription-option {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.subscription-option:hover {
+    background-color: #f8f9fa;
+}
+
+.subscription-option input[type="radio"] {
+    cursor: pointer;
+}
+
+.subscription-option.active,
+.subscription-option input[type="radio"]:checked + span {
+    background-color: #e6f7ff;
+    font-weight: bold;
+    color: #007bff;
+}
+
 </style>
 
 @endsection
