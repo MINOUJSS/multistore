@@ -29,7 +29,8 @@ class ChargilyPayController extends Controller
             ]); 
         }elseif($type=='supplier_subscription')
         {
-            $plan=\App\Models\SupplierPlan::findOrFail($request->plan_id);
+            $order=\App\Models\SupplierPlanOrder::findOrFail($request->order_id);
+            $plan=\App\Models\SupplierPlan::findOrFail($order->plan_id);
             $amount=$plan->price;
             $duration='30';
             if($request->sub_plan_id != 0)
@@ -54,7 +55,7 @@ class ChargilyPayController extends Controller
             }
             //create order 
             $order=\App\Models\SupplierPlanOrder::create([
-                'plan_id' => $request->plan_id,
+                'plan_id' => $order->plan_id,
                 'supplier_id' =>get_supplier_data($user->tenant_id)->id,
                 'duration' =>$duration,
                 'price' =>$amount,
