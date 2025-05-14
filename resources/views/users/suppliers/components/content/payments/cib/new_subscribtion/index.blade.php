@@ -33,7 +33,7 @@
 
     <!-- زر الدفع -->
     <div class="text-center">
-        <form action="" method="POST">
+        <form action="{{ route('supplier.chargilypay.redirect') }}" method="POST">
             @csrf
             <input type="hidden" name="plan_id" value="{{ $plan->id }}">
             <input type="hidden" name="sub_plan_id" value="{{ $sub_plan_id }}">
