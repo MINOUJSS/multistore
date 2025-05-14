@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SupplierPlan;
 use Illuminate\Http\Request;
+use App\Models\SupplierPlanOrder;
 use App\Models\SupplierPlanPrices;
 
 class ChargilyPayController extends Controller
@@ -28,16 +29,42 @@ class ChargilyPayController extends Controller
             ]); 
         }elseif($type=='supplier_subscription')
         {
-            $plan=SupplierPlan::findOrFail($request->plan_id);
+            $plan=\App\Models\SupplierPlan::findOrFail($request->plan_id);
             $amount=$plan->price;
+            $duration='30';
             if($request->sub_plan_id != 0)
             {
-            $sub_plan=SupplierPlanPrices::find($request->sub_plan_id);
+            $sub_plan=\App\Models\SupplierPlanPrices::find($request->sub_plan_id);
                 if($sub_plan)
                 {
                     $amount=$sub_plan->price;
+                    $duration=$sub_plan->duration;
                 }
             }
+            // التحقق من وجود طلب سابق معلق
+                $existingOrder =\App\Models\SupplierPlanOrder::where('supplier_id', $referenceId)
+                ->where('status', 'pending')
+                ->first();
+            if ($existingOrder) {
+                // إلغاء الطلب السابق
+                $existingOrder->update([
+                    'payment_status' => 'failed',
+                    'status' => 'cancelled',
+                ]);
+            }
+            //create order 
+            $order=\App\Models\SupplierPlanOrder::create([
+                'plan_id' => $request->plan_id,
+                'supplier_id' =>get_supplier_data($user->tenant_id)->id,
+                'duration' =>$duration,
+                'price' =>$amount,
+                'discount' =>0,
+                'payment_method' =>'chargily',
+                'status' =>'pending',
+                'payment_status' =>'unpaid',
+                'start_date' =>now(),
+                'end_date' =>now()->addDays($duration),
+            ]);
 
         }
     
@@ -143,10 +170,19 @@ class ChargilyPayController extends Controller
                                 break;
 
                             case 'supplier_subscription':
+                                //get order data
+                                $order=\App\Models\SupplierPlanOrder::where('supplier_id',$payment->payment_reference_id)->where('status', 'pending')->first();
                                 //update subscription status
                                 $subscription = \App\Models\SupplierPlanSubscription::find($payment->payment_reference_id);
                                 if ($subscription) {
+                                    $subscription->plan_id=$order->plan_id;
+                                    $subscription->duration=$order->duration;
+                                    $subscription->price=$checkout->getAmount();
+                                    $subscription->discount=0;
+                                    $subscription->payment_method=$checkout->getPaymentMethod();
                                     $subscription->payment_status = $status;
+                                    $subscription->subscription_start_date=now();
+                                    $subscription->subscription_end_date=now()->addDays($order->duration);
                                     $subscription->status = $status === 'paid' ? 'paid' : 'free';
                                     $subscription->update();
                                 }

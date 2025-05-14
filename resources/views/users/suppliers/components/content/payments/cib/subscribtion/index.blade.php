@@ -31,7 +31,9 @@
         <form action="{{ route('supplier.chargilypay.redirect') }}" method="POST">
             @csrf
             <input type="hidden" name="order_id" value="{{ $order->id }}">
-            <input type="hidden" name="amount" value="{{ $order->price }}">
+            <input type="hidden" name="sub_plan_id" value="{{ $sub_plan_id }}">
+            <input type="hidden" name="payment_type" value="supplier_subscription">
+            <input type="hidden" name="reference_id" value="{{get_supplier_data(auth()->user()->tenant_id)->id}}">
 
             <button type="submit" class="btn btn-primary btn-lg">
                 <i class="bi bi-wallet2"></i> الدفع عبر Chargily
