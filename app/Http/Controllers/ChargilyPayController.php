@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SupplierPlan;
 use Illuminate\Http\Request;
+use App\Models\SupplierPlanPrices;
 
 class ChargilyPayController extends Controller
 {
@@ -26,11 +28,11 @@ class ChargilyPayController extends Controller
             ]); 
         }elseif($type=='supplier_subscription')
         {
-            $plan=\App\Models\SupplierPlan::findOrFail($request->plan_id);
+            $plan=SupplierPlan::findOrFail($request->plan_id);
             $amount=$plan->price;
             if($request->sub_plan_id != 0)
             {
-            $sub_plan=\App\Models\SupplierPlanPrices::find($request->sub_plan_id);
+            $sub_plan=SupplierPlanPrices::find($request->sub_plan_id);
                 if($sub_plan)
                 {
                     $amount=$sub_plan->price;
