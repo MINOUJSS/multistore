@@ -71,7 +71,7 @@ class ChargilyPayController extends Controller
             }elseif($old_subscription->plan_id == 2 && $new_plan->id == 3)
             {
                 $rest = get_rest_off_current_supplier_plan(
-                    $supplierId,
+                    $request->reference_id,
                     $old_subscription->plan_id,
                     $new_plan->id,
                     $rest_days
