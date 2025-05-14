@@ -31,7 +31,6 @@ class ChargilyPayController extends Controller
         {
             $old_subscription =\App\Models\SupplierPlanSubscription::where('supplier_id', $request->reference_id)->first();
             $rest_days = $old_subscription->duration - appDiffInDays(now(), $old_subscription->subscription_start_date);
-            dd($rest_days);
             $order=\App\Models\SupplierPlanOrder::findOrFail($request->order_id);
             $new_plan=\App\Models\SupplierPlan::findOrFail($order->plan_id);
             // $amount=$new_plan->price;
