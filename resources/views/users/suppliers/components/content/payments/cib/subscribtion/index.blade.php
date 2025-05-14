@@ -28,7 +28,7 @@
 
     <!-- زر الدفع -->
     <div class="text-center">
-        <form action="" method="POST">
+        <form action="{{ route('supplier.chargilypay.redirect') }}" method="POST">
             @csrf
             <input type="hidden" name="order_id" value="{{ $order->id }}">
             <input type="hidden" name="amount" value="{{ $order->price }}">
