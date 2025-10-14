@@ -1,7 +1,7 @@
 <!-- Start Sid Bar  -->
 <div class="app-sidebar">
     <div class="logo-box text-center">
-        <img class="logo-image" src="{{asset('asset/users/dashboard')}}/img/logo/store.png" alt="" widgh="50px" height="50px">
+        <img class="logo-image" src="{{asset('asset/v1/users/dashboard')}}/img/logo/store.png" alt="" widgh="50px" height="50px">
         <div class="user-name">
             <h6>{{Auth::guard('admin')->user()->type}}</h6>
         </div>
@@ -23,7 +23,7 @@
 </div>
 <div class="offcanvas-body">
 <div class="logo-box text-center">
-  <img class="logo-image" src="{{asset('asset/users/dashboard')}}/img/logo/store.png" alt="" widgh="50px" height="50px">
+  <img class="logo-image" src="{{asset('asset/v1/users/dashboard')}}/img/logo/store.png" alt="" widgh="50px" height="50px">
   <div class="user-name">
       <h6>إسم المستخدم</h6>
   </div>

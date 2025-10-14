@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Models\Wilaya;
-use App\Models\SupplierPlan;
+use App\Models\Supplier\SupplierPlan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

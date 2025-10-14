@@ -154,6 +154,7 @@
               <div class="col-md-6">
                   <label for="inputCategory" class="form-label">الأصناف</label>
                   <select id="add_inputCategory" class="form-select" name="add_product_category">
+                    <option value="null"selected>اختر صنف</option>
                     @foreach ($categories as $category)
                     <option value="{{$category->id}}" id="add_p_cat_{{$category->id}}">{{$category->name}}</option>   
                     @endforeach
@@ -179,6 +180,11 @@
                 <label for="inputMiniQty" class="form-label">أقل كمية ممكنة للطلب</label>
                 <input type="text" class="form-control" id="add_inputMinQty" name="add_product_min_qty" required>
                 <span class="text-danger error-add_product_min_qty error-validation"></span>
+              </div>
+              <div class="col-md-6">
+                <label for="inputMiniQty" class="form-label">تقييم المنتج</label>
+                <input type="number" class="form-control" id="add_inputReview" name="add_product_review" value="5" min="1" max="5">
+                <span class="text-danger error-add_product_review error-validation"></span>
               </div>
               <div class="col-md-6">
                 <label for="inputCondition" class="form-label">حالة المنتج</label>
@@ -248,7 +254,7 @@
                       <!---->
                   </div>
                 </div>
-                <div class="col-12 bg-primary rounded ronded p-2 text-center">خيارات المنتج</div>
+                <div class="col-12 bg-primary rounded ronded p-2 text-center">ألوان المنتج</div>
                 <div class="container mb-5">
                 <div class="d-flex justify-content-center m-3"><a class="btn btn-primary" id="add_add_variation"><i class="fa fa-add"></i></a></div> 
                 <div class="container" id="add_product_variation">
@@ -310,6 +316,7 @@
                 <div class="col-md-6">
                     <label for="inputCategory" class="form-label">الأصناف</label>
                     <select id="inputCategory" class="form-select" name="product_category">
+                      <option value="null"selected>اختر صنف</option>
                       @foreach ($categories as $category)
                       <option value="{{$category->id}}" id="p_cat_{{$category->id}}">{{$category->name}}</option>   
                       @endforeach
@@ -335,6 +342,11 @@
                   <label for="inputMiniQty" class="form-label">أقل كمية ممكنة للطلب</label>
                   <input type="text" class="form-control" id="inputMinQty" name="product_min_qty" required>
                   <span class="text-danger error-product_min_qty"></span>
+                </div>
+                <div class="col-md-6">
+                <label for="inputMiniQty" class="form-label">تقييم المنتج</label>
+                <input type="number" class="form-control" id="inputReview" name="product_review" min="1" max="5">
+                <span class="text-danger error-product_review error-validation"></span>
                 </div>
                 <div class="col-md-6">
                   <label for="inputCondition" class="form-label">حالة المنتج</label>
@@ -426,7 +438,7 @@
                         <!---->
                     </div>
                   </div>
-                  <div class="col-12 bg-primary rounded ronded p-2 text-center">خيارات المنتج</div>
+                  <div class="col-12 bg-primary rounded ronded p-2 text-center">ألوان المنتج</div>
                   <div class="container mb-5">
                   <div class="d-flex justify-content-center m-3"><a class="btn btn-primary" id="add_variation"><i class="fa fa-add"></i></a></div> 
                   <div class="container" id="product_variation">

@@ -43,6 +43,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 Swal.fire({ icon: "success", title: "تم الحفظ!", text: data.message, timer: 2000, showConfirmButton: false });
                 form.reset();
                 bootstrap.Modal.getInstance(document.getElementById('addTelegramModal')).hide();
+
+                //تحديث الصفحة
+                location.reload();
+            }else
+            {
+                //console.log(data);
+                Swal.fire({
+                    icon: "error",
+                    title: "خطأ !",
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: true
+                });
+                form.reset();
+                bootstrap.Modal.getInstance(document.getElementById('addTelegramModal')).hide();
             }
         })
         .catch(error => console.error("خطأ أثناء الحفظ:", error));

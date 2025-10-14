@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('user_sliders', function (Blueprint $table) {
             $table->bigIncrements('id');
+            //relationships user
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->string('image');
@@ -21,9 +23,7 @@ return new class extends Migration
             $table->bigInteger('target_id')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->integer('order')->default(0);
-            $table->timestamps();
-            //relationships user
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->timestamps();   
         });
     }
 

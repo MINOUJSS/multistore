@@ -15,5 +15,6 @@ class VerifyCsrfToken extends Middleware
         'https://supplier.saouradelivery.com/supplier/chargilypay/webhook',
         'supplier/chargilypay/webhook',
         'chargilypay/webhook',
+        'test/api/webhook',
     ];
 }

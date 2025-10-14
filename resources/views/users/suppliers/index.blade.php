@@ -20,3 +20,8 @@
 {{-- Your Content Here   --}}
   @include('users.suppliers.components.content.dashboard.index')
 @endsection
+
+@section('footer_js')
+    @include('users.suppliers.components.content.dashboard.js.chart_js')
+    @include('users.suppliers.components.content.dashboard.js.visitors_chart_js')
+@endsection

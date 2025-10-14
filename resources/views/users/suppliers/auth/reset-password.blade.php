@@ -7,7 +7,7 @@
     <div class="col-md-6">
         <div class="dz-auth-box">
           <div class="logo-box text-center">
-            <img src="{{asset('asset/users/auth')}}/img/logo/store.png" width="50" height="50" alt="logo">
+            <img src="{{asset('asset/v1/users/auth')}}/img/logo/store.png" width="50" height="50" alt="logo">
           </div>
           <h5 class="text-center p-4">تغيير كلمة المرور</h5>
           <form action="{{ route('supplier.password.store') }}" method="POST">
@@ -46,7 +46,7 @@
       <div class="col-md-6 dz-auth-bg d-none d-sm-block d-sm-none d-md-block">
         <div class="dz-center-box">
           <div class="logo-box">
-            <img src="{{asset('asset/users/auth')}}/img/logo/store.png" width="50" height="50" alt="logo">
+            <img src="{{asset('asset/v1/users/auth')}}/img/logo/store.png" width="50" height="50" alt="logo">
             Matajer dz
           </div>
           <!---->

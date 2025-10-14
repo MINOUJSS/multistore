@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Users\Suppliers;
 
-use App\Models\SupplierPlan;
+use App\Models\Supplier\SupplierPlan;
 use Illuminate\Http\Request;
-use App\Models\SupplierPlanPrices;
+use App\Models\Supplier\SupplierPlanPrices;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Models\SupplierPlanSubscription;
+use App\Models\Supplier\SupplierPlanSubscription;
 
 class SupplierPaymentController extends Controller
 {

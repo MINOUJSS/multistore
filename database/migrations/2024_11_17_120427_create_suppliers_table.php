@@ -27,7 +27,13 @@ return new class extends Migration
             $table->string('dayra')->nullable();
             $table->string('baladia')->nullable();
             $table->string('address')->nullable();
-            $table->string('status')->default('active');
+            $table->enum('sex', ['male', 'female'])->nullable();
+            $table->date('birth_date')->nullable();
+            $table->string('avatar')->nullable();
+            $table->string('id_card_image')->nullable();
+            $table->enum('approval_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('part_of_approved_list', ['yes', 'no'])->default('no');
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
             $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');

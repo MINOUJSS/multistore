@@ -58,7 +58,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($orders as $order)
+                        @include('users.suppliers.components.content.orders_abandoned.partials.orders_table')
+                        {{-- @forelse($orders as $order)
                         <tr>
                             <td>#{{ $order->order_number }}</td>
                             <td>{{ $order->customer_name }}</td>
@@ -88,7 +89,7 @@
                         <tr>
                             <td colspan="8" class="text-center">لا توجد طلبات متاحة</td>
                         </tr>
-                        @endforelse                      
+                        @endforelse                       --}}
                     </tbody>
                 </table>
             </div>

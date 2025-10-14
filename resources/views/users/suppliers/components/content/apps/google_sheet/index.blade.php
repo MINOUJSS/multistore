@@ -1,8 +1,14 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-center">إعدادات Google Sheets</h2>
-
+@php
+    $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+    $google_sheet=get_user_data(auth()->user()->tenant_id)->google_sheet;
+    $apps_count=$google_sheet->count();
+@endphp
     <!-- زر فتح المودال -->
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addSheetModal">
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addSheetModal" @if (($plan_id==1) ||($plan_id==2 && $apps_count>=1) || ($plan_id==3 && $apps_count>=1))
+      disabled  
+    @endif>
         <i class="fas fa-plus"></i> إضافة 
     </button>
 

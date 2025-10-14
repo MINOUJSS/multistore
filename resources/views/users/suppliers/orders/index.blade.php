@@ -30,4 +30,9 @@
   @include('users.suppliers.components.content.orders.js.delete_order_js')
   @include('users.suppliers.components.content.orders.js.search_order_js')
   @include('users.suppliers.components.content.orders.js.change_order_statu_js')
+  @include('users.suppliers.components.content.orders.js.block_customer_js')
+  @include('users.suppliers.components.content.orders.js.create_parcel_js')
+  @include('users.suppliers.components.content.orders.js.tracking_parcel_js')
+  @include('users.suppliers.components.content.orders.js.delete_parcel_js')
+  @include('users.suppliers.components.content.orders.js.change_confirmation_status_js')
 @endsection

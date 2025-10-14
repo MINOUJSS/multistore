@@ -24,8 +24,30 @@ class SupplierAppsController extends Controller
     }
     //store_google_analytics
     function store_google_analytics(Request $request)
-    {
-                // التحقق من صحة البيانات
+    {  
+        //التحقق من حق المورد في إضافة كود جديد         
+        $userApps = UserApps::where('user_id', Auth::user()->id)->where('app_name', 'google_analytics')->get();
+        $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+        if($plan_id==1)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'لايمكنك إضافة كود الأناليتيك',
+            ]);
+        }elseif($plan_id==2 && count($userApps)>=1)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 1.',
+            ]);
+        }elseif($plan_id==3 && count($userApps)>=2)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 2.',
+            ]);
+        }
+            // التحقق من صحة البيانات
             $validatedData = $request->validate([
                 'tracking_id' => 'required|string|max:50',
             ], [
@@ -127,6 +149,28 @@ class SupplierAppsController extends Controller
     // إضافة Facebook Pixel
     public function store_facebook_pixel(Request $request)
     {
+        //التحقق من حق المورد في إضافة كود جديد         
+        $userApps = UserApps::where('user_id', Auth::user()->id)->where('app_name', 'facebook_pixel')->get();
+        $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+        if($plan_id==1 && count($userApps)>=1)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 1.',
+            ]);
+        }elseif($plan_id==2 && count($userApps)>=2)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 2.',
+            ]);
+        }elseif($plan_id==3 && count($userApps)>=4)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 4.',
+            ]);
+        }
         // التحقق من صحة البيانات
         $validatedData = $request->validate([
             'pixel_id' => 'required|string|max:50',
@@ -213,6 +257,28 @@ class SupplierAppsController extends Controller
     // إضافة TikTok Pixel
     public function store_tiktok_pixel(Request $request)
     {
+        //التحقق من حق المورد في إضافة كود جديد         
+        $userApps = UserApps::where('user_id', Auth::user()->id)->where('app_name', 'tiktok_pixel')->get();
+        $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+        if($plan_id==1)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'لايمكنك إضافة كود تيكتوك بيكسل',
+            ]);
+        }elseif($plan_id==2 && count($userApps)>=1)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 1.',
+            ]);
+        }elseif($plan_id==3 && count($userApps)>=4)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 4.',
+            ]);
+        }
         // التحقق من صحة البيانات
         $validatedData = $request->validate([
             'pixel_id' => 'required|string|max:50',
@@ -294,15 +360,39 @@ class SupplierAppsController extends Controller
     //-------------------google_sheet
     function google_sheet()
     {
-        $sheets=UserApps::where('user_id', Auth::user()->id)->where('app_name', 'google_sheet')->get();
+        $sheets=UserApps::where('user_id', Auth::user()->id)->where('app_name', 'google_sheets')->get();
         return view('users.suppliers.apps.google_sheet.index',compact('sheets'));
     }
         // إضافة Google Sheets
     public function store_google_sheets(Request $request)
     {
+        //التحقق من حق المورد في إضافة كود جديد         
+        $userApps = UserApps::where('user_id', Auth::user()->id)->where('app_name', 'google_sheets')->get();
+        $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+        if($plan_id==1)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'لايمكنك إضافة كود  Google Sheets.',
+            ]);
+        }elseif($userApps!=null && ($plan_id==2 || $plan_id==3) && count($userApps)>=1)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 1.',
+            ]);
+        }
+        // elseif($plan_id==3 && count($userApps)>=2)
+        // {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'الحد الأقصى لإضافة كود جديد هو 2.',
+        //     ]);
+        // }
+
         // التحقق من صحة البيانات
         $validatedData = $request->validate([
-            'sheet_id' => 'required|string|max:100',
+            'sheet_id' => 'required|string',
         ], [
             'sheet_id.required' => 'يرجى إدخال معرف Google Sheet.',
         ]);
@@ -387,6 +477,28 @@ class SupplierAppsController extends Controller
      // إضافة إعدادات Telegram
      public function store_telegram_notification(Request $request)
      {
+        //التحقق من حق المورد في إضافة كود جديد         
+        $userApps = UserApps::where('user_id', Auth::user()->id)->where('app_name', 'telegram_notifications')->get();
+        $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+        if($plan_id==1 && count($userApps)>=1)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 1.',
+            ]);
+        }elseif($plan_id==2 && count($userApps)>=1)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 1.',
+            ]);
+        }elseif($plan_id==3 && count($userApps)>=1)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'الحد الأقصى لإضافة كود جديد هو 1.',
+            ]);
+        }
          // التحقق من صحة البيانات
          $validatedData = $request->validate([
              'chat_id' => 'required|string|max:50',
@@ -521,5 +633,128 @@ class SupplierAppsController extends Controller
 
     //     return response()->json(['success' => true, 'message' => 'تم حفظ الإعدادات بنجاح!']);
     // }
+
+    //------------------clarity
+   //------------------microsoft_clarity
+public function clarity()
+{
+    $clarities = UserApps::where('user_id', Auth::id())
+        ->where('app_name', 'clarity')
+        ->get();
+
+    return view('users.suppliers.apps.clarity.index', compact('clarities'));
+}
+
+// إضافة Microsoft Clarity
+public function store_clarity(Request $request)
+{
+    // التحقق من صلاحية المورد
+    $userApps = UserApps::where('user_id', Auth::id())
+        ->where('app_name', 'clarity')
+        ->get();
+
+    $plan_id = get_supplier_data(Auth::user()->tenant_id)->plan_subscription->plan_id;
+
+    if ($plan_id == 1) {
+        return response()->json([
+            'success' => false,
+            'message' => 'لا يمكنك إضافة كود Microsoft Clarity.',
+        ]);
+    } elseif ($plan_id == 2 && $userApps->count() >= 1) {
+        return response()->json([
+            'success' => false,
+            'message' => 'الحد الأقصى لإضافة كود جديد هو 1.',
+        ]);
+    } elseif ($plan_id == 3 && $userApps->count() >= 2) {
+        return response()->json([
+            'success' => false,
+            'message' => 'الحد الأقصى لإضافة كود جديد هو 2.',
+        ]);
+    }
+
+    // التحقق من صحة البيانات
+    $validatedData = $request->validate([
+        'clarity_id' => 'required|string|max:50',
+    ], [
+        'clarity_id.required' => 'يرجى إدخال معرف Microsoft Clarity (Clarity ID).',
+    ]);
+
+    $clarity = UserApps::create([
+        'user_id'  => Auth::id(),
+        'app_name' => 'clarity',
+        'data'     => json_encode(['clarity_id' => $request->clarity_id]),
+        'status'   => $request->has('status') ? 'active' : 'inactive',
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'تم حفظ إعدادات Microsoft Clarity بنجاح!',
+        'data'    => $clarity,
+    ]);
+}
+
+// تحديث Microsoft Clarity
+public function update_clarity(Request $request, $id)
+{
+    $validatedData = $request->validate([
+        'clarity_id' => 'required|string|max:50',
+    ], [
+        'clarity_id.required' => 'يرجى إدخال معرف Microsoft Clarity (Clarity ID).',
+    ]);
+
+    $clarity = UserApps::where('user_id', Auth::id())
+        ->where('app_name', 'clarity')
+        ->where('id', $id)
+        ->first();
+
+    if (!$clarity) {
+        return response()->json([
+            'success' => false,
+            'message' => 'لم يتم العثور على إعدادات Microsoft Clarity!',
+        ], 404);
+    }
+
+    $clarity->update([
+        'data'   => json_encode(['clarity_id' => $request->clarity_id]),
+        'status' => $request->has('status') ? 'active' : 'inactive',
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'تم تحديث إعدادات Microsoft Clarity بنجاح!',
+        'data'    => $clarity,
+    ]);
+}
+
+// حذف Microsoft Clarity
+public function delete_clarity($id)
+{
+    try {
+        $clarity = UserApps::where('id', $id)
+            ->where('app_name', 'clarity')
+            ->first();
+
+        if (!$clarity) {
+            return response()->json([
+                'success' => false,
+                'message' => 'الإعداد غير موجود.',
+            ], 404);
+        }
+
+        $clarity->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم حذف الإعداد بنجاح!',
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'حدث خطأ أثناء الحذف.',
+        ], 500);
+    }
+}
+
+    //
 
 }

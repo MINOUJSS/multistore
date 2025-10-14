@@ -1,16 +1,16 @@
 <div class="container">
     <h1>لوحة التحكم</h1>
     @if (session()->has('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session()->get('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session()->get('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     @endif
     @if (session()->has('error'))
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        {{ session()->get('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ session()->get('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     @endif
 
     <!---->
@@ -39,68 +39,96 @@
         </div> --}}
 
         <!-- Statistics Cards -->
-        <div class="row g-3">
-            <div class="col-sm-12 col-md-6 col-lg-3">
-                <div class="card bg-primary text-white h-100">
+        @include('users.suppliers.components.content.dashboard.inc.dayly_statistics_cards')
+        <!--------------------------->
+        <div class="row g-3 mt-2 mb-2">
+            <div class="col-md-8" dir="rtl">
+                <div class="card border-primary">
                     <div class="card-body">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa-solid fa-cart-arrow-down fa-2x me-2"></i>
-                            <h5 class="card-title mb-0"> طلبات اليوم</h5>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-gray-800">تحليل الطلبات</h3>
+                            <select id="timeRange" class="border border-gray-200 px-3 py-1.5 rounded-lg text-sm">
+                                <option value="daily">يومي</option>
+                                <option value="weekly">أسبوعي</option>
+                                <option value="monthly">شهري</option>
+                            </select>
                         </div>
-                        <h2 class="card-text mb-2">{{$supplier->orderToDay->count()}}</h2>
-                        <div class="d-flex align-items-center">
-                            <i class="fa-solid fa-arrow-up me-1"></i>
-                            <small>12% عن الشهر الماضي</small>
+                        <canvas id="ordersChart" class="w-full h-64"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 " dir="rtl">
+                <div class="card border-primary h-100">
+                    <div class="card-body">
+                        <h3 class="text-lg font-bold text-gray-800 text-center mb-4">توزيع حالة الطلبات</h3>
+                        <canvas id="statusChart" class="w-full h-64"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--------------------------->
+        @include('users.suppliers.components.content.dashboard.inc.weekly_statistics_cards')
+        <!---->
+        <div class="row mt-2">
+            <div class="col-md-4 ">
+                <div class="card border-primary h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="card-title mb-0">المنتجات الأكثر طلبا</h6>
+                            <i class="fa-solid fa-crown text-primary"></i>
+                        </div>
+                        <div class="small">
+                            @if($topProducts->count() > 0)
+                            @foreach ($topProducts as $product)
+                                <div class="d-flex justify-content-between mb-2">
+                                    <img src="{{ $product->image }}" class="img-fluid" width="40" height="40"
+                                        alt="">
+                                    <span>{{ $product->name }}</span>
+                                    <span class="text-primary">{{ $product->orders_count }} وحدة</span>
+                                </div>
+                            @endforeach
+                            @else 
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-center">لا يوجد منتجات مطلوبة</span>
+                            </div>
+                            @endif
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="card-title mb-0">المنتجات الأكثر مشاهدة</h6>
+                            <i class="fa-solid fa-crown text-primary"></i>
+                        </div>
+                        <div class="small">
+                            @foreach ($topViewed as $product)
+                                <div class="d-flex justify-content-between mb-2">
+                                    <img src="{{ $product->image }}" class="img-fluid" width="40" height="40"
+                                        alt="">
+                                    <span>{{ $product->name }}</span>
+                                    <span class="text-primary">{{ $product->views_count }} مشاهدة</span>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
-                <div class="card bg-success text-white h-100">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa-solid fa-cart-plus fa-2x me-2"></i>
-                            <h5 class="card-title mb-0"> المؤكدة اليوم</h5>
-                        </div>
-                        <h2 class="card-text mb-2">{{$supplier->orderConfirmedToDay->count()}}</h2>
-                        <div class="d-flex align-items-center">
-                            <i class="fa-solid fa-arrow-up me-1"></i>
-                            <small>8% عن الشهر الماضي</small>
-                        </div>
+            <div class="col-md-8 card border-primary">
+                <div class="card-body">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">تحليل الزوار</h3>
+                        <select id="visitorsTimeRange" class="border border-gray-200 px-3 py-1.5 rounded-lg text-sm">
+                            <option value="daily">يومي</option>
+                            <option value="weekly">أسبوعي</option>
+                            <option value="monthly">شهري</option>
+                        </select>
                     </div>
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
-                <div class="card bg-danger text-white h-100">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa-solid fa-cart-shopping fa-2x me-2"></i>
-                            <h5 class="card-title mb-0"> الملغاة اليوم</h5>
-                        </div>
-                        <h2 class="card-text mb-2">{{$supplier->orderCanceledToDay->count()}}</h2>
-                        <div class="d-flex align-items-center">
-                            <i class="fa-solid fa-arrow-up me-1"></i>
-                            <small>15% عن الشهر الماضي</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
-                <div class="card bg-warning text-white h-100">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa-solid fa-dolly fa-2x me-2"></i>
-                            <h5 class="card-title mb-0">المتروكة اليوم</h5>
-                        </div>
-                        <h2 class="card-text mb-2">{{$supplier->orderAbandonedToDay->count()}}</h2>
-                        <div class="d-flex align-items-center">
-                            <i class="fa-solid fa-arrow-up me-1"></i>
-                            <small>20% عن الشهر الماضي</small>
-                        </div>
-                    </div>
+                    <canvas id="visitorsChart" class="w-full h-64"></canvas>
                 </div>
             </div>
         </div>
+        @include('users.suppliers.components.content.dashboard.inc.monthly_statistics_cards')
+        <!---->
 
         <!-- Additional Statistics -->
         {{-- <div class="row g-3 mt-2">

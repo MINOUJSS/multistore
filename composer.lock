@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ac6d7311071c23f613d15c211750f605",
+    "content-hash": "eb45b5296dae7cbafa31041c01af3050",
     "packages": [
         {
             "name": "brick/math",
@@ -3169,6 +3169,77 @@
                 }
             ],
             "time": "2024-12-14T21:12:59+00:00"
+        },
+        {
+            "name": "piteurstudio/courierdz",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PiteurStudio/CourierDZ.git",
+                "reference": "2cbb796da7530653a589b6b92607a6d147e21049"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PiteurStudio/CourierDZ/zipball/2cbb796da7530653a589b6b92607a6d147e21049",
+                "reference": "2cbb796da7530653a589b6b92607a6d147e21049",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "illuminate/validation": "^9 | ^10 | ^11 | ^12",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.20.0",
+                "mockery/mockery": "^1.6",
+                "pestphp/pest": "^2.20 || ^3.0",
+                "php-coveralls/php-coveralls": "^2.7.0",
+                "phpstan/phpstan": "^2.0",
+                "rector/rector": "^2.0",
+                "spatie/ray": "^1.28"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CourierDZ\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nassim",
+                    "email": "mb.nassim@piteur-studio.dz",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Piteur Studio",
+                    "email": "info@piteur-studio.dz",
+                    "role": "Company"
+                }
+            ],
+            "description": "CourierDZ is a PHP client for integrating multiple Algerian shipping providers, including ZR Express, Procolis, Yalidine, Ecotrack, Mayesto Delivery, and more, offering seamless order and tracking management.",
+            "homepage": "https://github.com/PiteurStudio/CourierDZ",
+            "keywords": [
+                "Algeria",
+                "Ecotrack",
+                "Mayesto Delivery",
+                "PiteurStudio",
+                "Procolis",
+                "Yalidine",
+                "ZR Express",
+                "api",
+                "courierdz",
+                "shipping",
+                "tracking"
+            ],
+            "support": {
+                "issues": "https://github.com/PiteurStudio/CourierDZ/issues",
+                "source": "https://github.com/PiteurStudio/CourierDZ/tree/v1.0.0"
+            },
+            "time": "2025-02-24T22:23:18+00:00"
         },
         {
             "name": "psr/cache",

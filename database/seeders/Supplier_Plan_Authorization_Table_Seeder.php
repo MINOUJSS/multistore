@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\SupplierPlanAuthorizations;
+use App\Models\Supplier\SupplierPlanAuthorizations;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class Supplier_Plan_Authorization_Table_Seeder extends Seeder
@@ -22,8 +22,8 @@ class Supplier_Plan_Authorization_Table_Seeder extends Seeder
                 ['key' => 'comission_for_orders_abandoned','value'=>0,'description' => 'إقتطاع 10 د.ج على كل طلب متروك','is_enabled' =>true],
                 ['key' => 'max_products', 'value' => 12,'description' => ' المنتجات المسموح بها (12)','is_enabled' => true],
                 //['key' => 'store_visibility','value'=>0,'description' =>'ظهور المتجر للتجار الغير مشتركين في المنصة','is_enabled' => false],
-                ['key' => 'max_facebook_pixel', 'value' => 2,'description' => ' بيكسل فيسبوك (2)','is_enabled' => true],
                 ['key' => 'max_facebook_pixel', 'value' => 1,'description' => ' بيكسل فيسبوك (1)','is_enabled' => true],
+                ['key' => 'max_telegram_notification', 'value' => 1,'description' => 'إشعارات الطلبات على التليجرام','is_enabled' => true],
                 ['key' => 'max_tiktok_pixel', 'value' => 0,'description' => ' بيكسل تيكتوك ','is_enabled' => false],
                 ['key' => 'max_google_analytics', 'value' => 0,'description' => '  جوجل أناليتيك ','is_enabled' => false],
                 ['key' => 'max_microsoft_clarity', 'value' => 0,'description' => '  ميكروسوفت كلاريتي ','is_enabled' => false],
@@ -38,6 +38,8 @@ class Supplier_Plan_Authorization_Table_Seeder extends Seeder
                 ['key' => 'comission_for_orders','value' =>0,'description' =>'طلبات غير محدودة (بدون إقتطاعات)','is_enabled' => true],
                 ['key' => 'comission_for_orders_abandoned','value'=>1,'description' => 'إقتطاع 5 د.ج على كل طلب متروك','is_enabled' =>true],
                 ['key' => 'max_products', 'value' => 100,'description' => ' المنتجات المسموح بها (100)','is_enabled' => true],
+                ['key' => 'max_facebook_pixel', 'value' => 2,'description' => ' بيكسل فيسبوك (2)','is_enabled' => true],
+                ['key' => 'max_telegram_notification', 'value' => 1,'description' => 'إشعارات الطلبات على التليجرام','is_enabled' => true],
                 ['key' => 'max_tiktok_pixel', 'value' => 1,'description' => ' بيكسل تيكتوك (1)','is_enabled' => true],
                 ['key' => 'max_google_analytics', 'value' => 1,'description' => '  جوجل أناليتيك (1)','is_enabled' => true],
                 ['key' => 'max_microsoft_clarity', 'value' => 1,'description' => '  ميكروسوفت كلاريتي (1)','is_enabled' => true],
@@ -53,6 +55,7 @@ class Supplier_Plan_Authorization_Table_Seeder extends Seeder
                 ['key' => 'comission_for_orders_abandoned','value'=>2,'description' => ' طلب متروكة غير محدودة (بدون إقتطاعات)','is_enabled' =>true],
                 ['key' => 'max_products', 'value' => 1000,'description' => ' المنتجات المسموح بها (غير محدودة)','is_enabled' => true],
                 ['key' => 'max_facebook_pixel', 'value' => 4,'description' => ' بيكسل فيسبوك (4)','is_enabled' => true],
+                ['key' => 'max_telegram_notification', 'value' => 1,'description' => 'إشعارات الطلبات على التليجرام','is_enabled' => true],
                 ['key' => 'max_tiktok_pixel', 'value' => 4,'description' => ' بيكسل تيكتوك (4)','is_enabled' => true],
                 ['key' => 'max_google_analytics', 'value' => 2,'description' => '  جوجل أناليتيك (2)','is_enabled' => true],
                 ['key' => 'max_microsoft_clarity', 'value' => 2,'description' => '  ميكروسوفت كلاريتي (2)','is_enabled' => true],

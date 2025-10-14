@@ -13,6 +13,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.5",
+        "piteurstudio/courierdz": "^1.0",
         "realrashid/sweet-alert": "^7.2",
         "stancl/tenancy": "^3.8"
     },

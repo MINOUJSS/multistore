@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (order.phone_visiblity) {
                         document.getElementById("customer-phone").textContent = order.phone;
                     } else {
-                        document.getElementById("customer-phone").innerHTML = '<img src="/asset/users/dashboard/img/other/lock.png" alt="phone" style="cursor: pointer;" />';
+                        document.getElementById("customer-phone").innerHTML = '<img src="/asset/v1/users/dashboard/img/other/lock.png" alt="phone" style="cursor: pointer;" />';
                     }
                     // document.getElementById("customer-phone").textContent = order.phone;
                     document.getElementById("customer-email").textContent = order.email ?? "غير متوفر";

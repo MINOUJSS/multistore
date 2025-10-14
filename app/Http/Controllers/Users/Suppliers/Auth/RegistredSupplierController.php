@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Users\Suppliers\Auth;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Tenant;
-use App\Models\Supplier;
+use App\Models\Supplier\Supplier;
 use Illuminate\View\View;
-use App\Models\SupplierPlan;
+use App\Models\Supplier\SupplierPlan;
 use Illuminate\Http\Request;
+use App\Models\UserFreeOrder;
 use App\Events\UserLogedInEvent;
 use Illuminate\Validation\Rules;
 use App\Models\BalanceTransaction;
-use App\Models\SupplierPlanPrices;
+use App\Models\Supplier\SupplierPlanPrices;
 use App\Events\CreateSupplierEvent;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -22,7 +23,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Storage;
-use App\Models\SupplierPlanSubscription;
+use App\Models\Supplier\SupplierPlanSubscription;
 
 class RegistredSupplierController extends Controller
 {
@@ -154,6 +155,11 @@ class RegistredSupplierController extends Controller
                     $s_p_subscription=SupplierPlanSubscription::find($supplier_plan_subscription->id);
                     $s_p_subscription->status='free';
                     $s_p_subscription->update();
+                    //add free order fore this supplier
+                    $freeorders=UserFreeOrder::create([
+                        'user_id'=>$user->id,
+                        'quantity'=>'50',
+                    ]);
                     // //add balance to subscription
                     // $user->balance()->update([
                     //     'balance'=> '500',

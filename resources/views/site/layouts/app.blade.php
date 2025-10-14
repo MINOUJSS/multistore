@@ -10,30 +10,30 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="{{asset('asset/site/defaulte')}}/img/favicon.png" rel="icon">
-  {{-- <link rel="icon" href="{{asset('asset/site/defaulte')}}/img/favicon.png"> --}}
-  {{-- <link href="{{asset('asset/site/defaulte')}}/img/apple-touch-icon.png" rel="apple-touch-icon"> --}}
+  <link href="{{asset('asset/v1/site/defaulte')}}/img/favicon.png" rel="icon">
+  {{-- <link rel="icon" href="{{asset('asset/v1/site/defaulte')}}/img/favicon.png"> --}}
+  {{-- <link href="{{asset('asset/v1/site/defaulte')}}/img/apple-touch-icon.png" rel="apple-touch-icon"> --}}
 
   <!-- Google Fonts -->
   {{-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet"> --}}
 
   <!-- Vendor CSS Files -->
-  <link href="{{asset('asset/site/defaulte')}}/css/aos.css" rel="stylesheet">
-  <link href="{{asset('asset/site/defaulte')}}/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{asset('asset/site/defaulte')}}/css/bootstrap-rtl.min.css" rel="stylesheet">
-  <link href="{{asset('asset/site/defaulte')}}/css/bootstrap-icons.css" rel="stylesheet">
-  <link href="{{asset('asset/site/defaulte')}}/css/boxicons.css" rel="stylesheet">
-  <link href="{{asset('asset/site/defaulte')}}/css/glightbox.min.css" rel="stylesheet">
-  <link href="{{asset('asset/site/defaulte')}}/css/remixicon.css" rel="stylesheet">
-  <link href="{{asset('asset/site/defaulte')}}/css/swiper-bundle.min.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/aos.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/bootstrap-rtl.min.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/bootstrap-icons.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/boxicons.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/glightbox.min.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/remixicon.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/swiper-bundle.min.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
-  <link href="{{asset('asset/site/defaulte')}}/css/style.css" rel="stylesheet">
-  <link href="{{asset('asset/site/defaulte')}}/css/theme_one.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/style.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/theme_one.css" rel="stylesheet">
   <!--My Editing-->
-  <link href="{{asset('asset/site/defaulte')}}/css/mystyle.css" rel="stylesheet">
+  <link href="{{asset('asset/v1/site/defaulte')}}/css/mystyle.css" rel="stylesheet">
   {{-- My Fonts --}}
-  <link rel="stylesheet" href="{{asset('asset/site/defaulte')}}/css/kufi_font.css">
+  <link rel="stylesheet" href="{{asset('asset/v1/site/defaulte')}}/css/kufi_font.css">
   <!--google analitices-->
   @yield('google_analitics')
   <!-- =======================================================
@@ -177,7 +177,7 @@
 
   <div class="container footer-bottom clearfix">
     <div class="copyright">
-      &copy; كل الحقوق محفوظة <strong><span>لمتاجر ديزاد</span></strong>.
+      &copy; كل الحقوق محفوظة <strong><span>{!! get_platform_data('platform_name')->value !!}</span></strong>.
     </div>
     <div class="credits">
       <!-- All the links in the footer should remain intact. -->
@@ -193,16 +193,16 @@
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
-<script src="{{asset('asset/site/defaulte')}}/js/aos.js"></script>
-<script src="{{asset('asset/site/defaulte')}}/js/bootstrap.bundle.min.js"></script>
-<script src="{{asset('asset/site/defaulte')}}/js/glightbox.min.js"></script>
-<script src="{{asset('asset/site/defaulte')}}/js/isotope.pkgd.min.js"></script>
-<script src="{{asset('asset/site/defaulte')}}/js/swiper-bundle.min.js"></script>
-<script src="{{asset('asset/site/defaulte')}}/js/noframework.waypoints.js"></script>
-<script src="{{asset('asset/site/defaulte')}}/js/validate.js"></script>
+<script src="{{asset('asset/v1/site/defaulte')}}/js/aos.js"></script>
+<script src="{{asset('asset/v1/site/defaulte')}}/js/bootstrap.bundle.min.js"></script>
+<script src="{{asset('asset/v1/site/defaulte')}}/js/glightbox.min.js"></script>
+<script src="{{asset('asset/v1/site/defaulte')}}/js/isotope.pkgd.min.js"></script>
+<script src="{{asset('asset/v1/site/defaulte')}}/js/swiper-bundle.min.js"></script>
+<script src="{{asset('asset/v1/site/defaulte')}}/js/noframework.waypoints.js"></script>
+<script src="{{asset('asset/v1/site/defaulte')}}/js/validate.js"></script>
 
 <!-- Template Main JS File -->
-<script src="{{asset('asset/site/defaulte')}}/js/main.js"></script> 
+<script src="{{asset('asset/v1/site/defaulte')}}/js/main.js"></script> 
 
 </body>
 

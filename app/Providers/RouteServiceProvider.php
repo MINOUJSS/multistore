@@ -31,29 +31,29 @@ class RouteServiceProvider extends ServiceProvider
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')
-                ->group(base_path('routes/api.php'));
+                ->group(base_path('routes/modules/v1/api.php'));
 
             Route::middleware('web')
-                ->group(base_path('routes/web.php'));
+                ->group(base_path('routes/modules/v1/web.php'));
            
             //my custom routes
             Route::middleware('web')
-                ->group(base_path('routes/seller.php'));
+                ->group(base_path('routes/modules/v1/seller.php'));
            
             Route::middleware('web')
-                ->group(base_path('routes/supplier.php'));
+                ->group(base_path('routes/modules/v1/supplier.php'));
                 
             Route::middleware('web')
-                ->group(base_path('routes/tenant.php'));
+                ->group(base_path('routes/modules/v1/tenant.php'));
             
             Route::middleware('web')
-                ->group(base_path('routes/shiper.php'));
+                ->group(base_path('routes/modules/v1/shiper.php'));
 
             Route::middleware('web')
-                ->group(base_path('routes/marketer.php'));
+                ->group(base_path('routes/modules/v1/marketer.php'));
             //Admin Routes
             Route::middleware('web')
-                ->group(base_path('routes/admin.php'));
+                ->group(base_path('routes/modules/v1/admin.php'));
         });
         
 
@@ -74,7 +74,7 @@ protected function mapWebRoutes()
         Route::middleware('web')
             ->domain($domain)
             ->namespace($this->namespace)
-            ->group(base_path('routes/web.php'));
+            ->group(base_path('routes/modules/v1/web.php'));
     }
 }
 
@@ -85,7 +85,7 @@ protected function mapApiRoutes()
             ->domain($domain)
             ->middleware('api')
             ->namespace($this->namespace)
-            ->group(base_path('routes/api.php'));
+            ->group(base_path('routes/modules/v1/api.php'));
     }
 }
 

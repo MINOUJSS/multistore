@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Tenancy\Affects\Filesystems\Events\ConfigureDisk;
+use App\Services\Users\Suppliers\OrderNotificationService;
+use App\Services\Users\Suppliers\TelegramService;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(TelegramService::class, function () {
+            return new TelegramService();
+        });
+
+        $this->app->bind(OrderNotificationService::class, function ($app) {
+            return new OrderNotificationService($app->make(TelegramService::class));
+        });
     }
 
     /**
@@ -24,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         // Paginator::useBootstrapFive();
         // Paginator::useBootstrapFour();
         // Paginator::defaultView('vendor.pagination.default');
- 
+
         // Paginator::defaultSimpleView('vendor.pagination.simple-default');
     }
 }

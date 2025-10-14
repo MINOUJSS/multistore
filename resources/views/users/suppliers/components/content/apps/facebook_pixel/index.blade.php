@@ -1,8 +1,14 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-center">إعدادات Facebook Pixel</h2>
-
+@php
+    $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+    $facebook_pixle=get_user_data(auth()->user()->tenant_id)->facebook_pixle;
+    $apps_count=$facebook_pixle->count();
+@endphp
     <!-- زر فتح المودال -->
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPixelModal">
+    <button id="add_btn" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPixelModal" @if (($plan_id==1 && $apps_count>=1) ||($plan_id==2 && $apps_count>=2) || ($plan_id==3 && $apps_count>=4))
+      disabled  
+    @endif>
         <i class="fas fa-plus"></i> إضافة 
     </button>
 

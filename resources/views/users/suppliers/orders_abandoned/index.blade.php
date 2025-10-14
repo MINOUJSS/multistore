@@ -30,4 +30,5 @@
   @include('users.suppliers.components.content.orders_abandoned.js.delete_order_js')
   @include('users.suppliers.components.content.orders_abandoned.js.search_order_js')
   @include('users.suppliers.components.content.orders_abandoned.js.change_order_statu_js')
+  @include('users.suppliers.components.content.orders_abandoned.js.move_to_order_js')
 @endsection

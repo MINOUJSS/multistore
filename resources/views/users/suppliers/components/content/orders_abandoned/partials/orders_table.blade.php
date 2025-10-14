@@ -22,6 +22,9 @@
         <button class="btn btn-sm btn-danger delete-order" data-order-id="{{ $order->id }}" onclick="delete_supplier_order({{ $order->id }});">
             <i class="fas fa-trash"></i>
         </button>
+        <button class="btn btn-sm btn-success move_to_order" data-order-id="{{ $order->id }}">
+            <i class="fa-solid fa-cart-arrow-down"></i>
+        </button>
     </td>
 </tr>
 @empty

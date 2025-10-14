@@ -1,8 +1,14 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-center">إعدادات Google Analytics</h2>
-
+@php
+    $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+    $google_analytics=get_user_data(auth()->user()->tenant_id)->google_analytics;
+    $apps_count=$google_analytics->count();
+@endphp
     <!-- زر فتح المودال -->
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addanalyticsModal">
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addanalyticsModal"  @if (($plan_id==1) ||($plan_id==2 && $apps_count>=1) || ($plan_id==3 && $apps_count>=2))
+      disabled  
+    @endif>
         <i class="fas fa-plus"></i> إضافة 
     </button>
 

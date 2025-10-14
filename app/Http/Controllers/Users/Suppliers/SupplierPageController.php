@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Users\Suppliers;
 
-use App\Models\SupplierPage;
+use App\Models\Supplier\SupplierPage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

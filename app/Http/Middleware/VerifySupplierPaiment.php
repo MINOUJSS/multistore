@@ -3,10 +3,10 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\Supplier;
+use App\Models\Supplier\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\SupplierPlanSubscription;
+use App\Models\Supplier\SupplierPlanSubscription;
 use Symfony\Component\HttpFoundation\Response;
 
 class VerifySupplierPaiment

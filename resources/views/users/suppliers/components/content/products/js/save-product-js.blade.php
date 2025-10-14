@@ -69,7 +69,22 @@
                 success: function (response) {
                     console.log(response);
                     $('#addModal').modal('hide');
-                    //refresh page
+                    //في حالة تجاوز الحد المسموح للمنتجات
+                        if(response.status=="max_products_limit")
+                            {
+                                //alert error message
+                                Swal.fire({
+                                        icon: 'error', // Type of alert (success, error, info, warning)
+                                        title: response.title, // Title of the alert
+                                        text: response.message, // Text under the title
+                                        showConfirmButton: true, // Whether to show the confirm button
+                                        confirmButtonText: 'حسناً', // Text of the confirm button
+                                        confirmButtonColor: '#a40c72', // Color of the confirm button
+                                        timer: 100000,
+                                    });
+                                    exit;
+                            }
+                                //refresh page
                     location.reload(true);
                     //alert success message
                     Swal.fire({
@@ -129,21 +144,21 @@
             '<input type="color" class="form-control form-control-color variation-required" name="add_product_color[]">' +
             '<span class="text-danger error-add_product_color error-validation"></span>' +
             '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputSize" class="form-label">المقاس المنتج</label>' +
-            '<input type="text" name="add_product_size[]" class="form-control variation-required">' +
-            '<span class="text-danger error-product_size error-add_validation"></span>' +
-            '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputWeight" class="form-label">وزن المنتج</label>' +
-            '<input type="text" name="add_product_weight[]" class="form-control variation-required">' +
-            '<span class="text-danger error-add_product_weight error-validation"></span>' +
-            '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputAddPrice" class="form-label">السعر الإضافي</label>' +
-            '<input type="number" name="add_product_variation_add_price[]" class="form-control variation-required">' +
-            '<span class="text-danger error-add_product_variation_add_price error-validation"></span>' +
-            '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputSize" class="form-label">المقاس المنتج</label>' +
+            // '<input type="text" name="add_product_size[]" class="form-control variation-required">' +
+            // '<span class="text-danger error-product_size error-add_validation"></span>' +
+            // '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputWeight" class="form-label">وزن المنتج</label>' +
+            // '<input type="text" name="add_product_weight[]" class="form-control variation-required">' +
+            // '<span class="text-danger error-add_product_weight error-validation"></span>' +
+            // '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputAddPrice" class="form-label">السعر الإضافي</label>' +
+            // '<input type="number" name="add_product_variation_add_price[]" class="form-control variation-required">' +
+            // '<span class="text-danger error-add_product_variation_add_price error-validation"></span>' +
+            // '</div>' +
             '<div class="col-3">' +
             '<label for="inputStock" class="form-label">الكمية في المخزن</label>' +
             '<input type="number" name="add_product_variation_stock[]" class="form-control variation-required">' +

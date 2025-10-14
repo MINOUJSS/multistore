@@ -1,10 +1,24 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-center">إعدادات إشعارات Telegram</h2>
+@php
+    $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+    $telegrame_chat_id=get_user_data(auth()->user()->tenant_id)->telegrame_chat_id;
+    $apps_count=$telegrame_chat_id->count();
+@endphp
 
+     <!--زر الربط مع البوت-->
+    <a href="https://t.me/MinouDZShopbot?start=start" 
+   class="btn btn-primary mb-3"
+   target="_blank"><i class="fab fa-telegram"></i>
+   ربط حساب التليجرام
+    </a>
     <!-- زر فتح المودال -->
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addTelegramModal">
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addTelegramModal"  @if (($plan_id==1 && $apps_count>=1) ||($plan_id==2 && $apps_count>=1) || ($plan_id==3 && $apps_count>=1))
+      disabled  
+    @endif>
         <i class="fas fa-plus"></i> إضافة 
     </button>
+
 
     <!-- جدول عرض الإعدادات -->
     <div class="card">

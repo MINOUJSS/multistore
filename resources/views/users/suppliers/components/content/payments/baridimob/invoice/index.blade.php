@@ -3,7 +3,7 @@
 
     <!-- صورة بريدي موب -->
     <div class="text-center mb-4">
-        <img src="{{ asset('asset/users/dashboard/img/payments/baridimaobe.png') }}" alt="تطبيق بريدي موب" class="img-fluid" style="max-width: 200px;">
+        <img src="{{ asset('asset/v1/users/dashboard/img/payments/baridimaobe.png') }}" alt="تطبيق بريدي موب" class="img-fluid" style="max-width: 200px;">
         <p class="text-muted mt-2">يرجى الدفع عبر تطبيق بريدي موب ورفع إيصال الدفع أدناه</p>
     </div>
 

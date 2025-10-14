@@ -29,6 +29,8 @@
                             if (data.success) {
                                 row.remove(); // حذف الصف من الجدول
                                 Swal.fire("تم الحذف!", "تم حذف الإعداد بنجاح.", "success");
+                                 // تحديث الصفحة بالكامل
+                                 location.reload();
                             } else {
                                 console.log(data);
                                 Swal.fire("خطأ!", "حدثت مشكلة أثناء الحذف، حاول مرة أخرى.", "error");

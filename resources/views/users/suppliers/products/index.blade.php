@@ -8,7 +8,7 @@
 @endsection
 @section('css')
 <!-- Modal css -->
-<link rel="stylesheet" href="{{ asset('asset/users/dashboard/css/modal.css') }}" />
+<link rel="stylesheet" href="{{ asset('asset/v1/users/dashboard/css/modal.css') }}" />
 <!-- Include stylesheet -->
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 @endsection
@@ -20,13 +20,13 @@
     <style>
       #logoPreview
       {
-        height: 100px;
-        width:100px;
+        height: 100px !important;
+        width:100px !important;
       }
       #add_logoPreview
       {
-        height: 100px;
-        width:100px;
+        height: 100px !important;
+        width:100px !important;
       }
       #dropzone {
         height: 100px;

@@ -2,6 +2,7 @@
 $(document).ready(function() {
 //alert(document.getElementById('livewier_qty').innerHTML); 
 // Attach a change event to the select element
+
 $('#inputWilaya').on('change', function () {
         // Get the selected value
         var wilaya_id = $(this).val();
@@ -17,6 +18,7 @@ $('#inputWilaya').on('change', function () {
         fetchBaladia(dayra_id);
     });
 });
+
 //fetch dayra
 function fetchDayra(wilaya_id)
 {
@@ -82,21 +84,27 @@ function fetchBaladia(dayra_id)
 }
 function increment_qty(max_qty)  
 {
+    var unit_price = parseFloat(document.getElementById('unit_price').innerHTML);
    var qty = parseInt (document.getElementById('livewier_qty').innerHTML);
    if (qty < max_qty)
    {
     qty++;
    }
    document.getElementById('livewier_qty').innerHTML=qty;
+   document.getElementById('cart_qty').value=qty;
+   document.getElementById('sub_total').innerHTML=qty*unit_price;
 }
 function decrement_qty(min_qty)  
 {
+     var unit_price = parseFloat(document.getElementById('unit_price').innerHTML);
    var qty = parseInt (document.getElementById('livewier_qty').innerHTML);
    if (qty > min_qty)
    {
     qty--;
    }
    document.getElementById('livewier_qty').innerHTML=qty;
+   document.getElementById('cart_qty').value=qty;
+   document.getElementById('sub_total').innerHTML=qty*unit_price;
 }
 function countTotalPrice()
 {
@@ -107,17 +115,21 @@ function countTotalPrice()
     var b_qty =document.getElementById('qty');
     var hidden_qty=document.getElementById('hidden_qty');
     //var qty=parseFloat(document.getElementById('hidden_qty').value);
+    var sub_total=document.getElementById('sub_total');
     qty=parseInt(document.getElementById('livewier_qty').innerHTML);
     b_qty.innerHTML=qty;
     hidden_qty.value=qty;
     var product_price=parseFloat(document.getElementById('product_price').innerHTML).toFixed(2);
     var shipping=parseFloat(document.getElementById('shipping_price').innerHTML).toFixed(2);
+    var discount=parseFloat(document.getElementById('discount').innerHTML).toFixed(2);
     // console.log(parseFloat((qty * parseFloat(product_price)) + parseFloat(shipping)).toFixed(2));
     // alert(shipping);
     //calculate total price
-    totalPriceVlue =parseFloat((qty * parseFloat(product_price)) + parseFloat(shipping)).toFixed(2);
+    sub_total.innerHTML=parseFloat(qty * parseFloat(product_price)).toFixed(2);
+    totalPriceVlue =parseFloat(((qty * parseFloat(product_price)) + parseFloat(shipping))-parseFloat(discount)).toFixed(2);
     //print total price
-    totalPrice.innerHTML = totalPriceVlue;
+    totalPrice.innerHTML = totalPriceVlue+' <sup>د.ج</sup>';
+    totalPrice.setAttribute('data-totalprice', totalPriceVlue);
     // formtotalamount.value = totalPriceVlue;
 }
 //
@@ -140,6 +152,7 @@ function selectOption(option) {
         selectOption(selected);
     });
     //
+    @if($product->free_shipping==='no')
     async function show_shipping_prices(wilaya_id) {
     try {
         // إرسال الطلب وجلب بيانات الأسعار
@@ -154,6 +167,7 @@ function selectOption(option) {
         }
 
         let { to_home_price, stop_desck_price, additional_price } = response.prices;
+
 
         // تحديث أسعار التوصيل
         $('#to_home_price, #shipping_price').html(`${to_home_price} `);
@@ -176,7 +190,7 @@ function selectOption(option) {
         console.error("حدث خطأ أثناء جلب بيانات الشحن:", error);
     }
 }
-
+@endif
     // function show_shipping_prices(wilaya_id) {
     //     //الإستعلام عن أسعار التوصيل في هذه الولاية
     //     // Set CSRF token for Laravel
@@ -304,6 +318,7 @@ function selectOption(option) {
     //                 }
     //             });
     // }
+    @if($product->free_shipping==='no')
     async function get_additional_price(wilaya_id, dayra_id, baladia_id) {
     try {
         // إعداد التوكن لـ Laravel CSRF
@@ -350,6 +365,7 @@ function selectOption(option) {
         console.log("حدث خطأ أثناء جلب أسعار الشحن:", error);
     }
 }
+@endif
 
 // تحديث الأسعار في واجهة المستخدم
 function updatePrices(to_home_price, to_desck_price) {
@@ -495,6 +511,39 @@ function updatePrices(to_home_price, to_desck_price) {
         }
     });
 }
+//
+function get_varition_id($element)
+{
+    var varition_id = $($element).val();
+    document.getElementById('variation_id').value=varition_id;
+}
+//
+function get_attribute_id($element)
+{
+    var attribute_id = $($element).val();
+    document.getElementById('attribute_id').value=attribute_id;
+}
 
+// Add additional price to product price
+function add_additional_price_to_product_price(element) {
+    // Get additional price (parse as float for arithmetic)
+    var additionalPrice = parseFloat(element.getAttribute('data-aditional-price')) || 0;
+    //get unit price
+    var unit_price = parseFloat(element.getAttribute('data-unit-price')) || 0;
+    
+    // Get current product price (parse as float)
+    var productPriceElement = document.getElementById('product_price');
+    var bottomProductPriceElement = document.getElementById('unit_price');
+    // var productPrice = parseFloat(productPriceElement.textContent) || 0;
+
+    // Calculate new price (addition)
+    var newPrice = unit_price + additionalPrice;
+
+    // Update the displayed price (format if needed)
+    productPriceElement.textContent = newPrice.toFixed(2); // Shows 2 decimal places
+    bottomProductPriceElement.textContent = newPrice.toFixed(2);
+    //
+    countTotalPrice()
+}
 
 </script>

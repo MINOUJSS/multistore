@@ -1,0 +1,35 @@
+/*****************************************
+                  nav bar 
+ *****************************************/
+/* for mobile */
+@media(max-width: 767px){
+.navbar-nav .dropdown-menu 
+{
+position:relative !important;
+z-index:10000;
+}
+}
+/* for tablet  */
+
+/*****************************************
+                  side bar 
+ *****************************************/
+/* for mobile */
+@media(max-width: 767px){
+    .app-sidebar{display: none;}
+}
+/* for tablet  */
+
+/*****************************************
+                  main 
+ *****************************************/
+ /* for mobile */
+
+/* for tablet  */
+
+/*****************************************
+                  footer 
+ *****************************************/
+ /* for mobile */
+
+/* for tablet  */

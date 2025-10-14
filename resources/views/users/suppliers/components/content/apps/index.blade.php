@@ -15,57 +15,81 @@
         </div>
         <div class="card-body">
             <div class="row">
+                @php
+                $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+                @endphp
                 <!-- Google Analytics -->
                 <div class="card m-2 p-2" style="width: 18rem;">
-                    <img src="{{asset('asset/users/dashboard/img/apps/google_analytics.png')}}" class="card-img-top" alt="Google Analytics" height="160px">
+                    <img src="{{asset('asset/v1/users/dashboard/img/apps/google_analytics.png')}}" class="card-img-top" alt="Google Analytics" height="160px">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Google Analytics</h5>
                         <p class="card-text">
                             تتبع حركة الزوار وتحليل سلوك المستخدمين على موقعك لفهم أداء المحتوى وتحسين التجربة الرقمية.
                         </p>
-                        <a href="{{route('supplier.app.google-analytics')}}" class="btn btn-primary">إدارة الإعدادات</a>
+                        @if($plan_id != 1)
+                            <a href="{{ route('supplier.app.google-analytics') }}" class="btn btn-primary">
+                                إدارة الإعدادات
+                            </a>
+                        @else
+                            <span class="btn btn-primary disabled">إدارة الإعدادات</span>
+                        @endif
+                        {{-- <a href="{{route('supplier.app.google-analytics')}}" class="btn btn-primary">إدارة الإعدادات</a> --}}
                     </div>
                 </div>
                  <!-- Facebook Pixel -->
                  <div class="card m-2 p-2" style="width: 18rem;">
-                    <img src="{{asset('asset/users/dashboard/img/apps/facebook_pixel.jpg')}}" class="card-img-top" alt="Google Analytics" height="160px">
+                    <img src="{{asset('asset/v1/users/dashboard/img/apps/facebook_pixel.jpg')}}" class="card-img-top" alt="Google Analytics" height="160px">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Facebook Pixel</h5>
                         <p class="card-text">
                             تتبع تفاعل الزوار مع موقعك وتحسين استهداف الإعلانات لتحقيق أقصى استفادة من حملاتك الإعلانية على فيسبوك.
                         </p>
-                        <a href="{{route('supplier.app.facebook-pixel')}}" class="btn btn-primary">إدارة الإعدادات</a>
+                        <a href="{{route('supplier.app.facebook-pixel')}}" class="btn btn-primary" >إدارة الإعدادات</a>
                     </div>
                 </div>
                  <!-- TikTok Pixel -->
                  <div class="card m-2 p-2" style="width: 18rem;">
-                    <img src="{{asset('asset/users/dashboard/img/apps/tiktok_pixel.png')}}" class="card-img-top" alt="Google Analytics" height="160px">
+                    <img src="{{asset('asset/v1/users/dashboard/img/apps/tiktok_pixel.png')}}" class="card-img-top" alt="Google Analytics" height="160px">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">TikTok Pixel</h5>
                         <p class="card-text">
                             تتبع نشاط الزوار على موقعك وتحسين استهداف الإعلانات لتحقيق نتائج أفضل على منصة تيك توك.
-                        </p>                        
-                        <a href="{{route('supplier.app.tiktok-pixel')}}" class="btn btn-primary">إدارة الإعدادات</a>
+                        </p> 
+                         @if($plan_id != 1)
+                            <a href="{{ route('supplier.app.tiktok-pixel') }}" class="btn btn-primary">
+                                إدارة الإعدادات
+                            </a>
+                        @else
+                            <span class="btn btn-primary disabled">إدارة الإعدادات</span>
+                        @endif                       
+                        {{-- <a href="{{route('supplier.app.tiktok-pixel')}}" class="btn btn-primary">إدارة الإعدادات</a> --}}
                     </div>
                 </div>
                  <!-- Google Sheets -->
                  <div class="card m-2 p-2" style="width: 18rem;">
-                    <img src="{{asset('asset/users/dashboard/img/apps/google_sheet.jpg')}}" class="card-img-top" alt="Google Analytics" height="160px">
+                    <img src="{{asset('asset/v1/users/dashboard/img/apps/google_sheet.jpg')}}" class="card-img-top" alt="Google Analytics" height="160px">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Google Sheets</h5>
                         <p class="card-text">
                             مزامنة البيانات تلقائيًا مع Google Sheets لتنظيم المعلومات وتحليلها بسهولة في الوقت الفعلي.
-                        </p>                        
-                        <a href="{{route('supplier.app.google-sheet')}}" class="btn btn-primary">إدارة الإعدادات</a>
+                        </p> 
+                         @if($plan_id != 1)
+                            <a href="{{ route('supplier.app.google-sheet') }}" class="btn btn-primary">
+                                إدارة الإعدادات
+                            </a>
+                        @else
+                            <span class="btn btn-primary disabled">إدارة الإعدادات</span>
+                        @endif                        
+                        {{-- <a href="{{route('supplier.app.google-sheet')}}" class="btn btn-primary">إدارة الإعدادات</a> --}}
                     </div>
                 </div>
                  <!-- Telegram Notifications -->
                  <div class="card m-2 p-2" style="width: 18rem;">
-                    <img src="{{asset('asset/users/dashboard/img/apps/telegram.png')}}" class="card-img-top" alt="Google Analytics" height="160px">
+                    <img src="{{asset('asset/v1/users/dashboard/img/apps/telegram.png')}}" class="card-img-top" alt="Google Analytics" height="160px">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Telegram Notifications</h5>
@@ -75,6 +99,26 @@
                         <a href="{{route('supplier.app.telegram-notifications')}}" class="btn btn-primary">إدارة الإعدادات</a>
                     </div>
                 </div>
+                         <!-- Microsoft Clarity -->
+                <div class="card m-2 p-2" style="width: 18rem;">
+                    <img src="{{ asset('asset/v1/users/dashboard/img/apps/clarity.png') }}" class="card-img-top" alt="Microsoft Clarity" height="160px">
+                    <div class="card-body">
+                        <hr>
+                        <h5 class="card-title">Microsoft Clarity</h5>
+                        <p class="card-text">
+                            فعّل Microsoft Clarity لتحليل سلوك الزوار عبر تسجيلات الجلسات وخرائط التفاعل، مما يساعدك على تحسين تجربة المستخدم وزيادة التحويلات.
+                        </p>
+                        @if($plan_id != 1)
+                            <a href="{{ route('supplier.app.clarity') }}" class="btn btn-primary">
+                                إدارة الإعدادات
+                            </a>
+                        @else
+                            <span class="btn btn-primary disabled">إدارة الإعدادات</span>
+                        @endif 
+                        {{-- <a href="{{ route('supplier.app.clarity') }}" class="btn btn-primary">إدارة الإعدادات</a> --}}
+                    </div>
+                </div>
+
                 {{-- <!-- Google Analytics -->
                 <div class="col-md-4 mb-4">
                     <div class="card integration-card h-100 position-relative">

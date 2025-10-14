@@ -2,7 +2,6 @@
 //on click on edit button
 $('.editproduct').click(function(){
 
-
 //clear varitions from
 
 //clear discount from
@@ -22,7 +21,7 @@ $.ajaxSetup({
      type:'GET',
      url:'/supplier-panel/product/edit/'+p_id,
      success: function(response) {
-        // console.log(response);
+        
         //product variation variables
         var product_variation = document.getElementById("product_variation");
         //end product variation variables
@@ -34,19 +33,30 @@ $.ajaxSetup({
          $("#inputPrice").val(response.product.price);
          $("#inputQty").val(response.product.qty);
          $("#inputMinQty").val(response.product.minimum_order_qty);
+        //  console.log(response);
+        if(response.product_review!=null){
+            $("#inputReview").val(response.product_review.rating);
+        }else
+        {
+            $("#inputReview").val(0);
+        }
+         
          $("#product_status_"+response.product.condition).prop('selected',true);
+         
          if(response.product.free_shipping=="yes"){
          $("#free_shipping").prop('checked',true);
          }else
          {
          $("#free_shipping").prop('checked',false);   
          }
+         
          if(response.product.status=="active"){
          $("#product_status").prop('checked',true);
          }else
          {
          $("#product_status").prop('checked',false);   
          }
+         
          $("#inputShortDescription").val(response.product.short_description);
          // $("#editor").val(response.product.short_description);
          quill.clipboard.dangerouslyPasteHTML(response.product.description) ;
@@ -100,12 +110,12 @@ $.ajaxSetup({
                 $(product_attribute).append(filesHtml);
         });
          //get product variations
-         $(product_variation).html(''); // مسح محتوى العنصر
+        $(product_variation).html(''); // مسح محتوى العنصر
          response.product_variations.forEach(e => {
             var filesHtml = '<div id="variation_container_'+e.id+'" class="variation_container border position-relative p-3 mt-3 mb-3 row">' +
             '<div class="col-6">' +
             '<input type="hidden" name="update_varition_id[]" value="'+e.id+'">'+
-            '<label for="inputSku" class="form-label">اسم المنتج مع اللون و المقاس..</label>' +
+            '<label for="inputSku" class="form-label">اسم المنتج مع اللون  ..</label>' +
             '<input type="text" class="form-control variation-required" name="update_product_sku[]" placeholder="مثال:T-Shirt-Red-Siz-XXL" value="'+e.sku+'">' +
             '<span class="text-danger error-product_sku_'+e.id+' error-validation"></span>' +
             '</div>' +
@@ -114,21 +124,21 @@ $.ajaxSetup({
             '<input type="color" class="form-control form-control-color variation-required" name="update_product_color[]" value="'+e.color+'">' +
             '<span class="text-danger error-product_color_'+e.id+' error-validation"></span>' +
             '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputSize" class="form-label">المقاس المنتج</label>' +
-            '<input type="text" name="update_product_size[]" class="form-control variation-required" value="'+e.size+'">' +
-            '<span class="text-danger error-product_size_'+e.id+' error-validation"></span>' +
-            '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputWeight" class="form-label">وزن المنتج</label>' +
-            '<input type="text" name="update_product_weight[]" class="form-control variation-required" value="'+e.weight+'">' +
-            '<span class="text-danger error-product_weight_'+e.id+' error-validation"></span>' +
-            '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputAddPrice" class="form-label">السعر الإضافي</label>' +
-            '<input type="number" min="0" name="update_product_variation_add_price[]" class="form-control variation-required" value="'+e.additional_price+'">' +
-            '<span class="text-danger error-product_variation_add_price_'+e.id+' error-validation"></span>' +
-            '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputSize" class="form-label">المقاس المنتج</label>' +
+            // '<input type="text" name="update_product_size[]" class="form-control variation-required" value="'+e.size+'">' +
+            // '<span class="text-danger error-product_size_'+e.id+' error-validation"></span>' +
+            // '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputWeight" class="form-label">وزن المنتج</label>' +
+            // '<input type="text" name="update_product_weight[]" class="form-control variation-required" value="'+e.weight+'">' +
+            // '<span class="text-danger error-product_weight_'+e.id+' error-validation"></span>' +
+            // '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputAddPrice" class="form-label">السعر الإضافي</label>' +
+            // '<input type="number" min="0" name="update_product_variation_add_price[]" class="form-control variation-required" value="'+e.additional_price+'">' +
+            // '<span class="text-danger error-product_variation_add_price_'+e.id+' error-validation"></span>' +
+            // '</div>' +
             '<div class="col-3">' +
             '<label for="inputStock" class="form-label">الكمية في المخزن</label>' +
             '<input type="number" min="0" name="update_product_variation_stock[]" class="form-control variation-required" value="'+e.stock_quantity+'">' +
@@ -151,9 +161,7 @@ $.ajaxSetup({
 
             var discountHtml = `
                 <div class="d-flex justify-content-center m-3">
-                    <a class="btn btn-primary" id="add_discount" onclick="add_discount();">
-                        <i class="fa fa-add"></i>
-                    </a>
+
                 </div>
                 <div id="discount_container" class="discount_container border position-relative p-3 mt-3 mb-3 row">
                     <div class="col-3">

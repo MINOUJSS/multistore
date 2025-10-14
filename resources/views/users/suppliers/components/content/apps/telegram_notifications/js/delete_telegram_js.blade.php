@@ -26,6 +26,8 @@
                         if (data.success) {
                             document.getElementById(`row-${id}`).remove();
                             Swal.fire({ icon: "success", title: "تم الحذف!", text: data.message, timer: 2000, showConfirmButton: false });
+                            //تحديث الصفحة
+                            location.reload();
                         }
                     })
                     .catch(error => console.error("خطأ أثناء الحذف:", error));

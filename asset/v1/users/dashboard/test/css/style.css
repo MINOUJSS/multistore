@@ -1,0 +1,165 @@
+/* ****************************************
+                  general 
+ *****************************************/
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  min-height: 100vh;
+}
+
+/*****************************************
+                 app wrapper
+ *****************************************/
+.app-wraper {
+  padding:0px;
+  display: flex;
+  flex-direction: row-reverse; /* السايدبار يجي على اليمين */
+  min-height: 100vh;
+}
+
+/* --------------Nav bar----------------- */
+.left-nav-menu {
+  padding-left: 10px;
+}
+
+.left-nav-menu .dropdown-menu[data-bs-popper] {
+  right: -50px;
+}
+
+.avatar {
+  border-radius: 100% 100% 100% 100% !important;
+}
+
+.rasidi-box {
+  display: flex;
+  align-content: center;
+}
+
+.dz-nav-box {
+  display: flex;
+  padding: 5px 5px 5px 5px;
+  align-items: center;
+  white-space: nowrap;
+  margin-left: 10px;
+  padding-left: 20px;
+}
+
+.dz-nav-icon {
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 15px;
+}
+
+.dz-small-nav-text {
+  font-size: 10px;
+}
+
+.dz-nav-profile {
+  display: flex;
+  min-width: 150px;
+  width: auto;
+  align-content: center;
+  align-items: center;
+  left: 0px;
+}
+
+.dz-nav-profile span {
+  font-size: small;
+  white-space: nowrap;
+}
+
+.dz-nav-profile-info {
+  padding: 5px;
+  font-size: 14px;
+}
+
+/*mobile menu */
+.dz-mobile-nav {
+  display: flex;
+}
+
+/* --------------Content----------------- */
+.content-side {
+  flex: 1;
+  min-height: 100vh; /* يمتد مع طول الصفحة */
+  display: flex;
+  flex-direction: column;
+}
+
+/* -------------- Footer ----------------- */
+.footer {
+  margin-top: auto !important;
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+}
+.content-side .footer {
+  margin-top: auto; /* يخلي الفوتر يلتصق بأسفل الصفحة */
+}
+/*****************************************
+                  app sidebar 
+ *****************************************/
+.app-sidebar {
+  width: 250px;
+  min-height: 100vh; /* يغطي الشاشة كحد أدنى */
+  transition: 0.5s all;
+  background: #fff; /* فقط لو تحب يكون عندها خلفية */
+}
+
+.side {
+  margin-right: -250px;
+}
+
+.logo-box {
+  padding: 10px;
+}
+
+.logo-image {
+  border-radius: 50%;
+}
+
+.item {
+  position: relative;
+}
+
+.item a {
+  text-decoration: none;
+  display: block;
+  padding: 15px;
+}
+
+.item a .dropdown {
+  position: absolute;
+  left: 0;
+  margin-left: 10px;
+  transition: 0.3s ease;
+}
+
+.item a:hover {
+  cursor: pointer;
+}
+
+.item a i {
+  padding-left: 5px;
+}
+
+.sub-item {
+  padding-right: 30px !important;
+}
+
+.sub-menu {
+  display: none;
+}
+
+.rotate {
+  transform: rotate(-90deg);
+}
+
+/*****************************************
+                  settings 
+ **************************************** */

@@ -52,11 +52,18 @@ class Kernel extends ConsoleKernel
                 }
             }
         })->daily();
+        //telegram response
+       // $schedule->command('telegram:fetch-updates')->everyMinute();
     }
 
     /**
      * Register the commands for the application.
      */
+    protected $commands = [
+    \App\Console\Commands\MakeServiceCommand::class,
+    \App\Console\Commands\FetchTelegramUpdates::class,
+     ];
+     
     protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');

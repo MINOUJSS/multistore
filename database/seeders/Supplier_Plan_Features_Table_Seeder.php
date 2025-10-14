@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\SupplierPlan;
+use App\Models\Supplier\SupplierPlan;
 use Illuminate\Database\Seeder;
-use App\Models\SupplierPlanFeature;
+use App\Models\Supplier\SupplierPlanFeature;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class Supplier_Plan_Features_Table_Seeder extends Seeder

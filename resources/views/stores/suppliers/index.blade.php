@@ -1,35 +1,27 @@
 @extends('layouts.users.store.app')
 @section('title')
-   {{tenant('domain')}} | الرئيسية
+    {{ tenant('domain') }} | الرئيسية
 @endsection
 
 @section('style')
-    @if(has_supplier_settings(tenant('id')))
-        <style>
-            /* this is the defaulte theme */
-.search-box,.cart-badge,.footer
-{
-    background-color: {{get_store_parimary_color(tenant('id'))}} !important;
-}
-.item-details a
-{
-    color:{{get_store_body_text_color(tenant('id'))}};
-}
-.footer,.footer-footer a,.footer-li a,.footer-li a:hover
-{
-    color: {{get_store_footer_text_color(tenant('id'))}};
-}
-        </style>     
+    @if (has_supplier_settings(tenant('id')))
+        @include('stores.suppliers.theme.all')
     @endif
+    @include('stores.suppliers.components.content.index.css.add-to-cart-animation-css')
 @endsection
 @section('navbar')
     @include('stores.suppliers.components.navbar.navbar')
 @endsection
 
 @section('cart')
-    @include('stores.suppliers.components.cart.cart')
+    @include('stores.suppliers.components.cart.v1.cart')
 @endsection
 
 @section('content')
     @include('stores.suppliers.components.content.index.index')
+@endsection
+
+@section('footer_js')
+    @include('stores.suppliers.components.navbar.js.navbar_js');
+    @include('stores.suppliers.components.content.index.js.add-to-cart-animation-js')
 @endsection

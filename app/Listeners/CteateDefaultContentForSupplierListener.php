@@ -4,15 +4,13 @@ namespace App\Listeners;
 
 use App\Models\Category;
 use App\Models\UserSlider;
-use App\Models\SupplierFqa;
-use App\Models\SupplierPage;
+use App\Models\Supplier\SupplierFqa;
+use App\Models\Supplier\SupplierPage;
 use App\Models\ShippingPrice;
-use App\Models\SupplierProducts;
+use App\Models\Supplier\SupplierProducts;
 use App\Models\UserStoreCategory;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\UserBenefitSection;
+use App\Models\BenefitSectionElements;
 
 class CteateDefaultContentForSupplierListener
 {
@@ -21,7 +19,6 @@ class CteateDefaultContentForSupplierListener
      */
     public function __construct()
     {
-        //
     }
 
     /**
@@ -32,41 +29,66 @@ class CteateDefaultContentForSupplierListener
         // create default slider
         $supplier = $event->supplier;
         $user_id = auth()->user()->id;
-        
+
         $defaultSliders = [
-            ['user_id'=> auth()->user()->id,'title' => 'مرحبًا بكم في متجرك', 'description' => 'اكتشف...', 'image' => 'asset/users/store/img/slider/pc-slider1.png', 'status' => 'active', 'order' => 1],
-            ['user_id'=> auth()->user()->id,'title' => 'أضف منتجاتك بسهولة', 'description' => 'ابدأ...', 'image' => 'asset/users/store/img/slider/pc-slider2.png', 'status' => 'active', 'order' => 2],
-            ['user_id'=> auth()->user()->id,'title' => 'روّج لمنتجاتك الآن', 'description' => 'استخدم...', 'image' => 'asset/users/store/img/slider/pc-slider3.png', 'status' => 'active', 'order' => 3],
+            ['user_id' => auth()->user()->id, 'title' => 'مرحبًا بكم في متجرك', 'description' => 'اكتشف...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider1.png'), 'status' => 'active', 'order' => 1],
+            ['user_id' => auth()->user()->id, 'title' => 'أضف منتجاتك بسهولة', 'description' => 'ابدأ...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider2.png'), 'status' => 'active', 'order' => 2],
+            ['user_id' => auth()->user()->id, 'title' => 'روّج لمنتجاتك الآن', 'description' => 'استخدم...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider3.png'), 'status' => 'active', 'order' => 3],
         ];
 
         foreach ($defaultSliders as $slider) {
             UserSlider::create($slider);
         }
 
-        //create default category
+        //create default benefits section
+        $benefits = [
+            ['user_id' => $user_id,'title' => 'لماذا تختارنا؟', 'description' => 'لسنا الوحيدين لكننا الأفضل', 'status' => 'active','order' => 1],
+        ];
+        $benefit_elements = [
+            ['title' => 'شحن سريع', 'description' => 'توصيل سريع لجميع أنحاء البلاد','icon' => '<i class="fas fa-truck fa-2x"></i>','order' => 1],
+            ['title' => 'دفع آمن', 'description' => 'طرق دفع متعددة وآمنة','icon' => '<i class="fas fa-shield-alt fa-2x"></i>','order' => 2],
+            ['title' => 'ضمان الإرجاع', 'description' => 'إرجاع مجاني خلال 14 يوم','icon' => '<i class="fas fa-undo fa-2x"></i>','order' => 3],
+        ];
+
+        foreach ($benefits as $benefit) {
+            $user_benefit=UserBenefitSection::create($benefit);
+            foreach ($benefit_elements as $benefit_element) {
+                // $benefit_element['benefit_section_id'] = $user_benefit->id;
+                BenefitSectionElements::create([
+                    'benefit_section_id' => $user_benefit->id,
+                    'title' => $benefit_element['title'],
+                    'description' => $benefit_element['description'],
+                    'icon' => $benefit_element['icon'],
+                    'order' => $benefit_element['order'],
+                ]);
+            }
+        }
+        //create defa
+
+        // create default category
         $defaultCategories = [
             ['name' => 'بدون تصنيف', 'description' => 'صنف عام لكل المنتجات', 'slug' => tenant_to_slug($supplier->tenant_id).'-cat0'],
             ['name' => 'الصنف-1', 'description' => 'وصف الصنف الأول', 'slug' => tenant_to_slug($supplier->tenant_id).'-cat1'],
             ['name' => 'الصنف-2', 'description' => 'وصف الصنف الثاني', 'slug' => tenant_to_slug($supplier->tenant_id).'-cat2'],
             ['name' => 'الصنف-3', 'description' => 'وصف الصنف الثالث', 'slug' => tenant_to_slug($supplier->tenant_id).'-cat3'],
         ];
-        $image_index=0;
+        $image_index = 0;
         foreach ($defaultCategories as $categoryData) {
-            $image_index++;
-            $category=Category::create($categoryData);
-             // ربط القسم بالمستخدم (المورد) في جدول user_store_categories
-                UserStoreCategory::create([
-                    'user_id'     => $user_id, // معرف المستخدم (المورد)
-                    'category_id' => $category->id, // معرف القسم
-                    'image'       => 'asset/users/store/img/categories/'.$image_index.'.png',          // أو قيمة افتراضية
-                    'icon'        => null,          // أو قيمة افتراضية
-                    'order'       => 0,             // ترتيب القسم
-                ]);
+            ++$image_index;
+            $category = Category::create($categoryData);
+            // ربط القسم بالمستخدم (المورد) في جدول user_store_categories
+            UserStoreCategory::create([
+                'user_id' => $user_id, // معرف المستخدم (المورد)
+                'category_id' => $category->id, // معرف القسم
+                'image' => asset('asset/v1/users/store/img/categories/'.$image_index.'.png'),          // أو قيمة افتراضية
+                'icon' => null,          // أو قيمة افتراضية
+                'order' => 0,             // ترتيب القسم
+            ]);
         }
 
-        //get supplier default category
-        $default_category=Category::where('slug',tenant_to_slug($supplier->tenant_id).'-cat0')->first();
-        //ctreate default products
+        // get supplier default category
+        $default_category = Category::where('slug', tenant_to_slug($supplier->tenant_id).'-cat0')->first();
+        // ctreate default products
         $defaultProducts = [
             [
                 'name' => 'منتج 1',
@@ -75,7 +97,7 @@ class CteateDefaultContentForSupplierListener
                 'description' => 'وصف مفصل للمنتج الأول.',
                 'price' => 100.00,
                 'cost' => 70.00,
-                'image' => asset('asset/users/store/img/products/product.webp'),
+                'image' => asset('asset/v1/users/store/img/products/product.webp'),
                 'qty' => 50,
                 'minimum_order_qty' => 1,
                 'condition' => 'new',
@@ -89,7 +111,7 @@ class CteateDefaultContentForSupplierListener
                 'description' => 'وصف مفصل للمنتج الثاني.',
                 'price' => 200.00,
                 'cost' => 150.00,
-                'image' => asset('asset/users/store/img/products/product.webp'),
+                'image' => asset('asset/v1/users/store/img/products/product.webp'),
                 'qty' => 30,
                 'minimum_order_qty' => 2,
                 'condition' => 'new',
@@ -103,7 +125,7 @@ class CteateDefaultContentForSupplierListener
                 'description' => 'وصف مفصل للمنتج الثالث.',
                 'price' => 300.00,
                 'cost' => 250.00,
-                'image' => asset('asset/users/store/img/products/product.webp'),
+                'image' => asset('asset/v1/users/store/img/products/product.webp'),
                 'qty' => 20,
                 'minimum_order_qty' => 1,
                 'condition' => 'new',
@@ -117,7 +139,7 @@ class CteateDefaultContentForSupplierListener
                 'description' => 'وصف مفصل للمنتج الرابع.',
                 'price' => 400.00,
                 'cost' => 300.00,
-                'image' => asset('asset/users/store/img/products/product.webp'),
+                'image' => asset('asset/v1/users/store/img/products/product.webp'),
                 'qty' => 10,
                 'minimum_order_qty' => 1,
                 'condition' => 'new',
@@ -125,7 +147,7 @@ class CteateDefaultContentForSupplierListener
                 'status' => 'active',
             ],
         ];
-        
+
         foreach ($defaultProducts as $productData) {
             SupplierProducts::create(array_merge($productData, [
                 'supplier_id' => $supplier->id, // ربط المنتج بالمورد
@@ -135,64 +157,64 @@ class CteateDefaultContentForSupplierListener
 
         // إنشاء تسعيرات افتراضية لكل الولايات
         $defaultShippingPrices = [
-            ['wilaya_id' => 1,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 2,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 3,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 4,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 5,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 6,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 7,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 8,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 9,'shipping_available_to_wilaya' => 1,'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 10,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 11,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 12,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 13,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 14,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 15,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 16,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 17,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 18,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 19,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 20,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 21,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 22,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 23,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 24,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 25,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 26,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 27,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 28,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 29,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 30,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 31,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 32,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 33,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 34,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 35,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 36,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 37,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 38,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 39,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 40,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 41,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 42,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 43,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 44,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 45,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 46,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 47,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 48,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 49,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 50,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 51,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 52,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 53,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 54,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 55,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 56,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 57,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
-            ['wilaya_id' => 58,'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 1, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 2, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 3, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 4, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 5, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 6, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 7, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 8, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 9, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 10, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 11, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 12, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 13, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 14, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 15, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 16, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 17, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 18, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 19, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 20, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 21, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 22, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 23, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 24, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 25, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 26, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 27, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 28, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 29, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 30, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 31, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 32, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 33, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 34, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 35, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 36, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 37, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 38, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 39, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 40, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 41, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 42, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 43, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 44, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 45, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 46, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 47, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 48, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 49, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 50, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 51, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 52, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 53, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 54, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 550.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 850.00, 'shipping_available_to_home' => 1, 'additional_price' => 220.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 55, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 650.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 950.00, 'shipping_available_to_home' => 1, 'additional_price' => 270.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 56, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 500.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 800.00, 'shipping_available_to_home' => 1, 'additional_price' => 200.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 57, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 600.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 900.00, 'shipping_available_to_home' => 1, 'additional_price' => 250.00, 'additional_price_status' => 1],
+            ['wilaya_id' => 58, 'shipping_available_to_wilaya' => 1, 'stop_desck_price' => 700.00, 'shipping_available_to_stop_desck' => 1, 'to_home_price' => 1000.00, 'shipping_available_to_home' => 1, 'additional_price' => 300.00, 'additional_price_status' => 1],
             // يمكنك إضافة جميع ولايات الجزائر الـ 58 هنا بنفس النمط
         ];
 
@@ -202,13 +224,41 @@ class CteateDefaultContentForSupplierListener
             ]));
         }
 
-
-        //create default fqy
+        // create default fqy
+        // $defaultFqa = [
+        //     [
+        //         'supplier_id' => $event->supplier->id,
+        //         'question' => 'كيف يمكنني إضافة منتج جديد؟',
+        //         'answer' => 'لإضافة منتج جديد، انتقل إلى قسم "إدارة المنتجات" واضغط على "إضافة منتج".',
+        //         'order' => 1,
+        //         'status' => 'active',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ],
+        //     [
+        //         'supplier_id' => $event->supplier->id,
+        //         'question' => 'كيف يمكنني إدارة الطلبات؟',
+        //         'answer' => 'يمكنك إدارة الطلبات من خلال قسم "الطلبات" في لوحة التحكم.',
+        //         'order' => 2,
+        //         'status' => 'active',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ],
+        //     [
+        //         'supplier_id' => $event->supplier->id,
+        //         'question' => 'ما هي طرق الدفع المتاحة؟',
+        //         'answer' => 'المتجر يدعم الدفع عبر البطاقات الائتمانية والتحويل البنكي.',
+        //         'order' => 3,
+        //         'status' => 'active',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ],
+        // ];
         $defaultFqa = [
             [
                 'supplier_id' => $event->supplier->id,
-                'question' => 'كيف يمكنني إضافة منتج جديد؟',
-                'answer' => 'لإضافة منتج جديد، انتقل إلى قسم "إدارة المنتجات" واضغط على "إضافة منتج".',
+                'question' => 'كم يوم يستغرق وصول الطلب؟',
+                'answer' => 'الولايات الكبرى (الجزائر، وهران، قسنطينة): 1-3 أيام | الولايات الداخلية: 3-7 أيام عمل | خلال المواسم (رمضان، العيد): قد تطول المدة يومين إضافيين',
                 'order' => 1,
                 'status' => 'active',
                 'created_at' => now(),
@@ -216,8 +266,8 @@ class CteateDefaultContentForSupplierListener
             ],
             [
                 'supplier_id' => $event->supplier->id,
-                'question' => 'كيف يمكنني إدارة الطلبات؟',
-                'answer' => 'يمكنك إدارة الطلبات من خلال قسم "الطلبات" في لوحة التحكم.',
+                'question' => 'كيف يمكن إرجاع منتج غير مناسب؟',
+                'answer' => 'مهلة 14 يومًا للإرجاع | يجب أن يكون المنتج في غلافه الأصلي | اتصل بنا على الرقم 0560XXXXXX لترتيب الاسترجاع | تكلفة الشحن للإرجاع: 400 دج (تخصم من المبلغ المسترد)',
                 'order' => 2,
                 'status' => 'active',
                 'created_at' => now(),
@@ -225,35 +275,35 @@ class CteateDefaultContentForSupplierListener
             ],
             [
                 'supplier_id' => $event->supplier->id,
-                'question' => 'ما هي طرق الدفع المتاحة؟',
-                'answer' => 'المتجر يدعم الدفع عبر البطاقات الائتمانية والتحويل البنكي.',
+                'question' => 'ماذا لو كان لدي مشكلة بعد استلام الطلب؟',
+                'answer' => 'خدمة العملاء متاحة: ☎️ الهاتف: 0560XXXXXX (8 صباحًا - 10 مساءً) | 📱 الواتساب: 0771XXXXXX (24/7) | 📧 البريد: contact@example.dz | متوسط وقت الرد: أقل من ساعتين',
                 'order' => 3,
                 'status' => 'active',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ];
-        
+
         foreach ($defaultFqa as $fqaData) {
             SupplierFqa::create($fqaData);
         }
-        //create default pages
-        //صفحة عن المتجر
+        // create default pages
+        // صفحة عن المتجر
         SupplierPage::create([
-                'title' => 'عن المتجر',
-                'slug' => tenant_to_slug($supplier->tenant_id).'-about',
-                'content' => '<h1>عن متجرنا</h1><p>مرحبًا بكم في <strong>متجرنا</strong>، حيث نقدم لكم أفضل المنتجات والخدمات التي تلبي احتياجاتكم بأعلى مستويات الجودة. نحن نسعى دائمًا لتحقيق رضاكم من خلال تجربة تسوق فريدة ومريحة.</p><h2>رؤيتنا</h2><p>أن نكون الوجهة الأولى للتسوق الإلكتروني، مع توفير منتجات متنوعة بأسعار تنافسية وجودة عالية.</p><h2>رسالتنا</h2><p>تقديم تجربة تسوق إلكتروني مميزة تلبي احتياجات العملاء مع الحرص على تقديم خدمة عملاء استثنائية وسريعة.</p><h2>قيمنا</h2><ul><li>الشفافية والمصداقية في التعامل.</li><li>الالتزام بالجودة والتميز.</li><li>الابتكار المستمر في تقديم أفضل الحلول.</li></ul><h2>لماذا نحن؟</h2><p>- نقدم مجموعة واسعة من المنتجات التي تلبي مختلف الأذواق.<br>- نسعى لتقديم أفضل الأسعار مع الحفاظ على الجودة.<br>- نحرص على توفير خدمة عملاء متوفرة على مدار الساعة.<br>- نوفر شحنًا سريعًا وآمنًا لكل الطلبات.</p><h2>تواصل معنا</h2><p>إذا كان لديك أي استفسارات أو اقتراحات، لا تتردد في التواصل معنا عبر صفحة <a href="/contact-us">اتصل بنا</a>. نحن هنا لخدمتك دائمًا.</p>',
-                'meta_title' => 'عن المتجر',
-                'meta_description' => 'صفحة تحتوي على معلومات عن المتجر.',
-                'meta_keywords' => 'معلومات, المتجر',
-                'status' => 'published',
-                'supplier_id' => $supplier->id, // ربط المنتج بالمورد
-            ]);
-        //الشحن و التسليم   
+            'title' => 'عن المتجر',
+            'slug' => tenant_to_slug($supplier->tenant_id).'-about',
+            'content' => '<h1>عن متجرنا</h1><p>مرحبًا بكم في <strong>متجرنا</strong>، حيث نقدم لكم أفضل المنتجات والخدمات التي تلبي احتياجاتكم بأعلى مستويات الجودة. نحن نسعى دائمًا لتحقيق رضاكم من خلال تجربة تسوق فريدة ومريحة.</p><h2>رؤيتنا</h2><p>أن نكون الوجهة الأولى للتسوق الإلكتروني، مع توفير منتجات متنوعة بأسعار تنافسية وجودة عالية.</p><h2>رسالتنا</h2><p>تقديم تجربة تسوق إلكتروني مميزة تلبي احتياجات العملاء مع الحرص على تقديم خدمة عملاء استثنائية وسريعة.</p><h2>قيمنا</h2><ul><li>الشفافية والمصداقية في التعامل.</li><li>الالتزام بالجودة والتميز.</li><li>الابتكار المستمر في تقديم أفضل الحلول.</li></ul><h2>لماذا نحن؟</h2><p>- نقدم مجموعة واسعة من المنتجات التي تلبي مختلف الأذواق.<br>- نسعى لتقديم أفضل الأسعار مع الحفاظ على الجودة.<br>- نحرص على توفير خدمة عملاء متوفرة على مدار الساعة.<br>- نوفر شحنًا سريعًا وآمنًا لكل الطلبات.</p><h2>تواصل معنا</h2><p>إذا كان لديك أي استفسارات أو اقتراحات، لا تتردد في التواصل معنا عبر صفحة <a href="/contact-us">اتصل بنا</a>. نحن هنا لخدمتك دائمًا.</p>',
+            'meta_title' => 'عن المتجر',
+            'meta_description' => 'صفحة تحتوي على معلومات عن المتجر.',
+            'meta_keywords' => 'معلومات, المتجر',
+            'status' => 'published',
+            'supplier_id' => $supplier->id, // ربط المنتج بالمورد
+        ]);
+        // الشحن و التسليم
         SupplierPage::create([
-                'title' => 'شحن و التسليم',
-                'slug' => tenant_to_slug($supplier->tenant_id).'-shipping-policy',
-                'content' => '<h1>الشحن والتسليم</h1>
+            'title' => 'شحن و التسليم',
+            'slug' => tenant_to_slug($supplier->tenant_id).'-shipping-policy',
+            'content' => '<h1>الشحن والتسليم</h1>
 <p>
     في <strong>متجرنا</strong>، نسعى لتوفير تجربة شحن مريحة وسريعة لعملائنا الكرام. نحن نعمل مع أفضل شركات الشحن لضمان وصول طلباتكم بأسرع وقت ممكن وبأعلى مستويات الجودة.
 </p>
@@ -307,17 +357,17 @@ class CteateDefaultContentForSupplierListener
     إذا كان لديك أي استفسارات تتعلق بالشحن والتسليم، لا تتردد في التواصل معنا عبر صفحة <a href="/contact-us">اتصل بنا</a> أو من خلال رقم خدمة العملاء.
 </p>
 ',
-                'meta_title' => 'شحن و التسليم',
-                'meta_description' => 'صفحة تحتوي على معلومات عن شحن و التسليم.',
-                'meta_keywords' => 'معلومات, شحن و التسليم',
-                'status' => 'published',
-                'supplier_id' => $supplier->id, // ربط المنتج بالمورد
-            ]);
-        //طرق الدفع
+            'meta_title' => 'شحن و التسليم',
+            'meta_description' => 'صفحة تحتوي على معلومات عن شحن و التسليم.',
+            'meta_keywords' => 'معلومات, شحن و التسليم',
+            'status' => 'published',
+            'supplier_id' => $supplier->id, // ربط المنتج بالمورد
+        ]);
+        // طرق الدفع
         SupplierPage::create([
-                'title' => 'طرق الدفع',
-                'slug' => tenant_to_slug($supplier->tenant_id).'-payment-policy',
-                'content' => '<h1>طرق الدفع</h1>
+            'title' => 'طرق الدفع',
+            'slug' => tenant_to_slug($supplier->tenant_id).'-payment-policy',
+            'content' => '<h1>طرق الدفع</h1>
 <p>
     في <strong>متجرنا</strong>، نوفر لك العديد من الخيارات المريحة والآمنة لإتمام عملية الدفع. نسعى لضمان تجربة تسوق سلسة ومناسبة لاحتياجاتك.
 </p>
@@ -367,17 +417,17 @@ class CteateDefaultContentForSupplierListener
     - تحقق من وجود رمز القفل الآمن في شريط عنوان المتصفح أثناء الدفع.
 </p>
 ',
-                'meta_title' => 'طرق الدفع',
-                'meta_description' => 'صفحة تحتوي على معلومات عن طرق الدفع.',
-                'meta_keywords' => 'معلومات, طرق الدفع',
-                'status' => 'published',
-                'supplier_id' => $supplier->id, // ربط المنتج بالمورد
-            ]);
-        //شروط الإستخدام
+            'meta_title' => 'طرق الدفع',
+            'meta_description' => 'صفحة تحتوي على معلومات عن طرق الدفع.',
+            'meta_keywords' => 'معلومات, طرق الدفع',
+            'status' => 'published',
+            'supplier_id' => $supplier->id, // ربط المنتج بالمورد
+        ]);
+        // شروط الإستخدام
         SupplierPage::create([
-                'title' => 'شروط الإستخدام',
-                'slug' => tenant_to_slug($supplier->tenant_id).'-terms-of-use',
-                'content' => '<h1>شروط الاستخدام</h1>
+            'title' => 'شروط الإستخدام',
+            'slug' => tenant_to_slug($supplier->tenant_id).'-terms-of-use',
+            'content' => '<h1>شروط الاستخدام</h1>
 <p>
     مرحبًا بك في <strong>متجرنا</strong>. باستخدامك لهذا الموقع، فإنك توافق على الالتزام بالشروط والأحكام التالية. يرجى قراءة هذه الشروط بعناية قبل استخدام الموقع.
 </p>
@@ -441,17 +491,17 @@ class CteateDefaultContentForSupplierListener
     <li>الهاتف: +123-456-7890</li>
 </ul>
 ',
-                'meta_title' => 'شروط الإستخدام',
-                'meta_description' => 'صفحة تحتوي على معلومات عن شروط الإستخدام.',
-                'meta_keywords' => 'معلومات, شروط الإستخدام',
-                'status' => 'published',
-                'supplier_id' => $supplier->id, // ربط المنتج بالمورد
-            ]);
-        //سياسة الإستبدال و الإسترجاع
+            'meta_title' => 'شروط الإستخدام',
+            'meta_description' => 'صفحة تحتوي على معلومات عن شروط الإستخدام.',
+            'meta_keywords' => 'معلومات, شروط الإستخدام',
+            'status' => 'published',
+            'supplier_id' => $supplier->id, // ربط المنتج بالمورد
+        ]);
+        // سياسة الإستبدال و الإسترجاع
         SupplierPage::create([
-                'title' => 'سياسة الإستبدال و الإسترجاع',
-                'slug' => tenant_to_slug($supplier->tenant_id).'-exchange-policy',
-                'content' => '<h1>سياسة الاستبدال والاسترجاع</h1>
+            'title' => 'سياسة الإستبدال و الإسترجاع',
+            'slug' => tenant_to_slug($supplier->tenant_id).'-exchange-policy',
+            'content' => '<h1>سياسة الاستبدال والاسترجاع</h1>
 <p>
     نحن نسعى دائمًا لضمان رضاكم عن منتجاتنا وخدماتنا. إذا واجهتم أي مشكلة مع أحد المنتجات، فإن سياستنا للاستبدال والاسترجاع تتيح لكم خيارات مرنة ومريحة.
 </p>
@@ -523,17 +573,17 @@ class CteateDefaultContentForSupplierListener
     نحتفظ بالحق في تعديل سياسة الاستبدال والاسترجاع في أي وقت. سيتم نشر النسخة المحدثة على هذه الصفحة.
 </p>
 ',
-                'meta_title' => 'سياسة الإستبدال و الإسترجاع',
-                'meta_description' => 'صفحة تحتوي على معلومات عن سياسة الإستبدال و الإسترجاع.',
-                'meta_keywords' => 'معلومات, سياسة الإستبدال و الإسترجاع',
-                'status' => 'published',
-                'supplier_id' => $supplier->id, // ربط المنتج بالمورد
-            ]);
-        //سياسة الخصوصية
+            'meta_title' => 'سياسة الإستبدال و الإسترجاع',
+            'meta_description' => 'صفحة تحتوي على معلومات عن سياسة الإستبدال و الإسترجاع.',
+            'meta_keywords' => 'معلومات, سياسة الإستبدال و الإسترجاع',
+            'status' => 'published',
+            'supplier_id' => $supplier->id, // ربط المنتج بالمورد
+        ]);
+        // سياسة الخصوصية
         SupplierPage::create([
-                'title' => 'سياسة الخصوصية',
-                'slug' => tenant_to_slug($supplier->tenant_id).'-privacy-policy',
-                'content' => '<h1>سياسة الخصوصية</h1>
+            'title' => 'سياسة الخصوصية',
+            'slug' => tenant_to_slug($supplier->tenant_id).'-privacy-policy',
+            'content' => '<h1>سياسة الخصوصية</h1>
 <p>
     نحن نقدر خصوصيتك ونلتزم بحماية بياناتك الشخصية. توضح سياسة الخصوصية هذه كيفية جمع واستخدام ومشاركة معلوماتك عند استخدامك لمنصتنا.
 </p>
@@ -606,17 +656,17 @@ class CteateDefaultContentForSupplierListener
     تاريخ السريان: <strong>01 يناير 2024</strong>
 </p>
 ',
-                'meta_title' => 'سياسة الخصوصية',
-                'meta_description' => 'صفحة تحتوي على معلومات عن سياسة الخصوصية.',
-                'meta_keywords' => 'معلومات, سياسة الخصوصية',
-                'status' => 'published',
-                'supplier_id' => $supplier->id, // ربط المنتج بالمورد
-            ]);
-        //اتصل بنا
+            'meta_title' => 'سياسة الخصوصية',
+            'meta_description' => 'صفحة تحتوي على معلومات عن سياسة الخصوصية.',
+            'meta_keywords' => 'معلومات, سياسة الخصوصية',
+            'status' => 'published',
+            'supplier_id' => $supplier->id, // ربط المنتج بالمورد
+        ]);
+        // اتصل بنا
         SupplierPage::create([
-                'title' => 'اتصل بنا',
-                'slug' => tenant_to_slug($supplier->tenant_id).'-contact-us',
-                'content' => '<h1>اتصل بنا</h1>
+            'title' => 'اتصل بنا',
+            'slug' => tenant_to_slug($supplier->tenant_id).'-contact-us',
+            'content' => '<h1>اتصل بنا</h1>
 <p>
     نحن هنا لمساعدتك! إذا كانت لديك أي استفسارات أو تحتاج إلى مساعدة، لا تتردد في التواصل معنا من خلال الطرق الموضحة أدناه.
 </p>
@@ -651,17 +701,17 @@ class CteateDefaultContentForSupplierListener
     شكراً لتواصلك معنا!
 </p>
 ',
-                'meta_title' => 'اتصل بنا',
-                'meta_description' => 'صفحة تحتوي على معلومات عن اتصل بنا.',
-                'meta_keywords' => 'معلومات, اتصل بنا',
-                'status' => 'published',
-                'supplier_id' => $supplier->id, // ربط المنتج بالمورد
-            ]);
-        //الأسئلة الشائعة
+            'meta_title' => 'اتصل بنا',
+            'meta_description' => 'صفحة تحتوي على معلومات عن اتصل بنا.',
+            'meta_keywords' => 'معلومات, اتصل بنا',
+            'status' => 'published',
+            'supplier_id' => $supplier->id, // ربط المنتج بالمورد
+        ]);
+        // الأسئلة الشائعة
         SupplierPage::create([
-                'title' => 'الأسئلة الشائعة',
-                'slug' => tenant_to_slug($supplier->tenant_id).'-faq',
-                'content' => '<h1>الأسئلة الشائعة</h1>
+            'title' => 'الأسئلة الشائعة',
+            'slug' => tenant_to_slug($supplier->tenant_id).'-faq',
+            'content' => '<h1>الأسئلة الشائعة</h1>
 <p>
     لقد قمنا بجمع مجموعة من الأسئلة الشائعة التي قد تساعدك في الحصول على إجابات سريعة لاستفساراتك.
     إذا كنت بحاجة إلى مزيد من المعلومات، لا تتردد في <a href="/contact-us">التواصل معنا</a>.
@@ -715,13 +765,11 @@ class CteateDefaultContentForSupplierListener
     إذا لم تجد الإجابة التي تبحث عنها، فلا تتردد في التواصل معنا للحصول على المساعدة. نحن هنا لخدمتك!
 </p>
 ',
-                'meta_title' => 'الأسئلة الشائعة',
-                'meta_description' => 'صفحة تحتوي على معلومات عن الأسئلة الشائعة.',
-                'meta_keywords' => 'معلومات, الأسئلة الشائعة',
-                'status' => 'published',
-                'supplier_id' => $supplier->id, // ربط المنتج بالمورد
-            ]);
-    //
-
+            'meta_title' => 'الأسئلة الشائعة',
+            'meta_description' => 'صفحة تحتوي على معلومات عن الأسئلة الشائعة.',
+            'meta_keywords' => 'معلومات, الأسئلة الشائعة',
+            'status' => 'published',
+            'supplier_id' => $supplier->id, // ربط المنتج بالمورد
+        ]);
     }
 }

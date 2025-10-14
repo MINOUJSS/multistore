@@ -49,13 +49,28 @@
                         icon: "success",
                         title: "تم الحفظ!",
                         text: data.message,
-                        timer: 2000,
+                        timer: 5000,
                         showConfirmButton: false
                     });
 
                     form.reset();
-                    bootstrap.Modal.getInstance(document.getElementById('addFacebookPixelModal')).hide();
-                }
+                    bootstrap.Modal.getInstance(document.getElementById('addPixelModal')).hide();
+                    //تحديث الصفحة
+                    location.reload();
+
+                }else
+            {
+                //console.log(data);
+                Swal.fire({
+                    icon: "error",
+                    title: "خطأ !",
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: true
+                });
+                form.reset();
+                bootstrap.Modal.getInstance(document.getElementById('addanalyticsModal')).hide();
+            }
             })
             .catch(error => {
                 console.error("خطأ أثناء الحفظ:", error);

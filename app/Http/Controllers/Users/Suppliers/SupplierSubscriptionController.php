@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Users\Suppliers;
 
 use App\Models\User;
 use App\Models\UserBalance;
-use App\Models\SupplierPlan;
+use App\Models\Supplier\SupplierPlan;
 use Illuminate\Http\Request;
-use App\Models\SupplierPlanOrder;
+use App\Models\Supplier\SupplierPlanOrder;
 use App\Models\BalanceTransaction;
-use App\Models\SupplierPlanPrices;
+use App\Models\Supplier\SupplierPlanPrices;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
-use App\Models\SupplierPlanSubscription;
+use App\Models\Supplier\SupplierPlanSubscription;
 
 class SupplierSubscriptionController extends Controller
 {

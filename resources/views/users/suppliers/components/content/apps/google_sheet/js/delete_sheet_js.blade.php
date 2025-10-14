@@ -28,6 +28,10 @@
                         if (data.success) {
                             row.remove();
                             Swal.fire("تم الحذف!", "تم حذف الإعداد بنجاح.", "success");
+                        
+                             //تحديث الصفحة
+                            location.reload();
+
                         } else {
                             Swal.fire("خطأ!", "حدثت مشكلة أثناء الحذف، حاول مرة أخرى.", "error");
                         }

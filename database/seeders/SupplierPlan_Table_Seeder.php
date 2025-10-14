@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\SupplierPlan;
-use App\Models\SupplierPlanPrices;
+use App\Models\Supplier\SupplierPlan;
+use App\Models\Supplier\SupplierPlanPrices;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 

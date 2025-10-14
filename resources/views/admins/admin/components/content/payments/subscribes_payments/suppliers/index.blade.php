@@ -41,6 +41,9 @@
                                     @case('ccp')
                                         <span class="badge bg-warning text-dark">CCP</span>
                                         @break
+                                    @case('chargily')
+                                     <span class="badge bg-warning text-dark">chargily</span>
+                                    @break
                                     @default
                                         <span class="badge bg-secondary">غير محدد</span>
                                 @endswitch
@@ -66,7 +69,7 @@
                                 @endif
                             </td>
                             <td>
-                                @if($order->payment_status === 'unpaid')
+                                @if($order->payment_status === 'unpaid' && $order->payment_proof  != null)
                                     <form action="{{ route('admin.payments.suppliers.subscribe.approve', $order->id) }}" method="POST" onsubmit="return confirm('تأكيد الموافقة على الدفع؟');">
                                         @csrf
                                         @method('PATCH')

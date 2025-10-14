@@ -55,7 +55,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
                 form.reset();
-                bootstrap.Modal.getInstance(document.getElementById('addTikTokPixelModal')).hide();
+                bootstrap.Modal.getInstance(document.getElementById('addPixelModal')).hide();
+            
+                //تحديث الصفحة
+                location.reload();
+            
+            }else
+            {
+                //console.log(data);
+                Swal.fire({
+                    icon: "error",
+                    title: "خطأ !",
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: true
+                });
+                form.reset();
+                bootstrap.Modal.getInstance(document.getElementById('addPixelModal')).hide();
             }
         })
         .catch(error => {

@@ -4,8 +4,8 @@
         var product_variation = document.getElementById("product_variation");
         var filesHtml = '<div class="variation_container border position-relative p-3 mt-3 mb-3 row">' +
             '<div class="col-6">' +
-            '<label for="inputSku" class="form-label">اسم المنتج مع اللون و المقاس..</label>' +
-            '<input type="text" class="form-control variation-required" name="product_sku[]" placeholder="مثال:T-Shirt-Red-Siz-XXL">' +
+            '<label for="inputSku" class="form-label">اسم المنتج مع اللون</label>' +
+            '<input type="text" class="form-control variation-required" name="product_sku[]" placeholder="مثال:T-Shirt-Red">' +
             '<span class="text-danger error-product_sku error-validation"></span>' +
             '</div>' +
             '<div class="col-3">' +
@@ -13,21 +13,21 @@
             '<input type="color" class="form-control form-control-color variation-required" name="product_color[]">' +
             '<span class="text-danger error-product_color error-validation"></span>' +
             '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputSize" class="form-label">المقاس المنتج</label>' +
-            '<input type="text" name="product_size[]" class="form-control variation-required">' +
-            '<span class="text-danger error-product_size error-validation"></span>' +
-            '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputWeight" class="form-label">وزن المنتج</label>' +
-            '<input type="text" name="product_weight[]" class="form-control variation-required">' +
-            '<span class="text-danger error-product_weight error-validation"></span>' +
-            '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputAddPrice" class="form-label">السعر الإضافي</label>' +
-            '<input type="number" name="product_variation_add_price[]" class="form-control variation-required">' +
-            '<span class="text-danger error-product_variation_add_price error-validation"></span>' +
-            '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputSize" class="form-label">المقاس المنتج</label>' +
+            // '<input type="text" name="product_size[]" class="form-control variation-required">' +
+            // '<span class="text-danger error-product_size error-validation"></span>' +
+            // '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputWeight" class="form-label">وزن المنتج</label>' +
+            // '<input type="text" name="product_weight[]" class="form-control variation-required">' +
+            // '<span class="text-danger error-product_weight error-validation"></span>' +
+            // '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputAddPrice" class="form-label">السعر الإضافي</label>' +
+            // '<input type="number" name="product_variation_add_price[]" class="form-control variation-required">' +
+            // '<span class="text-danger error-product_variation_add_price error-validation"></span>' +
+            // '</div>' +
             '<div class="col-3">' +
             '<label for="inputStock" class="form-label">الكمية في المخزن</label>' +
             '<input type="number" name="product_variation_stock[]" class="form-control variation-required">' +
@@ -55,8 +55,8 @@
          response.product_variations.forEach(e => {
             var filesHtml = '<div id="variation_container_'+e.id+'" class="variation_container border position-relative p-3 mt-3 mb-3 row">' +
             '<div class="col-6">' +
-            '<label for="inputSku" class="form-label">اسم المنتج مع اللون و المقاس..</label>' +
-            '<input type="text" class="form-control variation-required" name="product_sku_'+e.id+'" placeholder="مثال:T-Shirt-Red-Siz-XXL" value="'+e.sku+'">' +
+            '<label for="inputSku" class="form-label">اسم المنتج مع اللون</label>' +
+            '<input type="text" class="form-control variation-required" name="product_sku_'+e.id+'" placeholder="مثال:T-Shirt-Red" value="'+e.sku+'">' +
             '<span class="text-danger error-product_sku_'+e.id+' error-validation"></span>' +
             '</div>' +
             '<div class="col-3">' +
@@ -64,21 +64,21 @@
             '<input type="color" class="form-control form-control-color variation-required" name="product_color'+e.id+'" value="'+e.color+'">' +
             '<span class="text-danger error-product_color_'+e.id+' error-validation"></span>' +
             '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputSize" class="form-label">المقاس المنتج</label>' +
-            '<input type="text" name="product_size_'+e.id+'" class="form-control variation-required" value="'+e.size+'">' +
-            '<span class="text-danger error-product_size_'+e.id+' error-validation"></span>' +
-            '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputWeight" class="form-label">وزن المنتج</label>' +
-            '<input type="text" name="product_weight_'+e.id+'" class="form-control variation-required" value="'+e.weight+'">' +
-            '<span class="text-danger error-product_weight_'+e.id+' error-validation"></span>' +
-            '</div>' +
-            '<div class="col-3">' +
-            '<label for="inputAddPrice" class="form-label">السعر الإضافي</label>' +
-            '<input type="number" name="product_variation_add_price_'+e.id+'" class="form-control variation-required" value="'+e.additional_price+'">' +
-            '<span class="text-danger error-product_variation_add_price_'+e.id+' error-validation"></span>' +
-            '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputSize" class="form-label">المقاس المنتج</label>' +
+            // '<input type="text" name="product_size_'+e.id+'" class="form-control variation-required" value="'+e.size+'">' +
+            // '<span class="text-danger error-product_size_'+e.id+' error-validation"></span>' +
+            // '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputWeight" class="form-label">وزن المنتج</label>' +
+            // '<input type="text" name="product_weight_'+e.id+'" class="form-control variation-required" value="'+e.weight+'">' +
+            // '<span class="text-danger error-product_weight_'+e.id+' error-validation"></span>' +
+            // '</div>' +
+            // '<div class="col-3">' +
+            // '<label for="inputAddPrice" class="form-label">السعر الإضافي</label>' +
+            // '<input type="number" name="product_variation_add_price_'+e.id+'" class="form-control variation-required" value="'+e.additional_price+'">' +
+            // '<span class="text-danger error-product_variation_add_price_'+e.id+' error-validation"></span>' +
+            // '</div>' +
             '<div class="col-3">' +
             '<label for="inputStock" class="form-label">الكمية في المخزن</label>' +
             '<input type="number" name="product_variation_stock_'+e.id+'" class="form-control variation-required" value="'+e.stock_quantity+'">' +

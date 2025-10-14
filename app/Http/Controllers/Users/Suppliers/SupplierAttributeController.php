@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Users\Suppliers;
 
 use Illuminate\Http\Request;
-use App\Models\SupplierAttribute;
+use App\Models\Supplier\SupplierAttribute;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 

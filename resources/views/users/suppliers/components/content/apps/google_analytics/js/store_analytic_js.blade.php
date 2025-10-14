@@ -55,6 +55,20 @@
 
                 form.reset();
                 bootstrap.Modal.getInstance(document.getElementById('addanalyticsModal')).hide();
+                 //تحديث الصفحة
+                location.reload();
+            }else
+            {
+                //console.log(data);
+                Swal.fire({
+                    icon: "error",
+                    title: "خطأ !",
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: true
+                });
+                form.reset();
+                bootstrap.Modal.getInstance(document.getElementById('addanalyticsModal')).hide();
             }
         })
         .catch(error => {

@@ -3,7 +3,7 @@
 
     <!-- شعار Chargily -->
     <div class="text-center mb-4">
-        <img src="{{ asset('asset/users/dashboard/img/payments/baridimaobe.png') }}" alt="ChargilyPay" class="img-fluid" style="max-width: 200px;">
+        <img src="{{ asset('asset/v1/users/dashboard/img/payments/baridimaobe.png') }}" alt="ChargilyPay" class="img-fluid" style="max-width: 200px;">
         <p class="text-muted mt-2">سيتم الدفع عبر بريدي موب</p>
     </div>
 

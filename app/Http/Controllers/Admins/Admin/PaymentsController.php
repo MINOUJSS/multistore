@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Admins\Admin;
 use App\Models\UserBalance;
 use App\Models\UserInvoice;
 use Illuminate\Http\Request;
-use App\Models\SupplierPlanOrder;
+use App\Models\Supplier\SupplierPlanOrder;
 use App\Models\BalanceTransaction;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\SupplierPlanSubscription;
+use App\Models\Supplier\SupplierPlanSubscription;
 
 class PaymentsController extends Controller
 {

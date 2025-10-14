@@ -14,7 +14,7 @@
           <li class="nav-item dropdown dz-nav-profile">
             <span>{{Auth::guard('admin')->user()->name}}</span>
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img class="avatar" src="{{asset('asset/users/dashboard')}}/img/avatars/man.png" alt="avatar" height="30" width="30">
+              <img class="avatar" src="{{asset('asset/v1/users/dashboard')}}/img/avatars/man.png" alt="avatar" height="30" width="30">
             </a>
             <ul class="dropdown-menu position-absolute">
               <div class="dz-nav-profile-info" >
@@ -61,7 +61,7 @@
         <li class="nav-item dropdown dz-nav-profile">
           <span>{{Auth::guard('admin')->user()->name}}</span>
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img class="avatar" src="{{asset('asset/users/dashboard')}}/img/avatars/man.png" alt="avatar" height="30" width="30">
+            <img class="avatar" src="{{asset('asset/v1/users/dashboard')}}/img/avatars/man.png" alt="avatar" height="30" width="30">
           </a>
           <ul class="dropdown-menu">
             <div class="dz-nav-profile-info" >
