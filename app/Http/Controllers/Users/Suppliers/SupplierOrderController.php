@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Users\Suppliers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet;
+use App\Models\Admin;
 use App\Models\BalanceTransaction;
 use App\Models\ShippingCompaines;
 use App\Models\Supplier\SupplierOrderItems;
 use App\Models\Supplier\SupplierOrders;
 use App\Models\Supplier\SupplierProducts;
 use App\Models\UserBalance;
+use App\Models\UsersPaymentsProofsRefused;
 use App\Models\Wilaya;
+use App\Notifications\Users\Suppliers\PaymentRejected;
 use App\Services\Users\CourierdzService;
 use Illuminate\Http\Request;
 
@@ -159,7 +163,7 @@ class SupplierOrderController extends Controller
             $query->where(function ($q) use ($request) {
                 $q->where('order_number', 'like', '%'.$request->search.'%')
                 ->orWhere('customer_name', 'like', '%'.$request->search.'%')
-                ->orWhere('phone','like','%'.$request->search.'%');
+                ->orWhere('phone', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -193,6 +197,10 @@ class SupplierOrderController extends Controller
                 $this->decreaseStock($item);
             }
         }
+        // إدراج الطلب في Google Sheets
+        if ($new_status === 'shipped' && $order->phone_visiblity) {
+            sendOrderDataToGoogleSheet::dispatch(auth()->user()->tenant_id, $order);
+        }
 
         // update status in google sheet
 
@@ -209,7 +217,9 @@ class SupplierOrderController extends Controller
     private function insertOrderToGoogleSheet($order)
     {
         try {
-            $spreadsheetId = '1XOfN-5TI0LBDRFefQLemlkOjyCVTaF8jqwLt7wIbr9Y'; // Google Sheet ID
+            // 1XUsNfu5kCBXSjoOWRIycyPntiL_Gand2zOj7QbbAKsM
+            // 1XOfN-5TI0LBDRFefQLemlkOjyCVTaF8jqwLt7wIbr9Y
+            $spreadsheetId = '1XUsNfu5kCBXSjoOWRIycyPntiL_Gand2zOj7QbbAKsM'; // Google Sheet ID
             $range = 'Orders'; // اسم الورقة داخل الملف
 
             $client = new \Google_Client();
@@ -452,19 +462,55 @@ class SupplierOrderController extends Controller
         $order->confirmed_by_user_id = auth()->user()->id; // من قام بالتأكيد (صاحب الحساب)
 
         if ($request->confirmation_status === 'confirmed') {
-            $order->status='processing';
+            $order->status = 'processing';
             $order->confirmed_at = now();
-        }elseif ($request->confirmation_status === 'error_phone') {
-            $order->status='canceled';
+        } elseif ($request->confirmation_status === 'error_phone') {
+            $order->status = 'canceled';
             $order->confirmed_at = now();
-        }else
-        {
-            $order->status='pending'; 
+        } else {
+            $order->status = 'pending';
             $order->confirmed_at = now();
         }
 
         $order->save();
 
         return response()->json(['success' => true]);
+    }
+
+    public function acceptPayment(SupplierOrders $order)
+    {
+        $order->update([
+            'payment_status' => 'paid',
+            'payment_method' => 'verments',
+            'confirmation_status' => 'confirmed',
+            'confirmed_by_user_id' => auth()->user()->id,
+            'confirmed_at' => now(),
+            'status' => 'processing',
+        ]);
+
+        return response()->json(['message' => 'تم قبول الدفع']);
+    }
+
+    public function rejectPayment(SupplierOrders $order)
+    {
+        $order->update([
+            'payment_status' => 'failed',
+            'status' => 'canceled',
+        ]);
+        // insert this refuse to payment proof refused table
+        UsersPaymentsProofsRefused::create([
+            'order_number' => $order->order_number,
+            'user_id' => get_user_data(get_supplier_data_from_id($order->supplier_id)->tenant_id)->id,
+            'proof_path' => $order->payment_proof,
+            'refuse_reason' => 'تم رفض الدفع من طرف البائع',
+        ]);
+        // إرسال إشعار لكل من له صلاحية "admin" أو "financial_manager"
+        $admins = Admin::whereIn('type', ['admin', 'financial_manager'])->get();
+
+        foreach ($admins as $admin) {
+            $admin->notify(new PaymentRejected($order));
+        }
+
+        return response()->json(['message' => 'تم رفض الدفع']);
     }
 }

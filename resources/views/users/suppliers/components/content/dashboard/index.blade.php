@@ -344,3 +344,14 @@
 
 
 </div>
+<!-- sweet alerts -->
+@if(session('redicect_subscriber'))
+    <script>
+        Swal.fire({
+            title: 'نجاح!',
+            text: "{{ session('redicect_subscriber') }}",
+            icon: 'success',
+            confirmButtonText: 'حسنًا'
+        });
+    </script>
+@endif

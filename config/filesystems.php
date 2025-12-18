@@ -50,6 +50,20 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
+        'general' => [
+            'driver' => 'local',
+            'root' => storage_path('general/'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+        'employees' => [
+            'driver' => 'local',
+            'root' => storage_path('employees'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

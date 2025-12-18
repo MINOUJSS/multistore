@@ -155,24 +155,19 @@ class RegistredSupplierController extends Controller
                     $s_p_subscription=SupplierPlanSubscription::find($supplier_plan_subscription->id);
                     $s_p_subscription->status='free';
                     $s_p_subscription->update();
-                    //add free order fore this supplier
+                    // //add free order fore this supplier
+                    // $freeorders=UserFreeOrder::create([
+                    //     'user_id'=>$user->id,
+                    //     'quantity'=>'50',
+                    // ]);
+
+                 }
+
+                 //add free order fore this supplier
                     $freeorders=UserFreeOrder::create([
                         'user_id'=>$user->id,
                         'quantity'=>'50',
                     ]);
-                    // //add balance to subscription
-                    // $user->balance()->update([
-                    //     'balance'=> '500',
-                    // ]);
-                    // //commit this transaction in balance transaction table
-                    // BalanceTransaction::create([
-                    //     'user_id' => $user->id,
-                    //     'transaction_type' => 'addition',
-                    //     'amount' => '500',
-                    //     'description' => 'منحة من النصة لكشف أرقام الزبائن عند الطلب على منتجاتك',
-                    //     'payment_method' =>'نظام المنصة',
-                    // ]);
-                 }
                                    
                   // Commit the transaction
                  \DB::commit();

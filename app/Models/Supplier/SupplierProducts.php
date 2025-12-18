@@ -58,6 +58,11 @@ class SupplierProducts extends Model
           return $this->hasMany(SupplierProductImages::class, 'product_id');
       }
       //
+      public function videos()
+      {
+          return $this->hasMany(SupplierProductVideos::class, 'product_id');
+      }
+      //
       public function ratings()
       {
           return $this->hasMany(SupplierProductRatings::class, 'product_id');

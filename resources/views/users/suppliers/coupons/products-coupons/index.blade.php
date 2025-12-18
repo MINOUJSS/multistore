@@ -81,5 +81,5 @@
 @endsection
 
 @section('footer_js')
-    @include('users.suppliers.components.content.coupons.js.coupon_js')
+    {{-- @include('users.suppliers.components.content.coupons.js.coupon_js') --}}
 @endsection

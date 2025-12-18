@@ -4,10 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-  <title>MatajeDZ</title>
+  @yield('meta')
   <meta content="" name="description">
   <meta content="" name="keywords">
+
+  <title>MatajeDZ</title>
 
   <!-- Favicons -->
   <link href="{{asset('asset/v1/site/defaulte')}}/img/favicon.png" rel="icon">
@@ -26,7 +27,8 @@
   <link href="{{asset('asset/v1/site/defaulte')}}/css/glightbox.min.css" rel="stylesheet">
   <link href="{{asset('asset/v1/site/defaulte')}}/css/remixicon.css" rel="stylesheet">
   <link href="{{asset('asset/v1/site/defaulte')}}/css/swiper-bundle.min.css" rel="stylesheet">
-
+ <!-- js files -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- Template Main CSS File -->
   <link href="{{asset('asset/v1/site/defaulte')}}/css/style.css" rel="stylesheet">
   <link href="{{asset('asset/v1/site/defaulte')}}/css/theme_one.css" rel="stylesheet">
@@ -203,6 +205,7 @@
 
 <!-- Template Main JS File -->
 <script src="{{asset('asset/v1/site/defaulte')}}/js/main.js"></script> 
+@yield('footer_js')
 
 </body>
 

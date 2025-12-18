@@ -435,7 +435,7 @@
                             أوافق على <a href="#" class="text-decoration-underline">الشروط والأحكام</a> وسياسة الخصوصية
                         </label>
                     </div> --}}
-                        <form action="{{ route('supplier.chargilypay.redirect') }}" method="POST">
+                        <form action="{{ route('tenant.chargilypay.redirect') }}" method="POST">
                             @csrf
                             <input type="hidden" name="reference_id" value="{{ $order->id }}">
                             <input type="hidden" name="tenant_id" value="{{ tenant('id') }}">
@@ -445,9 +445,11 @@
                                 <input type="hidden" name="payment_type" value="seller_order">
                             @endif
                             <div class="d-grid">
+                                @if($order->payment_status != 'paid')
                                 <button class="btn btn-primary">
                                     <i class="fas fa-check-circle me-2"></i>تأكيد الطلب
                                 </button>
+                                @endif
                             </div>
                         </form>
 
@@ -461,3 +463,16 @@
             </div>
         </div>
     </div>
+
+    {{-- sweet alert --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if (session('success'))
+    <script>
+        Swal.fire({
+            title: 'نجاح!',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonText: 'حسنًا'
+        });
+    </script>
+@endif

@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChargilyPayController;
 use App\Http\Controllers\Tenants\TenantsController;
 use App\Services\Users\Suppliers\GoogleSheetService;
-use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -61,6 +62,9 @@ Route::middleware([
             Route::post('/payments/chargily_pay/pay', [TenantsController::class, 'chargily_pay'])->name('payments.chargily_pay');
             Route::get('/payments/verments_pay/{order_id}', [TenantsController::class, 'show_verments_pay'])->name('payments.show_verments_pay')->middleware('VermentPayOk');
             Route::post('/payments/verments_pay/pay', [TenantsController::class, 'verments_pay'])->name('payments.verments_pay');
+            // chargily routes
+        Route::post('/chargilypay/redirect', [ChargilyPayController::class, 'redirect'])->name('chargilypay.redirect');
+        Route::get('/chargilypay/back', [ChargilyPayController::class, 'back'])->name('chargilypay.back');
             // order
             Route::post('/order', [TenantsController::class, 'order'])->name('order')->middleware('BlockFakeOrder');
             // order abandoned

@@ -460,15 +460,16 @@ class TenantsController extends Controller
                 } else {
                     $shipping_type = 'to_descktop';
                 }
-
+                // dd($planId, $request->name);
                 $phoneVisibility = plan_phone_visibilty_autorization($planId, $request->name);
+                
                 // get total price
                 if ($product->free_shipping == 'yes') {
                     $shipping_cost = 0;
                 } else {
                     $shipping_cost = get_shipping_cost($request->shipping_and_point, $request->wilaya, $request->dayra, $request->baladia);
                 }
-
+                
                 if (supplier_product_has_discount($product->id)) {
                     $unit_price = $product->activeDiscount->discount_amount + $additional_price;
                     $coupon_discount = get_coupon_discount($request->product_id, $request->coupon, get_user_data(tenant('id'))->type);
@@ -478,6 +479,7 @@ class TenantsController extends Controller
                     $coupon_discount = get_coupon_discount($request->product_id, $request->coupon, get_user_data(tenant('id'))->type);
                     $total_price = ((($product->price + $additional_price) * $request->qty) + $shipping_cost) - $coupon_discount;
                 }
+                
                 // get product discount
                 if ($product->discount) {
                     $product_discount = $product->discount->discount_amount;
@@ -824,7 +826,7 @@ class TenantsController extends Controller
                         } elseif ($coupon->type == 'fixed') {
                             $couponAmount = $coupon->value;
                         }
-                        $coupon->usage_per_user += 1;
+                        ++$coupon->usage_per_user;
                         $coupon->save();
                     } else {
                         $couponAmount = '00';
@@ -1198,15 +1200,17 @@ class TenantsController extends Controller
                 $filename = $order->order_number.'.'.$extension;
                 // Store the file with new filename in supplier's storage
                 $path = $file->storeAs(
-                    get_supplier_store_name(tenant('id')).'/customer_payment_proofs',
+                    get_supplier_store_name(tenant('id')).'/customer_payment_proofs/'.date('Y').'/'.date('m').'/'.date('d'),
                     $filename,
-                    'supplier'
+                    'supplier'        
                 );
+                // $url = Storage::disk('public')->url('tenantsupplier/app/public/supplier/'.$path);
+                $url = asset('storage/tenantsupplier/app/public/supplier/'.$path);
             } else {
                 // Handle invalid file upload
                 throw new \Exception('Invalid file upload');
             }
-            $order->payment_proof = $path;
+            $order->payment_proof = $url;
             $order->save();
             // update the order
 
@@ -1486,7 +1490,7 @@ class TenantsController extends Controller
         }
 
         return response()->json([
-            'couponAmount' => $couponAmount+$products_discounts,
+            'couponAmount' => $couponAmount + $products_discounts,
             'couponType' => $coupon->type, // percentage or fixed
             'couponStatus' => $coupon->is_active,
             // Add any other coupon details you need

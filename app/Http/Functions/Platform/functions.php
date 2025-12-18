@@ -55,7 +55,12 @@ function plan_phone_visibilty_autorization($plan_id, $customer_name)
     $plan = App\Models\Supplier\SupplierPlan::where('id', $plan_id)->first();
 
     if (get_user_data(tenant('id'))->freeOrder->quantity > 0 && strcasecmp($customer_name, 'test') !== 0) {
-        $quntity = get_user_data(tenant('id'))->freeOrder->quantity - 1;
+        $quntity = get_user_data(tenant('id'))->freeOrder->quantity;
+        // if is free plan decrement quntity
+        if ($plan->id == 1) {
+            $quntity = $quntity - 1;
+        }
+
         get_user_data(tenant('id'))->freeOrder->update(['quantity' => $quntity]);
 
         return true;
@@ -102,26 +107,21 @@ function get_dayras_of_wilaya($wilaya_id)
 {
     $wilaya = App\Models\Wilaya::find($wilaya_id);
 
-    if($wilaya)
-    {
+    if ($wilaya) {
         return $wilaya->dayras;
-    }else
-    {
+    } else {
         return null;
-    }    
+    }
 }
 // get baladias of dayra
 function get_baladias_of_dayra($dayra_id)
 {
     $dayra = App\Models\Dayra::find($dayra_id);
-    if($dayra)
-    {
+    if ($dayra) {
         return $dayra->baladias;
-    }else
-    {
+    } else {
         return null;
     }
-    
 }
 // الفرق بين تاريخين بالأيام
 function appDiffInDays($dateA, $dateB)
@@ -180,7 +180,7 @@ function is_cart_has_this_product($product_id)
 
     return false;
 }
-//
+
 function get_order_status_class($status)
 {
     switch ($status) {
@@ -197,4 +197,19 @@ function get_order_status_class($status)
         default:
             return 'text-warning table-info';
     }
+}
+
+function getYoutubeVideoId($url)
+{
+    preg_match('/[\\?\\&]v=([^\\?\\&]+)/', $url, $matches);
+
+    return $matches[1] ?? null;
+}
+// vimeo
+function get_vimeo_id(string $url): ?string
+{
+    // Match both "vimeo.com/123456789" and "player.vimeo.com/video/123456789"
+    preg_match('/(?:vimeo\.com\/(?:video\/)?)([0-9]+)/', $url, $matches);
+
+    return $matches[1] ?? null;
 }

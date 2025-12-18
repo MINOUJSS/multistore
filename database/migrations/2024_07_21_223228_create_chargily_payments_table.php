@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string("amount");
             $table->string('payment_type')->nullable(); // 'user_invoice', 'supplier_subscription', 'other'
             $table->unsignedBigInteger('payment_reference_id')->nullable(); // ID of the user_invoice or supplier_subscription
+            $table->string('checkout_url')->nullable();
             $table->timestamps();
         });
     }

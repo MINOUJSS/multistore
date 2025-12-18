@@ -104,6 +104,19 @@
                                         <span id="customer-note"></span>
                                     </p>
                                 </div>
+                                <div class="col-md-12">
+                                    <h6>حالة الدفع</h6>
+                                    <p>
+                                        <span id="payment-status"></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-12">
+                                    <h6>طريقة الدفع</h6>
+                                    <p>
+                                        <span id="payment-method"></span>
+                                    </p>
+                                    <span id="payment_proof"></span>
+                                </div>
                             </div>
                             <hr>
                             <h6>المنتجات</h6>

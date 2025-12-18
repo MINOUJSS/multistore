@@ -1,3 +1,15 @@
+@php
+$ProofsRefused= App\Models\UsersPaymentsProofsRefused::where('user_id',auth()->user()->id)->first(); 
+if ($ProofsRefused && $ProofsRefused->messages()) 
+{
+$UnradesProofsRefusedMessages=$ProofsRefused->messages()->where('is_read_by_seller',false)->count();  
+}else
+{
+    $UnradesProofsRefusedMessages=0;
+}
+$UnreadMessages=$UnradesProofsRefusedMessages;
+@endphp
+<span id="UnradesProofsRefusedMessages" data-value="{{$UnradesProofsRefusedMessages}}"></span>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
         <a id="3bar" class="navbar-brand d-none d-sm-block d-sm-none d-md-block" href="#"><i
@@ -19,7 +31,8 @@
                     <span>{{ Auth::user()->name }}</span>
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        <img id="mobile-avatar" class="avatar" src="{{ is_supplier_has_avatar(auth()->user()->tenant_id) ?get_supplier_avatar(auth()->user()->tenant_id) : asset('asset/v1/users/dashboard/img/avatars/man.png') }}"
+                        <img id="mobile-avatar" class="avatar"
+                            src="{{ is_supplier_has_avatar(auth()->user()->tenant_id) ? get_supplier_avatar(auth()->user()->tenant_id) : asset('asset/v1/users/dashboard/img/avatars/man.png') }}"
                             alt="avatar" height="30" width="30">
                     </a>
                     <ul class="dropdown-menu position-absolute" style="z-index:10000!important;">
@@ -28,7 +41,8 @@
                             <hr>
                         </div>
                         <li><a class="dropdown-item" href="{{ route('supplier.subscription') }}"><i
-                                    class="fa-solid fa-boxes-packing"></i> الخطة{{ get_supplier_plan_data(get_supplier_subscription_data(get_supplier_data(auth()->user()->tenant_id)->id)->plan_id)->name }}</a>
+                                    class="fa-solid fa-boxes-packing"></i>
+                                الخطة{{ get_supplier_plan_data(get_supplier_subscription_data(get_supplier_data(auth()->user()->tenant_id)->id)->plan_id)->name }}</a>
                             <span>
                                 @if (get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 1)
                                     (صلاحية الخطة مدى الحياة)
@@ -69,13 +83,20 @@
                     </div>
                 </li>
                 <div class="vr m-2"></div>
-                <!-- <li class="nav-item position-relative">
-          <a class="dz-nav-icon" aria-current="page" href="#"><i class="fa-solid fa-envelope"></i></a>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              0
-            </span>
-      </li>
-        <li class="nav-item position-relative">
+                <li class="nav-item position-relative dropdown">
+                    <a class="dz-nav-icon" aria-current="page" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-envelope"></i></a>
+                    <span id="unreadMessages" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{$UnreadMessages}}
+                    </span>
+                    @if ($UnreadMessages > 0)
+                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                        @foreach($ProofsRefused->messages()->where('is_read_by_seller',false)->get() as $Message)
+                        <li><a class="dropdown-item" href="{{route('supplier.payments_proofs_refused.show',$Message->payment_proof_id)}}">رسالة من {{ $Message->sender_type }}</a></li>
+                        @endforeach
+                    </ul>
+                    @endif
+                </li>
+                <!--<li class="nav-item position-relative">
           <a class="dz-nav-icon" href="#"><i class="fa-solid fa-bell"></i></a>
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               0
@@ -94,7 +115,8 @@
                 <span>{{ Auth::user()->name }}</span>
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
-                    <img id="pc-avatar" class="avatar" src="{{ is_supplier_has_avatar(auth()->user()->tenant_id) ?get_supplier_avatar(auth()->user()->tenant_id) : asset('asset/v1/users/dashboard/img/avatars/man.png') }}"
+                    <img id="pc-avatar" class="avatar"
+                        src="{{ is_supplier_has_avatar(auth()->user()->tenant_id) ? get_supplier_avatar(auth()->user()->tenant_id) : asset('asset/v1/users/dashboard/img/avatars/man.png') }}"
                         alt="avatar" height="30" width="30">
                 </a>
                 <ul class="dropdown-menu">

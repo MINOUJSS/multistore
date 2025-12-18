@@ -11,6 +11,7 @@ use App\Models\Supplier\SupplierProductImages;
 use App\Models\Supplier\SupplierProducts;
 use App\Models\Supplier\SupplierProductsReviews;
 use App\Models\Supplier\SupplierProductVariations;
+use App\Models\Supplier\SupplierProductVideos;
 use App\Models\UserStoreCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -84,6 +85,14 @@ class SupplierProductController extends Controller
             'add_discount_start_date' => 'nullable|date',
             'add_discount_end_date' => 'nullable|date|after_or_equal:add_discount_start_date',
             'add_attribute_value.*' => 'required|string',
+            // ✅ التحقق من الفيديوهات
+            'video_url' => 'nullable|array',
+            'video_url.*' => [
+                'nullable',
+                'string',
+                // ✅ regex للتحقق من روابط YouTube أو Vimeo
+                'regex:/^(https?:\/\/)?(www\.)?((youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}|vimeo\.com\/[0-9]+)$/',
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -197,6 +206,68 @@ class SupplierProductController extends Controller
                 );
             }
 
+            // ✅ حفظ فيديوهات المنتج
+            if ($request->has('videos')) {
+                $videos = $request->videos;
+
+                // عدد الفيديوهات المرسلة
+                $count = count($videos['title'] ?? []);
+
+                for ($i = 0; $i < $count; ++$i) {
+                    $type = $videos['type'][$i] ?? 'youtube';
+                    $title = $videos['title'][$i] ?? null;
+                    $youtubeUrl = $videos['youtube_url'][$i] ?? null;
+                    $description = $videos['description'][$i] ?? null;
+                    $isActive = isset($videos['is_active'][$i]) ? 1 : 0;
+
+                    $filePath = null;
+                    $youtubeId = null;
+
+                    // 🔹 إذا كان الفيديو من YouTube
+                    if ($type === 'youtube' && !empty($youtubeUrl)) {
+                        preg_match('/(youtu\.be\/|v=)([^&]+)/', $youtubeUrl, $matches);
+                        $youtubeId = $matches[2] ?? null;
+                    }
+
+                    // 🔹 إذا كان الفيديو من vimeo
+                    if ($type === 'vimeo' && !empty($youtubeUrl)) {
+                        if (!function_exists('get_vimeo_id')) {
+                            function get_vimeo_id(string $url): ?string
+                            {
+                                // Match both "vimeo.com/123456789" and "player.vimeo.com/video/123456789"
+                                preg_match('/(?:vimeo\.com\/(?:video\/)?)([0-9]+)/', $youtubeUrl, $matches);
+
+                                return $matches[1] ?? null;
+                            }
+                        }
+
+                        $youtubeId = get_vimeo_id($youtubeUrl);
+                    }
+
+                    // 🔹 إذا كان الفيديو مرفوعًا محليًا
+                    if ($type === 'local' && isset($videos['file'][$i]) && $videos['file'][$i] instanceof \Illuminate\Http\UploadedFile) {
+                        $file = $videos['file'][$i];
+                        if ($file->isValid()) {
+                            $path = $file->store(get_supplier_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'supplier');
+                            $filePath = Storage::disk('supplier')->url('tenantsupplier/app/public/supplier/'.$path);
+                        }
+                    }
+
+                    // ✅ حفظ السجل في قاعدة البيانات
+                    $product->videos()->create([
+                        'title' => $title,
+                        'type' => $type,
+                        'youtube_url' => $youtubeUrl,
+                        'youtube_id' => $youtubeId,
+                        'file_path' => $filePath,
+                        'file_disk' => 'supplier',
+                        'description' => $description,
+                        'is_active' => $isActive,
+                        'sort_order' => $i,
+                    ]);
+                }
+            }
+
             DB::commit(); // حفظ جميع العمليات
 
             return response()->json([
@@ -235,11 +306,21 @@ class SupplierProductController extends Controller
             'product_attributes' => $product_attributes,
             'supplier_attributes' => $supplier_attributes,
             'product_review' => $product_review,
+            'product_videos' => $product->videos,
         ]);
     }
 
     public function update(Request $request, $product_id)
     {
+        // return response()->json([
+        //     'status' => '200',
+        //     'product_id' => $product_id,
+        //     'request' => $request->all(),
+        // ]);
+        // if (!function_exists('getYoutubeVideoId')) {
+
+        // }
+
         // التحقق من صحة البيانات
         $validator = Validator::make($request->all(), [
             'product_name' => 'required|string|min:3',
@@ -349,140 +430,94 @@ class SupplierProductController extends Controller
                 );
             }
 
-            // // start test
-            // // معالجة السمات (Attributes) - إضافة وتحديث
-            // //إضافة
-            // if ($request->has('attribute_value')) {
-            //     $attributesData = [];
-            //     foreach ($request->attribute_value as $index => $attribute) {
-            //         $attributeData = [
-            //             'product_id' => $product->id,
-            //             // 'attribute_id' => $request->porduct_attribute[$index] ?? null,
-            //             'attribute_id' => $request->porduct_attribute[$index] ?? null,
-            //             'value' => $attribute,
-            //             'additional_price' => $request->atrribute_add_price[$index] ?? 0,
-            //             'stock_quantity' => $request->attribute_stock_qty[$index] ?? 0,
-            //             'created_at' => now(),
-            //             'updated_at' => now(),
-            //         ];
-            //         $attributesData[] = $attributeData;
-            //     }
-            //     SupplierProductAttributes::insert($attributesData);
-            // }
-            // //تعديل
-            // if ($request->has('update_attribute_value')) {
-            //     $attributesData = [];
-            //     $existingAttributeIds = [];
-
-            //     foreach ($request->update_attribute_value as $index => $attribute) {
-            //         $attributeId = $request->update_attribute_id[$index] ?? null;
-            //         $attributeData = [
-            //             'product_id' => $product->id,
-            //             // 'attribute_id' => $request->update_porduct_attribute[$index] ?? null,
-            //             'attribute_id' => $attributeId ?? null,
-            //             'value' => $attribute,
-            //             'additional_price' => $request->update_attribute_add_price[$index] ?? 0,
-            //             'stock_quantity' => $request->update_attribute_stock_qty[$index] ?? 0,
-            //             'updated_at' => now(),
-            //         ];
-
-            //         if ($attributeId) {
-            //             // تحديث السمة الموجودة
-            //             SupplierProductAttributes::where('id', $attributeId)->update($attributeData);
-            //             $existingAttributeIds[] = $attributeId;
-            //         } else {
-            //             // إضافة سمة جديدة
-            //             $attributeData['created_at'] = now();
-            //             $attributesData[] = $attributeData;
-            //         }
-            //     }
-
-            //     //                 return response()->json([
-            //     //     'success' => true,
-            //     //     'data' => $request->all(),
-            //     //     'attributes' => $attributesData,
-            //     //     'existingAttributeIds' => $existingAttributeIds
-            //     // ]);
-
-            //     // إضافة السمات الجديدة
-            //     if (!empty($attributesData)) {
-            //         SupplierProductAttributes::insert($attributesData);
-            //     }
-
-            //     // حذف السمات التي لم تعد موجودة في الطلب
-            //     if (!empty($existingAttributeIds)) {
-            //         SupplierProductAttributes::where('product_id', $product->id)
-            //             ->whereNotIn('id', $existingAttributeIds)
-            //             ->delete();
-            //     }
-            // }
-
-            // // معالجة المتغيرات (Variations) - إضافة وتحديث
-
-            // // اضافة
-            // if ($request->has('product_color')) {
-            //     $variationsData = [];
-            //     foreach ($request->product_color as $index => $color) {
-            //         $variationData = [
-            //             'product_id' => $product->id,
-            //             'sku' => $request->product_sku[$index],
-            //             'color' => $color,
-            //             'stock_quantity' => $request->product_variation_stock[$index],
-            //             'created_at' => now(),
-            //             'updated_at' => now(),
-            //         ];
-            //         $variationsData[] = $variationData;
-            //     }
-            //     SupplierProductVariations::insert($variationsData);
-            // }
-
-            // //تعديل
-            // if ($request->has('update_product_color')) {
-            //     $variationsData = [];
-            //     $existingVariationIds = [];
-
-            //     foreach ($request->update_product_color as $index => $color) {
-            //         $variationId = $request->update_variation_id[$index] ?? null;
-            //         $variationData = [
-            //             'product_id' => $product->id,
-            //             'sku' => $request->update_product_sku[$index],
-            //             'color' => $color,
-            //             // 'size' => $request->update_product_size[$index],
-            //             // 'weight' => $request->update_product_weight[$index],
-            //             // 'additional_price' => $request->update_product_variation_add_price[$index],
-            //             'stock_quantity' => $request->update_product_variation_stock[$index],
-            //             'updated_at' => now(),
-            //         ];
-
-            //         if ($variationId) {
-            //             // تحديث المتغير الموجود
-            //             SupplierProductVariations::where('id', $variationId)->update($variationData);
-            //             $existingVariationIds[] = $variationId;
-            //         } else {
-            //             // // إضافة متغير جديد
-            //             // $variationData['created_at'] = now();
-            //             // $variationsData[] = $variationData;
-            //             SupplierProductVariations::updateOrCreate(
-            //                 ['product_id' => $product->id, 'sku' => $variationData['sku']],
-            //                 $variationData
-            //             );
-            //         }
-            //     }
-
-            //     // //إضافة المتغيرات الجديدة
-            //     // if (!empty($variationsData)) {
-            //     //     SupplierProductVariations::insert($variationsData);
-            //     // }
-
-            //     // حذف المتغيرات التي لم تعد موجودة في الطلب
-            //     if (!empty($existingVariationIds)) {
-            //         SupplierProductVariations::where('product_id', $product->id)
-            //             ->whereNotIn('id', $existingVariationIds)
-            //             ->delete();
-            //     }
-            // }
-
             // -------------------start----------------------
+            /*
+|----------------------------------------------------------------------
+| 1) Product Videos (تحديث / إضافة / حذف)
+|----------------------------------------------------------------------
+*/
+
+            // 1️⃣ جلب IDs الفيديوهات الموجودة في الفورم (إن وُجدت)
+            $existingVideoIds = $request->update_videos_id ?? [];
+
+            // 2️⃣ حذف الفيديوهات التي تم حذفها من الفورم
+            SupplierProductVideos::where('product_id', $product->id)
+                ->whereNotIn('id', $existingVideoIds)
+                ->delete();
+
+            // 3️⃣ تحديث الفيديوهات الموجودة
+            if ($request->has('update_videos_id')) {
+                foreach ($request->update_videos_id as $i => $videoId) {
+                    $video = SupplierProductVideos::find($videoId);
+                    if ($video) {
+                        $type = $request->update_videos['type'][$i];
+                        $isActive = isset($request->update_videos['is_active'][$i]) ? 1 : 0;
+
+                        $updateData = [
+                            'title' => $request->update_videos['title'][$i],
+                            'type' => $type,
+                            'description' => $request->update_videos['description'][$i],
+                            'is_active' => $isActive,
+                        ];
+
+                        if ($type === 'youtube' || $type === 'vimeo') {
+                            $updateData['youtube_url'] = $request->update_videos['youtube_url'][$i];
+                            if ($type === 'youtube') {
+                                $updateData['youtube_id'] = getYoutubeVideoId($request->update_videos['youtube_url'][$i]);
+                            } elseif ($type === 'vimeo') {
+                                $updateData['youtube_id'] = get_vimeo_id($request->update_videos['youtube_url'][$i]);
+                            }
+                            $updateData['file_path'] = null;
+                        } elseif ($type === 'local' && isset($request->update_videos['file'][$i])) {
+                            // حذف الملف القديم إن وُجد
+                            if ($video->file_path && Storage::disk($video->file_disk)->exists($video->file_path)) {
+                                Storage::disk($video->file_disk)->delete($video->file_path);
+                            }
+
+                            // رفع الملف الجديد
+                            // $path = $request->update_videos['file'][$i]->store('products/videos', 'supplier');
+                            $path = $request->update_videos['file'][$i]->store(get_supplier_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'supplier');
+                            $updateData['file_path'] = Storage::disk('supplier')->url('tenantsupplier/app/public/supplier/'.$path);
+                            $updateData['file_disk'] = 'supplier';
+                            $updateData['youtube_url'] = null;
+                            $updateData['youtube_id'] = null;
+                        }
+
+                        $video->update($updateData);
+                    }
+                }
+            }
+
+            // 4️⃣ إضافة فيديوهات جديدة
+            if ($request->has('videos')) {
+                foreach ($request->videos['type'] as $i => $type) {
+                    $isActive = isset($request->videos['is_active'][$i]) ? 1 : 0;
+
+                    $data = [
+                        'product_id' => $product->id,
+                        'title' => $request->videos['title'][$i],
+                        'type' => $type,
+                        'description' => $request->videos['description'][$i],
+                        'is_active' => $isActive,
+                    ];
+
+                    if ($type === 'youtube' || $type === 'vimeo') {
+                        $data['youtube_url'] = $request->videos['youtube_url'][$i];
+                        if ($type === 'youtube') {
+                            $data['youtube_id'] = getYoutubeVideoId($request->videos['youtube_url'][$i]);
+                        } elseif ($type === 'vimeo') {
+                            $data['youtube_id'] = get_vimeo_id($request->videos['youtube_url'][$i]);
+                        }
+                    } elseif ($type === 'local' && isset($request->videos['file'][$i])) {
+                        $path = $request->videos['file'][$i]->store(get_supplier_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'supplier');
+                        $data['file_path'] = Storage::disk('supplier')->url('tenantsupplier/app/public/supplier/'.$path);
+                        $data['file_disk'] = 'supplier';
+                    }
+
+                    SupplierProductVideos::create($data);
+                }
+            }
+
             /*
                    |--------------------------------------------------------------------------
                    | 1) Product Attributes (تحديث / إضافة / حذف)
@@ -505,8 +540,8 @@ class SupplierProductController extends Controller
                         $attribute->update([
                             'attribute_id' => $request->update_product_attribute[$i],
                             'value' => $request->update_attribute_value[$i],
-                            'add_price' => $request->update_attribute_add_price[$i],
-                            'stock_qty' => $request->update_attribute_stock_qty[$i],
+                            'additional_price' => $request->update_attribute_add_price[$i],
+                            'stock_quantity' => $request->update_attribute_stock_qty[$i],
                         ]);
                     }
                 }
@@ -519,8 +554,8 @@ class SupplierProductController extends Controller
                         'product_id' => $product->id,
                         'attribute_id' => $attr,
                         'value' => $request->attribute_value[$i],
-                        'add_price' => $request->atrribute_add_price[$i],
-                        'stock_qty' => $request->attribute_stock_qty[$i],
+                        'additional_price' => $request->atrribute_add_price[$i],
+                        'stock_quantity' => $request->attribute_stock_qty[$i],
                     ]);
                 }
             }
@@ -651,6 +686,34 @@ class SupplierProductController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'image not found',
+            ], 400);
+        }
+    }
+
+    // function delete_product_video()
+    public function delete_product_video($id)
+    {
+        // get video from database
+        $video = SupplierProductVideos::find($id);
+        $product_id = $video->product_id;
+        if ($video != null) {
+            // delete video from supplier videos folder
+            $url = explode('storage/tenantsupplier/app/public/', $video->file_path);
+            $videoPath = $url[1];
+            if (Storage::disk('public')->exists($videoPath)) {
+                Storage::disk('public')->delete($videoPath);
+            }
+            $video->delete();
+            $product_videos = SupplierProductVideos::where('product_id', $product_id)->get();
+
+            return response()->json([
+                'status' => 'success',
+                'product_videos' => $product_videos,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'video not found',
             ], 400);
         }
     }

@@ -41,6 +41,13 @@ function get_supplier_data($tenant_id)
 
     return $supplier;
 }
+// get supplier data from id
+function get_supplier_data_from_id($id)
+{
+    $supplier = App\Models\Supplier\Supplier::findOrFail($id);
+
+    return $supplier;
+}
 // get supplier plan data
 function get_supplier_plan_data($plan_id)
 {

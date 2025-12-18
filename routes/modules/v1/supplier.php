@@ -33,7 +33,10 @@ use App\Http\Controllers\Users\Suppliers\Auth\RegistredSupplierController;
 use App\Http\Controllers\Users\Suppliers\SupplierOrderAbandonedController;
 use App\Http\Controllers\Users\Suppliers\SupplierProductsCouponsController;
 use App\Http\Controllers\Users\Suppliers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Users\Suppliers\SupplierCategoriesCouponsController;
 use App\Http\Controllers\Users\Suppliers\SupplierCustomerBlockListController;
+use App\Http\Controllers\Users\Suppliers\SupplierProofsRefusedChatController;
+use App\Http\Controllers\Users\Suppliers\SupplierPaymentsProofsRefusedController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,8 +74,10 @@ Route::middleware([
                 Route::post('/supplier-panel/profile/password/update', [SupplierProfileController::class, 'update_password'])->name('profile.password.update');
                 // suuplier create or update chargily pay settings
                 Route::post('/supplier-panel/profile/chargily/update', [SupplierProfileController::class, 'create_or_update_chargily_settings'])->name('profile.chargily-settings.update');
+                Route::delete('/supplier-panel/profile/chargily/delete', [SupplierProfileController::class, 'delete_chargily_settings'])->name('profile.chargily-settings.delete');
                 // suuplier create or update bank settings
                 Route::post('/supplier-panel/profile/bank/update', [SupplierProfileController::class, 'create_or_update_bank_settings'])->name('profile.bank-settings.update');
+                Route::delete('/supplier-panel/profile/bank/delete', [SupplierProfileController::class, 'delete_bank_settings'])->name('profile.bank-settings.delete');
                 // /supplier update-avatar
                 Route::post('/supplier-panel/profile/update-avatar', [SupplierProfileController::class, 'update_avatar'])->name('profile.update-avatar');
                 // supplier settings routes
@@ -93,6 +98,7 @@ Route::middleware([
                 Route::post('/supplier-panel/product/update/{id}', [SupplierProductController::class, 'update'])->name('product.update');
                 Route::delete('/supplier-panel/product/delete/{id}', [SupplierProductController::class, 'delete'])->name('product.delete');
                 Route::delete('/supplier-panel/product/image/delete/{id}', [SupplierProductController::class, 'delete_product_image'])->name('product.delete_product_image');
+                Route::delete('/supplier-panel/product/video/delete/{id}', [SupplierProductController::class, 'delete_product_video'])->name('product.delete_product_video');
                 Route::delete('/supplier-panel/product/variant/delete/{id}', [SupplierProductController::class, 'delete_product_variation'])->name('product.delete_product_variation');
                 Route::delete('/supplier-panel/product/discount/delete/{id}', [SupplierProductController::class, 'delete_product_discount'])->name('product.delete_product_discount');
                 Route::delete('/supplier-panel/product/attributes/delete/{id}', [SupplierProductController::class, 'delete_product_attribute'])->name('product.delete_product_attribute');
@@ -108,6 +114,10 @@ Route::middleware([
                 Route::get('/supplier-panel/products-coupons', [SupplierProductsCouponsController::class, 'index'])->name('products-coupons');
                 Route::post('/supplier-panel/products-coupons/store', [SupplierProductsCouponsController::class, 'store'])->name('products-coupons.store');
                 Route::delete('/supplier-panel/products-coupons/destroy/{id}', [SupplierProductsCouponsController::class, 'destroy'])->name('products-coupons.destroy');
+                // supplier categories coupons
+                Route::get('/supplier-panel/categories-coupons', [SupplierCategoriesCouponsController::class, 'index'])->name('categories-coupons');
+                Route::post('/supplier-panel/categories-coupons/store', [SupplierCategoriesCouponsController::class, 'store'])->name('categories-coupons.store');
+                Route::delete('/supplier-panel/categories-coupons/destroy/{id}', [SupplierCategoriesCouponsController::class, 'destroy'])->name('categories-coupons.destroy');
                 // Route::resource('/supplier-panel/coupons',[SupplierCouponController::class,'index'])->name('coupons');
                 Route::get('/supplier-panel/coupons/filter', [SupplierCouponController::class, 'filter'])->name('coupons.filter');
                 Route::get('/supplier-panel/coupons/list', [SupplierCouponController::class, 'list'])->name('coupons.list');
@@ -122,6 +132,8 @@ Route::middleware([
                 Route::get('/supplier-panel/filter-orders', [SupplierOrderController::class, 'filterOrders'])->name('order.filterOrders');
                 Route::post('/supplier-panel/update-order-status', [SupplierOrderController::class, 'updateOrderStatus'])->name('order.updateOrderStatus');
                 Route::post('/supplier-panel/update-confirmation-status', [SupplierOrderController::class, 'updateConfirmationStatus'])->name('order.updateConfirmationStatus');
+                Route::post('/supplier-panel/order/{order}/accept-payment', [SupplierOrderController::class, 'acceptPayment'])->name('order.acceptPayment');
+                Route::post('/supplier-panel/order/{order}/reject-payment', [SupplierOrderController::class, 'rejectPayment'])->name('order.rejectPayment');
 
                 Route::get('/supplier-panel/order/edit/{id}', [SupplierOrderController::class, 'edit_order'])->name('order.edit');
                 Route::put('/supplier-panel/order/update/{id}', [SupplierOrderController::class, 'update_order'])->name('order.update');
@@ -198,6 +210,18 @@ Route::middleware([
                 Route::post('/supplier-panel/billing/pay/invoice/{id}/redirect', [SupplierBillingController::class, 'invoice_redirect'])->name('billing.invoice.redirect');
                 Route::post('/supplier-panel/billing/pay/invoice', [SupplierBillingController::class, 'pay_invoice'])->name('billing.invoice.pay');
                 Route::delete('/supplier-panel/billing/invoice/{invoice}/delete-proof', [SupplierBillingController::class, 'deleteProof'])->name('billing.invoice.deleteProof');
+                //suppliere payments_proofs_refuseds
+                Route::get('/supplier-panel/payments-proofs-refuseds', [SupplierPaymentsProofsRefusedController::class, 'index'])->name('payments_proofs_refuseds');
+                Route::get('/supplier-panel/payments-proofs-refused/{id}/show', [SupplierPaymentsProofsRefusedController::class, 'show'])->name('payments_proofs_refused.show');
+                //supplier proofs refused messages routes
+                Route::prefix('/supplier-panel/proofs-refused/{proofId}/chat')->name('proofs.refused.chat.')->group(function () {
+                    Route::get('/', [SupplierProofsRefusedChatController::class, 'index'])->name('index');
+                    Route::get('/get_messages', [SupplierProofsRefusedChatController::class, 'getMessages'])->name('get_messages');
+                    Route::post('/read', [SupplierProofsRefusedChatController::class, 'readMessages'])->name('read');
+                    Route::post('/send', [SupplierProofsRefusedChatController::class, 'sendMessage'])->name('send');
+                    Route::get('/fetch', [SupplierProofsRefusedChatController::class, 'fetchMessages'])->name('fetch');
+                });
+                
                 // Wallet Routes
                 Route::get('/supplier-panel/wallet', [SupplierWalletController::class, 'index'])->name('wallet');
                 // Route::post('/supplier-panel/wallet/charge',[SupplierWalletController::class,'charge'])->name('wallet.charge');
@@ -255,7 +279,7 @@ Route::middleware([
             // subscription routes here
             Route::post('/supplier-panel/subscription/pay/new-subscription/baridimob', [SupplierSubscriptionController::class, 'new_subscription_by_baridimob'])->name('new.subscription.payment.baridimob');
             Route::post('/supplier-panel/subscription/pay/new-subscription/ccp', [SupplierSubscriptionController::class, 'new_subscription_by_ccp'])->name('new.subscription.payment.ccp');
-            Route::get('/supplier-panel/subscription/confirmation', [SupplierSubscriptionController::class, 'confirmation'])->name('subscription.confirmation');
+            Route::get('/supplier-panel/subscription/confirmation', [SupplierSubscriptionController::class, 'confirmation'])->name('subscription.confirmation')->middleware('SuppliersRedirectSubscriber');
             Route::post('/supplier-panel/order/plan/{id}', [SupplierSubscriptionController::class, 'order_plan'])->name('subscription.order.plan');
 
             // supplier plan routes here
@@ -268,8 +292,8 @@ Route::middleware([
             Route::get('/supplier-panel/payment/baridimob', [SupplierPaymentController::class, 'baridimob'])->name('payment.baridimob');
             Route::get('/supplier-panel/payment/ccp', [SupplierPaymentController::class, 'ccp'])->name('payment.ccp');
             // //chargily routes
-            // Route::post('supplier-panel/chargilypay/redirect', [ChargilyPayController::class, "redirect"])->name("chargilypay.redirect");
-            // Route::get('supplier-panel/chargilypay/back', [ChargilyPayController::class, "back"])->name("chargilypay.back");
+            // Route::post('supplier-panel/chargilypay/redirect', [ChargilyPayController::class, 'redirect'])->name('chargilypay.redirect');
+            // Route::get('supplier-panel/chargilypay/back', [ChargilyPayController::class, 'back'])->name('chargilypay.back');
         });
         // chargily routes
         Route::post('supplier-panel/chargilypay/redirect', [ChargilyPayController::class, 'redirect'])->name('chargilypay.redirect');
@@ -286,7 +310,7 @@ Route::middleware([
             Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
             Route::post('/supplier-panel/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
             // chargily webhook routes here
-            Route::post('supplier-panel/chargilypay/webhook', [ChargilyPayController::class, 'webhook'])->name('chargilypay.webhook_endpoint');
+            // Route::post('supplier-panel/chargilypay/webhook', [ChargilyPayController::class, 'webhook'])->name('chargilypay.webhook_endpoint');
         });
     });
     // store routes here

@@ -140,32 +140,59 @@
                     <p>{{ $order_form->form_title }}</p>
                 </div>
                 <div class="col-md-6">
-                    <label for="name" class="form-label">{{$order_form->lable_customer_name}} <sup class="text-danger">@if($order_form->customer_name_required === 'true')*@endif</sup></label>
+                    <label for="name" class="form-label">{{ $order_form->lable_customer_name }} <sup
+                            class="text-danger">
+                            @if ($order_form->customer_name_required === 'true')
+                                *
+                            @endif
+                        </sup></label>
                     <input type="name" name="name" class="form-control @error('name') is-invalid @enderror"
-                        id="name" value="{{ old('name') }}" placeholder="{{$order_form->input_placeholder_customer_name}}" @if($order_form->customer_name_required === 'true') required @endif>
+                        id="name" value="{{ old('name') }}"
+                        placeholder="{{ $order_form->input_placeholder_customer_name }}"
+                        @if ($order_form->customer_name_required === 'true') required @endif>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="col-md-6">
-                    <label for="phone" class="form-label">{{$order_form->lable_customer_phone}} <sup class="text-danger">@if($order_form->customer_phone_required === 'true')*@endif</sup></label>
+                    <label for="phone" class="form-label">{{ $order_form->lable_customer_phone }} <sup
+                            class="text-danger">
+                            @if ($order_form->customer_phone_required === 'true')
+                                *
+                            @endif
+                        </sup></label>
                     <input type="phone" name="phone" class="form-control @error('phone') is-invalid @enderror"
-                        id="phone" value="{{ old('phone') }}" onchange="create_abandoned_order();" placeholder="{{$order_form->input_placeholder_customer_phone}}" required>
+                        id="phone" value="{{ old('phone') }}" onchange="create_abandoned_order();"
+                        placeholder="{{ $order_form->input_placeholder_customer_phone }}" required>
                     @error('phone')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="col-12" style="display: @if($order_form->customer_address_visible === 'true') block @else none @endif">
-                    <label for="address" class="form-label">{{$order_form->lable_customer_address}} <sup class="text-danger">@if($order_form->customer_address_required === 'true')*@endif</sup></label>
+                <div class="col-12" style="display: @if ($order_form->customer_address_visible === 'true') block @else none @endif">
+                    <label for="address" class="form-label">{{ $order_form->lable_customer_address }} <sup
+                            class="text-danger">
+                            @if ($order_form->customer_address_required === 'true')
+                                *
+                            @endif
+                        </sup></label>
                     <input type="text" name="address" class="form-control @error('address') is-invalid @enderror"
-                        id="address" value="{{ old('address') }}" placeholder="{{$order_form->input_placeholder_customer_address}}" @if($order_form->customer_address_required === 'true' && $order_form->customer_address_visible === 'true') required @endif>
+                        id="address" value="{{ old('address') }}"
+                        placeholder="{{ $order_form->input_placeholder_customer_address }}"
+                        @if ($order_form->customer_address_required === 'true' && $order_form->customer_address_visible === 'true') required @endif>
                     @error('address')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="col-12" style="display: @if($order_form->customer_notes_visible === 'true') block @else none @endif">
-                    <label for="note" class="form-label">{{$order_form->lable_customer_notes}} <sup class="text-danger">@if($order_form->customer_notes_required === 'true')*@endif</sup></label>
-                    <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3" placeholder="{{$order_form->input_placeholder_customer_notes}}" @if($order_form->customer_notes_required === 'true' && $order_form->customer_notes_visible === 'true') required @endif></textarea>
+                <div class="col-12" style="display: @if ($order_form->customer_notes_visible === 'true') block @else none @endif">
+                    <label for="note" class="form-label">{{ $order_form->lable_customer_notes }} <sup
+                            class="text-danger">
+                            @if ($order_form->customer_notes_required === 'true')
+                                *
+                            @endif
+                        </sup></label>
+                    <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3"
+                        placeholder="{{ $order_form->input_placeholder_customer_notes }}"
+                        @if ($order_form->customer_notes_required === 'true' && $order_form->customer_notes_visible === 'true') required @endif></textarea>
                     @error('note')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -279,14 +306,14 @@
                                     <h5>إختر {{ get_supplier_attribute_name($product_attribute->attribute->id) }}</h5>
                                 @endif
                                 {{-- @if (atrribute_has_more_values($product_attribute->attribute_id)) --}}
-                                    {{-- <input class="form-check-input" type="radio" name="product_attribute"
+                                {{-- <input class="form-check-input" type="radio" name="product_attribute"
                                         value="{{ $product_attribute->id }}" onchange="get_attribute_id(this);" @if ($product_attributes[0]['id'] == $product_attribute['id']) checked @endif> --}}
-                                    <input class="form-check-input" type="radio" name="product_attribute"
-                                        data-unit-price="{{ $product->price }}"
-                                        data-aditional-price="{{ $product_attribute->additional_price }}"
-                                        value="{{ $product_attribute->id }}"
-                                        onchange="get_attribute_id(this);add_additional_price_to_product_price(this);">
-                                    <label for="product_attribute">{{ $product_attribute->value }}</label>
+                                <input class="form-check-input" type="radio" name="product_attribute"
+                                    data-unit-price="{{ $product->price }}"
+                                    data-aditional-price="{{ $product_attribute->additional_price }}"
+                                    value="{{ $product_attribute->id }}"
+                                    onchange="get_attribute_id(this);add_additional_price_to_product_price(this);">
+                                <label for="product_attribute">{{ $product_attribute->value }}</label>
                                 {{-- @endif --}}
                             @endforeach
                         </div>
@@ -344,7 +371,7 @@
                 @if (is_product_has_coupon($product->id))
                     <!---->
                     <div class="col-md-12 mb-4">
-                        <label for="coupon" class="form-label">{{$order_form->lable_product_coupon_code}}</label>
+                        <label for="coupon" class="form-label">{{ $order_form->lable_product_coupon_code }}</label>
                         <input type="text" name="coupon"
                             class="form-control @error('coupon') is-invalid @enderror" id="coupon"
                             value="{{ old('coupon') }}" data-product-id="{{ $product->id }}"
@@ -393,7 +420,7 @@
                   <input type="hidden" name="form_total_amount" id="form_total_amount" value="{{($product->minimum_order_qty * $product->price)+300}}" />
                   @endif --}}
                         <button type="submit" class="form-control btn btn-primary"><i
-                                class="fas fa-shopping-cart"></i>{{$order_form->form_submit_button}}</button>
+                                class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
                     </div>
                 </div>
                 <div class="col-12">
@@ -524,10 +551,64 @@
 
             </div>
             {{-- end add to cart btn  --}}
+            {{-- product description section  --}}
             <div class="row mt-4">
                 {!! $product->description !!}
             </div>
-            
+            {{-- end product description section  --}}
+            {{-- product videos section  --}}
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-video"></i> فيديوهات المنتج
+                        </div>
+                        @foreach ($product->videos as $video)
+                            @if ($video->type == 'youtube')
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="ratio ratio-16x9">
+                                            <iframe src="https://www.youtube.com/embed/{{ $video->youtube_id }}"
+                                                title="YouTube video player" allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($video->type == 'vimeo')
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="ratio ratio-16x9">
+                                                <iframe src="https://player.vimeo.com/video/{{ $video->youtube_id }}"
+                                                    title="Vimeo video player" allowfullscreen>
+                                                </iframe>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="ratio ratio-16x9">
+                                                <video controls>
+                                                    <source class="embed-responsive-item"
+                                                        src="{{ $video->file_path }}" type="video/mp4"
+                                                        whidth="100%" height="auto">
+                                                </video>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            {{-- end product videos section  --}}
+
         </div>
     </div>
 </div>

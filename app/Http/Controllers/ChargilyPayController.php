@@ -21,11 +21,44 @@ class ChargilyPayController extends Controller
         $amount = $request->amount;
         $type = $request->payment_type; // 'invoice' | 'subscription' | 'other'
         $referenceId = $request->reference_id;
-
+        // dd($request);
         // validation
         if ($type == 'wallet_topup') {
             $validated = $request->validate([
                 'amount' => 'required|numeric|min:50',
+            ]);
+        } elseif ($type == 'new_supplier_subscription') {
+            // get plan data
+            $plan = SupplierPlan::findOrFail($request->plan_id);
+            $amount = $plan->price;
+            $duration = '30';
+            if ($request->sub_plan_id != 0) {
+                $sub_plan = SupplierPlanPrices::find($request->sub_plan_id);
+                if ($sub_plan) {
+                    $amount = $sub_plan->price;
+                    $duration = $sub_plan->duration;
+                }
+            }
+            // التحقق من وجود طلب سابق معلق
+            $existingOrder = SupplierPlanOrder::where('supplier_id', $referenceId)
+            ->where('status', 'pending')
+            ->first();
+            if ($existingOrder) {
+                // حذف الطلب السابق
+                $existingOrder->delete();
+            }
+            // create order
+            $order = SupplierPlanOrder::create([
+                'plan_id' => $plan->id,
+                'supplier_id' => get_supplier_data($user->tenant_id)->id,
+                'duration' => $duration,
+                'price' => $amount,
+                'discount' => 0,
+                'payment_method' => 'chargily',
+                'status' => 'pending',
+                'payment_status' => 'unpaid',
+                'start_date' => now(),
+                'end_date' => now()->addDays($duration),
             ]);
         } elseif ($type == 'supplier_subscription') {
             $old_subscription = \App\Models\Supplier\SupplierPlanSubscription::where('supplier_id', $request->reference_id)->first();
@@ -46,11 +79,13 @@ class ChargilyPayController extends Controller
             ->where('status', 'pending')
             ->first();
             if ($existingOrder) {
-                // إلغاء الطلب السابق
-                $existingOrder->update([
-                    'payment_status' => 'failed',
-                    'status' => 'cancelled',
-                ]);
+                // حذف الطلب السابق
+                $existingOrder->delete();
+                // // إلغاء الطلب السابق
+                // $existingOrder->update([
+                //     'payment_status' => 'failed',
+                //     'status' => 'cancelled',
+                // ]);
             }
 
             // If switching from basic plan (1) to plan 2 or 3, apply full new plan price
@@ -88,10 +123,15 @@ class ChargilyPayController extends Controller
                 'end_date' => now()->addDays($duration),
             ]);
         } elseif ($type == 'supplier_order') {
-            $order = SupplierOrders::findOrfail($request->order_id);
+            $order = SupplierOrders::findOrfail($request->reference_id);
             $order_items = SupplierOrderItems::where('order_id', $order->id)->get();
             $amount = $order->total_price;
             $user_id = get_user_data($request->tenant_id)->id;
+            // check if payment exist
+            $payment_exist = \App\Models\ChargilyPaymentForTenants::where('user_id', $user_id)->where('payment_type', 'supplier_order')->where('status', 'pending')->where('payment_reference_id', $order->id)->first();
+            if ($payment_exist) {
+                $payment_exist->delete();
+            }
             $payment = \App\Models\ChargilyPaymentForTenants::create([
                 'user_id' => $user_id,
                 'status' => 'pending',
@@ -112,11 +152,16 @@ class ChargilyPayController extends Controller
                     'amount' => $payment->amount,
                     'currency' => $payment->currency,
                     'description' => "دفع من نوع {$type} رقم {$referenceId}",
-                    'success_url' => route('supplier.chargilypay.back'),
-                    'failure_url' => route('supplier.chargilypay.back'),
+                    'success_url' => route('tenant.chargilypay.back'),
+                    'failure_url' => route('tenant.chargilypay.back'),
                     'webhook_endpoint' => route('chargilypay.webhook_endpoint'),
                 ]);
                 if ($checkout) {
+                    // update checkout url
+                    $payment->update([
+                        'checkout_url' => $checkout->getUrl(),
+                    ]);
+
                     return redirect($checkout->getUrl());
                 }
             }
@@ -148,6 +193,11 @@ class ChargilyPayController extends Controller
                     'webhook_endpoint' => route('chargilypay.webhook_endpoint'),
                 ]);
                 if ($checkout) {
+                    // update checkout url
+                    $payment->update([
+                        'checkout_url' => $checkout->getUrl(),
+                    ]);
+
                     return redirect($checkout->getUrl());
                 }
             }
@@ -176,9 +226,11 @@ class ChargilyPayController extends Controller
         }
         // dd($checkout,$payment);
         if ($payment !== null && $payment->status == 'paid') {
-            return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
+            return redirect()->back()->with('success', 'تمت عملية الدفع بنجاح');
+        // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
         } else {
-            return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
+            return redirect()->back()->with('error', 'فشل في عملية الدفع');
+            // return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
         }
     }
 
@@ -227,10 +279,40 @@ class ChargilyPayController extends Controller
                                     }
                                 }
                                 break;
+                            case 'new_supplier_subscription':
+                                // get order data
+                                $order = SupplierPlanOrder::where('supplier_id', $payment->payment_reference_id)->where('status', 'pending')->first();
+                                // update order status
+                                if ($order) {
+                                    $order->status = 'approved';
+                                    $order->payment_status = 'paid';
+                                    $order->update();
+                                }
+                                // update subscription status
+                                $subscription = \App\Models\Supplier\SupplierPlanSubscription::find($payment->payment_reference_id);
+                                if ($subscription) {
+                                    $subscription->plan_id = $order->plan_id;
+                                    $subscription->duration = $order->duration;
+                                    $subscription->price = $checkout->getAmount();
+                                    $subscription->discount = 0;
+                                    $subscription->payment_method = $checkout->getPaymentMethod();
+                                    $subscription->payment_status = $status;
+                                    $subscription->subscription_start_date = now();
+                                    $subscription->subscription_end_date = now()->addDays($order->duration);
+                                    $subscription->status = $status === 'paid' ? 'paid' : 'free';
+                                    $subscription->update();
+                                }
+                                break;
 
                             case 'supplier_subscription':
                                 // get order data
                                 $order = SupplierPlanOrder::where('supplier_id', $payment->payment_reference_id)->where('status', 'pending')->first();
+                                // update order status
+                                if ($order) {
+                                    $order->status = 'approved';
+                                    $order->payment_status = 'paid';
+                                    $order->update();
+                                }
                                 // update subscription status
                                 $subscription = \App\Models\Supplier\SupplierPlanSubscription::find($payment->payment_reference_id);
                                 if ($subscription) {
@@ -269,6 +351,11 @@ class ChargilyPayController extends Controller
                                 // update order status
                                 if ($order) {
                                     $order->payment_status = $status === 'paid' ? 'paid' : 'failed';
+                                    $order->payment_method = $checkout->getPaymentMethod();
+                                    $order->confirmation_status = $status === 'paid' ? 'confirmed' : 'pending';
+                                    $order->confirmed_by_user_id = $status === 'paid' ? get_user_data(get_supplier_data_from_id($order->supplier_id)->tenant_id)->id : null;
+                                    $order->confirmed_at = $status === 'paid' ? now() : null;
+                                    $order->status = $status === 'paid' ? 'processing' : 'pending';
                                     $order->update();
                                 }
 
@@ -335,10 +422,11 @@ class ChargilyPayController extends Controller
     {
         $user = get_user_data($tenant_id);
         $settings = $user->chargilySettings;
+        // dd($settings);
 
         return new \Chargily\ChargilyPay\ChargilyPay(new \Chargily\ChargilyPay\Auth\Credentials([
             'mode' => $settings->mode,
-            'public' => $settings->Public_key,
+            'public' => $settings->public_key,
             'secret' => $settings->secret_key,
         ]));
     }

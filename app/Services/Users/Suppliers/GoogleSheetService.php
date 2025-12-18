@@ -23,8 +23,9 @@ class GoogleSheetService
 
     public function addOrder(array $orderData)
     {
-        $user=get_user_data(tenant('id'));
-        dd($user);
+        //$user=get_user_data(tenant('id'));
+        $user=get_user_data(auth()->user()->tenant_id);
+        //dd($user);
         $sheet=\App\Models\UserApps::where('user_id',$user->id)->where('app_name','google_sheets')->first();
         // dd(json_decode($sheet->data)->sheet_id);
         $apiUrl=json_decode($sheet->data)->sheet_id;

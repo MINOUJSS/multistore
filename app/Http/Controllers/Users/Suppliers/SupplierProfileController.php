@@ -167,6 +167,23 @@ class SupplierProfileController extends Controller
         ->with('success', 'تم تحديث بيانات شارجيلي بنجاح');
     }
 
+    // delete chargily settings
+    public function delete_chargily_settings(Request $request)
+    {
+        $user = User::findOrfail(get_user_data(auth()->user()->tenant_id)->id);
+        $chargily_settings = $user->chargilySettings;
+        $chargily_settings->delete();
+        // make the supplier not approved
+        $supplier = Supplier::findOrfail(get_supplier_data(auth()->user()->tenant_id)->id);
+        $supplier->approval_status = 'pending';
+        $supplier->update();
+
+        // return back
+        return redirect()->back()
+        ->with('activate_chargily_tab', true) // Add this line
+        ->with('success', 'تم حذف بيانات شارجيلي بنجاح');
+    }
+
     public function create_or_update_bank_settings(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -198,6 +215,23 @@ class SupplierProfileController extends Controller
         return redirect()->back()
         ->with('activate_bank_tab', true) // Add this line
         ->with('success', 'تم تحديث بيانات البنك بنجاح');
+    }
+
+    // delete bank settings
+    public function delete_bank_settings(Request $request)
+    {
+        $user = User::findOrfail(get_user_data(auth()->user()->tenant_id)->id);
+        $bank_settings = $user->bank_settings;
+        $bank_settings->delete();
+        // make the supplier not approved
+        $supplier = Supplier::findOrfail(get_supplier_data(auth()->user()->tenant_id)->id);
+        $supplier->approval_status = 'pending';
+        $supplier->update();
+
+        // return back
+        return redirect()->back()
+        ->with('activate_bank_tab', true) // Add this line
+        ->with('success', 'تم حذف بيانات البنك بنجاح');
     }
 
     // update avatar

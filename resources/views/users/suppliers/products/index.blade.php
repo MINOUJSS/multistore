@@ -86,6 +86,7 @@
 @include('users.suppliers.components.content.products.js.edit-product-btn-action-js')
 @include('users.suppliers.components.content.products.js.add-product-variation-js')
 @include('users.suppliers.components.content.products.js.add-product-discount-js')
+@include('users.suppliers.components.content.products.js.add-product-video-js')
 @include('users.suppliers.components.content.products.js.validate-and-update-edite-product-modal-js')
 @include('users.suppliers.components.content.products.js.single-upload-image-js')
 @include('users.suppliers.components.content.products.js.show-product-attribute-js')

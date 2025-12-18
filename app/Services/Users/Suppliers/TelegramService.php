@@ -37,7 +37,7 @@ class TelegramService
         //setWebhook
     public function setWebhook()
     {
-        $url = 'https://018e-154-121-96-60.ngrok-free.app/test/api/webhook';
+        $url = 'https://a9f4e3a73f42.ngrok-free.app/test/api/webhook';
         //$response = Telegram::setWebhook(['url' => $url]);
         $response = Http::post("{$this->apiUrl}/setWebhook", [
             'url' => $url,

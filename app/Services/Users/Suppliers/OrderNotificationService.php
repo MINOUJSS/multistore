@@ -56,6 +56,9 @@ class OrderNotificationService
             $message .= "- {$item->product->name} (الكمية: {$item->quantity}, السعر: {$item->unit_price} دج)\n";
         }
 
+        // الشحن
+        $message .= "\n🚚 الشحن: <b>{$order->shipping_cost}</b>\n";
+        $message .= "\n💸 الخصم: <b>{$order->discount}</b>\n";
         $message .= "\n💰 المجموع: <b>{$order->total_price} دج</b>\n";
         $message .= "📍 العنوان: {$order->shipping_address}\n";
         $message .= "<a href='supplier.".request()->server('HTTP_HOST').'/supplier-panel/orders'."'>🔗 قائمة الطلبات</a>\n";

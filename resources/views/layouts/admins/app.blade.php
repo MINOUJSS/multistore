@@ -4,6 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    @yield('meta')
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" integrity="sha384-dpuaG1suU0eT09tx5plTaGMLBsfDLzUCCUXOY2j/LSvXYuG6Bqs43ALlhIqAJVRb" crossorigin="anonymous">
     <!-- styles  -->
@@ -13,9 +14,10 @@
      <!-- fonts  -->
       <link rel="stylesheet" href="{{asset('asset/v1/users/dashboard')}}/fonts/all.css">
       <link rel="stylesheet" href="{{asset('asset/v1/users/dashboard')}}/css/appfont.css">
-    <title>لوحة التحكم</title>
+    <title>@yield('title')</title>
   </head>
   <body>
+  @yield('style')
   @yield('sidebar')
      <!-- Start Main  -->
     <div class="app-wraper">
@@ -43,5 +45,6 @@
     <!--App js-->
     <script src="{{asset('asset/v1/users/dashboard')}}/js/jQuery-v3-7-1.js"></script>
     <script src="{{asset('asset/v1/users/dashboard')}}/js/app.js"></script>
+    @yield('footer_js')
   </body>
 </html>

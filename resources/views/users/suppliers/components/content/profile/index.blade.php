@@ -6,7 +6,7 @@
                 <div class="text-center">
                     <!-- صورة الملف مع تأثيرات -->
                     <div class="avatar-upload mb-3 position-relative mx-auto" style="width: 120px;">
-                        
+
                         <img id="avatarPreview"
                             src="{{ is_supplier_has_avatar($supplier->tenant_id) ? $supplier->avatar : asset('asset/v1/users/dashboard/img/avatars/man.png') }}"
                             class="rounded-circle border border-4 border-white shadow" alt="صورة الملف الشخصي"
@@ -237,7 +237,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i
                                                 class="fas fa-map-marked-alt"></i></span>
-                                                {{-- {{dd($supplier->dayra);}} --}}
+                                        {{-- {{dd($supplier->dayra);}} --}}
                                         <select id="inputDayra" name="dayra"
                                             class="form-select @error('dayra') is-invalid @enderror">
                                             <option value="null" selected>إختر البلدية...</option>
@@ -413,12 +413,20 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-primary px-4 py-2 fw-medium">
+                                    <button type="submit" class="btn btn-primary px-4 py-2 fw-medium w-100">
                                         <i class="fas fa-save me-2"></i> حفظ
                                     </button>
                                 </div>
                             </form>
-
+                            @if ($chargily_settings != null)
+                                <form action="{{ route('supplier.profile.chargily-settings.delete') }}"
+                                    method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger px-4 py-2 fw-medium w-100 mt-3"><i
+                                            class="fas fa-trash me-2"></i> حذف حساب Chargily</button>
+                                </form>
+                            @endif
                         </div>
 
                         <!-- bank Tab -->
@@ -462,11 +470,21 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-primary px-4 py-2 fw-medium">
+                                    <button type="submit" class="btn btn-primary px-4 py-2 fw-medium w-100">
                                         <i class="fas fa-save me-2"></i> حفظ
                                     </button>
                                 </div>
                             </form>
+
+                            @if ($bank_settings != null)
+                                <form action="{{ route('supplier.profile.bank-settings.delete') }}"
+                                method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger px-4 py-2 fw-medium w-100 mt-3"><i
+                                            class="fas fa-trash me-2"></i> حذف حساب البنك</button>
+                                </form>
+                            @endif
 
                         </div>
                     </div>

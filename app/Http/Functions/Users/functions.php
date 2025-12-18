@@ -234,7 +234,7 @@ function getRealIpAddress()
     return $request->getClientIp() ?? $request->server('REMOTE_ADDR') ?? 'unknown';
 }
 
-function is_valid_coupon_for_orders(App\Models\userCoupons $coupon, $cart_amount, $user_type)
+function is_valid_coupon_for_orders(App\Models\userCoupons $coupon = null, $cart_amount, $user_type)
 {
     // // search supplier products and categories
     // if ($user_type == 'supplier') {
@@ -267,7 +267,7 @@ function is_valid_coupon_for_orders(App\Models\userCoupons $coupon, $cart_amount
 
     // return false;
     // $coupon = \App\Models\userCoupons::find($coupon_id);
-        if ($coupon && $coupon->is_active == 1 && $coupon->start_date <= now() && $coupon->end_date >= now() && $coupon->min_order_amount <= $cart_amount && $coupon->usage_per_user <= $coupon->usage_limit) {
+        if ($coupon != null && $coupon->is_active == 1 && $coupon->start_date <= now() && $coupon->end_date >= now() && $coupon->min_order_amount <= $cart_amount && $coupon->usage_per_user <= $coupon->usage_limit) {
             return true;
         }else
         {
@@ -299,6 +299,17 @@ function is_blocked_customer($user_id, $order_id)
     $device_fingerprint = $order->device_fingerprint;
     $is_blocked = App\Models\UserBlockedCustomers::where('user_id', $user_id)->where('ip_address', $ip_address)->where('device_fingerprint', $device_fingerprint)->exists();
     if ($is_blocked) {
+        return true;
+    } else {
+        return false;
+    }
+}
+//
+function is_verment_settings_exists($tenant_id)
+{
+    $user = App\Models\User::where('tenant_id', $tenant_id)->first();
+    $verment_settings = $user->bank_settings()->exists();
+    if ($verment_settings) {
         return true;
     } else {
         return false;
