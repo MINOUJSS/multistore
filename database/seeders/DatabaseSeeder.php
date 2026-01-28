@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             Supplier_Plan_Features_Table_Seeder::class,
             Seller_Plan_Features_Table_Seeder::class,
             Supplier_Plan_Authorization_Table_Seeder::class,
-            Seller_Plan_Authorization_Table_Seeder::class,
+            Seller_plan_Authorization_Table_Seeder::class,
         ]);
     }
 }
