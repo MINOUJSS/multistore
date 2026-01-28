@@ -31,7 +31,6 @@ class TenancyServiceProvider extends ServiceProvider
 
                     // Your own jobs to prepare the tenant.
                     // Provision API keys, create S3 buckets, anything you want!
-
                 ])->send(function (Events\TenantCreated $event) {
                     return $event->tenant;
                 })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
@@ -94,16 +93,15 @@ class TenancyServiceProvider extends ServiceProvider
 
     public function register()
     {
-        //
     }
 
     public function boot()
     {
-        //
-        \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::$onFail = function () {
-            return redirect(request()->host());
+        Middleware\InitializeTenancyByDomain::$onFail = function () {
+            // return redirect(request()->host());
+            return redirect('/');
         };
-        //
+
         $this->bootEvents();
         $this->mapRoutes();
 
@@ -129,7 +127,7 @@ class TenancyServiceProvider extends ServiceProvider
             if (file_exists(base_path('routes/tenant.php'))) {
                 Route::namespace(static::$controllerNamespace)
                     ->group(base_path('routes/tenant.php'));
-            }        
+            }
         });
     }
 
