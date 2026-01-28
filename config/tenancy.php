@@ -20,7 +20,7 @@ return [
         '127.0.0.1',
         'localhost',
         'multistore.test',
-        'dzora.local',
+        'dzora.net',
     ],
 
     /*
