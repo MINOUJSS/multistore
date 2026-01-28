@@ -1,18 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admins\Admin\AdminController;
-use App\Http\Controllers\Admins\Admin\SettingController;
-use App\Http\Controllers\Admins\Admin\PaymentsController;
-use App\Http\Controllers\Admins\Admin\SupplierController;
 use App\Http\Controllers\Admins\Admin\AdminDisputeController;
-use App\Http\Controllers\Admins\Admin\NotificationController;
 use App\Http\Controllers\Admins\Admin\AdminEmployeeController;
 use App\Http\Controllers\Admins\admin\ArchivesDisputesController;
-use App\Http\Controllers\Admins\admin\ProofsRefusedChatController;
-use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedController;
 use App\Http\Controllers\Admins\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admins\Admin\NotificationController;
+use App\Http\Controllers\Admins\Admin\PaymentsController;
+use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedController;
 use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedsArchivesController;
+use App\Http\Controllers\Admins\admin\ProofsRefusedChatController;
+use App\Http\Controllers\Admins\Admin\SellerController;
+use App\Http\Controllers\Admins\Admin\SettingController;
+use App\Http\Controllers\Admins\Admin\SupplierController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,9 @@ foreach (config('tenancy.central_domains') as $domain) {
                 // suppliers actions
                 Route::get('/ah-admin/suppliers', [SupplierController::class, 'index'])->name('suppliers');
                 Route::delete('/ah-admin/supplier/destroy/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
+                // sellers actions
+                Route::get('/ah-admin/sellers', [SellerController::class, 'index'])->name('sellers');
+                Route::delete('/ah-admin/seller/destroy/{id}', [SellerController::class, 'destroy'])->name('seller.destroy');
                 // payments Routes
                 Route::get('/ah-admin/payments/rechage-requests', [PaymentsController::class, 'recharge_requests'])->name('payments.recharge_requests');
                 Route::patch('/admin/payments/recharge-request/approve/{id}', [PaymentsController::class, 'approve_recharge'])->name('payments.recharge.approve');
@@ -50,6 +54,8 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::get('/ah-admin/payments/subscribes-payments', [PaymentsController::class, 'subscribes_payments'])->name('payments.subscribes_payments');
                 Route::get('/ah-admin/payments/suppliers/subscribes-payments', [PaymentsController::class, 'suppliers_subscribes_payments'])->name('payments.suppliers.subscribes_payments');
                 Route::patch('/admin/payments/suppliers/subscribe/approve/{id}', [PaymentsController::class, 'approve_suppliers_subscribe_payment'])->name('payments.suppliers.subscribe.approve');
+                Route::get('/ah-admin/payments/sellers/subscribes-payments', [PaymentsController::class, 'sellers_subscribes_payments'])->name('payments.sellers.subscribes_payments');
+                Route::patch('/admin/payments/sellers/subscribe/approve/{id}', [PaymentsController::class, 'approve_sellers_subscribe_payment'])->name('payments.sellers.subscribe.approve');
                 // disputes routes
                 Route::get('/ah-admin/payment-proof/disputes', [AdminDisputeController::class, 'index'])->name('payment_proof.disputes');
                 Route::get('/ah-admin/payment-proof/dispute/{id}/show', [AdminDisputeController::class, 'show'])->name('payment_proof.dispute.show');
@@ -66,7 +72,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::get('/ah-admin/payment-proof/dispute/{id}/refused/show', [PaymentsProofsRefusedController::class, 'show'])->name('payment_proof.dispute.refused.show');
                 Route::put('/ah-admin/payment-proof/refused/{id}/update', [PaymentsProofsRefusedController::class, 'update'])->name('payment_proof.refused.update');
                 Route::delete('/ah-admin/payment-proof/dispute/refused/{id}/destroy', [PaymentsProofsRefusedController::class, 'destroy'])->name('payment_proof.refused.destroy');
-                //payments proofs refused archives route 
+                // payments proofs refused archives route
                 Route::get('/ah-admin/payment-proof/disputes/refused/archives', [PaymentsProofsRefusedsArchivesController::class, 'index'])->name('payment_proof.disputes.refused.archive');
                 Route::get('/ah-admin/payment-proof/dispute/{id}/refused/download', [PaymentsProofsRefusedsArchivesController::class, 'download'])->name('payment_proof.dispute.refused.download');
                 Route::delete('/ah-admin/payment-proof/dispute/{id}/refused/destroy', [PaymentsProofsRefusedsArchivesController::class, 'destroy'])->name('payment_proof.dispute.refused.destroy');

@@ -2,56 +2,57 @@
 
 namespace App\Http\Controllers\Admins\Admin;
 
-use App\Models\User;
-use App\Models\Tenant;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Supplier\Supplier;
+use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 class SupplierController extends Controller
 {
-    //index
+    // index
     public function index()
     {
-        $suppliers=User::where('type', 'supplier')->orderBy('id', 'desc')->get();
-        return view('admins.admin.supplier.index',compact('suppliers'));
+        // $suppliers = User::where('type', 'supplier')->orderBy('id', 'desc')->paginate(10);
+        $suppliers = Supplier::orderBy('id', 'desc')->paginate(10);
+
+        return view('admins.admin.supplier.index', compact('suppliers'));
     }
-    //destroy
+
+    // destroy
     public function destroy($id)
     {
         try {
             // Start a transaction for atomicity
             \DB::beginTransaction();
-            //select user
-        $user=User::find($id);
-        // Define the folder path
-        // $folderPath = get_supplier_store_name('supplier/'.$user->tenant_id);
-        $folderPath = get_supplier_store_name($user->tenant_id);
-        // Delete the folder from storage
-        if (Storage::disk('supplier')->exists($folderPath)) {
-            Storage::disk('supplier')->deleteDirectory($folderPath);
-        }
-        //get supplier
-        $supplier=Tenant::find($user->tenant_id);
-        //delete supplier categories
-        foreach(get_supplier_categories($user->tenant_id) as $category)
-        {
-            $category->delete();
-        };
-        //delete supplier
-        $supplier->delete();
-             // Commit the transaction
-             \DB::commit();
-            
+            // select user
+            $user = User::find($id);
+            // Define the folder path
+            // $folderPath = get_supplier_store_name('supplier/'.$user->tenant_id);
+            $folderPath = get_supplier_store_name($user->tenant_id);
+            // Delete the folder from storage
+            if (Storage::disk('supplier')->exists($folderPath)) {
+                Storage::disk('supplier')->deleteDirectory($folderPath);
+            }
+            // get supplier
+            $supplier = Tenant::find($user->tenant_id);
+            // delete supplier categories
+            foreach (get_supplier_categories($user->tenant_id) as $category) {
+                $category->delete();
+            }
+            // delete supplier
+            $supplier->delete();
+            // Commit the transaction
+            \DB::commit();
         } catch (\Exception $e) {
             // Rollback the transaction
             \DB::rollBack();
+
             // if(!Storage::disk('public')->exists($folderPath))
             //     {
             //         Storage::disk('public')->makeDirectory($folderPath);
             //     }
-            return redirect()->back()->with('success','تم حذف المورد بنجاح');
+            return redirect()->back()->with('success', 'تم حذف المورد بنجاح');
         }
-        
     }
 }

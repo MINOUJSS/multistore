@@ -34,9 +34,16 @@
                             <td>{{ $request->description ?? '—' }}</td>
                             <td>
                                 @if($request->payment_proof)
-                                    <a href="{{ asset('storage/tenantsupplier/app/public/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    @if(get_user_data_from_user_id($request->user_id)->type==='supplier')
+                                                                    <a href="{{ asset('storage/tenantsupplier/app/public/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         عرض الإثبات
                                     </a>
+                                    @elseif(get_user_data_from_user_id($request->user_id)->type==='seller')
+                                                                    <a href="{{ asset('storage/app/public/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        عرض الإثبات
+                                    </a>
+                                    @endif
+
                                 @else
                                     —
                                 @endif

@@ -52,7 +52,7 @@
               <li class="na"><i class="bx bx-x"></i> <span> دومين خاص</span></li>
               <li class="na"><i class="bx bx-x"></i> <span>حقوق النشر</span></li>
             </ul>
-            <a href="#" class="buy-btn">إبدأ الآن</a>
+            <a href="{{route('seller.register')}}" class="buy-btn">إبدأ الآن</a>
           </div>
         </div>
 

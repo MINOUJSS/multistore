@@ -17,6 +17,7 @@ class PasswordResetLinkController extends Controller
     {
         return view('users.suppliers.auth.forgot-password');
     }
+
     /**
      * Handle an incoming password reset link request.
      *
@@ -31,13 +32,25 @@ class PasswordResetLinkController extends Controller
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
-        $status = Password::sendResetLink(
+
+        $status = Password::broker('suppliers')->sendResetLink(
             $request->only('email')
         );
 
-        return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                            ->withErrors(['email' => __($status)]);
+        return $status === Password::RESET_LINK_SENT
+            ? back()->with('status', __('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.'))
+            : back()->withInput($request->only('email'))
+                ->withErrors([
+                    'email' => __('تعذر العثور على مورد بهذا البريد الإلكتروني.'),
+                ]);
+
+        // $status = Password::sendResetLink(
+        //     $request->only('email')
+        // );
+
+        // return $status == Password::RESET_LINK_SENT
+        //             ? back()->with('status', __($status))
+        //             : back()->withInput($request->only('email'))
+        //                     ->withErrors(['email' => __($status)]);
     }
 }

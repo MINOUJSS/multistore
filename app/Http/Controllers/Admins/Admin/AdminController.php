@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Admins\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\User;
 
 class AdminController extends Controller
 {
-    //index
+    // index
     public function index()
     {
-        return view('admins.admin.index');
+        $users = User::all();
+        $suppliers = User::where('type', 'supplier')->get();
+        $sellers = User::where('type', 'seller')->get();
+        $marketers = User::where('type', 'marketer')->get();
+
+        return view('admins.admin.index', compact('users', 'suppliers', 'sellers', 'marketers'));
     }
 }

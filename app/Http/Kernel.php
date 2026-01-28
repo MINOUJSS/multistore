@@ -66,11 +66,12 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin' => Middleware\AdminMiddleware::class,
         'verifysupplierpaiment' => Middleware\VerifySupplierPaiment::class,
+        'verifysellerpaiment' => Middleware\VerifySellerPaiment::class,
         'StoreVisibility' => Middleware\StoreVisibility::class,
         'VermentPayOk' => Middleware\VermentPayOk::class,
         'ChargilyPayOk' => Middleware\ChargilyPayOk::class,
         'BlockFakeOrder' => Middleware\BlockFakeOrder::class,
         'SuppliersRedirectSubscriber' => Middleware\SuppliersRedirectSubscriber::class,
-        'ForBossOnly' => Middleware\ForBossOnly::class
+        'ForBossOnly' => Middleware\ForBossOnly::class,
     ];
 }

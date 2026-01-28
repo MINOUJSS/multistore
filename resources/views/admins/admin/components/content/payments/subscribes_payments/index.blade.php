@@ -15,7 +15,7 @@
                 <div class="card-body">
                     <h5 class="card-title">البائعين</h5>
                     <p class="card-text">عرض طلبات اشتراك البائعين</p>
-                    <a href="{{-- route('admin.subscribes.sellers.index') --}}" class="btn btn-primary">عرض</a>
+                    <a href="{{ route('admin.payments.sellers.subscribes_payments') }}" class="btn btn-primary">عرض</a>
                 </div>
             </div>
         </div>

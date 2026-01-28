@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -72,6 +71,14 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
         ],
+        'sellers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Seller\Seller::class,
+        ],
+        'suppliers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Supplier\Supplier::class,
+        ],
 
         // 'users' => [
         //     'driver' => 'database',
@@ -111,6 +118,18 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'sellers' => [
+            'provider' => 'sellers',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'suppliers' => [
+            'provider' => 'suppliers',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
     ],
 
     /*
@@ -125,5 +144,4 @@ return [
     */
 
     'password_timeout' => 10800,
-
 ];

@@ -14,7 +14,7 @@ function get_tenant_data_by_type($tenant_id)
     if ($user->type == 'supplier') {
         $result = App\Models\Supplier\Supplier::where('tenant_id', $tenant_id)->first();
     } elseif ($user->type == 'seller') {
-        $result = App\Models\Seller::where('tenant_id', $tenant_id)->first();
+        $result = App\Models\Seller\Seller::where('tenant_id', $tenant_id)->first();
     }
 
     return $result;
@@ -234,46 +234,43 @@ function getRealIpAddress()
     return $request->getClientIp() ?? $request->server('REMOTE_ADDR') ?? 'unknown';
 }
 
-function is_valid_coupon_for_orders(App\Models\userCoupons $coupon = null, $cart_amount, $user_type)
-{
-    // // search supplier products and categories
-    // if ($user_type == 'supplier') {
-    //     $coupons_products = App\Models\Supplier\SupplierProductsCoupons::all();
-    //     if ($coupons_products->count() !== 0) {
-    //         foreach ($coupons_products as $item) {
-    //             if ($item->coupon_id == $coupon->id) {
-    //                 return false;
-    //             }
-    //         }
-    //     }
-    //     $coupons_categories = App\Models\UserCategoriesCoupons::all();
-    //     if ($coupons_categories->count() !== 0) {
-    //         foreach ($coupons_categories as $item) {
-    //             if ($item->coupon_id == $coupon->id) {
-    //                 return false;
-    //             }
-    //         }
-    //     }
+// function is_valid_coupon_for_orders(?App\Models\userCoupons $coupon = null, $cart_amount, $user_type)
+// {
+//     // // search supplier products and categories
+//     // if ($user_type == 'supplier') {
+//     //     $coupons_products = App\Models\Supplier\SupplierProductsCoupons::all();
+//     //     if ($coupons_products->count() !== 0) {
+//     //         foreach ($coupons_products as $item) {
+//     //             if ($item->coupon_id == $coupon->id) {
+//     //                 return false;
+//     //             }
+//     //         }
+//     //     }
+//     //     $coupons_categories = App\Models\UserCategoriesCoupons::all();
+//     //     if ($coupons_categories->count() !== 0) {
+//     //         foreach ($coupons_categories as $item) {
+//     //             if ($item->coupon_id == $coupon->id) {
+//     //                 return false;
+//     //             }
+//     //         }
+//     //     }
 
-        
+//     //     //return true;
+//     // } else {
+//     //     $coupon = \App\Models\userCoupons::find($coupon_id);
+//     //     if ($coupon && $coupon->is_active == 1 && $coupon->start_date <= now() && $coupon->end_date >= now() && $coupon->min_order_amount <= $cart_amount && $coupon->usage_per_user <= $coupon->usage_limit) {
+//     //         return true;
+//     //     }
+//     // }
 
-    //     //return true;
-    // } else {
-    //     $coupon = \App\Models\userCoupons::find($coupon_id);
-    //     if ($coupon && $coupon->is_active == 1 && $coupon->start_date <= now() && $coupon->end_date >= now() && $coupon->min_order_amount <= $cart_amount && $coupon->usage_per_user <= $coupon->usage_limit) {
-    //         return true;
-    //     }
-    // }
-
-    // return false;
-    // $coupon = \App\Models\userCoupons::find($coupon_id);
-        if ($coupon != null && $coupon->is_active == 1 && $coupon->start_date <= now() && $coupon->end_date >= now() && $coupon->min_order_amount <= $cart_amount && $coupon->usage_per_user <= $coupon->usage_limit) {
-            return true;
-        }else
-        {
-            return false;
-        }
-}
+//     // return false;
+//     // $coupon = \App\Models\userCoupons::find($coupon_id);
+//     if ($coupon != null && $coupon->is_active == 1 && $coupon->start_date <= now() && $coupon->end_date >= now() && $coupon->min_order_amount <= $cart_amount && $coupon->usage_per_user <= $coupon->usage_limit) {
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }
 
 function is_valid_coupon_for_product(App\Models\userCoupons $coupon, $cart_amount, $user_type, $product_id)
 {
@@ -304,7 +301,7 @@ function is_blocked_customer($user_id, $order_id)
         return false;
     }
 }
-//
+
 function is_verment_settings_exists($tenant_id)
 {
     $user = App\Models\User::where('tenant_id', $tenant_id)->first();
@@ -314,4 +311,11 @@ function is_verment_settings_exists($tenant_id)
     } else {
         return false;
     }
+}
+// get user type for user id
+function get_user_data_from_user_id($user_id)
+{
+    $user = App\Models\User::find($user_id);
+
+    return $user;
 }

@@ -185,7 +185,7 @@ function create_supplier_store_settings($user, $request)
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_facebook',
-        'value' => 'facebook.com',
+        'value' => 'https://www.facebook.com',
         'type' => 'string',
         'description' => 'صفحة فيسبوك المتجر',
         'status' => 'active',
@@ -194,7 +194,7 @@ function create_supplier_store_settings($user, $request)
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_telegram',
-        'value' => 'telegram.com',
+        'value' => 'https://www.telegram.com',
         'type' => 'string',
         'description' => 'صفحة تيليجرام المتجر',
         'status' => 'active',
@@ -203,7 +203,7 @@ function create_supplier_store_settings($user, $request)
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_tiktok',
-        'value' => 'tiktok.com',
+        'value' => 'https://www.tiktok.com',
         'type' => 'string',
         'description' => 'صفحة تيك توك المتجر',
         'status' => 'active',
@@ -212,7 +212,7 @@ function create_supplier_store_settings($user, $request)
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_twitter',
-        'value' => 'twitter.com',
+        'value' => 'https://www.twitter.com',
         'type' => 'string',
         'description' => 'صفحة تويتر المتجر',
         'status' => 'active',
@@ -221,7 +221,7 @@ function create_supplier_store_settings($user, $request)
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_instagram',
-        'value' => 'instagram.com',
+        'value' => 'https://www.instagram.com',
         'type' => 'string',
         'description' => 'صفحة انستقرام المتجر',
         'status' => 'active',
@@ -230,7 +230,7 @@ function create_supplier_store_settings($user, $request)
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_youtube',
-        'value' => 'youtube.com',
+        'value' => 'https://www.youtube.com',
         'type' => 'string',
         'description' => 'صفحة يوتيوب المتجر',
         'status' => 'active',
@@ -253,7 +253,7 @@ function create_supplier_store_settings($user, $request)
         'description' => 'طرق الدفع المتاحة للمتجر',
         'status' => 'active',
     ]);
-    //add store welcome message
+    // add store welcome message
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_welcome_message',
@@ -262,7 +262,7 @@ function create_supplier_store_settings($user, $request)
         'description' => 'رسالة الترحيب للمتجر',
         'status' => 'active',
     ]);
-    //add store section welcome visibility
+    // add store section welcome visibility
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_section_welcome_visibility',
@@ -271,7 +271,7 @@ function create_supplier_store_settings($user, $request)
         'description' => 'اظهار رسالة الترحيب للمتجر',
         'status' => 'active',
     ]);
-    //add store section silder visibility
+    // add store section silder visibility
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_section_slider_visibility',
@@ -280,7 +280,7 @@ function create_supplier_store_settings($user, $request)
         'description' => 'اظهار السلايدر للمتجر',
         'status' => 'active',
     ]);
-    //add store section categories visibility
+    // add store section categories visibility
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_section_categories_visibility',
@@ -289,7 +289,7 @@ function create_supplier_store_settings($user, $request)
         'description' => 'اظهار الفئات للمتجر',
         'status' => 'active',
     ]);
-    //add store section faqs visibility
+    // add store section faqs visibility
     $setting->create([
         'user_id' => $user->id,
         'key' => 'store_section_faqs_visibility',
@@ -432,6 +432,7 @@ function get_supplier_product_price($product_id)
     $product = App\Models\Supplier\SupplierProducts::findOrFail($product_id);
     if ($product->activeDiscount) {
         $price = $product->activeDiscount->discount_amount;
+
         return $price;
     } else {
         return $product->price;
@@ -475,8 +476,8 @@ function supplier_product_has_discount($id)
 function supplier_product_has_variations($id)
 {
     $product = App\Models\Supplier\SupplierProducts::findOrFail($id);
-    $vartiations = App\Models\Supplier\SupplierProductVariations::where('product_id', $product->id)->get();
-    if (count($vartiations)>0) {
+    $vartiations = SupplierProductVariations::where('product_id', $product->id)->get();
+    if (count($vartiations) > 0) {
         return true;
     } else {
         return false;
@@ -485,7 +486,7 @@ function supplier_product_has_variations($id)
 // get supplier product variations data
 function get_supplier_product_variation_data($id)
 {
-    $variation = App\Models\Supplier\SupplierProductVariations::findOrFail($id);
+    $variation = SupplierProductVariations::findOrFail($id);
 
     return $variation;
 }
@@ -501,7 +502,7 @@ function supplier_product_has_attributes($id)
 {
     $product = App\Models\Supplier\SupplierProducts::findOrFail($id);
     $attributes = App\Models\Supplier\SupplierProductAttributes::where('product_id', $product->id)->get();
-    if (count($attributes)>0) {
+    if (count($attributes) > 0) {
         return true;
     } else {
         return false;
@@ -705,100 +706,95 @@ function is_supplier($tenant_id)
     }
 }
 
-   // function is_supplier_aproved
-    function is_supplier_aproved($tenant_id)
-    {
-        $supplier = App\Models\Supplier\Supplier::where('tenant_id', $tenant_id)->first();
-        if ($supplier->approval_status == 'approved') {
-            return true;
-        } else {
-            return false;
+// function is_supplier_aproved
+function is_supplier_aproved($tenant_id)
+{
+    $supplier = App\Models\Supplier\Supplier::where('tenant_id', $tenant_id)->first();
+    if ($supplier->approval_status == 'approved') {
+        return true;
+    } else {
+        return false;
+    }
+}
+// function is_chargily_settings_exists
+function is_chargily_settings_exists($tenant_id)
+{
+    $user = App\Models\User::where('tenant_id', $tenant_id)->first();
+    $chagily_settings = $user->chargilySettings;
+    if ($chagily_settings) {
+        return true;
+    } else {
+        return false;
+    }
+}
+// function is_supplier_bank_account_exists
+function is_supplier_bank_account_exists($tenant_id)
+{
+    $user = App\Models\User::where('tenant_id', $tenant_id)->first();
+    $bank_account = $user->bank_settings;
+    if ($bank_account) {
+        return true;
+    } else {
+        return false;
+    }
+}
+// is supplier has avatar
+function is_supplier_has_avatar($tenant_id)
+{
+    $supplier = App\Models\Supplier\Supplier::where('tenant_id', $tenant_id)->first();
+    if ($supplier->avatar) {
+        return true;
+    } else {
+        return false;
+    }
+}
+// get supplier avatar
+function get_supplier_avatar($tenant_id)
+{
+    $supplier = App\Models\Supplier\Supplier::where('tenant_id', $tenant_id)->first();
+
+    return $supplier->avatar;
+}
+
+function is_product_has_coupon($product_id)
+{
+    $coupons_products = App\Models\Supplier\SupplierProductsCoupons::where('product_id', $product_id)->get();
+    if ($coupons_products->count() !== 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function get_coupon_discount($product_id, $coupon_code, $user_type)
+{
+    // get user type
+    $coupon_discount = 0;
+    if (is_product_has_coupon($product_id)) {
+        if ($user_type == 'supplier') {
+            $product = App\Models\Supplier\SupplierProducts::findOrfail($product_id);
+        } elseif ($user_type == 'seller') {
+            $product = App\Models\SellerProducts::findOrfail($product_id);
         }
-    }
-    // function is_chargily_settings_exists
-    function is_chargily_settings_exists($tenant_id)
-    {
-        $user = App\Models\User::where('tenant_id', $tenant_id)->first();
-        $chagily_settings = $user->chargilySettings;
-        if ($chagily_settings) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    //function is_supplier_bank_account_exists
-    function is_supplier_bank_account_exists($tenant_id)
-    {
-        $user = App\Models\User::where('tenant_id', $tenant_id)->first();
-        $bank_account = $user->bank_settings;
-        if ($bank_account) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    //is supplier has avatar
-    function is_supplier_has_avatar($tenant_id)
-    {
-        $supplier = App\Models\Supplier\Supplier::where('tenant_id', $tenant_id)->first();
-        if ($supplier->avatar) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    //get supplier avatar
-    function get_supplier_avatar($tenant_id)
-    {
-        $supplier = App\Models\Supplier\Supplier::where('tenant_id', $tenant_id)->first();
-        return $supplier->avatar;
-    }
-    //
-    function is_product_has_coupon($product_id)
-    {
-        $coupons_products = App\Models\Supplier\SupplierProductsCoupons::where('product_id', $product_id)->get();
-        if ($coupons_products->count() !== 0) {
-            return true;
-        } else {
-            return false;
+
+        $coupon = App\Models\userCoupons::where('code', $coupon_code)->where('is_active', 1)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->first();
+        if ($coupon && $coupon->is_active == 1 && $coupon->start_date <= now() && $coupon->end_date >= now() && $coupon->usage_per_user <= $coupon->usage_limit) {
+            if ($coupon->type == 'percent') {
+                $coupon_discount = ($product->price * $coupon->value) / 100;
+            } else {
+                $coupon_discount = $coupon->value;
+            }
+
+            return $coupon_discount;
         }
     }
 
-    //
-    function get_coupon_discount($product_id,$coupon_code,$user_type)
-    {
-        //get user type
-        $coupon_discount=0;
-        if(is_product_has_coupon($product_id))
-        {
-            if($user_type=='supplier')
-            {
-              $product=\App\Models\Supplier\SupplierProducts::findOrfail($product_id);  
-            }
-            elseif($user_type=='seller')
-            {
-              $product=\App\Models\SellerProducts::findOrfail($product_id);
-            }
-        
-         $coupon=\App\Models\userCoupons::where('code', $coupon_code)->where('is_active', 1)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->first(); 
-         if($coupon && $coupon->is_active==1 && $coupon->start_date<=now() && $coupon->end_date>=now() && $coupon->usage_per_user <= $coupon->usage_limit)
-         {
-            if($coupon->type=='percent')
-            {
-                $coupon_discount=($product->price*$coupon->value)/100;
-            }
-            else
-            {
-                $coupon_discount=$coupon->value;
-            }
-            return $coupon_discount;        
-         }      
-        }
-        return $coupon_discount;
-    }
-    //
-    function supplier_product_min_qty($product_id)
-    {
-        $product=\App\Models\Supplier\SupplierProducts::findOrfail($product_id);
-        return $product->minimum_order_qty ?? 1;
-    }
+    return $coupon_discount;
+}
+
+function supplier_product_min_qty($product_id)
+{
+    $product = App\Models\Supplier\SupplierProducts::findOrfail($product_id);
+
+    return $product->minimum_order_qty ?? 1;
+}

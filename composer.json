@@ -42,6 +42,8 @@
         },
         "files":[
             "app/Http/Functions/Supplier/functions.php",
+            "app/Http/Functions/Seller/functions.php",
+            "app/Http/Functions/Affiliate/functions.php",
             "app/Http/Functions/Users/functions.php",
             "app/Http/Functions/Platform/functions.php",
             "app/Http/Functions/Admin/functions.php"

@@ -2,97 +2,151 @@
 
 namespace App\Http\Controllers\Admins\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Models\BalanceTransaction;
+use App\Models\Seller\SellerPlanOrder;
+use App\Models\Seller\SellerPlanSubscription;
+use App\Models\Supplier\SupplierPlanOrder;
+use App\Models\Supplier\SupplierPlanSubscription;
 use App\Models\UserBalance;
 use App\Models\UserInvoice;
-use Illuminate\Http\Request;
-use App\Models\Supplier\SupplierPlanOrder;
-use App\Models\BalanceTransaction;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\Supplier\SupplierPlanSubscription;
 
 class PaymentsController extends Controller
 {
-    //
     public function recharge_requests()
     {
         $requests = BalanceTransaction::with('user')
                     ->whereIn('payment_method', ['baridimob', 'ccp'])
-                    ->where('status','pending')
+                    ->where('status', 'pending')
                     ->orderByDesc('created_at')
                     ->get();
-        return view('admins.admin.payments.recharge_requests.index',compact('requests'));
+
+        return view('admins.admin.payments.recharge_requests.index', compact('requests'));
     }
-    //
+
     public function invoices_payments()
     {
         $invoices = UserInvoice::with('user')
         ->whereIn('payment_method', ['baridi-mob', 'ccp'])
-        ->where('status','under_review')
+        ->where('status', 'under_review')
         ->orderByDesc('created_at')
         ->get();
-        return view('admins.admin.payments.invoices_payments.index',compact('invoices'));  
+
+        return view('admins.admin.payments.invoices_payments.index', compact('invoices'));
     }
-     //
-     public function subscribes_payments()
-     {
-         return view('admins.admin.payments.subscribes_payments.index');  
-     }
-     //
-     public function suppliers_subscribes_payments()
-     {
-         $subscriptionRequests = SupplierPlanOrder::orderByDesc('created_at')
-         ->where('status','pending')
-         ->get();
-         return view('admins.admin.payments.subscribes_payments.suppliers.index',compact('subscriptionRequests'));  
-     }
-     //
-     public function approve_suppliers_subscribe_payment($id)
-     {
-         try {
-             DB::beginTransaction();
-     
-             // الموافقة على الطلب
-             $request = SupplierPlanOrder::findOrFail($id);
-             $request->status = 'approved';
-             $request->payment_status = 'paid';
-             $request->save();
-     
-             // ترقية أو إنشاء اشتراك المورد
-             $supplier_subscription = SupplierPlanSubscription::firstOrNew([
-                 'supplier_id' => $request->supplier_id
-             ]);
 
-             // تفعيل الاشتراك
-             $supplier_subscription->supplier_id = $request->supplier_id;
+    public function subscribes_payments()
+    {
+        return view('admins.admin.payments.subscribes_payments.index');
+    }
 
-             $supplier_subscription->plan_id = $request->plan_id;
-             $supplier_subscription->duration = $request->duration;
-             $supplier_subscription->price = $request->price;
-             $supplier_subscription->discount = $request->discount;
-             $supplier_subscription->payment_method = $request->payment_method;
-             $supplier_subscription->payment_status = 'paid';
-             $supplier_subscription->subscription_start_date = now();
-             $supplier_subscription->subscription_end_date = now()->addDays($request->duration);
-             $supplier_subscription->status = 'paid';
-             $supplier_subscription->change_subscription = true;
-             $supplier_subscription->save();
+    public function suppliers_subscribes_payments()
+    {
+        $subscriptionRequests = SupplierPlanOrder::orderByDesc('created_at')
+        ->where('status', 'pending')
+        ->get();
 
-             //حساب قيمة الاشتراك بعد خصم باقي الإشتراك القديم و شحن الباقي في المحفظة
+        return view('admins.admin.payments.subscribes_payments.suppliers.index', compact('subscriptionRequests'));
+    }
 
-     
-             DB::commit(); // تأكيد كل العمليات
-     
-             return back()->with('success', 'تمت الموافقة على الطلب وتم تفعيل الاشتراك.');
-     
-         } catch (\Exception $e) {
-             DB::rollBack(); // التراجع عن جميع العمليات
-     
-             // يُفضل تسجيل الخطأ في سجل الأخطاء أو إرسال إشعار للإدارة
-             return back()->with('error', 'حدث خطأ أثناء معالجة الطلب: ' . $e->getMessage());
-         }
-     }
-    //
+    public function sellers_subscribes_payments()
+    {
+        $subscriptionRequests = SellerPlanOrder::orderByDesc('created_at')
+        ->where('status', 'pending')
+        ->get();
+
+        return view('admins.admin.payments.subscribes_payments.sellers.index', compact('subscriptionRequests'));
+    }
+
+    public function approve_suppliers_subscribe_payment($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            // الموافقة على الطلب
+            $request = SupplierPlanOrder::findOrFail($id);
+            $request->status = 'approved';
+            $request->payment_status = 'paid';
+            $request->save();
+
+            // ترقية أو إنشاء اشتراك المورد
+            $supplier_subscription = SupplierPlanSubscription::firstOrNew([
+                'supplier_id' => $request->supplier_id,
+            ]);
+
+            // تفعيل الاشتراك
+            $supplier_subscription->supplier_id = $request->supplier_id;
+
+            $supplier_subscription->plan_id = $request->plan_id;
+            $supplier_subscription->duration = $request->duration;
+            $supplier_subscription->price = $request->price;
+            $supplier_subscription->discount = $request->discount;
+            $supplier_subscription->payment_method = $request->payment_method;
+            $supplier_subscription->payment_status = 'paid';
+            $supplier_subscription->subscription_start_date = now();
+            $supplier_subscription->subscription_end_date = now()->addDays($request->duration);
+            $supplier_subscription->status = 'paid';
+            $supplier_subscription->change_subscription = true;
+            $supplier_subscription->save();
+
+            // حساب قيمة الاشتراك بعد خصم باقي الإشتراك القديم و شحن الباقي في المحفظة
+
+            DB::commit(); // تأكيد كل العمليات
+
+            return back()->with('success', 'تمت الموافقة على الطلب وتم تفعيل الاشتراك.');
+        } catch (\Exception $e) {
+            DB::rollBack(); // التراجع عن جميع العمليات
+
+            // يُفضل تسجيل الخطأ في سجل الأخطاء أو إرسال إشعار للإدارة
+            return back()->with('error', 'حدث خطأ أثناء معالجة الطلب: '.$e->getMessage());
+        }
+    }
+
+    public function approve_sellers_subscribe_payment($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            // الموافقة على الطلب
+            $request = SellerPlanOrder::findOrFail($id);
+            $request->status = 'approved';
+            $request->payment_status = 'paid';
+            $request->save();
+
+            // ترقية أو إنشاء اشتراك المورد
+            $seller_subscription = SellerPlanSubscription::firstOrNew([
+                'seller_id' => $request->seller_id,
+            ]);
+
+            // تفعيل الاشتراك
+            $seller_subscription->seller_id = $request->seller_id;
+
+            $seller_subscription->plan_id = $request->plan_id;
+            $seller_subscription->duration = $request->duration;
+            $seller_subscription->price = $request->price;
+            $seller_subscription->discount = $request->discount;
+            $seller_subscription->payment_method = $request->payment_method;
+            $seller_subscription->payment_status = 'paid';
+            $seller_subscription->subscription_start_date = now();
+            $seller_subscription->subscription_end_date = now()->addDays($request->duration);
+            $seller_subscription->status = 'paid';
+            $seller_subscription->change_subscription = true;
+            $seller_subscription->save();
+
+            // حساب قيمة الاشتراك بعد خصم باقي الإشتراك القديم و شحن الباقي في المحفظة
+
+            DB::commit(); // تأكيد كل العمليات
+
+            return back()->with('success', 'تمت الموافقة على الطلب وتم تفعيل الاشتراك.');
+        } catch (\Exception $e) {
+            DB::rollBack(); // التراجع عن جميع العمليات
+
+            // يُفضل تسجيل الخطأ في سجل الأخطاء أو إرسال إشعار للإدارة
+            return back()->with('error', 'حدث خطأ أثناء معالجة الطلب: '.$e->getMessage());
+        }
+    }
+
     public function approve_recharge($id)
     {
         $request = BalanceTransaction::findOrFail($id);
@@ -109,14 +163,13 @@ class PaymentsController extends Controller
         $user = \App\Models\User::find($request->user_id);
         $balance = $user->balance;
         $balance->balance += $request->amount;
-        $request->description='تمت الموافقة على الطلب وتم شحن الرصيد.';
+        $request->description = 'تمت الموافقة على الطلب وتم شحن الرصيد.';
         $request->update();
         $balance->save();
-        
 
         return back()->with('success', 'تمت الموافقة على الطلب وتم شحن الرصيد.');
     }
-    //
+
     public function approve_invoice_payment($id)
     {
         $invoice = UserInvoice::findOrFail($id);
@@ -126,20 +179,18 @@ class PaymentsController extends Controller
         }
 
         // تحديث حالة الرصيد
-        $balance=UserBalance::findOrFail($invoice->user_id);
-        $balance->balance=$balance->balance-$invoice->amount;
-        $balance->outstanding_amount=$balance->outstanding_amount-$invoice->amount;
+        $balance = UserBalance::findOrFail($invoice->user_id);
+        $balance->balance = $balance->balance - $invoice->amount;
+        $balance->outstanding_amount = $balance->outstanding_amount - $invoice->amount;
         $balance->update();
         // تحديث الحالة الفاتورة
         $invoice->status = 'paid';
         $invoice->save();
 
         // update invoice description;
-        $invoice->description='تمت الموافقة على الطلب وتم تسديد الفاتورة .';
+        $invoice->description = 'تمت الموافقة على الطلب وتم تسديد الفاتورة .';
         $invoice->update();
-        
 
         return back()->with('success', 'تمت الموافقة على الطلب وتم تسديد الفاتورة.');
     }
-
 }

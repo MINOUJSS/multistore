@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admins\Admin;
 
-use Carbon\Carbon;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
 use App\Models\PaymentsProofsRefusedsArchive;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentsProofsRefusedsArchivesController extends Controller
 {
@@ -53,10 +53,12 @@ class PaymentsProofsRefusedsArchivesController extends Controller
         if (empty(Storage::disk('general')->files(''))) {
             Storage::disk('general')->deleteDirectory('');
         }
-        // clear supplier storage
+        // ::::::::::::::::::::::::::
+        // start clear supplier storage
+        // :::::::::::::::::::::::::::
         $proof_folder_path = get_supplier_store_name(get_supplier_data_from_id($archive->user_id)->tenant_id).'/customer_payment_proofs/'.$this->data_format($archive->archived_at)->format('Y').'/'.$this->data_format($archive->archived_at)->format('m');
         $files = Storage::disk('supplier')->files($proof_folder_path.'/'.$this->data_format($archive->archived_at)->format('d'));
-        
+
         // dd($proof_folder_path,Storage::disk('supplier'));
         if (Storage::disk('supplier')->exists($proof_folder_path.'/'.$this->data_format($archive->archived_at)->format('d').'/'.basename($archive->proof_path))) {
             Storage::disk('supplier')->delete($proof_folder_path.'/'.$this->data_format($archive->archived_at)->format('d').'/'.basename($archive->proof_path));
@@ -66,7 +68,7 @@ class PaymentsProofsRefusedsArchivesController extends Controller
             // Folder is empty
             Storage::disk('supplier')->deleteDirectory($proof_folder_path.'/'.$this->data_format($archive->archived_at)->format('d'));
         }
-        //delete month folder if it is empty
+        // delete month folder if it is empty
         if (empty(Storage::disk('supplier')->files($proof_folder_path.'/'.$this->data_format($archive->archived_at)->format('m')))) {
             Storage::disk('supplier')->deleteDirectory($proof_folder_path.'/'.$this->data_format($archive->archived_at)->format('m'));
         }
@@ -74,11 +76,11 @@ class PaymentsProofsRefusedsArchivesController extends Controller
         if (empty(Storage::disk('supplier')->files($proof_folder_path))) {
             Storage::disk('supplier')->deleteDirectory($proof_folder_path);
         }
-        //delete customer_payment_proofs folder if it is empty
+        // delete customer_payment_proofs folder if it is empty
         if (empty(Storage::disk('supplier')->files(get_supplier_store_name(get_supplier_data_from_id($archive->user_id)->tenant_id).'/customer_payment_proofs'))) {
             Storage::disk('supplier')->deleteDirectory(get_supplier_store_name(get_supplier_data_from_id($archive->user_id)->tenant_id).'/customer_payment_proofs');
         }
-        //delet saoura folder if it is empty
+        // delet saoura folder if it is empty
         if (empty(Storage::disk('supplier')->files(get_supplier_store_name(get_supplier_data_from_id($archive->user_id)->tenant_id)))) {
             Storage::disk('supplier')->deleteDirectory(get_supplier_store_name(get_supplier_data_from_id($archive->user_id)->tenant_id));
         }
@@ -86,11 +88,16 @@ class PaymentsProofsRefusedsArchivesController extends Controller
         if (empty(Storage::disk('supplier')->files(''))) {
             Storage::disk('supplier')->deleteDirectory('');
         }
-        //delete archive
+        // ::::::::::::::::::::::::::
+        // end clear supplier storage
+        // :::::::::::::::::::::::::::
+
+        // delete archive
         $archive->delete();
 
         return redirect()->back()->with('success', 'تم حذف الشكوى بنجاح');
     }
+
     protected function data_format($date)
     {
         return Carbon::parse($date);

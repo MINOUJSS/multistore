@@ -26,6 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
+        'type',
     ];
 
     /**
@@ -171,7 +172,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserEmployee::class, 'user_id');
     }
-    //
+
     public function shipping_companies()
     {
         return $this->hasMany(ShippingCompaines::class, 'user_id');

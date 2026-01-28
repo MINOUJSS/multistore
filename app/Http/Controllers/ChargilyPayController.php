@@ -176,6 +176,14 @@ class ChargilyPayController extends Controller
                 'payment_type' => $type,
                 'payment_reference_id' => $referenceId,
             ]);
+            // get user type
+            if ($user->type == 'seller') {
+                $success_url = route('seller.chargilypay.back');
+                $failure_url = route('seller.chargilypay.back');
+            } else {
+                $success_url = route('supplier.chargilypay.back');
+                $failure_url = route('supplier.chargilypay.back');
+            }
 
             if ($payment) {
                 $checkout = $this->chargilyPayInstance()->checkouts()->create([
@@ -188,8 +196,8 @@ class ChargilyPayController extends Controller
                     'amount' => $payment->amount,
                     'currency' => $payment->currency,
                     'description' => "دفع من نوع {$type} رقم {$referenceId}",
-                    'success_url' => route('supplier.chargilypay.back'),
-                    'failure_url' => route('supplier.chargilypay.back'),
+                    'success_url' => $success_url,
+                    'failure_url' => $failure_url,
                     'webhook_endpoint' => route('chargilypay.webhook_endpoint'),
                 ]);
                 if ($checkout) {

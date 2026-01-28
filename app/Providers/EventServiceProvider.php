@@ -2,14 +2,16 @@
 
 namespace App\Providers;
 
-use App\Events\UserLogedInEvent;
+use App\Events\CreateSellerEvent;
 use App\Events\CreateSupplierEvent;
-use App\Listeners\LastSeenListener;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Auth\Events\Registered;
+use App\Events\UserLogedInEvent;
+use App\Listeners\CreateDefaultContentForSellerListener;
 use App\Listeners\CteateDefaultContentForSupplierListener;
+use App\Listeners\LastSeenListener;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,9 @@ class EventServiceProvider extends ServiceProvider
         CreateSupplierEvent::class => [
             CteateDefaultContentForSupplierListener::class,
         ],
+        CreateSellerEvent::class => [
+            CreateDefaultContentForSellerListener::class,
+        ],
     ];
 
     /**
@@ -35,7 +40,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
     }
 
     /**

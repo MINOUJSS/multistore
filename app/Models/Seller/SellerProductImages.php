@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Models\Seller;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class SellerProductImages extends Model
+{
+    use HasFactory;
+
+    protected $fillable = ['product_id', 'image_path', 'is_primary', 'order'];
+
+    public function product()
+    {
+        return $this->belongsTo(SellerProducts::class, 'product_id');
+    }
+}

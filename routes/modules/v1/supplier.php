@@ -2,41 +2,41 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChargilyPayController;
 use App\Http\Controllers\Users\CourierdzController;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
-use App\Http\Controllers\Users\Suppliers\SupplierController;
-use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
-use App\Http\Controllers\Users\Suppliers\SupplierFqsController;
-use App\Http\Controllers\Users\Suppliers\SupplierAppsController;
-use App\Http\Controllers\Users\Suppliers\SupplierPageController;
-use App\Http\Controllers\Users\Suppliers\SupplierPlanController;
-use App\Http\Controllers\Users\Suppliers\SupplierOrderController;
-use App\Http\Controllers\Users\Suppliers\SupplierCouponController;
-use App\Http\Controllers\Users\Suppliers\SupplierSliderController;
-use App\Http\Controllers\Users\Suppliers\SupplierWalletController;
-use App\Http\Controllers\Users\Suppliers\SupplierBenefitController;
-use App\Http\Controllers\Users\Suppliers\SupplierBillingController;
-use App\Http\Controllers\Users\Suppliers\SupplierPaymentController;
-use App\Http\Controllers\Users\Suppliers\SupplierProductController;
-use App\Http\Controllers\Users\Suppliers\SupplierProfileController;
-use App\Http\Controllers\Users\Suppliers\SupplierSettingController;
+use App\Http\Controllers\Users\Suppliers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Users\Suppliers\Auth\NewPasswordController;
-use App\Http\Controllers\Users\Suppliers\SupplierCategoryController;
-use App\Http\Controllers\Users\Suppliers\SupplierShippingController;
-use App\Http\Controllers\Users\Suppliers\SupplierAttributeController;
-use App\Http\Controllers\Users\Suppliers\SupplierOrderFormController;
-use App\Http\Controllers\Users\Suppliers\SupplierSubscriptionController;
 use App\Http\Controllers\Users\Suppliers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Users\Suppliers\Auth\RegistredSupplierController;
-use App\Http\Controllers\Users\Suppliers\SupplierOrderAbandonedController;
-use App\Http\Controllers\Users\Suppliers\SupplierProductsCouponsController;
-use App\Http\Controllers\Users\Suppliers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Users\Suppliers\SupplierAppsController;
+use App\Http\Controllers\Users\Suppliers\SupplierAttributeController;
+use App\Http\Controllers\Users\Suppliers\SupplierBenefitController;
+use App\Http\Controllers\Users\Suppliers\SupplierBillingController;
 use App\Http\Controllers\Users\Suppliers\SupplierCategoriesCouponsController;
+use App\Http\Controllers\Users\Suppliers\SupplierCategoryController;
+use App\Http\Controllers\Users\Suppliers\SupplierController;
+use App\Http\Controllers\Users\Suppliers\SupplierCouponController;
 use App\Http\Controllers\Users\Suppliers\SupplierCustomerBlockListController;
-use App\Http\Controllers\Users\Suppliers\SupplierProofsRefusedChatController;
+use App\Http\Controllers\Users\Suppliers\SupplierFqsController;
+use App\Http\Controllers\Users\Suppliers\SupplierOrderAbandonedController;
+use App\Http\Controllers\Users\Suppliers\SupplierOrderController;
+use App\Http\Controllers\Users\Suppliers\SupplierOrderFormController;
+use App\Http\Controllers\Users\Suppliers\SupplierPageController;
+use App\Http\Controllers\Users\Suppliers\SupplierPaymentController;
 use App\Http\Controllers\Users\Suppliers\SupplierPaymentsProofsRefusedController;
+use App\Http\Controllers\Users\Suppliers\SupplierPlanController;
+use App\Http\Controllers\Users\Suppliers\SupplierProductController;
+use App\Http\Controllers\Users\Suppliers\SupplierProductsCouponsController;
+use App\Http\Controllers\Users\Suppliers\SupplierProfileController;
+use App\Http\Controllers\Users\Suppliers\SupplierProofsRefusedChatController;
+use App\Http\Controllers\Users\Suppliers\SupplierSettingController;
+use App\Http\Controllers\Users\Suppliers\SupplierShippingController;
+use App\Http\Controllers\Users\Suppliers\SupplierSliderController;
+use App\Http\Controllers\Users\Suppliers\SupplierSubscriptionController;
+use App\Http\Controllers\Users\Suppliers\SupplierWalletController;
+use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 /*
 |--------------------------------------------------------------------------
@@ -210,10 +210,10 @@ Route::middleware([
                 Route::post('/supplier-panel/billing/pay/invoice/{id}/redirect', [SupplierBillingController::class, 'invoice_redirect'])->name('billing.invoice.redirect');
                 Route::post('/supplier-panel/billing/pay/invoice', [SupplierBillingController::class, 'pay_invoice'])->name('billing.invoice.pay');
                 Route::delete('/supplier-panel/billing/invoice/{invoice}/delete-proof', [SupplierBillingController::class, 'deleteProof'])->name('billing.invoice.deleteProof');
-                //suppliere payments_proofs_refuseds
+                // suppliere payments_proofs_refuseds
                 Route::get('/supplier-panel/payments-proofs-refuseds', [SupplierPaymentsProofsRefusedController::class, 'index'])->name('payments_proofs_refuseds');
                 Route::get('/supplier-panel/payments-proofs-refused/{id}/show', [SupplierPaymentsProofsRefusedController::class, 'show'])->name('payments_proofs_refused.show');
-                //supplier proofs refused messages routes
+                // supplier proofs refused messages routes
                 Route::prefix('/supplier-panel/proofs-refused/{proofId}/chat')->name('proofs.refused.chat.')->group(function () {
                     Route::get('/', [SupplierProofsRefusedChatController::class, 'index'])->name('index');
                     Route::get('/get_messages', [SupplierProofsRefusedChatController::class, 'getMessages'])->name('get_messages');
@@ -221,7 +221,7 @@ Route::middleware([
                     Route::post('/send', [SupplierProofsRefusedChatController::class, 'sendMessage'])->name('send');
                     Route::get('/fetch', [SupplierProofsRefusedChatController::class, 'fetchMessages'])->name('fetch');
                 });
-                
+
                 // Wallet Routes
                 Route::get('/supplier-panel/wallet', [SupplierWalletController::class, 'index'])->name('wallet');
                 // Route::post('/supplier-panel/wallet/charge',[SupplierWalletController::class,'charge'])->name('wallet.charge');

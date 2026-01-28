@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('seller_fqas', function (Blueprint $table) {
+            $table->id(); // مفتاح أساسي
+            $table->foreignId('seller_id')->constrained('sellers')->onDelete('cascade');
+            $table->string('question'); // نص السؤال
+            $table->text('answer'); // نص الإجابة
+            $table->integer('order')->default(0); // ترتيب العرض (اختياري)
+            $table->enum('status', ['active', 'inactive'])->default('active'); // حالة السؤال (فعال/غير فعال)
+            $table->timestamps(); // تواريخ الإنشاء والتحديث
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('seller_fqas');
+    }
+};

@@ -91,6 +91,32 @@
                         </ul>
                         <ul class="footer-ul d-flex">
                             {{-- {{dd(get_supplier_data(tenant('id'))->plan_subscription->id);}} --}}
+                            {{-- if is seller --}}
+                            @if(is_seller(tenant('id')))
+
+                                @if (get_seller_data(tenant('id'))->plan_subscription->id !== 1)
+                                @if (get_store_payment_methods(tenant('id'))->Chargily_Pay->status === 'active')
+                                    <li class="footer-li p-1"><img
+                                            src="{{ asset('asset/v1/users/store') }}/img/payments/eldhahabia.png"
+                                            alt="" width="30px"></li>
+                                    <li class="footer-li p-1"><img
+                                            src="{{ asset('asset/v1/users/store') }}/img/payments/cib.png"
+                                            alt="" width="30px"></li>
+                                @endif
+                                @if (get_store_payment_methods(tenant('id'))->BaridiMob->status === 'active')
+                                    <li class="footer-li p-1"><img
+                                            src="{{ asset('asset/v1/users/store') }}/img/payments/baridimaobe.png"
+                                            alt="" width="30px"></li>
+                                @endif
+                                @if (get_store_payment_methods(tenant('id'))->Ccp->status === 'active')
+                                    <li class="footer-li p-1"><img
+                                            src="{{ asset('asset/v1/users/store') }}/img/payments/algerie post.png"
+                                            alt="" width="30px"></li>
+                                @endif
+                            @endif
+
+                            @elseif(is_supplier(tenant('id')))
+                                {{-- else if is supplier --}}
                             @if (get_supplier_data(tenant('id'))->plan_subscription->id !== 1)
                                 @if (get_store_payment_methods(tenant('id'))->Chargily_Pay->status === 'active')
                                     <li class="footer-li p-1"><img
@@ -111,6 +137,8 @@
                                             alt="" width="30px"></li>
                                 @endif
                             @endif
+                            @endif
+                            
                             @if (get_store_payment_methods(tenant('id'))->Cash->status === 'active')
                                 <li class="footer-li p-1"><img
                                         src="{{ asset('asset/v1/users/store') }}/img/payments/cod.png" alt=""
