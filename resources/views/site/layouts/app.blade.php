@@ -8,7 +8,7 @@
   <meta content="" name="description">
   <meta content="" name="keywords">
 
-  <title>MatajeDZ</title>
+  <title>@yield('title')</title>
 
   <!-- Favicons -->
   <link href="{{asset('asset/v1/site/defaulte')}}/img/favicon.png" rel="icon">
@@ -53,7 +53,7 @@
 <header id="header" class="fixed-top ">
   <div class="container d-flex align-items-center">
 
-    <h1 class="logo my-me-auto"><a href="index.html">MatajeDZ</a></h1>
+    <h1 class="logo my-me-auto"><a href="index.html">{{config('app.name')}}</a></h1>
     <!-- Uncomment below if you prefer to use an image logo -->
     <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
@@ -129,7 +129,7 @@
       <div class="row">
 
         <div class="col-lg-3 col-md-6 footer-contact">
-          <h3>Matajerdz</h3>
+          <h3>{{config('app.name')}}</h3>
           <p>
             {{-- A108 Adam Street <br>
             New York, NY 535022<br> --}}
@@ -179,7 +179,7 @@
 
   <div class="container footer-bottom clearfix">
     <div class="copyright">
-      &copy; كل الحقوق محفوظة <strong><span>{!! get_platform_data('platform_name')->value !!}</span></strong>.
+      &copy; كل الحقوق محفوظة <strong><a href="{{config('app.url')}}" style="color: #ffffff"><span>{{ config('app.name') }}</span></a></strong>.
     </div>
     <div class="credits">
       <!-- All the links in the footer should remain intact. -->
