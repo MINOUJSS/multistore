@@ -55,8 +55,14 @@ $UnreadMessages=$UnradesProofsRefusedMessages;
                         </li>
                         <li><a class="dropdown-item" href="{{ route('supplier.profile') }}"><i
                                     class="fa-solid fa-user"></i> حسابي</a></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i
-                                    class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a></li>
+                        <li>
+                            {{-- <a class="dropdown-item text-danger" href="#"><i
+                                    class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a> --}}
+                            <form action="{{ route('supplier.logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="dropdown-item text-danger">تسجيل الخروج</button>
+                            </form>    
+                        </li>
                     </ul>
                 </li>
             </ul>
