@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Filesystem Disk
@@ -29,7 +28,6 @@ return [
     */
 
     'disks' => [
-
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
@@ -46,6 +44,13 @@ return [
         'supplier' => [
             'driver' => 'local',
             'root' => storage_path('tenantsupplier/app/public/supplier'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+        'seller' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/seller'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
@@ -76,8 +81,6 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
-
-
     ],
 
     /*
@@ -94,6 +97,4 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
-
-
 ];

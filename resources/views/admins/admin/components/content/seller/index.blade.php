@@ -52,7 +52,7 @@
                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                   <li><a class="dropdown-item" href="#">تفعيل الحساب</a></li>
                   <li>
-                    <form action="{{route('admin.seller.destroy', $seller->id)}}" method="POST">
+                    <form action="{{route('admin.seller.destroy', get_user_data($seller->tenant->id)->id)}}" method="POST">
                       @csrf
                       @method('DELETE')
                       <button type="submit" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> حذف الحساب</button>

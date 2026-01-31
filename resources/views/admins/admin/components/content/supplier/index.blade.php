@@ -167,7 +167,7 @@
                                         </li>
                                         <li>
                                             <form method="POST"
-                                                  action="{{ route('admin.supplier.destroy', $supplier->id) }}"
+                                                  action="{{ route('admin.supplier.destroy', get_user_data($supplier->tenant->id)->id) }}"
                                                   onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                 @csrf
                                                 @method('DELETE')

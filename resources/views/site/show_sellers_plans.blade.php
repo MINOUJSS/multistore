@@ -26,7 +26,7 @@
         @endphp
         <div class="col-lg-4 " data-aos="fade-up" data-aos-delay="100">
           <div class="box p-2">
-            <form action="{{url(request()->server('REQUEST_SCHEME').'://supplier.'.request()->server('HTTP_HOST').'/supplier-panel/register')}}" method="GET">
+            <form action="{{url(request()->server('REQUEST_SCHEME').'://'.request()->server('HTTP_HOST').'/seller-panel/register')}}" method="GET">
             @if ($pricing->count() > 0)
             <h3>الخطة {{$plan->name}}</h3>
             <h4>{{$plan->price}}<sup>د.ج</sup><span>في الشهر</span></h4>
@@ -69,7 +69,7 @@
 
             </ul>
             {{-- <a href="#" class="buy-btn">إبدأ الآن</a> --}}
-            {{-- <form action="{{url(request()->server('REQUEST_SCHEME').'://supplier.'.request()->server('HTTP_HOST').'/supplier-panel/register')}}" method="GET"> --}}
+            {{-- <form action="{{url(request()->server('REQUEST_SCHEME').'://'.request()->server('HTTP_HOST').'/seller-panel/register')}}" method="GET"> --}}
               {{-- @csrf --}}
               <input type="hidden" name="plan" value="{{$plan->name}}">
               <input type="submit" value="إبداء الآن" class="buy-btn">

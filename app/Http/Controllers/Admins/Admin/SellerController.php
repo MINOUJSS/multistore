@@ -50,7 +50,7 @@ class SellerController extends Controller
             //     {
             //         Storage::disk('public')->makeDirectory($folderPath);
             //     }
-            return redirect()->back()->with('success', 'تم حذف المورد بنجاح');
+            return redirect()->back()->with('success', 'تم حذف البائع بنجاح');
         }
     }
 }
