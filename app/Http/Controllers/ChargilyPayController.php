@@ -519,7 +519,7 @@ class ChargilyPayController extends Controller
                                     $order->update();
                                 }
                                 // update subscription status
-                                $subscription = App\Models\Seller\SellerPlanSubscription::find($payment->payment_reference_id);
+                                $subscription = SellerPlanSubscription::find($payment->payment_reference_id);
                                 if ($subscription) {
                                     $subscription->plan_id = $order->plan_id;
                                     $subscription->duration = $order->duration;
@@ -544,7 +544,7 @@ class ChargilyPayController extends Controller
                                     $order->update();
                                 }
                                 // update subscription status
-                                $subscription = App\Models\Seller\SellerPlanSubscription::find($payment->payment_reference_id);
+                                $subscription = SellerPlanSubscription::find($payment->payment_reference_id);
                                 if ($subscription) {
                                     $subscription->plan_id = $order->plan_id;
                                     $subscription->duration = $order->duration;
