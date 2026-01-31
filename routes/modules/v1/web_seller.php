@@ -272,7 +272,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                 // subscription routes here
                 Route::post('/seller-panel/subscription/pay/new-subscription/baridimob', [SellerSubscriptionController::class, 'new_subscription_by_baridimob'])->name('new.subscription.payment.baridimob');
                 Route::post('/seller-panel/subscription/pay/new-subscription/ccp', [SellerSubscriptionController::class, 'new_subscription_by_ccp'])->name('new.subscription.payment.ccp');
-                Route::get('/seller-panel/subscription/confirmation', [SellerSubscriptionController::class, 'confirmation'])->name('subscription.confirmation')->middleware('sellersRedirectSubscriber');
+                Route::get('/seller-panel/subscription/confirmation', [SellerSubscriptionController::class, 'confirmation'])->name('subscription.confirmation')->middleware('SellersRedirectSubscriber');
                 Route::post('/seller-panel/order/plan/{id}', [SellerSubscriptionController::class, 'order_plan'])->name('subscription.order.plan');
 
                 // seller plan routes here
