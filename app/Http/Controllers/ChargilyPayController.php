@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Seller\SellerOrderItems;
+use App\Models\Seller\SellerOrders;
+use App\Models\Seller\SellerPlanOrder;
+use App\Models\Seller\SellerPlanPrices;
+use App\Models\seller\SellerPlanSubscription;
 use App\Models\Supplier\SupplierOrderItems;
 use App\Models\Supplier\SupplierOrders;
 use App\Models\Supplier\SupplierPlan;
@@ -166,6 +171,147 @@ class ChargilyPayController extends Controller
                 }
             }
         }
+        // start for seller
+        elseif ($type == 'new_seller_subscription') {
+            // get plan data
+            $plan = SellerPlan::findOrFail($request->plan_id);
+            $amount = $plan->price;
+            $duration = '30';
+            if ($request->sub_plan_id != 0) {
+                $sub_plan = SellerPlanPrices::find($request->sub_plan_id);
+                if ($sub_plan) {
+                    $amount = $sub_plan->price;
+                    $duration = $sub_plan->duration;
+                }
+            }
+            // التحقق من وجود طلب سابق معلق
+            $existingOrder = SellerPlanOrder::where('seller_id', $referenceId)
+            ->where('status', 'pending')
+            ->first();
+            if ($existingOrder) {
+                // حذف الطلب السابق
+                $existingOrder->delete();
+            }
+            // create order
+            $order = SellerPlanOrder::create([
+                'plan_id' => $plan->id,
+                'seller_id' => get_seller_data($user->tenant_id)->id,
+                'duration' => $duration,
+                'price' => $amount,
+                'discount' => 0,
+                'payment_method' => 'chargily',
+                'status' => 'pending',
+                'payment_status' => 'unpaid',
+                'start_date' => now(),
+                'end_date' => now()->addDays($duration),
+            ]);
+        } elseif ($type == 'seller_subscription') {
+            $old_subscription = SellerPlanSubscription::where('seller_id', $request->reference_id)->first();
+            $rest_days = $old_subscription->duration - appDiffInDays(now(), $old_subscription->subscription_start_date);
+            $order = SellerPlanOrder::findOrFail($request->order_id);
+            $new_plan = SellerPlan::findOrFail($order->plan_id);
+            // $amount=$new_plan->price;
+            $duration = '30';
+            if ($request->sub_plan_id != 0) {
+                $sub_plan = SellerPlanPrices::find($request->sub_plan_id);
+                if ($sub_plan) {
+                    // $amount=$sub_plan->price;
+                    $duration = $sub_plan->duration;
+                }
+            }
+            // التحقق من وجود طلب سابق معلق
+            $existingOrder = SellerPlanOrder::where('seller_id', $referenceId)
+            ->where('status', 'pending')
+            ->first();
+            if ($existingOrder) {
+                // حذف الطلب السابق
+                $existingOrder->delete();
+                // // إلغاء الطلب السابق
+                // $existingOrder->update([
+                //     'payment_status' => 'failed',
+                //     'status' => 'cancelled',
+                // ]);
+            }
+
+            // If switching from basic plan (1) to plan 2 or 3, apply full new plan price
+            if ($old_subscription->plan_id == 1 && in_array($new_plan->id, [2, 3])) {
+                if (empty($request->sub_plan_id) || $request->sub_plan_id == 0) {
+                    $amount = $new_plan->price;
+                } else {
+                    $sub_plan = SellerPlanPrices::findOrFail($request->sub_plan_id);
+                    $amount = $sub_plan->price;
+                }
+            } elseif ($old_subscription->plan_id == 2 && $new_plan->id == 3) {
+                $rest = get_rest_off_current_seller_plan(
+                    $request->reference_id,
+                    $old_subscription->plan_id,
+                    $new_plan->id,
+                    $rest_days
+                );
+                // $amount = $new_plan->price - $rest;
+                $amount = $new_plan->price - $rest;
+            } else {
+                $amount = 0;
+            }
+
+            // create order
+            $order = SellerPlanOrder::create([
+                'plan_id' => $order->plan_id,
+                'seller_id' => get_seller_data($user->tenant_id)->id,
+                'duration' => $duration,
+                'price' => $amount,
+                'discount' => 0,
+                'payment_method' => 'chargily',
+                'status' => 'pending',
+                'payment_status' => 'unpaid',
+                'start_date' => now(),
+                'end_date' => now()->addDays($duration),
+            ]);
+        } elseif ($type == 'seller_order') {
+            $order = SellerOrders::findOrfail($request->reference_id);
+            $order_items = SellerOrderItems::where('order_id', $order->id)->get();
+            $amount = $order->total_price;
+            $user_id = get_user_data($request->tenant_id)->id;
+            // check if payment exist
+            $payment_exist = \App\Models\ChargilyPaymentForTenants::where('user_id', $user_id)->where('payment_type', 'supplier_order')->where('status', 'pending')->where('payment_reference_id', $order->id)->first();
+            if ($payment_exist) {
+                $payment_exist->delete();
+            }
+            $payment = \App\Models\ChargilyPaymentForTenants::create([
+                'user_id' => $user_id,
+                'status' => 'pending',
+                'currency' => $currency,
+                'amount' => $amount,
+                'payment_type' => $type,
+                'payment_reference_id' => $referenceId,
+            ]);
+
+            if ($payment) {
+                $checkout = $this->chargilyPayForTenantsInstance($request->tenant_id)->checkouts()->create([
+                    'metadata' => [
+                        'payment_id' => $payment->id,
+                        'payment_type' => $type,
+                        'reference_id' => $referenceId,
+                    ],
+                    'locale' => 'ar',
+                    'amount' => $payment->amount,
+                    'currency' => $payment->currency,
+                    'description' => "دفع من نوع {$type} رقم {$referenceId}",
+                    'success_url' => route('tenant.chargilypay.back'),
+                    'failure_url' => route('tenant.chargilypay.back'),
+                    'webhook_endpoint' => route('chargilypay.webhook_endpoint'),
+                ]);
+                if ($checkout) {
+                    // update checkout url
+                    $payment->update([
+                        'checkout_url' => $checkout->getUrl(),
+                    ]);
+
+                    return redirect($checkout->getUrl());
+                }
+            }
+        }
+        // end for seller
 
         if ($user !== null) {
             $payment = \App\Models\ChargilyPayment::create([
@@ -287,6 +433,7 @@ class ChargilyPayController extends Controller
                                     }
                                 }
                                 break;
+                                // start supplier actions
                             case 'new_supplier_subscription':
                                 // get order data
                                 $order = SupplierPlanOrder::where('supplier_id', $payment->payment_reference_id)->where('status', 'pending')->first();
@@ -336,7 +483,87 @@ class ChargilyPayController extends Controller
                                     $subscription->update();
                                 }
                                 break;
+                            case 'supplier_order':
+                                // get order data
+                                $order = SupplierOrders::find($payment->payment_reference_id);
+                                // update order status
+                                if ($order) {
+                                    $order->payment_status = $status === 'paid' ? 'paid' : 'failed';
+                                    $order->payment_method = $checkout->getPaymentMethod();
+                                    $order->confirmation_status = $status === 'paid' ? 'confirmed' : 'pending';
+                                    $order->confirmed_by_user_id = $status === 'paid' ? get_user_data(get_supplier_data_from_id($order->supplier_id)->tenant_id)->id : null;
+                                    $order->confirmed_at = $status === 'paid' ? now() : null;
+                                    $order->status = $status === 'paid' ? 'processing' : 'pending';
+                                    $order->update();
+                                }
+                                // end supplier actions
+                                // start seller actions
+                                // no break
+                            case 'new_seller_subscription':
+                                // get order data
+                                $order = SellerPlanOrder::where('seller_id', $payment->payment_reference_id)->where('status', 'pending')->first();
+                                // update order status
+                                if ($order) {
+                                    $order->status = 'approved';
+                                    $order->payment_status = 'paid';
+                                    $order->update();
+                                }
+                                // update subscription status
+                                $subscription = SellerPlanSubscription::find($payment->payment_reference_id);
+                                if ($subscription) {
+                                    $subscription->plan_id = $order->plan_id;
+                                    $subscription->duration = $order->duration;
+                                    $subscription->price = $checkout->getAmount();
+                                    $subscription->discount = 0;
+                                    $subscription->payment_method = $checkout->getPaymentMethod();
+                                    $subscription->payment_status = $status;
+                                    $subscription->subscription_start_date = now();
+                                    $subscription->subscription_end_date = now()->addDays($order->duration);
+                                    $subscription->status = $status === 'paid' ? 'paid' : 'free';
+                                    $subscription->update();
+                                }
+                                break;
 
+                            case 'seller_subscription':
+                                // get order data
+                                $order = SellerPlanOrder::where('seller_id', $payment->payment_reference_id)->where('status', 'pending')->first();
+                                // update order status
+                                if ($order) {
+                                    $order->status = 'approved';
+                                    $order->payment_status = 'paid';
+                                    $order->update();
+                                }
+                                // update subscription status
+                                $subscription = SellerPlanSubscription::find($payment->payment_reference_id);
+                                if ($subscription) {
+                                    $subscription->plan_id = $order->plan_id;
+                                    $subscription->duration = $order->duration;
+                                    $subscription->price = $checkout->getAmount();
+                                    $subscription->discount = 0;
+                                    $subscription->payment_method = $checkout->getPaymentMethod();
+                                    $subscription->payment_status = $status;
+                                    $subscription->subscription_start_date = now();
+                                    $subscription->subscription_end_date = now()->addDays($order->duration);
+                                    $subscription->status = $status === 'paid' ? 'paid' : 'free';
+                                    $subscription->update();
+                                }
+                                break;
+                            case 'seller_order':
+                                // get order data
+                                $order = SellerOrders::find($payment->payment_reference_id);
+                                // update order status
+                                if ($order) {
+                                    $order->payment_status = $status === 'paid' ? 'paid' : 'failed';
+                                    $order->payment_method = $checkout->getPaymentMethod();
+                                    $order->confirmation_status = $status === 'paid' ? 'confirmed' : 'pending';
+                                    $order->confirmed_by_user_id = $status === 'paid' ? get_user_data(get_seller_data_from_id($order->seller_id)->tenant_id)->id : null;
+                                    $order->confirmed_at = $status === 'paid' ? now() : null;
+                                    $order->status = $status === 'paid' ? 'processing' : 'pending';
+                                    $order->update();
+                                }
+                                // end seller actions
+
+                                // no break
                             case 'wallet_topup':
                                 // update balance
                                 $user = get_user_data_from_id($payment->payment_reference_id);
@@ -353,21 +580,6 @@ class ChargilyPayController extends Controller
 
                                 break;
 
-                            case 'supplier_order':
-                                // get order data
-                                $order = SupplierOrders::find($payment->payment_reference_id);
-                                // update order status
-                                if ($order) {
-                                    $order->payment_status = $status === 'paid' ? 'paid' : 'failed';
-                                    $order->payment_method = $checkout->getPaymentMethod();
-                                    $order->confirmation_status = $status === 'paid' ? 'confirmed' : 'pending';
-                                    $order->confirmed_by_user_id = $status === 'paid' ? get_user_data(get_supplier_data_from_id($order->supplier_id)->tenant_id)->id : null;
-                                    $order->confirmed_at = $status === 'paid' ? now() : null;
-                                    $order->status = $status === 'paid' ? 'processing' : 'pending';
-                                    $order->update();
-                                }
-
-                                // no break
                             case 'other':
                                 // في المستقبل يمكن إضافة أنواع أخرى هنا
                                 break;
