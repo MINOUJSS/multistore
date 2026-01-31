@@ -7,7 +7,7 @@ use App\Models\Seller\SellerOrders;
 use App\Models\Seller\SellerPlan;
 use App\Models\Seller\SellerPlanOrder;
 use App\Models\Seller\SellerPlanPrices;
-use App\Models\seller\SellerPlanSubscription;
+use App\Models\Seller\SellerPlanSubscription;
 use App\Models\Supplier\SupplierOrderItems;
 use App\Models\Supplier\SupplierOrders;
 use App\Models\Supplier\SupplierPlan;
@@ -519,7 +519,7 @@ class ChargilyPayController extends Controller
                                     $order->update();
                                 }
                                 // update subscription status
-                                $subscription = SellerPlanSubscription::find($payment->payment_reference_id);
+                                $subscription = App\Models\Seller\SellerPlanSubscription::find($payment->payment_reference_id);
                                 if ($subscription) {
                                     $subscription->plan_id = $order->plan_id;
                                     $subscription->duration = $order->duration;
