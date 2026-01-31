@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Seller\SellerOrderItems;
 use App\Models\Seller\SellerOrders;
+use App\Models\Seller\SellerPlan;
 use App\Models\Seller\SellerPlanOrder;
 use App\Models\Seller\SellerPlanPrices;
 use App\Models\seller\SellerPlanSubscription;
@@ -380,10 +381,19 @@ class ChargilyPayController extends Controller
         }
         // dd($checkout,$payment);
         if ($payment !== null && $payment->status == 'paid') {
-            return redirect()->back()->with('success', 'تمت عملية الدفع بنجاح');
+            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || $payment->payment_type == 'supplier_order') {
+                return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
+            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'supplier_order') {
+                return redirect()->route('seller.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
+            }
         // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
         } else {
-            return redirect()->back()->with('error', 'فشل في عملية الدفع');
+            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || $payment->payment_type == 'supplier_order') {
+                return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
+            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'supplier_order') {
+                return redirect()->route('seller.dashboard')->with('error', 'فشل في عملية الدفع');
+            }
+
             // return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
         }
     }
