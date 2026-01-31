@@ -366,7 +366,7 @@ class ChargilyPayController extends Controller
      */
     public function back(Request $request)
     {
-        $user = auth()->user();
+        $user = null;
         $checkout_id = $request->input('checkout_id');
         $checkout = $this->chargilyPayInstance()->checkouts()->get($checkout_id);
         $payment = null;
@@ -381,9 +381,13 @@ class ChargilyPayController extends Controller
         }
         // dd($checkout,$payment);
         if ($payment !== null && $payment->status == 'paid') {
-            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || $payment->payment_type == 'supplier_order') {
+            // get user type
+            if ($payment->payment_type == 'wallet_topup') {
+                $user = \App\Models\User::find($payment->reference_id);
+            }
+            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || $payment->payment_type == 'supplier_order' || $user->type == 'supplier') {
                 return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
-            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'seller_order') {
+            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'seller_order' || $user->type == 'seller') {
                 return redirect()->route('seller.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
             }
         // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
