@@ -385,9 +385,9 @@ class ChargilyPayController extends Controller
             if ($payment->payment_type == 'wallet_topup') {
                 $user = \App\Models\User::find($payment->reference_id);
             }
-            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || $payment->payment_type == 'supplier_order' || $user->type == 'supplier') {
+            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || $payment->payment_type == 'supplier_order' || ($user !== null && $user->type == 'supplier')) {
                 return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
-            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'seller_order' || $user->type == 'seller') {
+            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'seller_order' || ($user !== null && $user->type == 'seller')) {
                 return redirect()->route('seller.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
             }
         // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
