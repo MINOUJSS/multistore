@@ -72,6 +72,7 @@ class Kernel extends HttpKernel
         'ChargilyPayOk' => Middleware\ChargilyPayOk::class,
         'BlockFakeOrder' => Middleware\BlockFakeOrder::class,
         'SuppliersRedirectSubscriber' => Middleware\SuppliersRedirectSubscriber::class,
+        'SellersRedirectSubscriber' => Middleware\SellersRedirectSubscriber::class,
         'ForBossOnly' => Middleware\ForBossOnly::class,
     ];
 }
