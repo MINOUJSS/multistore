@@ -7,6 +7,7 @@ use App\Models\Seller\SellerPlan;
 use App\Models\Seller\SellerPlanPrices;
 use App\Models\Seller\SellerPlanSubscription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SellerPaymentController extends Controller
 {
