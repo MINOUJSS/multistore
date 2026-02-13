@@ -11,7 +11,7 @@
   <title>@yield('title')</title>
 
   <!-- Favicons -->
-  <link href="{{asset('asset/v1/site/defaulte')}}/img/favicon.png" rel="icon">
+  <link href="{{asset('asset/v1/site/defaulte')}}/img/v1/favicon.png" rel="icon">
   {{-- <link rel="icon" href="{{asset('asset/v1/site/defaulte')}}/img/favicon.png"> --}}
   {{-- <link href="{{asset('asset/v1/site/defaulte')}}/img/apple-touch-icon.png" rel="apple-touch-icon"> --}}
 

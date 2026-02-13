@@ -556,6 +556,7 @@
                 {!! $product->description !!}
             </div>
             {{-- end product description section  --}}
+            @if(count($product->videos) > 0)
             {{-- product videos section  --}}
             <div class="row mt-4">
                 <div class="col-md-12">
@@ -606,7 +607,7 @@
                     </div>
                 </div>
             </div>
-
+            @endif
             {{-- end product videos section  --}}
 
         </div>

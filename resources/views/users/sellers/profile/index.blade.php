@@ -13,19 +13,19 @@
 @endsection
 
 @section('navbar')
-    @include('users.Sellers.components.navbar.navbar')
+    @include('users.sellers.components.navbar.navbar')
 @endsection
 
 @section('sidbar')
-    @include('users.Sellers.components.sidbar.sidbar')
+    @include('users.sellers.components.sidbar.sidbar')
 @endsection
 
 @section('content')
 {{-- Your Content Here   --}}
-  @include('users.Sellers.components.content.profile.index')
+  @include('users.sellers.components.content.profile.index')
 @endsection
 
 @section('footer_js')
-@include('users.Sellers.components.content.profile.js.progress_bar_js')
-@include('users.Sellers.components.content.profile.js.index_js');
+@include('users.sellers.components.content.profile.js.progress_bar_js')
+@include('users.sellers.components.content.profile.js.index_js');
 @endsection

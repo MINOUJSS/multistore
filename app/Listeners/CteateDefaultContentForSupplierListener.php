@@ -2,15 +2,15 @@
 
 namespace App\Listeners;
 
+use App\Models\BenefitSectionElements;
 use App\Models\Category;
-use App\Models\UserSlider;
+use App\Models\ShippingPrice;
 use App\Models\Supplier\SupplierFqa;
 use App\Models\Supplier\SupplierPage;
-use App\Models\ShippingPrice;
 use App\Models\Supplier\SupplierProducts;
-use App\Models\UserStoreCategory;
 use App\Models\UserBenefitSection;
-use App\Models\BenefitSectionElements;
+use App\Models\UserSlider;
+use App\Models\UserStoreCategory;
 
 class CteateDefaultContentForSupplierListener
 {
@@ -31,27 +31,27 @@ class CteateDefaultContentForSupplierListener
         $user_id = auth()->user()->id;
 
         $defaultSliders = [
-            ['user_id' => auth()->user()->id, 'title' => 'مرحبًا بكم في متجرك', 'description' => 'اكتشف...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider1.png'), 'status' => 'active', 'order' => 1],
-            ['user_id' => auth()->user()->id, 'title' => 'أضف منتجاتك بسهولة', 'description' => 'ابدأ...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider2.png'), 'status' => 'active', 'order' => 2],
-            ['user_id' => auth()->user()->id, 'title' => 'روّج لمنتجاتك الآن', 'description' => 'استخدم...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider3.png'), 'status' => 'active', 'order' => 3],
+            ['user_id' => auth()->user()->id, 'title' => 'مرحبًا بكم في متجرك', 'description' => 'اكتشف...', 'image' => config('app.url').'/asset/v1/users/store/img/slider/pc-slider1.png', 'status' => 'active', 'order' => 1],
+            ['user_id' => auth()->user()->id, 'title' => 'أضف منتجاتك بسهولة', 'description' => 'ابدأ...', 'image' => config('app.url').'/asset/v1/users/store/img/slider/pc-slider2.png', 'status' => 'active', 'order' => 2],
+            ['user_id' => auth()->user()->id, 'title' => 'روّج لمنتجاتك الآن', 'description' => 'استخدم...', 'image' => config('app.url').'/asset/v1/users/store/img/slider/pc-slider3.png', 'status' => 'active', 'order' => 3],
         ];
 
         foreach ($defaultSliders as $slider) {
             UserSlider::create($slider);
         }
 
-        //create default benefits section
+        // create default benefits section
         $benefits = [
-            ['user_id' => $user_id,'title' => 'لماذا تختارنا؟', 'description' => 'لسنا الوحيدين لكننا الأفضل', 'status' => 'active','order' => 1],
+            ['user_id' => $user_id, 'title' => 'لماذا تختارنا؟', 'description' => 'لسنا الوحيدين لكننا الأفضل', 'status' => 'active', 'order' => 1],
         ];
         $benefit_elements = [
-            ['title' => 'شحن سريع', 'description' => 'توصيل سريع لجميع أنحاء البلاد','icon' => '<i class="fas fa-truck fa-2x"></i>','order' => 1],
-            ['title' => 'دفع آمن', 'description' => 'طرق دفع متعددة وآمنة','icon' => '<i class="fas fa-shield-alt fa-2x"></i>','order' => 2],
-            ['title' => 'ضمان الإرجاع', 'description' => 'إرجاع مجاني خلال 14 يوم','icon' => '<i class="fas fa-undo fa-2x"></i>','order' => 3],
+            ['title' => 'شحن سريع', 'description' => 'توصيل سريع لجميع أنحاء البلاد', 'icon' => '<i class="fas fa-truck fa-2x"></i>', 'order' => 1],
+            ['title' => 'دفع آمن', 'description' => 'طرق دفع متعددة وآمنة', 'icon' => '<i class="fas fa-shield-alt fa-2x"></i>', 'order' => 2],
+            ['title' => 'ضمان الإرجاع', 'description' => 'إرجاع مجاني خلال 14 يوم', 'icon' => '<i class="fas fa-undo fa-2x"></i>', 'order' => 3],
         ];
 
         foreach ($benefits as $benefit) {
-            $user_benefit=UserBenefitSection::create($benefit);
+            $user_benefit = UserBenefitSection::create($benefit);
             foreach ($benefit_elements as $benefit_element) {
                 // $benefit_element['benefit_section_id'] = $user_benefit->id;
                 BenefitSectionElements::create([
@@ -63,7 +63,7 @@ class CteateDefaultContentForSupplierListener
                 ]);
             }
         }
-        //create defa
+        // create defa
 
         // create default category
         $defaultCategories = [
@@ -80,7 +80,7 @@ class CteateDefaultContentForSupplierListener
             UserStoreCategory::create([
                 'user_id' => $user_id, // معرف المستخدم (المورد)
                 'category_id' => $category->id, // معرف القسم
-                'image' => asset('asset/v1/users/store/img/categories/'.$image_index.'.png'),          // أو قيمة افتراضية
+                'image' => config('app.url').'/asset/v1/users/store/img/categories/'.$image_index.'.png',          // أو قيمة افتراضية
                 'icon' => null,          // أو قيمة افتراضية
                 'order' => 0,             // ترتيب القسم
             ]);
@@ -97,7 +97,7 @@ class CteateDefaultContentForSupplierListener
                 'description' => 'وصف مفصل للمنتج الأول.',
                 'price' => 100.00,
                 'cost' => 70.00,
-                'image' => asset('asset/v1/users/store/img/products/product.webp'),
+                'image' => config('app.url').'/asset/v1/users/store/img/products/product.webp',
                 'qty' => 50,
                 'minimum_order_qty' => 1,
                 'condition' => 'new',
@@ -111,7 +111,7 @@ class CteateDefaultContentForSupplierListener
                 'description' => 'وصف مفصل للمنتج الثاني.',
                 'price' => 200.00,
                 'cost' => 150.00,
-                'image' => asset('asset/v1/users/store/img/products/product.webp'),
+                'image' => config('app.url').'/asset/v1/users/store/img/products/product.webp',
                 'qty' => 30,
                 'minimum_order_qty' => 2,
                 'condition' => 'new',
@@ -125,7 +125,7 @@ class CteateDefaultContentForSupplierListener
                 'description' => 'وصف مفصل للمنتج الثالث.',
                 'price' => 300.00,
                 'cost' => 250.00,
-                'image' => asset('asset/v1/users/store/img/products/product.webp'),
+                'image' => config('app.url').'/asset/v1/users/store/img/products/product.webp',
                 'qty' => 20,
                 'minimum_order_qty' => 1,
                 'condition' => 'new',
@@ -139,7 +139,7 @@ class CteateDefaultContentForSupplierListener
                 'description' => 'وصف مفصل للمنتج الرابع.',
                 'price' => 400.00,
                 'cost' => 300.00,
-                'image' => asset('asset/v1/users/store/img/products/product.webp'),
+                'image' => config('app.url').'/asset/v1/users/store/img/products/product.webp',
                 'qty' => 10,
                 'minimum_order_qty' => 1,
                 'condition' => 'new',

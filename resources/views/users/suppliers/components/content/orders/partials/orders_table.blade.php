@@ -1,10 +1,10 @@
 @forelse($orders as $order)
     <tr class="{!! get_order_status_class($order->status) !!}">
-        <td>#{{ $order->order_number }}</td>
-        <td>{{ $order->customer_name }}</td>
-        <td>{!! supplier_order_display_phone($order->id) !!}</td>
+        <td data-label="رقم الطلب">#{{ $order->order_number }}</td>
+        <td data-label="العميل">{{ $order->customer_name }}</td>
+        <td data-label="رقم الهاتف">{!! supplier_order_display_phone($order->id) !!}</td>
         {{-- <td>{{ $order->items_count }} منتجات</td> --}}
-        <td>{{ number_format($order->total_price, 2) }} د.ج</td>
+        <td data-label="الإجمالي">{{ number_format($order->total_price, 2) }} د.ج</td>
         <td>
             {{-- <select class="form-select form-select-sm confirm-status" data-order-id="{{ $order->id }}">
                 <option value="pending" {{ $order->confirmation_status == 'pending' ? 'selected' : '' }}>لم يتم الاتصال بعد</option>
@@ -15,7 +15,7 @@
                 <option value="no_answer" {{ $order->confirmation_status == 'no_answer' ? 'selected' : '' }}>لم يجب</option>
                 <option value="confirmed" {{ $order->confirmation_status == 'confirmed' ? 'selected' : '' }}>تم التأكيد</option>
             </select> --}}
-            <select class="form-select confirmation-status" data-order-id="{{ $order->id }}">
+            <select class="form-select confirmation-status" data-order-id="{{ $order->id }}" data-label=" تأكيد الطلب">
                 <option value="pending" {{ $order->confirmation_status == 'pending' ? 'selected' : '' }}>قيد الانتظار
                 </option>
                 <option value="call1" {{ $order->confirmation_status == 'call1' ? 'selected' : '' }}>الاتصال الأول
@@ -33,9 +33,9 @@
             </select>
 
         </td>
-        <td>{{ $order->created_at->format('Y-m-d') }}</td>
+        <td data-label="تاريخ الطلب">{{ $order->created_at->format('Y-m-d') }}</td>
         <td>
-            <select class="form-select form-select-sm order-status" data-order-id="{{ $order->id }}">
+            <select class="form-select form-select-sm order-status" data-order-id="{{ $order->id }}" data-label="حالة الشحن">
                 <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>قيد الانتظار</option>
                 <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>قيد المعالجة</option>
                 <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>تم الشحن</option>
