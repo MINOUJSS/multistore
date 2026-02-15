@@ -1,3 +1,98 @@
+<style>
+/* Container padding عام */
+.container {
+    padding: 20px;
+}
+
+/* بطاقات الرصيد */
+.card .card-body {
+    padding: 15px;
+}
+
+/* أزرار Quick Actions */
+.card .btn {
+    min-width: 120px;
+}
+
+/* الجدول */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* جدول محفظة الرصيد على الموبايل */
+@media (max-width: 767.98px) {
+    .row.mb-4 > .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .card .card-body.d-flex.flex-wrap.gap-2.justify-content-center.justify-content-md-start {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .table.table-bordered.text-center {
+        font-size: 0.9rem;
+        width: 85vw !important;
+    }
+
+    /* المودال كبير الحجم */
+    .modal-dialog.modal-lg {
+        max-width: 95%;
+        margin: 1.75rem auto;
+    }
+
+    /* padding داخل المودالات */
+    .modal-content {
+        padding: 15px;
+    }
+
+    /* أزرار المودال */
+    .modal-body .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+/* شاشات متوسطة */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .row.mb-4 > .col-md-6 {
+        flex: 0 0 48%;
+        max-width: 48%;
+    }
+
+    .card .card-body.d-flex.flex-wrap.gap-2.justify-content-center.justify-content-md-start {
+        justify-content: center;
+    }
+}
+
+/* تحسين مظهر المودال على جميع الشاشات */
+.modal-dialog {
+    padding: 10px;
+}
+
+/* جعل حواف المودال مستديرة بشكل لطيف */
+.modal-content.rounded-4 {
+    border-radius: 0.5rem;
+}
+
+/* جعل input داخل المودال يأخذ كامل العرض */
+.modal-body input,
+.modal-body select,
+.modal-body textarea {
+    width: 100%;
+}
+
+/* تحسين الرؤية للأزرار في المودال */
+.modal-body .btn-outline-primary,
+.modal-body .btn-outline-success,
+.modal-body .btn-outline-warning,
+.modal-body .btn-outline-dark {
+    text-align: center;
+    padding: 10px;
+}
+</style>
 <div class="container mt-5">
     <h2 class="text-center mb-4">المحفظة</h2>
 

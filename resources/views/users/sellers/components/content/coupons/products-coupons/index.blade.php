@@ -1,3 +1,66 @@
+<style>
+/* ================================
+   FORCE FULL WIDTH TABLE (MOBILE)
+   ================================ */
+@media (max-width: 991.98px) {
+
+    /* 1️⃣ كسر قيود container */
+    .container {
+        max-width: 100% !important;
+        padding-left: 0px !important;
+        padding-right: 0rem !important;
+        margin: 0 !important;
+        align-content: center;
+    }
+
+    .container-fluid {
+        max-width: 100% !important;
+        padding-left: 0rem !important;
+        padding-right: 0rem !important;
+        margin: 0 !important;
+        align-content: center;
+    }
+
+    /* 2️⃣ card بدون حواف جانبية */
+    .card {
+        border-radius: 5px !important;
+        margin-left: 0.5rem !important;
+        margin-right: 0.5rem !important;
+    }
+
+    .card-body {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    /* 3️⃣ table-responsive يملأ الشاشة */
+    .table-responsive {
+        width: 90vw !important;
+        /* margin-left: calc(-50vw + 50%) !important; */
+        margin:0 !important;
+        padding: 0 !important;
+        overflow-x: auto !important;
+    }
+
+    /* 4️⃣ الجدول نفسه */
+    table.table {
+        width: 100% !important;
+        min-width: 900px; /* يسمح بالتمرير */
+        margin: 0 !important;
+    }
+
+    th, td {
+        white-space: nowrap;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* 5️⃣ منع الفراغ الوهمي */
+    body {
+        overflow-x: hidden;
+    }
+}
+</style>
 <div class="container py-4">
     <h4 class="mb-4"><i class="fa fa-tags me-2"></i> ربط الكوبونات بالمنتجات</h4>
 

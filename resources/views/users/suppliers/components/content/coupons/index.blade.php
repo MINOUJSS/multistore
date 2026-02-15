@@ -8,7 +8,7 @@
     .container {
         max-width: 100% !important;
         padding-left: 0px !important;
-        padding-right: -3rem !important;
+        padding-right: 0rem !important;
         margin: 0 !important;
         align-content: center;
     }
@@ -16,7 +16,7 @@
     .container-fluid {
         max-width: 100% !important;
         padding-left: 0rem !important;
-        padding-right: 3rem !important;
+        padding-right: 0rem !important;
         margin: 0 !important;
         align-content: center;
     }
@@ -35,7 +35,7 @@
 
     /* 3️⃣ table-responsive يملأ الشاشة */
     .table-responsive {
-        width: 100vw !important;
+        width: 90vw !important;
         /* margin-left: calc(-50vw + 50%) !important; */
         margin:0 !important;
         padding: 0 !important;

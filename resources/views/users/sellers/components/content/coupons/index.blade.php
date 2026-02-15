@@ -8,17 +8,15 @@
     .container {
         max-width: 100% !important;
         padding-left: 0px !important;
-        padding-right: -3rem !important;
+        padding-right: 0rem !important;
         margin: 0 !important;
-        align-content: center;
     }
 
     .container-fluid {
         max-width: 100% !important;
         padding-left: 0rem !important;
-        padding-right: 3rem !important;
+        padding-right: 0rem !important;
         margin: 0 !important;
-        align-content: center;
     }
 
     /* 2️⃣ card بدون حواف جانبية */
@@ -35,10 +33,10 @@
 
     /* 3️⃣ table-responsive يملأ الشاشة */
     .table-responsive {
-        width: 100vw !important;
+        width: 90vw !important;
         /* margin-left: calc(-50vw + 50%) !important; */
         margin:0 !important;
-        padding: 0 !important;
+        padding: 0px !important;
         overflow-x: auto !important;
     }
 
@@ -64,8 +62,7 @@
 
 <div class="container">
     <h1 class="h3 mb-0 text-gray-800">إدارة كوبونات الخصم</h1>
-    
-    <!-- Add Coupon Modal Button -->
+        <!-- Add Coupon Modal Button -->
     <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#addCouponModal">
         <i class="fas fa-ticket-alt me-2"></i> إضافة كوبون جديد
     </button>
@@ -179,6 +176,7 @@
             {{ $coupons->links('vendor.pagination.dashboard-pagination') }}
         </div>
     </div>
+
 </div>
 
 <!-- Add Coupon Modal -->
@@ -255,52 +253,6 @@
                             <span class="text-danger error-add_max_uses"></span>
                         </div>
                     </div>
-                    
-                    {{-- <div class="mb-3">
-                        <label for="add_user_restriction" class="form-label">تقييد بالمستخدمين</label>
-                        <select class="form-select" id="add_user_restriction" name="user_restriction">
-                            <option value="all">جميع المستخدمين</option>
-                            <option value="new">المستخدمين الجدد فقط</option>
-                            <option value="existing">المستخدمين الحاليين فقط</option>
-                            <option value="specific">مستخدمين محددين</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3" id="add_specific_users_container" style="display: none;">
-                        <label for="add_specific_users" class="form-label">اختيار المستخدمين</label>
-                        <select class="form-select select2" id="add_specific_users" name="specific_users[]" multiple>
-                            @foreach($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="add_product_restriction" class="form-label">تقييد بالمنتجات</label>
-                        <select class="form-select" id="add_product_restriction" name="product_restriction">
-                            <option value="all">جميع المنتجات</option>
-                            <option value="categories">فئات محددة</option>
-                            <option value="products">منتجات محددة</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3" id="add_categories_container" style="display: none;">
-                        <label for="add_categories" class="form-label">اختيار الفئات</label>
-                        <select class="form-select select2" id="add_categories" name="categories[]" multiple>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3" id="add_products_container" style="display: none;">
-                        <label for="add_products" class="form-label">اختيار المنتجات</label>
-                        <select class="form-select select2" id="add_products" name="products[]" multiple>
-                            @foreach($products as $product)
-                                <option value="{{ $product->id }}">{{ $product->name }}</option>
-                            @endforeach
-                        </select>
-                    </div> --}}
                     
                     <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" id="add_is_active" name="is_active" checked>

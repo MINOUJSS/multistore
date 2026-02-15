@@ -69,8 +69,8 @@
 /* Make container and cards full width on mobile/tablet */
 @media (max-width: 991.98px) {
     .container-fluid {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        padding-left: 0rem;
+        padding-right: 0rem;
     }
 
     .card,

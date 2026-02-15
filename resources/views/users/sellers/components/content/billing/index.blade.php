@@ -1,4 +1,64 @@
-<div class="container mt-5">
+<style>
+/* ================================
+   FORCE FULL WIDTH TABLE (MOBILE)
+   ================================ */
+@media (max-width: 991.98px) {
+
+    /* 1️⃣ كسر قيود container */
+    .container {
+        max-width: 100% !important;
+        padding-left: 0px !important;
+        padding-right: 0rem !important;
+    }
+
+    .container-fluid {
+        max-width: 100% !important;
+        padding-left: 0rem !important;
+        padding-right: 0rem !important;
+    }
+
+    /* 2️⃣ card بدون حواف جانبية */
+    .card {
+        border-radius: 5px !important;
+        margin-left: 0.5rem !important;
+        margin-right: 0.5rem !important;
+    }
+
+    .card-body {
+        padding: 0.5rem !important;
+        /* padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important; */
+    }
+
+    /* 3️⃣ table-responsive يملأ الشاشة */
+    .table-responsive {
+        width: 95vw !important;
+        margin-left: calc(-50vw + 50%) !important;
+        margin:0 !important;
+        padding: 0 !important;
+        overflow-x: auto !important;
+    }
+
+    /* 4️⃣ الجدول نفسه */
+    table.table {
+        width: 100% !important;
+        min-width: 900px; /* يسمح بالتمرير */
+        margin: 0 !important;
+    }
+
+    th, td {
+        white-space: nowrap;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* 5️⃣ منع الفراغ الوهمي */
+    body {
+        overflow-x: hidden;
+    }
+}
+</style>
+<div class="container-fluid mt-5">
     <h2 class="text-center mb-4">الفواتير </h2>
 <!-- Quick Actions -->
         <div class="row mb-4">
@@ -14,7 +74,7 @@
         </div>
 <!---->
     <div class="card">
-        <div class="card-body table-responsive">
+        <div class="table-responsive card-body">
             <table class="table table-bordered text-center">
                 <thead class="table-dark">
                     <tr>
