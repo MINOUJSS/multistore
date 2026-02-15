@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- styles  -->
     <link rel="stylesheet" href="{{ asset('asset/v1/users/dashboard') }}/test/css/style.css">
-    <link rel="stylesheet" href="{{ asset('asset/v1/users/dashboard') }}/test/css/appmedia.css">
     <link rel="stylesheet" href="{{ asset('asset/v1/users/dashboard') }}/test/css/default-theme.css">
+    <link rel="stylesheet" href="{{ asset('asset/v1/users/dashboard') }}/test/css/appmedia.css">
     @yield('css')
     <!-- fonts  -->
     <link rel="stylesheet" href="{{ asset('asset/v1/users/dashboard') }}/fonts/all.css">

@@ -8,6 +8,9 @@
 position:relative !important;
 z-index:10000;
 }
+.dropdown-menu[data-bs-popper] {
+        right: -25px !important;
+    }
 }
 /* for tablet  */
 
