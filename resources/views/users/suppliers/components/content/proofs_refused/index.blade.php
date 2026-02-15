@@ -1,3 +1,105 @@
+<style>
+/* ===============================
+   Global spacing fix
+================================ */
+.container-fluid {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.card {
+    margin-bottom: 1rem;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+/* ===============================
+   Table behavior
+================================ */
+.table-responsive {
+    width: 95vw !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table {
+    width: 90%;
+    margin-bottom: 0;
+}
+
+/* ===============================
+   MOBILE & TABLET
+================================ */
+@media (max-width: 991.98px) {
+
+    /* Page title */
+    .page-title-box {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    /* Filter form: stack inputs */
+    form .row.g-2 > div {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    form .row.g-2 > div:not(:last-child) {
+        margin-bottom: 0.75rem;
+    }
+
+    /* Search button */
+    form button.btn {
+        margin-top: 0.5rem;
+    }
+
+    /* Table font & spacing */
+    table.table {
+        font-size: 0.9rem;
+    }
+
+    table.table th,
+    table.table td {
+        white-space: nowrap;
+        padding: 0.5rem;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* Action buttons full width */
+    table.table td .btn {
+        width: 100%;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Pagination spacing */
+    .pagination {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+}
+
+/* ===============================
+   SMALL MOBILE (phones)
+================================ */
+@media (max-width: 575.98px) {
+
+    .card-body {
+        padding: 0.75rem;
+    }
+
+    h4.header-title {
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    .table {
+        font-size: 0.85rem;
+    }
+}
+</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">

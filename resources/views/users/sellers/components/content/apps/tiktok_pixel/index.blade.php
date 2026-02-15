@@ -1,3 +1,91 @@
+<style>
+/* ================= MICROSOFT CLARITY – RESPONSIVE ================= */
+@media (max-width: 991.98px) {
+
+    /* Container spacing */
+    .container {
+        padding-left: 12px;
+        padding-right: 12px;
+        margin-top: 20px !important;
+    }
+
+    /* Page title */
+    h2 {
+        font-size: 1.3rem;
+        text-align: center;
+    }
+
+    /* Add button */
+    button.btn-primary {
+        width: 100%;
+    }
+
+    /* Hide table header */
+    table thead {
+        display: none;
+    }
+
+    /* Convert table to cards */
+    table,
+    table tbody,
+    table tr,
+    table td {
+        display: block;
+        width: 100%;
+    }
+
+    table tbody tr {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 15px;
+        background: #fff;
+    }
+
+    table tbody tr td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border: none;
+        text-align: right;
+    }
+
+    table tbody tr td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #555;
+        margin-left: 10px;
+        white-space: nowrap;
+    }
+
+    /* Status badge */
+    .badge {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+
+    /* Action buttons */
+    table td:last-child {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    table td:last-child .btn {
+        width: 100%;
+    }
+
+    /* Modal full width */
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+    }
+}
+
+</style>
 <div class="container mt-5">
     <h2 class="mb-4 text-center">إعدادات TikTok Pixel</h2>
 @php

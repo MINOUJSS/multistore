@@ -1,3 +1,95 @@
+<style>
+/* ================= THEME TAB – MOBILE ================= */
+@media (max-width: 767.98px) {
+
+    /* نستهدف فقط محتوى تبويب الثيم */
+    #theme {
+        padding: 10px;
+    }
+
+    /* الجداول داخل الثيم */
+    #theme table {
+        width: 100%;
+        display: block;
+    }
+
+    #theme table tr {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 15px;
+    }
+
+    #theme table td {
+        width: 100%;
+        padding: 8px 0;
+    }
+
+    /* رفع الشعار */
+    #theme #dropzone {
+        width: 100%;
+        height: 130px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #theme #logoPreview {
+        width: 100%;
+        height: 130px;
+        margin-top: 10px;
+    }
+
+    /* الألوان */
+    #theme input[type="color"] {
+        width: 100%;
+        height: 45px;
+    }
+
+    /* المسافات */
+    #theme .m-4 {
+        margin: 0.75rem !important;
+    }
+
+    /* زر الحفظ */
+    #theme button[type="submit"] {
+        width: 100%;
+        margin-top: 15px;
+    }
+}
+
+/* ================= THEME TAB – TABLET ================= */
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+    #theme table {
+        width: 100%;
+    }
+
+    #theme #dropzone,
+    #theme #logoPreview {
+        width: 180px;
+        height: 180px;
+    }
+
+    #theme button[type="submit"] {
+        margin-top: 10px;
+    }
+}
+
+/* ================= تحسين عام لمحتوى الثيم ================= */
+#theme table {
+    max-width: 100%;
+}
+
+#theme ul {
+    padding-inline-start: 15px;
+}
+
+#theme label {
+    font-weight: 500;
+}
+
+</style>
 <div class="container">
     <h1 class="h3 mb-0 text-gray-800"><i class="fa-solid fa-gear me-2"></i>إعدادات</h1>
     @if (session()->has('success'))
