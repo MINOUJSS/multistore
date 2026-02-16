@@ -44,6 +44,13 @@ function get_user_data_from_supplier_id($supplier_id)
 
     return $user;
 }
+function get_user_data_from_seller_id($seller_id)
+{
+    $seller = App\Models\Seller\Seller::findOrfail($seller_id);
+    $user = get_user_data($seller->tenant_id);
+
+    return $user;
+}
 function get_user_data($tenant_id)
 {
     $user = App\Models\User::where('tenant_id', $tenant_id)->first();
