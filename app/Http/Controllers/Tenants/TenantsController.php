@@ -2,48 +2,51 @@
 
 namespace App\Http\Controllers\Tenants;
 
-use seller;
-use App\Models\Dayra;
-use App\Models\Wilaya;
-use App\Models\Baladia;
-use App\Models\UserSlider;
-use App\Models\userCoupons;
-use Illuminate\Http\Request;
-use App\Models\ShippingPrice;
-use App\Models\Seller\SellerFqa;
-use App\Models\UserStoreSetting;
-use App\Models\Seller\SellerPage;
-use App\Models\UserStoreCategory;
-use App\Models\UserBenefitSection;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Supplier\SupplierFqa;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Seller\SellerProducts;
-use App\Models\Supplier\SupplierPage;
+use App\Jobs\Users\Sellers\SellerSendTelegramInfoAboutOrder;
+use App\Jobs\Users\Suppliers\sendTelegramInfoAboutOrder;
+use App\Models\Baladia;
 use App\Models\BenefitSectionElements;
-use App\Services\Users\Suppliers\Cart;
-use App\Services\Users\Sellers\Seller_Cart;
+use App\Models\Dayra;
+use App\Models\Seller\SellerFqa;
+use App\Models\Seller\SellerOrderAbandoned;
+use App\Models\Seller\SellerOrderAbandonedItems;
+use App\Models\Seller\SellerOrderItems;
+use App\Models\Seller\SellerOrders;
+use App\Models\Seller\SellerPage;
+use App\Models\Seller\SellerProductAttributes;
+use App\Models\Seller\SellerProductImages;
+use App\Models\Seller\SellerProducts;
+use App\Models\Seller\SellerProductsVisits;
+use App\Models\Seller\SellerProductVariations;
+use App\Models\ShippingPrice;
+use App\Models\Supplier\SupplierFqa;
+use App\Models\Supplier\SupplierOrderAbandoned;
+use App\Models\Supplier\SupplierOrderAbandonedItems;
+use App\Models\Supplier\SupplierOrderItems;
 use App\Models\Supplier\SupplierOrders;
+use App\Models\Supplier\SupplierPage;
+use App\Models\Supplier\SupplierProductAttributes;
+use App\Models\Supplier\SupplierProductImages;
+use App\Models\Supplier\SupplierProducts;
+use App\Models\Supplier\SupplierProductsVisits;
+use App\Models\Supplier\SupplierProductVariations;
+use App\Models\UserBenefitSection;
+use App\Models\UserSlider;
+use App\Models\UserStoreCategory;
+use App\Models\UserStoreSetting;
+use App\Models\Wilaya;
+use App\Services\Users\Sellers\Seller_Cart;
+use App\Services\Users\Suppliers\Cart;
+use App\Services\Users\Suppliers\OrderNotificationService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Supplier\SupplierProducts;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Seller\SellerProductImages;
-use App\Models\Seller\SellerProductsVisits;
-use App\Models\Supplier\SupplierOrderItems;
-use App\Models\Seller\SellerProductAttributes;
-use App\Models\Seller\SellerProductVariations;
-use App\Models\Supplier\SupplierProductImages;
-use App\Models\Supplier\SupplierOrderAbandoned;
-use App\Models\Supplier\SupplierProductsVisits;
-use App\Models\Supplier\SupplierProductAttributes;
-use App\Models\Supplier\SupplierProductVariations;
-use App\Models\Supplier\SupplierOrderAbandonedItems;
-use App\Services\Users\Suppliers\GoogleSheetService;
-use App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet;
-use App\Jobs\Users\suppliers\sendTelegramInfoAboutOrder;
-use App\Services\Users\Suppliers\OrderNotificationService;
+use Illuminate\Support\Str;
+use Seller;
 
 class TenantsController extends Controller
 {
@@ -124,7 +127,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.pages.privacy_policy', compact('page'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             $page = SellerPage::where('slug', tenant_to_slug(tenant('id')).'-privacy-policy')->first();
 
@@ -145,7 +148,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.pages.contact_us', compact('page'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             $page = SellerPage::where('slug', tenant_to_slug(tenant('id')).'-contact-us')->first();
 
@@ -166,7 +169,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.pages.exchange_and_return_policy', compact('page'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             $page = SellerPage::where('slug', tenant_to_slug(tenant('id')).'-exchange-policy')->first();
 
@@ -187,7 +190,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.pages.payment_methods', compact('page'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             $page = SellerPage::where('slug', tenant_to_slug(tenant('id')).'-payment-policy')->first();
 
@@ -208,7 +211,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.pages.shipping_and_handling', compact('page'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             $page = SellerPage::where('slug', tenant_to_slug(tenant('id')).'-shipping-policy')->first();
 
@@ -229,7 +232,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.pages.terms_of_use', compact('page'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             $page = SellerPage::where('slug', tenant_to_slug(tenant('id')).'-terms-of-use')->first();
 
@@ -250,7 +253,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.pages.faq', compact('page'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             $page = SellerPage::where('slug', tenant_to_slug(tenant('id')).'-faq')->first();
 
@@ -271,7 +274,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.categories', compact('categories'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             $categories = UserStoreCategory::where('user_id', get_user_data(tenant('id'))->id)->get();
 
@@ -292,7 +295,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.products', compact('products'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             $products = SellerProducts::orderBy('id', 'desc')->where('seller_id', get_seller_data(tenant('id'))->id)->get();
 
@@ -321,7 +324,7 @@ class TenantsController extends Controller
             $products = $query->where('supplier_id', get_supplier_data(tenant('id'))->id)->get();
 
             return view('stores.suppliers.products-search', compact('products', 'search'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             $query = SellerProducts::query();
 
             if ($request->category) {
@@ -336,7 +339,6 @@ class TenantsController extends Controller
             $products = $query->where('seller_id', get_seller_data(tenant('id'))->id)->get();
 
             return view('stores.sellers.products-search', compact('products', 'search'));
-            
         }
     }
 
@@ -384,7 +386,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.product-details', compact('product', 'order_form', 'wilayas', 'product_images', 'product_variations', 'product_attributes'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // insert this visit to supplier product visit table
 
             // get order form setting
@@ -439,7 +441,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.products-by-category', compact('products'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             $products = SellerProducts::where('seller_id', get_seller_data(tenant('id'))->id)->where('category_id', $category_id)->get();
 
@@ -465,17 +467,17 @@ class TenantsController extends Controller
             // dd($cart);
             // return idex view with user data
             return view('stores.suppliers.cart');
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get user data
             if (session()->has('cart')) {
                 $cart = session('cart');
             } else {
                 $cart = new Seller_Cart();
             }
+
             // dd($cart);
             // return idex view with user data
             return view('stores.sellers.cart', compact('cart'));
-
         }
 
         return 'This is your multi-tenant application. The id of the current tenant is '.tenant('id');
@@ -773,8 +775,8 @@ class TenantsController extends Controller
                 //     'error' => $e->getMessage()
                 // ], 500);
             }
-        }else if (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'seller') {
-            //start seller order
+        } elseif (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'seller') {
+            // start seller order
             // التحقق من صحة البيانات
             $validatedData = $request->validate([
                 // 'seller_id' => 'required|exists:sellers,id',
@@ -1020,7 +1022,7 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
-                sendTelegramInfoAboutOrder::dispatch($sellerOrder);
+                SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
                 //  $this->orderNotificationService->sendOrderNotificationToseller($sellerOrder);
                 // redirect to checkout page
                 if ($request->payment_method == 'chargily') {
@@ -1041,7 +1043,7 @@ class TenantsController extends Controller
                 //     'error' => $e->getMessage()
                 // ], 500);
             }
-            //end seller order 
+            // end seller order
         }
     }
 
@@ -1140,8 +1142,8 @@ class TenantsController extends Controller
                     'error' => $e->getMessage(),
                 ], 500);
             }
-        }else if (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'seller') {
-            //start seller abandoned order
+        } elseif (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'seller') {
+            // start seller abandoned order
             // التحقق من صحة البيانات
             $validatedData = $request->validate([
                 'phone' => 'required|string|regex:/^0[5-7][0-9]{8}$/',
@@ -1232,7 +1234,7 @@ class TenantsController extends Controller
                     'error' => $e->getMessage(),
                 ], 500);
             }
-            //end seller abandoned order
+            // end seller abandoned order
         }
     }
 
@@ -1610,8 +1612,8 @@ class TenantsController extends Controller
                 //     'error' => $e->getMessage()
                 // ], 500);
             }
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
-            //strat seller order with items
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+            // strat seller order with items
             // التحقق من صحة البيانات
             $validatedData = $request->validate([
                 // 'seller_id' => 'required|exists:sellers,id',
@@ -1960,7 +1962,7 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
-                sendTelegramInfoAboutOrder::dispatch($sellerOrder);
+                SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
                 //  $this->orderNotificationService->sendOrderNotificationToseller($sellerOrder);
                 // redirect to checkout page
                 if ($request->payment_method == 'chargily') {
@@ -1981,7 +1983,7 @@ class TenantsController extends Controller
                 //     'error' => $e->getMessage()
                 // ], 500);
             }
-            //end seller order with items
+            // end seller order with items
         }
     }
 
@@ -2017,8 +2019,8 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.checkout', compact('wilayas', 'order_form'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
-                // get user data
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+            // get user data
             if (session()->has('cart')) {
                 $cart = session('cart');
             } else {
@@ -2053,7 +2055,7 @@ class TenantsController extends Controller
             // dd('order: '.$order->items.'items: '.$items);
             // return idex view with user data
             return view('stores.suppliers.payments.chargily.index', compact('order', 'wilayas'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get order data
             $order = SellerOrders::findOrfail($order_id);
             $wilayas = Wilaya::get();
@@ -2074,7 +2076,7 @@ class TenantsController extends Controller
             $order = SupplierOrders::findOrfail($request->order_id);
             $order_items = SupplierOrderItems::where('order_id', $order->id)->get();
             dd($order_items);
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             $order = SellerOrders::findOrfail($request->order_id);
             $order_items = SellerOrderItems::where('order_id', $order->id)->get();
             dd($order_items);
@@ -2094,7 +2096,7 @@ class TenantsController extends Controller
 
             // return idex view with user data
             return view('stores.suppliers.payments.verments.index', compact('order', 'wilayas'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // get order data
             $order = SellerOrders::findOrfail($order_id);
             $wilayas = Wilaya::get();
@@ -2143,10 +2145,10 @@ class TenantsController extends Controller
 
             // redirect to thank you page with success message
             return redirect()->route('tenant.thanks')->with('success', 'شكراً لطلبك! سيتم التواصل معك قريبًا.');
-            // return idex view with user data
+        // return idex view with user data
 
-            // return view('stores.suppliers.payments.verments.index',compact('order'));
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        // return view('stores.suppliers.payments.verments.index',compact('order'));
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // validation
             $validator = Validator::make($request->all(), [
                 'order_id' => 'required|exists:seller_orders,id',
@@ -2265,7 +2267,7 @@ class TenantsController extends Controller
             //     'cart' => $cart,
             // ]);
             return back()->with('success', 'تمت اضافة المنتج الى السلة بنجاح');
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             $product = SellerProducts::findOrfail($request->product_id);
             $variation_id = $request->variation_id;
             $attribute_id = $request->attribute_id;
@@ -2281,7 +2283,6 @@ class TenantsController extends Controller
             //     'cart' => $cart,
             // ]);
             return back()->with('success', 'تمت اضافة المنتج الى السلة بنجاح');
-           
         }
 
         return 'This is your multi-tenant application. The id of the current tenant is '.tenant('id');
@@ -2290,23 +2291,22 @@ class TenantsController extends Controller
     public function remove_from_cart($id)
     {
         if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'supplier') {
-        if (session()->has('cart')) {
-            $cart = new Cart(session('cart'));
-        } else {
-            $cart = new Cart();
+            if (session()->has('cart')) {
+                $cart = new Cart(session('cart'));
+            } else {
+                $cart = new Cart();
+            }
+            $cart->remove($id);
+            session()->put('cart', $cart);
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+            if (session()->has('cart')) {
+                $cart = new Seller_Cart(session('cart'));
+            } else {
+                $cart = new Seller_Cart();
+            }
+            $cart->remove($id);
+            session()->put('cart', $cart);
         }
-        $cart->remove($id);
-        session()->put('cart', $cart);
-    }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
-        if (session()->has('cart')) {
-            $cart = new Seller_Cart(session('cart'));
-        } else {
-            $cart = new Seller_Cart();
-        }
-        $cart->remove($id);
-        session()->put('cart', $cart);
-        
-    }
 
         // return response()->json([
         //     'cart' => $cart,
@@ -2317,22 +2317,23 @@ class TenantsController extends Controller
     public function remove_from_cart_variation($id, $variation_id, $attribute_id)
     {
         if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'supplier') {
-        if (session()->has('cart')) {
-            $cart = new Cart(session('cart'));
-        } else {
-            $cart = new Cart();
+            if (session()->has('cart')) {
+                $cart = new Cart(session('cart'));
+            } else {
+                $cart = new Cart();
+            }
+            $cart->remove_variation($id, $variation_id, $attribute_id);
+            session()->put('cart', $cart);
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+            if (session()->has('cart')) {
+                $cart = new Seller_Cart(session('cart'));
+            } else {
+                $cart = new Seller_Cart();
+            }
+            $cart->remove_variation($id, $variation_id, $attribute_id);
+            session()->put('cart', $cart);
         }
-        $cart->remove_variation($id, $variation_id, $attribute_id);
-        session()->put('cart', $cart);
-    }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
-        if (session()->has('cart')) {
-            $cart = new Seller_Cart(session('cart'));
-        }else {
-            $cart = new Seller_Cart();
-        }
-        $cart->remove_variation($id, $variation_id, $attribute_id);
-        session()->put('cart', $cart);
-    }
+
         // return response()->json([
         //     'cart' => $cart,
         // ]);
@@ -2342,26 +2343,27 @@ class TenantsController extends Controller
     public function remove_all_from_cart()
     {
         if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'supplier') {
-        session()->forget('cart');
-        if (session()->has('cart')) {
-            $cart = new Cart(session('cart'));
-        } else {
-            $cart = new Cart();
+            session()->forget('cart');
+            if (session()->has('cart')) {
+                $cart = new Cart(session('cart'));
+            } else {
+                $cart = new Cart();
+            }
+            // $cart->removeAll();
+            // session()->forget('cart');
+            session()->put('cart', $cart);
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+            session()->forget('cart');
+            if (session()->has('cart')) {
+                $cart = new Seller_Cart(session('cart'));
+            } else {
+                $cart = new Seller_Cart();
+            }
+            // $cart->removeAll();
+            // session()->forget('cart');
+            session()->put('cart', $cart);
         }
-        // $cart->removeAll();
-        // session()->forget('cart');
-        session()->put('cart', $cart);
-    }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
-        session()->forget('cart');
-        if (session()->has('cart')) {
-            $cart = new Seller_Cart(session('cart'));
-        }else {
-            $cart = new Seller_Cart();
-        }
-        // $cart->removeAll();
-        // session()->forget('cart');
-        session()->put('cart', $cart);
-    }
+
         // return response()->json([
         //     'cart' => $cart,
         // ]);
@@ -2372,22 +2374,22 @@ class TenantsController extends Controller
     public function increment($id, $variation_id = null, $attribute_id = null)
     {
         if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'supplier') {
-        if (session()->has('cart')) {
-            $cart = new Cart(session('cart'));
-        } else {
-            $cart = new Cart();
+            if (session()->has('cart')) {
+                $cart = new Cart(session('cart'));
+            } else {
+                $cart = new Cart();
+            }
+            $cart->increment($id, $variation_id, $attribute_id);
+            session()->put('cart', $cart);
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+            if (session()->has('cart')) {
+                $cart = new Seller_Cart(session('cart'));
+            } else {
+                $cart = new Seller_Cart();
+            }
+            $cart->increment($id, $variation_id, $attribute_id);
+            session()->put('cart', $cart);
         }
-        $cart->increment($id, $variation_id, $attribute_id);
-        session()->put('cart', $cart);
-    }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
-        if (session()->has('cart')) {
-            $cart = new Seller_Cart(session('cart'));
-        }else {
-            $cart = new Seller_Cart();
-        }
-        $cart->increment($id, $variation_id, $attribute_id);
-        session()->put('cart', $cart);
-    }
 
         return response()->json([
             'cart' => $cart,
@@ -2399,22 +2401,22 @@ class TenantsController extends Controller
     public function decrement($id, $variation_id = null, $attribute_id = null)
     {
         if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'supplier') {
-        if (session()->has('cart')) {
-            $cart = new Cart(session('cart'));
-        } else {
-            $cart = new Cart();
+            if (session()->has('cart')) {
+                $cart = new Cart(session('cart'));
+            } else {
+                $cart = new Cart();
+            }
+            $cart->decrement($id, $variation_id, $attribute_id);
+            session()->put('cart', $cart);
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+            if (session()->has('cart')) {
+                $cart = new Seller_Cart(session('cart'));
+            } else {
+                $cart = new Seller_Cart();
+            }
+            $cart->decrement($id, $variation_id, $attribute_id);
+            session()->put('cart', $cart);
         }
-        $cart->decrement($id, $variation_id, $attribute_id);
-        session()->put('cart', $cart);
-    }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
-        if (session()->has('cart')) {
-            $cart = new Seller_Cart(session('cart'));
-        }else {
-            $cart = new Seller_Cart();
-        }
-        $cart->decrement($id, $variation_id, $attribute_id);
-        session()->put('cart', $cart);
-    }
 
         return response()->json([
             'cart' => $cart,
@@ -2512,13 +2514,13 @@ class TenantsController extends Controller
         // check if the cart hass products with discounts
         $products_discounts = 0;
         if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'supplier') {
-        foreach (session('cart')->items as $item) {
-            if (supplier_product_has_discount($item['id'])) {
-                $product = SupplierProducts::findOrFail($item['id']);
-                $products_discounts += ($product->price - $product->discount->discount_amount) * $item['qty'];
+            foreach (session('cart')->items as $item) {
+                if (supplier_product_has_discount($item['id'])) {
+                    $product = SupplierProducts::findOrFail($item['id']);
+                    $products_discounts += ($product->price - $product->discount->discount_amount) * $item['qty'];
+                }
             }
-        }
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             foreach (session('cart')->items as $item) {
                 if (seller_product_has_discount($item['id'])) {
                     $product = SellerProducts::findOrFail($item['id']);
@@ -2545,8 +2547,8 @@ class TenantsController extends Controller
         $couponCode = $request->input('coupon');
         $product_id = $request->input('product_id');
         if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'supplier') {
-        $product = SupplierProducts::findOrfail($product_id);
-        }else if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+            $product = SupplierProducts::findOrfail($product_id);
+        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             $product = SellerProducts::findOrfail($product_id);
         }
         $cart_amount = $request->input('totalPrice');

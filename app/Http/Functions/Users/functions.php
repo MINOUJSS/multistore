@@ -291,7 +291,12 @@ function is_valid_coupon_for_product(App\Models\userCoupons $coupon, $cart_amoun
 
 function is_blocked_customer($user_id, $order_id)
 {
+    if(get_user_data_from_id($user_id)->type=="supplier"){
     $order = App\Models\Supplier\SupplierOrders::findOrfail($order_id);
+    }else
+    {
+     $order = App\Models\Seller\SellerOrders::findOrfail($order_id);   
+    }
     $ip_address = $order->ip_address;
     $device_fingerprint = $order->device_fingerprint;
     $is_blocked = App\Models\UserBlockedCustomers::where('user_id', $user_id)->where('ip_address', $ip_address)->where('device_fingerprint', $device_fingerprint)->exists();
