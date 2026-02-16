@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tenants;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\Users\Sellers\SellerSendTelegramInfoAboutOrder;
+use App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet;
 use App\Jobs\Users\Suppliers\sendTelegramInfoAboutOrder;
 use App\Models\Baladia;
 use App\Models\BenefitSectionElements;
