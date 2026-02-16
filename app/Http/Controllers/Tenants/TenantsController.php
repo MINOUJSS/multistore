@@ -724,7 +724,9 @@ class TenantsController extends Controller
                     ];
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
-                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+
+                    // $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+
                 // if ($result['success']) {
                 //     return response()->json([
                 //         'message' => 'Order saved to Google Sheet',
@@ -992,8 +994,10 @@ class TenantsController extends Controller
                     ];
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
-                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
-                // if ($result['success']) {
+
+                    // $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                
+                    // if ($result['success']) {
                 //     return response()->json([
                 //         'message' => 'Order saved to Google Sheet',
                 //         'row' => $result['row']
@@ -1561,8 +1565,11 @@ class TenantsController extends Controller
                     ];
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
-                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
-                // if ($result['success']) {
+                    
+                    
+                    //$result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                
+                    // if ($result['success']) {
                 //     return response()->json([
                 //         'message' => 'Order saved to Google Sheet',
                 //         'row' => $result['row']
@@ -1932,8 +1939,10 @@ class TenantsController extends Controller
                     ];
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
-                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
-                // if ($result['success']) {
+                    
+                    //$result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                
+                    // if ($result['success']) {
                 //     return response()->json([
                 //         'message' => 'Order saved to Google Sheet',
                 //         'row' => $result['row']
