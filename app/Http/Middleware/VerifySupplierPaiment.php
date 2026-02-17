@@ -19,9 +19,7 @@ class VerifySupplierPaiment
     public function handle(Request $request, Closure $next): Response
     {
         $tenant_id=Auth::user()->tenant_id;
-        dd($tenant_id);
-        $supplier=Supplier::where('tenant_id',$tenant_id)->first();
-        
+        $supplier=Supplier::where('tenant_id',$tenant_id)->first(); 
         $subscription=SupplierPlanSubscription::where('supplier_id',$supplier->id)->first();
         if($subscription->status == 'pending') 
         {
