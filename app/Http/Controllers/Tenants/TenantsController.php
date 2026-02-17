@@ -2290,7 +2290,6 @@ class TenantsController extends Controller
             return back()->with('success', 'تمت اضافة المنتج الى السلة بنجاح');
         } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             $product = SellerProducts::findOrfail($request->product_id);
-            dd($product);
             $variation_id = $request->variation_id;
             $attribute_id = $request->attribute_id;
             if (session()->has('cart')) {
