@@ -35,6 +35,11 @@
             /* Disable sticky on mobile if desired */
             margin-bottom: 20px;
         }
+        /* Make the entire left column sticky */
+        .col-md-6:first-child {
+            position: relative !important;
+            top: 0px;
+        }
     }
 
     /* Make the entire left column sticky */
