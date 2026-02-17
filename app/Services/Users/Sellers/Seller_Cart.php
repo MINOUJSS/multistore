@@ -32,7 +32,7 @@ class Seller_Cart
         $price = get_seller_product_price($product->id);
 
         // get free shipping
-        if (is_free_shipping($product->id)) {
+        if (is_free_shipping_seller($product->id)) {
             $free_shipping = 'yes';
         } else {
             $free_shipping = 'no';
