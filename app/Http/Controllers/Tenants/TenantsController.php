@@ -711,7 +711,6 @@ class TenantsController extends Controller
                 // ], 201);
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
                 $user=get_user_data_from_supplier_id($supplierOrder->supplier_id);//get user data
-
                 if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
                     $data = [
                         'order_number' => $supplierOrder->order_number,
@@ -984,7 +983,8 @@ class TenantsController extends Controller
                 //     'order' => $sellerOrder
                 // ], 201);
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
-                if ($planId > 1) {
+                $user=get_user_data_from_seller_id($sellerOrder->seller_id);//get user data
+                if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
                     $data = [
                         'order_number' => $sellerOrder->order_number,
                         'customer_name' => $sellerOrder->customer_name,
@@ -1031,7 +1031,9 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
+                if(is_user_has_telegram_info_app($user->id)){
                 SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
+                }
                 //  $this->orderNotificationService->sendOrderNotificationToseller($sellerOrder);
                 // redirect to checkout page
                 if ($request->payment_method == 'chargily') {
@@ -1555,7 +1557,8 @@ class TenantsController extends Controller
                 //     'order' => $supplierOrder
                 // ], 201);
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
-                if ($planId > 1) {
+                              $user=get_user_data_from_supplier_id($supplierOrder->supplier_id);//get user data
+                if ($planId > 1 && is_user_has_google_sheet_app($user)) {
                     $data = [
                         'order_number' => $supplierOrder->order_number,
                         'customer_name' => $supplierOrder->customer_name,
@@ -1603,7 +1606,9 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
+                if(is_user_has_telegram_info_app($user)){
                 sendTelegramInfoAboutOrder::dispatch($supplierOrder);
+                }
                 //  $this->orderNotificationService->sendOrderNotificationToSupplier($supplierOrder);
                 // redirect to checkout page
                 if ($request->payment_method == 'chargily') {
@@ -1929,7 +1934,8 @@ class TenantsController extends Controller
                 //     'order' => $sellerOrder
                 // ], 201);
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
-                if ($planId > 1) {
+                $user=get_user_data_from_seller_id($sellerOrder->seller_id);//get user data
+                if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
                     $data = [
                         'order_number' => $sellerOrder->order_number,
                         'customer_name' => $sellerOrder->customer_name,
@@ -1976,7 +1982,9 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
+                if(is_user_has_telegram_info_app($user->id)){
                 SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
+                }
                 //  $this->orderNotificationService->sendOrderNotificationToseller($sellerOrder);
                 // redirect to checkout page
                 if ($request->payment_method == 'chargily') {
