@@ -430,6 +430,7 @@ function get_seller_product_category($product_id)
 function get_seller_product_price($product_id)
 {
     $product = App\Models\Seller\SellerProducts::findOrFail($product_id);
+    dd($product_id);
     if ($product->activeDiscount) {
         $price = $product->activeDiscount->discount_amount;
 

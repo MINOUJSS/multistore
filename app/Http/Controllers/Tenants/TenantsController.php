@@ -2298,7 +2298,6 @@ class TenantsController extends Controller
                 $cart = new Seller_Cart();
             }
             $cart->add($product, $variation_id, $attribute_id);
-                        dd($cart);
             session()->put('cart', $cart);
 
             // return response()->json([
