@@ -710,7 +710,7 @@ class TenantsController extends Controller
                 //     'order' => $supplierOrder
                 // ], 201);
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
-                $user=get_user_data_from_supplier_id($supplierOrder->supplier_id);//get user data
+                $user = get_user_data_from_supplier_id($supplierOrder->supplier_id); // get user data
                 if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
                     $data = [
                         'order_number' => $supplierOrder->order_number,
@@ -758,7 +758,7 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
-                if(is_user_has_telegram_info_app($user->id)){
+                if (is_user_has_telegram_info_app($user->id)) {
                     sendTelegramInfoAboutOrder::dispatch($supplierOrder);
                 }
                 //  $this->orderNotificationService->sendOrderNotificationToSupplier($supplierOrder);
@@ -983,7 +983,7 @@ class TenantsController extends Controller
                 //     'order' => $sellerOrder
                 // ], 201);
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
-                $user=get_user_data_from_seller_id($sellerOrder->seller_id);//get user data
+                $user = get_user_data_from_seller_id($sellerOrder->seller_id); // get user data
                 if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
                     $data = [
                         'order_number' => $sellerOrder->order_number,
@@ -1000,8 +1000,8 @@ class TenantsController extends Controller
                     // $result=$this->googleSheetService->addOrder($data);
 
                     $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
-                
-                    // if ($result['success']) {
+
+                // if ($result['success']) {
                 //     return response()->json([
                 //         'message' => 'Order saved to Google Sheet',
                 //         'row' => $result['row']
@@ -1031,8 +1031,8 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
-                if(is_user_has_telegram_info_app($user->id)){
-                SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
+                if (is_user_has_telegram_info_app($user->id)) {
+                    SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
                 }
                 //  $this->orderNotificationService->sendOrderNotificationToseller($sellerOrder);
                 // redirect to checkout page
@@ -1557,7 +1557,7 @@ class TenantsController extends Controller
                 //     'order' => $supplierOrder
                 // ], 201);
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
-                              $user=get_user_data_from_supplier_id($supplierOrder->supplier_id);//get user data
+                $user = get_user_data_from_supplier_id($supplierOrder->supplier_id); // get user data
                 if ($planId > 1 && is_user_has_google_sheet_app($user)) {
                     $data = [
                         'order_number' => $supplierOrder->order_number,
@@ -1572,11 +1572,10 @@ class TenantsController extends Controller
                     ];
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
-                    
-                    
+
                     $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
-                
-                    // if ($result['success']) {
+
+                // if ($result['success']) {
                 //     return response()->json([
                 //         'message' => 'Order saved to Google Sheet',
                 //         'row' => $result['row']
@@ -1606,8 +1605,8 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
-                if(is_user_has_telegram_info_app($user)){
-                sendTelegramInfoAboutOrder::dispatch($supplierOrder);
+                if (is_user_has_telegram_info_app($user)) {
+                    sendTelegramInfoAboutOrder::dispatch($supplierOrder);
                 }
                 //  $this->orderNotificationService->sendOrderNotificationToSupplier($supplierOrder);
                 // redirect to checkout page
@@ -1934,7 +1933,7 @@ class TenantsController extends Controller
                 //     'order' => $sellerOrder
                 // ], 201);
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
-                $user=get_user_data_from_seller_id($sellerOrder->seller_id);//get user data
+                $user = get_user_data_from_seller_id($sellerOrder->seller_id); // get user data
                 if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
                     $data = [
                         'order_number' => $sellerOrder->order_number,
@@ -1949,10 +1948,10 @@ class TenantsController extends Controller
                     ];
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
-                    
+
                     $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
-                
-                    // if ($result['success']) {
+
+                // if ($result['success']) {
                 //     return response()->json([
                 //         'message' => 'Order saved to Google Sheet',
                 //         'row' => $result['row']
@@ -1982,8 +1981,8 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
-                if(is_user_has_telegram_info_app($user->id)){
-                SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
+                if (is_user_has_telegram_info_app($user->id)) {
+                    SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
                 }
                 //  $this->orderNotificationService->sendOrderNotificationToseller($sellerOrder);
                 // redirect to checkout page
@@ -2291,6 +2290,7 @@ class TenantsController extends Controller
             return back()->with('success', 'تمت اضافة المنتج الى السلة بنجاح');
         } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             $product = SellerProducts::findOrfail($request->product_id);
+            dd($product);
             $variation_id = $request->variation_id;
             $attribute_id = $request->attribute_id;
             if (session()->has('cart')) {
