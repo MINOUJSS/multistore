@@ -332,11 +332,22 @@ function get_user_data_from_user_id($user_id)
     return $user;
 }
 // is_user_has_google_sheet
-function is_user_has_google_sheet($user_id)
+function is_user_has_google_sheet_app($user_id)
 {
     $user = App\Models\User::find($user_id);
     $google_sheet = $user->google_sheets()->exists();
     if ($google_sheet) {
+        return true;
+    } else {
+        return false;
+    }
+}
+//is_user_has_telegram_info_app
+function is_user_has_telegram_info_app($user_id)
+{
+    $user = App\Models\User::find($user_id);
+    $telegram_info = $user->telegrame_chat_id()->exists();
+    if ($telegram_info) {
         return true;
     } else {
         return false;

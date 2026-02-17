@@ -712,7 +712,7 @@ class TenantsController extends Controller
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
                 $user=get_user_data_from_supplier_id($supplierOrder->supplier_id);//get user data
 
-                if ($planId > 1 && is_user_has_google_sheet($user->id)) {
+                if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
                     $data = [
                         'order_number' => $supplierOrder->order_number,
                         'customer_name' => $supplierOrder->customer_name,
@@ -759,7 +759,9 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
-                sendTelegramInfoAboutOrder::dispatch($supplierOrder);
+                if(is_user_has_telegram_info_app($user->id)){
+                    sendTelegramInfoAboutOrder::dispatch($supplierOrder);
+                }
                 //  $this->orderNotificationService->sendOrderNotificationToSupplier($supplierOrder);
                 // redirect to checkout page
                 if ($request->payment_method == 'chargily') {
