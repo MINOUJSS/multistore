@@ -8,6 +8,7 @@ use App\Models\Seller\SellerAttribute;
 use App\Models\Seller\SellerProductAttributes;
 use App\Models\Seller\SellerProductDiscounts;
 use App\Models\Seller\SellerProductImages;
+use App\Models\Seller\SellerProductReviews;
 use App\Models\Seller\SellerProducts;
 use App\Models\Seller\SellerProductVariations;
 use App\Models\Seller\SellerProductVideos;
@@ -126,7 +127,7 @@ class SellerProductController extends Controller
             // رفع الصورة الأساسية
             if ($request->hasFile('add_image')) {
                 $path = $request->file('add_image')->store('seller/'.get_seller_store_name(auth()->user()->tenant_id)."/images/products/{$product->id}", 'public');
-                $url = Storage::disk('public')->url('tenantseller/app/public/'.$path);
+                $url = Storage::disk('public')->url('app/public/'.$path);
                 $product->image = $url;
                 $product->save();
             }
@@ -136,7 +137,7 @@ class SellerProductController extends Controller
                 $imagesData = [];
                 foreach ($request->file('add_images') as $image) {
                     $path = $image->store('seller/'.get_seller_store_name(auth()->user()->tenant_id)."/images/products/{$product->id}", 'public');
-                    $url = Storage::disk('public')->url('tenantseller/app/public/'.$path);
+                    $url = Storage::disk('public')->url('app/public/'.$path);
                     $imagesData[] = [
                         'product_id' => $product->id,
                         'image_path' => $url,
@@ -148,7 +149,7 @@ class SellerProductController extends Controller
             }
 
             // تقييم المنتج
-            SellerProductsReviews::create([
+            SellerProductReviews::create([
                 'product_id' => $product->id,
                 'rating' => $request->add_product_review,
                 'created_at' => now(),
@@ -248,7 +249,7 @@ class SellerProductController extends Controller
                         $file = $videos['file'][$i];
                         if ($file->isValid()) {
                             $path = $file->store(get_seller_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'seller');
-                            $filePath = Storage::disk('seller')->url('tenantseller/app/public/seller/'.$path);
+                            $filePath = Storage::disk('seller')->url('app/public/seller/'.$path);
                         }
                     }
 
@@ -293,7 +294,7 @@ class SellerProductController extends Controller
         $product_variations = SellerProductVariations::where('product_id', $product_id)->get();
         $product_discount = SellerProductDiscounts::where('product_id', $product_id)->first();
         $product_attributes = SellerProductAttributes::where('product_id', $product_id)->get();
-        $product_review = SellerProductsReviews::where('product_id', $product_id)->first();
+        $product_review = SellerProductReviews::where('product_id', $product_id)->first();
         $seller_attributes = SellerAttribute::all();
 
         return response()->json([
@@ -372,7 +373,7 @@ class SellerProductController extends Controller
             // رفع الصورة إلى نطاق المستأجر
             if ($request->hasFile('image')) {
                 // delete old image
-                $url = explode('storage/tenantseller/app/public/', $product->image);
+                $url = explode('storage/app/public/', $product->image);
                 if (count($url) >= 2) {
                     $imagePath = $url[1];
                     if (Storage::disk('public')->exists($imagePath)) {
@@ -381,7 +382,7 @@ class SellerProductController extends Controller
                 }
 
                 $path = $request->file('image')->store('seller/'.get_seller_store_name(auth()->user()->tenant_id).'/images/products/'.$product_id, 'public'); // التخزين في قرص المستأجر
-                $url = Storage::disk('public')->url('tenantseller/app/public/'.$path); // رابط الصورة
+                $url = Storage::disk('public')->url('app/public/'.$path); // رابط الصورة
                 $product->image = $url;
             }
 
@@ -390,7 +391,7 @@ class SellerProductController extends Controller
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $path = $image->store('seller/'.get_seller_store_name(auth()->user()->tenant_id).'/images/products/'.$product_id, 'public'); // حفظ الصور في storage/app/public/uploads/products
-                    $url = Storage::disk('public')->url('tenantseller/app/public/'.$path); // رابط الصورة
+                    $url = Storage::disk('public')->url('app/public/'.$path); // رابط الصورة
                     $imageUrls[] = $url;
                     // insert into product images table
                     $p_image = new SellerProductImages();
@@ -401,13 +402,13 @@ class SellerProductController extends Controller
             }
 
             // تقييم المنتج
-            $product_review = SellerProductsReviews::where('product_id', $product_id)->first();
+            $product_review = SellerProductReviews::where('product_id', $product_id)->first();
             if ($product_review) {
                 $product_review->rating = $request->product_review;
                 $product_review->update();
             } else {
                 // تقييم المنتج
-                SellerProductsReviews::create([
+                SellerProductReviews::create([
                     'product_id' => $product->id,
                     'rating' => $request->product_review,
                     'created_at' => now(),
@@ -476,7 +477,7 @@ class SellerProductController extends Controller
                             // رفع الملف الجديد
                             // $path = $request->update_videos['file'][$i]->store('products/videos', 'seller');
                             $path = $request->update_videos['file'][$i]->store(get_seller_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'seller');
-                            $updateData['file_path'] = Storage::disk('seller')->url('tenantseller/app/public/seller/'.$path);
+                            $updateData['file_path'] = Storage::disk('seller')->url('app/public/seller/'.$path);
                             $updateData['file_disk'] = 'seller';
                             $updateData['youtube_url'] = null;
                             $updateData['youtube_id'] = null;
@@ -509,7 +510,7 @@ class SellerProductController extends Controller
                         }
                     } elseif ($type === 'local' && isset($request->videos['file'][$i])) {
                         $path = $request->videos['file'][$i]->store(get_seller_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'seller');
-                        $data['file_path'] = Storage::disk('seller')->url('tenantseller/app/public/seller/'.$path);
+                        $data['file_path'] = Storage::disk('seller')->url('app/public/seller/'.$path);
                         $data['file_disk'] = 'seller';
                     }
 
@@ -669,7 +670,7 @@ class SellerProductController extends Controller
         $product_id = $image->product_id;
         if ($image != null) {
             // delete image from seller images folder
-            $url = explode('storage/tenantseller/app/public/', $image->image_path);
+            $url = explode('storage/app/public/', $image->image_path);
             $imagePath = $url[1];
             if (Storage::disk('public')->exists($imagePath)) {
                 Storage::disk('public')->delete($imagePath);
@@ -697,7 +698,7 @@ class SellerProductController extends Controller
         $product_id = $video->product_id;
         if ($video != null) {
             // delete video from seller videos folder
-            $url = explode('storage/tenantseller/app/public/', $video->file_path);
+            $url = explode('storage/app/public/', $video->file_path);
             $videoPath = $url[1];
             if (Storage::disk('public')->exists($videoPath)) {
                 Storage::disk('public')->delete($videoPath);
