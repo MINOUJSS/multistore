@@ -1981,19 +1981,19 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
-                // if (is_user_has_telegram_info_app($user->id)) {
-                //     SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
-                // }
+                if (is_user_has_telegram_info_app($user->id)) {
+                    SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
+                }
                 //  $this->orderNotificationService->sendOrderNotificationToseller($sellerOrder);
                 // redirect to checkout page
-                if ($request->payment_method == 'chargily') {
-                    // return view('stores.sellers.checkout.chargily.index');
-                    return redirect()->route('tenant.payments.show_chargily_pay', $sellerOrder->id);
-                }
-                if ($request->payment_method == 'verments') {
-                    // return view('stores.sellers.checkout.verments.index');
-                    return redirect()->route('tenant.payments.show_verments_pay', $sellerOrder->id);
-                }
+                // if ($request->payment_method == 'chargily') {
+                //     // return view('stores.sellers.checkout.chargily.index');
+                //     return redirect()->route('tenant.payments.show_chargily_pay', $sellerOrder->id);
+                // }
+                // if ($request->payment_method == 'verments') {
+                //     // return view('stores.sellers.checkout.verments.index');
+                //     return redirect()->route('tenant.payments.show_verments_pay', $sellerOrder->id);
+                // }
 
                 // إعادة المستخدم إلى صفحة الشكر
                 return redirect()->route('tenant.thanks')->with('success', 'شكراً لطلبك! سيتم التواصل معك قريبًا.');
