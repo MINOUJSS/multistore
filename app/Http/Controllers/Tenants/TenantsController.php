@@ -726,7 +726,7 @@ class TenantsController extends Controller
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
 
-                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                    $result = App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
 
                 // if ($result['success']) {
                 //     return response()->json([
@@ -759,7 +759,7 @@ class TenantsController extends Controller
                 }
                 // telegrame إرسال الإشعار للمورد
                 if (is_user_has_telegram_info_app($user->id)) {
-                    sendTelegramInfoAboutOrder::dispatch($supplierOrder);
+                    App\Jobs\Users\Suppliers\sendTelegramInfoAboutOrder::dispatch($supplierOrder);
                 }
                 //  $this->orderNotificationService->sendOrderNotificationToSupplier($supplierOrder);
                 // redirect to checkout page
@@ -999,7 +999,7 @@ class TenantsController extends Controller
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
 
-                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                    $result = App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
 
                 // if ($result['success']) {
                 //     return response()->json([
@@ -1573,7 +1573,7 @@ class TenantsController extends Controller
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
 
-                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                    $result = App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
 
                 // if ($result['success']) {
                 //     return response()->json([
@@ -1606,7 +1606,7 @@ class TenantsController extends Controller
                 }
                 // telegrame إرسال الإشعار للمورد
                 if (is_user_has_telegram_info_app($user->id)) {
-                    sendTelegramInfoAboutOrder::dispatch($supplierOrder);
+                    App\Jobs\Users\Suppliers\sendTelegramInfoAboutOrder::dispatch($supplierOrder);
                 }
                 //  $this->orderNotificationService->sendOrderNotificationToSupplier($supplierOrder);
                 // redirect to checkout page
@@ -1935,53 +1935,35 @@ class TenantsController extends Controller
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
                 
                 $user = get_user_data_from_seller_id($sellerOrder->seller_id); // get user data
-                // if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
-                //     $data = [
-                //         'order_number' => $sellerOrder->order_number,
-                //         'customer_name' => $sellerOrder->customer_name,
-                //         'phone' => $sellerOrder->phone,
-                //         'status' => $sellerOrder->status,
-                //         'total_price' => $sellerOrder->total_price,
-                //         'shipping_cost' => $sellerOrder->shipping_cost,
-                //         'payment_method' => $sellerOrder->payment_method,
-                //         'payment_status' => $sellerOrder->payment_status,
-                //         'shipping_address' => $sellerOrder->shipping_address,
-                //     ];
-                //     // $result = $this->sheetService->addOrder($data);
-                //     // $result=$this->googleSheetService->addOrder($data);
-                //     $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                dd($sellerOrder);
+                if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
+                    $data = [
+                        'order_number' => $sellerOrder->order_number,
+                        'customer_name' => $sellerOrder->customer_name,
+                        'phone' => $sellerOrder->phone,
+                        'status' => $sellerOrder->status,
+                        'total_price' => $sellerOrder->total_price,
+                        'shipping_cost' => $sellerOrder->shipping_cost,
+                        'payment_method' => $sellerOrder->payment_method,
+                        'payment_status' => $sellerOrder->payment_status,
+                        'shipping_address' => $sellerOrder->shipping_address,
+                    ];
 
-                // // if ($result['success']) {
-                // //     return response()->json([
-                // //         'message' => 'Order saved to Google Sheet',
-                // //         'row' => $result['row']
-                // //     ]);
-                // // }else
-                // // {
-                // //     return response()->json([
-                // //         'message' =>'error',
-                // //         // 'row'=>$result,
-                // //     ]);
-                // // }
-
-                // // return response()->json([
-                // //     'error' => 'Failed to save order'
-                // // ], 500);
-                // } else {
-                //     $data = [
-                //         'order_number' => $sellerOrder->order_number,
-                //         'customer_name' => $sellerOrder->customer_name,
-                //         'phone' => 'غير متاح في هذه الخطة',
-                //         'status' => $sellerOrder->status,
-                //         'total_price' => $sellerOrder->total_price,
-                //         'shipping_cost' => $sellerOrder->shipping_cost,
-                //         'payment_method' => $sellerOrder->payment_method,
-                //         'payment_status' => $sellerOrder->payment_status,
-                //         'shipping_address' => $sellerOrder->shipping_address,
-                //     ];
-                // }
-
-                   dd($user);                                 // telegrame إرسال الإشعار للمورد
+                    $result = App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                } else {
+                    $data = [
+                        'order_number' => $sellerOrder->order_number,
+                        'customer_name' => $sellerOrder->customer_name,
+                        'phone' => 0660000000,
+                        'status' => $sellerOrder->status,
+                        'total_price' => $sellerOrder->total_price,
+                        'shipping_cost' => $sellerOrder->shipping_cost,
+                        'payment_method' => $sellerOrder->payment_method,
+                        'payment_status' => $sellerOrder->payment_status,
+                        'shipping_address' => $sellerOrder->shipping_address,
+                    ];
+                }
+                // telegrame إرسال الإشعار للمورد
                 if (is_user_has_telegram_info_app($user->id)) {
                     SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
                 }
