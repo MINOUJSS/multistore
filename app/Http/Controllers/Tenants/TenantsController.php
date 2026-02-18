@@ -1949,7 +1949,7 @@ class TenantsController extends Controller
                     ];
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
-
+                    dd('hi');
                     $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
 
                 // if ($result['success']) {
@@ -1981,7 +1981,7 @@ class TenantsController extends Controller
                         'shipping_address' => $sellerOrder->shipping_address,
                     ];
                 }
-                dd('hi');
+                
                 // telegrame إرسال الإشعار للمورد
                 if (is_user_has_telegram_info_app($user->id)) {
                     SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
