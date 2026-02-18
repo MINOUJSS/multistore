@@ -1936,7 +1936,6 @@ class TenantsController extends Controller
                 
                 $user = get_user_data_from_seller_id($sellerOrder->seller_id); // get user data
                 if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
-                        dd($user);
                     $data = [
                         'order_number' => $sellerOrder->order_number,
                         'customer_name' => $sellerOrder->customer_name,
@@ -1969,6 +1968,7 @@ class TenantsController extends Controller
                 //     'error' => 'Failed to save order'
                 // ], 500);
                 } else {
+                    dd($user);
                     $data = [
                         'order_number' => $sellerOrder->order_number,
                         'customer_name' => $sellerOrder->customer_name,
