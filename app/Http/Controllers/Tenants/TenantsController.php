@@ -1933,6 +1933,7 @@ class TenantsController extends Controller
                 //     'order' => $sellerOrder
                 // ], 201);
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
+                dd('hi');
                 $user = get_user_data_from_seller_id($sellerOrder->seller_id); // get user data
                 if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
                     $data = [
@@ -1984,7 +1985,7 @@ class TenantsController extends Controller
                 if (is_user_has_telegram_info_app($user->id)) {
                     SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
                 }
-                dd('hi');
+                
                 //  $this->orderNotificationService->sendOrderNotificationToseller($sellerOrder);
                 // redirect to checkout page
                 if ($request->payment_method == 'chargily') {
