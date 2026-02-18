@@ -1628,7 +1628,7 @@ class TenantsController extends Controller
                 //     'error' => $e->getMessage()
                 // ], 500);
             }
-        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
+        } elseif (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'seller') {
             // strat seller order with items
             // التحقق من صحة البيانات
             $validatedData = $request->validate([
@@ -2014,8 +2014,11 @@ class TenantsController extends Controller
         if (!session()->has('success')) {
             return redirect()->back();
         }
-
-        return view('stores.suppliers.pages.thanks');
+        if (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'supplier') {
+            return view('stores.suppliers.pages.thanks');
+        } elseif (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'seller') {
+            return view('stores.sellers.pages.thanks');
+        }
     }
 
     // cod checkout
