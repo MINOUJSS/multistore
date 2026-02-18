@@ -1968,7 +1968,6 @@ class TenantsController extends Controller
                 //     'error' => 'Failed to save order'
                 // ], 500);
                 } else {
-                    dd($user);
                     $data = [
                         'order_number' => $sellerOrder->order_number,
                         'customer_name' => $sellerOrder->customer_name,
@@ -1981,11 +1980,13 @@ class TenantsController extends Controller
                         'shipping_address' => $sellerOrder->shipping_address,
                     ];
                 }
-                
-                // telegrame إرسال الإشعار للمورد
+
+                   dd($user);                                 // telegrame إرسال الإشعار للمورد
                 if (is_user_has_telegram_info_app($user->id)) {
                     SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
                 }
+                
+
                 
                 //  $this->orderNotificationService->sendOrderNotificationToseller($sellerOrder);
                 // redirect to checkout page
