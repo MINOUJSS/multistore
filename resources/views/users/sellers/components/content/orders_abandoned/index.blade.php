@@ -64,6 +64,72 @@
     </div>
 </div>
 
+    {{-- order details --}}
+    <div class="modal fade" id="viewOrderModal" aria-labelledby="viewOrderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تفاصيل الطلب <span id="order-number"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>معلومات العميل</h6>
+                            <p>
+                                الاسم: <span id="customer-name"></span><br>
+                                الهاتف: <span id="customer-phone"></span><br>
+                                البريد الإلكتروني: <span id="customer-email"></span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>معلومات الشحن</h6>
+                            <p>
+                                العنوان: <span id="shipping-address"></span><br>
+                                المدينة: <span id="shipping-city"></span><br>
+                                الرمز البريدي: <span id="shipping-zipcode"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6>المنتجات</h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>الكمية</th>
+                                    <th>السعر</th>
+                                    <th>الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody id="order-items">
+                                <!-- سيتم ملء البيانات هنا عبر AJAX -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-start">المجموع</td>
+                                    <td id="subtotal-price"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-start">الشحن</td>
+                                    <td id="shipping-cost"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-start">الإجمالي</td>
+                                    <td><strong id="total-price"></strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary" onclick="printInvoice()">طباعة الفاتورة</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {{-- Responsive CSS for Mobile/Tablet --}}
 <style>
 /* Make container and cards full width on mobile/tablet */
