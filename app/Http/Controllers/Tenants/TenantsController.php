@@ -1949,7 +1949,7 @@ class TenantsController extends Controller
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
 
-                   // $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
 
                 // if ($result['success']) {
                 //     return response()->json([
@@ -1981,9 +1981,9 @@ class TenantsController extends Controller
                     ];
                 }
                 // telegrame إرسال الإشعار للمورد
-                if (is_user_has_telegram_info_app($user->id)) {
-                    SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
-                }
+                // if (is_user_has_telegram_info_app($user->id)) {
+                //     SellerSendTelegramInfoAboutOrder::dispatch($sellerOrder);
+                // }
                 //  $this->orderNotificationService->sendOrderNotificationToseller($sellerOrder);
                 // redirect to checkout page
                 if ($request->payment_method == 'chargily') {
