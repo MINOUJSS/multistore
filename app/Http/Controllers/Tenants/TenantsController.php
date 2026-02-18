@@ -1935,8 +1935,8 @@ class TenantsController extends Controller
                 // إدراج الطلب في قوقل شيت مباشرة إذا كان الإشتراك يسمح بذالك
                 
                 $user = get_user_data_from_seller_id($sellerOrder->seller_id); // get user data
-                                    dd($user);
                 if ($planId > 1 && is_user_has_google_sheet_app($user->id)) {
+                        dd($user);
                     $data = [
                         'order_number' => $sellerOrder->order_number,
                         'customer_name' => $sellerOrder->customer_name,
