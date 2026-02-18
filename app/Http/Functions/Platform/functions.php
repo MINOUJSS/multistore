@@ -52,7 +52,12 @@ function get_order_abandoned_comition($plan_id)
 // plan phone visibilty autorization in normal order
 function plan_phone_visibilty_autorization($plan_id, $customer_name)
 {
-    $plan = App\Models\Supplier\SupplierPlan::where('id', $plan_id)->first();
+    $user = get_user_data(tenant('id'));
+    if ($user->type == 'supplier') {
+        $plan = App\Models\Supplier\SupplierPlan::where('id', $plan_id)->first();
+    } elseif ($user->type == 'seller') {
+        $plan = App\Models\Seller\SellerPlan::where('id', $plan_id)->first();
+    }
 
     if (get_user_data(tenant('id'))->freeOrder->quantity > 0 && strcasecmp($customer_name, 'test') !== 0) {
         $quntity = get_user_data(tenant('id'))->freeOrder->quantity;
