@@ -726,7 +726,7 @@ class TenantsController extends Controller
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
 
-                    $result = App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
 
                 // if ($result['success']) {
                 //     return response()->json([
@@ -759,7 +759,7 @@ class TenantsController extends Controller
                 }
                 // telegrame إرسال الإشعار للمورد
                 if (is_user_has_telegram_info_app($user->id)) {
-                    App\Jobs\Users\Suppliers\sendTelegramInfoAboutOrder::dispatch($supplierOrder);
+                    sendTelegramInfoAboutOrder::dispatch($supplierOrder);
                 }
                 //  $this->orderNotificationService->sendOrderNotificationToSupplier($supplierOrder);
                 // redirect to checkout page
@@ -999,7 +999,7 @@ class TenantsController extends Controller
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
 
-                    $result = App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
 
                 // if ($result['success']) {
                 //     return response()->json([
@@ -1573,7 +1573,7 @@ class TenantsController extends Controller
                     // $result = $this->sheetService->addOrder($data);
                     // $result=$this->googleSheetService->addOrder($data);
 
-                    $result = App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
 
                 // if ($result['success']) {
                 //     return response()->json([
@@ -1606,7 +1606,7 @@ class TenantsController extends Controller
                 }
                 // telegrame إرسال الإشعار للمورد
                 if (is_user_has_telegram_info_app($user->id)) {
-                    App\Jobs\Users\Suppliers\sendTelegramInfoAboutOrder::dispatch($supplierOrder);
+                    sendTelegramInfoAboutOrder::dispatch($supplierOrder);
                 }
                 //  $this->orderNotificationService->sendOrderNotificationToSupplier($supplierOrder);
                 // redirect to checkout page
@@ -1948,7 +1948,7 @@ class TenantsController extends Controller
                         'shipping_address' => $sellerOrder->shipping_address,
                     ];
 
-                    $result = App\Jobs\Users\Suppliers\sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
+                    $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
                 } else {
                     $data = [
                         'order_number' => $sellerOrder->order_number,
