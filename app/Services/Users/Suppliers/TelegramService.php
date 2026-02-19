@@ -20,29 +20,32 @@ class TelegramService
         $response = Http::post("{$this->apiUrl}/sendMessage", [
             'chat_id' => $chatId,
             'text' => $message,
-            'parse_mode' => 'HTML'
+            'parse_mode' => 'HTML',
         ]);
 
         return $response->successful();
     }
-    //get Updates
+
+    // get Updates
     public function getUpdates()
     {
         $response = Http::post("{$this->apiUrl}/getUpdates", [
             'offset' => 0,
             'timeout' => 30,
         ]);
+
         return $response;
     }
-        //setWebhook
+
+    // setWebhook
     public function setWebhook()
     {
-        $url = 'https://a9f4e3a73f42.ngrok-free.app/test/api/webhook';
-        //$response = Telegram::setWebhook(['url' => $url]);
+        $url = config('app.url').'/test/api/webhook';
+        // $response = Telegram::setWebhook(['url' => $url]);
         $response = Http::post("{$this->apiUrl}/setWebhook", [
             'url' => $url,
         ]);
-        
+
         return $response ? 'تم إعداد الويب هوك بنجاح' : 'فشل الإعداد';
     }
 }

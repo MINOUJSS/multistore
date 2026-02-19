@@ -63,7 +63,7 @@
         </div>
     </div>
 </div>
-
+<!--start modal -->
     {{-- order details --}}
     <div class="modal fade" id="viewOrderModal" aria-labelledby="viewOrderModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -130,6 +130,7 @@
             </div>
         </div>
     </div>
+    <!--end modal -->
 {{-- Responsive CSS for Mobile/Tablet --}}
 <style>
 /* Make container and cards full width on mobile/tablet */
