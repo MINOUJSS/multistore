@@ -2,15 +2,15 @@
 
 namespace App\Services\Users\Sellers;
 
-use \App\Models\Seller\SellerOrders;
-use \App\Models\Seller\SellerOrderItems;
-use \App\Models\Seller\Seller;
+use App\Models\Seller\Seller;
+use App\Models\Seller\SellerOrderItems;
+use App\Models\Seller\SellerOrders;
 
 class Seller_OrderNotificationService
 {
     protected $telegramService;
 
-    public function __construct(TelegramService $telegramService)
+    public function __construct(Seller_TelegramService $telegramService)
     {
         $this->telegramService = $telegramService;
     }
@@ -20,9 +20,9 @@ class Seller_OrderNotificationService
         // الحصول على بيانات المورد
         $seller = Seller::find($order->seller_id);
         // dd($seller);
-        $user=get_user_data_from_seller_id($seller->id);
-        $chat_ids=$user->telegrame_chat_id;
-        $chat_id=json_decode($chat_ids[0]->data)->chat_id;
+        $user = get_user_data_from_seller_id($seller->id);
+        $chat_ids = $user->telegrame_chat_id;
+        $chat_id = json_decode($chat_ids[0]->data)->chat_id;
 
         if (!$seller || !$chat_ids) {
             return false;
@@ -41,14 +41,14 @@ class Seller_OrderNotificationService
     protected function buildOrderMessage(SellerOrders $order)
     {
         $items = SellerOrderItems::where('order_id', $order->id)->with('product')->get();
-        
+
         $message = "<b>🛒 طلب جديد #{$order->id}</b>\n";
-        $message .= "📅 التاريخ: " . $order->created_at->format('Y-m-d H:i') . "\n";
-        $message .= "👤 العميل: {$order->customer_name}\n"; 
-        if($order->phone_visiblity == 1){
-        $message .= "📞 الهاتف: <a href='tel:{$order->phone}'>{$order->phone}</a>\n\n";  
-        }else{
-        $message .= "📞 الهاتف: غير متوفر في الخطة المجانية\n\n";
+        $message .= '📅 التاريخ: '.$order->created_at->format('Y-m-d H:i')."\n";
+        $message .= "👤 العميل: {$order->customer_name}\n";
+        if ($order->phone_visiblity == 1) {
+            $message .= "📞 الهاتف: <a href='tel:{$order->phone}'>{$order->phone}</a>\n\n";
+        } else {
+            $message .= "📞 الهاتف: غير متوفر في الخطة المجانية\n\n";
         }
         $message .= "📦 المنتجات:\n";
 

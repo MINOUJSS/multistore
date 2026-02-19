@@ -3,8 +3,8 @@
 namespace App\Jobs\Users\Sellers;
 
 use App\Models\Seller\SellerOrders;
-use App\Services\Users\Suppliers\OrderNotificationService;
-use App\Services\Users\Suppliers\TelegramService;
+use App\Services\Users\Sellers\Seller_OrderNotificationService;
+use App\Services\Users\Sellers\Seller_TelegramService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -33,7 +33,7 @@ class SellerSendTelegramInfoAboutOrder implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->notification = new OrderNotificationService(new TelegramService());
+        $this->notification = new Seller_OrderNotificationService(new Seller_TelegramService());
         $this->notification->sendOrderNotificationToSeller($this->order);
     }
 }
