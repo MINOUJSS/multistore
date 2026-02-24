@@ -3,7 +3,7 @@
     <div class="logo-box text-center">
         <img class="logo-image" src="{{asset('asset/v1/users/dashboard')}}/img/logo/store.png" alt="" widgh="50px" height="50px">
         <div class="user-name">
-            <h6>{{Auth::user()->tenant_id}}</h6>
+            <h6 class="text-center">{{Auth::user()->tenant_id}}</h6>
         </div>
     </div>   
     <hr>
