@@ -330,6 +330,8 @@ class SupplierSubscriptionController extends Controller
         $order->status = 'approved';
         $order->payment_status = 'paid';
         $order->payment_method = 'wallet';
+        $order->start_date = now();
+        $order->end_date = now()->addDays($order->duration);
         $order->save();
         // update supplier plan subscription
         $supplier_plan_subscription = SupplierPlanSubscription::where('supplier_id', $order->supplier_id)->first();
