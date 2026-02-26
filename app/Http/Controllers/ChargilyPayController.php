@@ -384,7 +384,7 @@ class ChargilyPayController extends Controller
         if ($payment !== null && $payment->status == 'paid') {
             // get user type
             if ($payment->payment_type == 'wallet_topup') {
-                $user = get_user_data_from_id($payment->reference_id);
+                $user = get_user_data_from_id($payment->payment_reference_id);
                 Log::info('user', [$user]);
                 if ($user->type == 'seller') {
                     return redirect()->route('seller.wallet')->with('success', 'تمت عملية الدفع بنجاح');
