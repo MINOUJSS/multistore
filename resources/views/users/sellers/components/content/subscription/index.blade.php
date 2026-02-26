@@ -11,7 +11,7 @@
 @endif
 <div class="container mt-4">
     <h1 class="text-center mb-4">الاشتراك</h1>
-    @if(is_seller_has_plan_order(get_seller_data(auth()->user()->tenant_id)->id))
+    @if(is_seller_has_plan_order(get_seller_data(auth()->user()->tenant_id)->id) && get_seller_data(auth()->user()->tenant_id)->orderPlan[0]->payment_method!=null)
     <div class="card">
         <div class="card-body">
                 <div class="alert alert-success d-flex align-items-center" role="alert">
