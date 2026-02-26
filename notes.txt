@@ -5,5 +5,4 @@
 إنجاز الشاشة الرئيسية للأدمن 
 عمل لوقو للموقع
 تعديل الصور في الموقع ثم المتجر
-create telegram bot to check baridimob ccp paiment to aprovet.
-daily email raport about PANDDING PAIMENT
+daily email OR telegram message raport about PANDDING PAIMENT
