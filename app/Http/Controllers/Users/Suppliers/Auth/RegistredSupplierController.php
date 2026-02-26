@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users\Suppliers\Auth;
 use App\Events\CreateSupplierEvent;
 use App\Events\UserLogedInEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Supplier\Supplier;
 use App\Models\Supplier\SupplierPlan;
 use App\Models\Supplier\SupplierPlanPrices;
@@ -12,6 +13,7 @@ use App\Models\Supplier\SupplierPlanSubscription;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserFreeOrder;
+use App\Notifications\Admins\NewUserNotification;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -166,6 +168,12 @@ class RegistredSupplierController extends Controller
                 event(new UserLogedInEvent(auth()->user()));
 
                 event(new CreateSupplierEvent($supplier));
+
+                // inform admins about new seller
+                $admins = Admin::all();
+                foreach ($admins as $admin) {
+                    $admin->notify(new NewUserNotification($user));
+                }
 
                 // redirect to dashboard of confirme plan page
                 if ($plan->price == 0) {

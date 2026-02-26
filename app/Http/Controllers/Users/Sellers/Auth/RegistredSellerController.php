@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users\Sellers\Auth;
 use App\Events\CreateSellerEvent;
 use App\Events\UserLogedInEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Seller\Seller;
 use App\Models\Seller\SellerPlan;
 use App\Models\Seller\SellerPlanPrices;
@@ -12,6 +13,7 @@ use App\Models\Seller\SellerPlanSubscription;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserFreeOrder;
+use App\Notifications\Admins\NewUserNotification;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -166,6 +168,12 @@ class RegistredSellerController extends Controller
                 event(new UserLogedInEvent(auth()->user()));
 
                 event(new CreateSellerEvent($seller));
+
+                // inform admins about new seller
+                $admins = Admin::all();
+                foreach ($admins as $admin) {
+                    $admin->notify(new NewUserNotification($user));
+                }
 
                 // redirect to dashboard of confirme plan page
                 if ($plan->price == 0) {
