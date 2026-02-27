@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Models\Seller\SellerPlanSubscription;
 use App\Models\Supplier\SupplierPlanSubscription;
 use App\Models\User;
+use App\Services\Users\Suppliers\TelegramService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +19,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        // تبليغ أدمين عن وجود تعاملات مالية على المنصة تنتظر المراجعة
+        $schedule->call(function () {
+            $telegramService = app(TelegramService::class);
+            $telegramService->sendMessage(env('ADMIN_CHAT_ID'), 'تبليغ أدمين عن وجود تعاملات مالية على المنصة تنتظر المراجعة');
+        })->everyMinute();
         // تغيير الإشتراكات المنتهية الصلاحية إلى الخطة المجانية
         // إشتركات الموردين الذين ينتهون صلاحية الاشتراك
         $schedule->call(function () {

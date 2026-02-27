@@ -134,7 +134,7 @@ function appDiffInDays($dateA, $dateB)
     $date1 = Carbon\Carbon::parse($dateA);
     $date2 = Carbon\Carbon::parse($dateB);
 
-    $diffInDays = $date1->diffInDays($date2);
+    $diffInDays = $date1->diffInDays($date2) + 1;
 
     return $diffInDays;
 }
