@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             $telegramService = app(TelegramService::class);
             $telegramService->sendMessage(env('ADMIN_CHAT_ID'), 'تبليغ أدمين عن وجود تعاملات مالية على المنصة تنتظر المراجعة');
-        })->everyMinute();
+        })->dailyAt('12:00');
         // تغيير الإشتراكات المنتهية الصلاحية إلى الخطة المجانية
         // إشتركات الموردين الذين ينتهون صلاحية الاشتراك
         $schedule->call(function () {
