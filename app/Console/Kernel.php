@@ -48,7 +48,7 @@ class Kernel extends ConsoleKernel
 
             app(TelegramService::class)
                 ->sendMessage(env('ADMIN_CHAT_ID'), trim($message));
-        })->dailyAt('9:00');
+        })->dailyAt('11:12');
         /*:::::::::::::::::::::::::::::::::::::::::::::::::::::
 
         :::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
