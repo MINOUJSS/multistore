@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\FinancialLedger;
+use App\Observers\FinancialLedgerObserver;
 use App\Services\Users\Suppliers\OrderNotificationService;
 use App\Services\Users\Suppliers\TelegramService;
 use Illuminate\Pagination\Paginator;
@@ -33,5 +35,6 @@ class AppServiceProvider extends ServiceProvider
         // Paginator::defaultView('vendor.pagination.default');
 
         // Paginator::defaultSimpleView('vendor.pagination.simple-default');
+        FinancialLedger::observe(FinancialLedgerObserver::class);
     }
 }

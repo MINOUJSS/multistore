@@ -2,6 +2,7 @@
 
 namespace App\Models\Seller;
 
+use App\Models\FinancialLedger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,5 +33,10 @@ class SellerPlanOrder extends Model
     public function plan()
     {
         return $this->belongsTo(SellerPlan::class, 'plan_id');
+    }
+
+    public function financialLedgers()
+    {
+        return $this->morphOne(FinancialLedger::class, 'source');
     }
 }

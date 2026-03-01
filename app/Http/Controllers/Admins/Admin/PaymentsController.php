@@ -92,6 +92,20 @@ class PaymentsController extends Controller
 
             // حساب قيمة الاشتراك بعد خصم باقي الإشتراك القديم و شحن الباقي في المحفظة
 
+            // insert this income in financilLedger table
+            \App\Models\FinancialLedger::create([
+                'owner_type' => \App\Models\Admin::class,
+                'owner_id' => 1, // أدمن المنصة
+
+                'source_type' => SupplierPlanSubscription::class,
+                'source_id' => $subscription->id,
+
+                'amount' => $request->price - $request->discount,
+                'type' => 'income',
+                'category' => 'supplier_subscription',
+                'note' => 'تم دفع اشتراك مورد',
+            ]);
+
             DB::commit(); // تأكيد كل العمليات
 
             return back()->with('success', 'تمت الموافقة على الطلب وتم تفعيل الاشتراك.');
@@ -136,6 +150,20 @@ class PaymentsController extends Controller
 
             // حساب قيمة الاشتراك بعد خصم باقي الإشتراك القديم و شحن الباقي في المحفظة
 
+            // insert this income in financilLedger table
+            \App\Models\FinancialLedger::create([
+                'owner_type' => \App\Models\Admin::class,
+                'owner_id' => 1, // أدمن المنصة
+
+                'source_type' => SellerPlanSubscription::class,
+                'source_id' => $subscription->id,
+
+                'amount' => $request->price - $request->discount,
+                'type' => 'income',
+                'category' => 'seller_subscription',
+                'note' => 'تم دفع اشتراك بائع',
+            ]);
+
             DB::commit(); // تأكيد كل العمليات
 
             return back()->with('success', 'تمت الموافقة على الطلب وتم تفعيل الاشتراك.');
@@ -167,6 +195,20 @@ class PaymentsController extends Controller
         $request->update();
         $balance->save();
 
+        // insert this income in financilLedger table
+        \App\Models\FinancialLedger::create([
+            'owner_type' => \App\Models\Admin::class,
+            'owner_id' => 1, // أدمن المنصة
+
+            'source_type' => UserBalance::class,
+            'source_id' => $balance->id,
+
+            'amount' => $request->amount,
+            'type' => 'income',
+            'category' => 'wallet_topup',
+            'note' => 'تم شحن الرصيد',
+        ]);
+
         return back()->with('success', 'تمت الموافقة على الطلب وتم شحن الرصيد.');
     }
 
@@ -190,6 +232,20 @@ class PaymentsController extends Controller
         // update invoice description;
         $invoice->description = 'تمت الموافقة على الطلب وتم تسديد الفاتورة .';
         $invoice->update();
+
+        // insert this income in financilLedger table
+        \App\Models\FinancialLedger::create([
+            'owner_type' => \App\Models\Admin::class,
+            'owner_id' => 1, // أدمن المنصة
+
+            'source_type' => UserInvoice::class,
+            'source_id' => $invoice->id,
+
+            'amount' => $invoice->amount,
+            'type' => 'income',
+            'category' => 'user_invoice',
+            'note' => 'تم دفع فاتورة مستخدم',
+        ]);
 
         return back()->with('success', 'تمت الموافقة على الطلب وتم تسديد الفاتورة.');
     }

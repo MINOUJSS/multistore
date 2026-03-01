@@ -2,6 +2,7 @@
 
 namespace App\Models\Seller;
 
+use App\Models\FinancialLedger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,5 +17,10 @@ class SellerPlanSubscription extends Model
     public function Seller(): BelongsTo
     {
         return $this->BelongsTo(Seller::class);
+    }
+
+    public function financialLedgers()
+    {
+        return $this->morphOne(FinancialLedger::class, 'source');
     }
 }

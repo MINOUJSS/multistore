@@ -2,6 +2,7 @@
 
 namespace App\Models\Seller;
 
+use App\Models\FinancialLedger;
 use App\Notifications\Users\Sellers\SellerResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -196,5 +197,10 @@ class Seller extends Authenticatable implements CanResetPasswordContract
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new SellerResetPasswordNotification($token));
+    }
+
+    public function financialLedgers()
+    {
+        return $this->morphMany(FinancialLedger::class, 'owner');
     }
 }

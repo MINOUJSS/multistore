@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Models\FinancialLedger;
 use App\Models\Seller\SellerPlanSubscription;
 use App\Models\Supplier\SupplierPlanSubscription;
 use App\Models\User;
@@ -19,11 +20,38 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        // تبليغ أدمين عن وجود تعاملات مالية على المنصة تنتظر المراجعة
+        /*:::::::::::::::::::::::::::::::::::::::::::::::::::::
+        // تقرير المالي اليومي
+        :::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         $schedule->call(function () {
-            $telegramService = app(TelegramService::class);
-            $telegramService->sendMessage(env('ADMIN_CHAT_ID'), 'تبليغ أدمين عن وجود تعاملات مالية على المنصة تنتظر المراجعة');
-        })->dailyAt('12:00');
+            $today = now()->startOfDay();
+
+            $income = FinancialLedger::where('type', 'income')
+                ->where('created_at', '>=', $today)
+                ->sum('amount');
+
+            $expense = FinancialLedger::where('type', 'expense')
+                ->where('created_at', '>=', $today)
+                ->sum('amount');
+
+            if ($income == 0 && $expense == 0) {
+                return;
+            }
+
+            $message = "
+            📊 <b>التقرير المالي اليومي</b>
+
+            💰 إجمالي المداخيل: {$income}
+            💸 إجمالي المصاريف: {$expense}
+            📈 الصافي: ".($income - $expense).'
+            📅 التاريخ: '.now()->format('Y-m-d');
+
+            app(TelegramService::class)
+                ->sendMessage(env('ADMIN_CHAT_ID'), trim($message));
+        })->dailyAt('9:00');
+        /*:::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+        :::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         // تغيير الإشتراكات المنتهية الصلاحية إلى الخطة المجانية
         // إشتركات الموردين الذين ينتهون صلاحية الاشتراك
         $schedule->call(function () {

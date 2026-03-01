@@ -452,6 +452,19 @@ class ChargilyPayController extends Controller
                                             'outstanding_amount' => $outstanding,
                                         ]);
                                     }
+                                    // insert this income in financilLedger table
+                                    \App\Models\FinancialLedger::create([
+                                        'owner_type' => \App\Models\Admin::class,
+                                        'owner_id' => 1, // أدمن المنصة
+
+                                        'source_type' => \App\Models\UserInvoice::class,
+                                        'source_id' => $invoice->id,
+
+                                        'amount' => $checkout->getAmount(),
+                                        'type' => 'income',
+                                        'category' => 'user_invoice',
+                                        'note' => 'تم دفع فاتورة مستخدم',
+                                    ]);
                                 }
                                 break;
                                 // start supplier actions
@@ -477,6 +490,19 @@ class ChargilyPayController extends Controller
                                     $subscription->subscription_end_date = now()->addDays($order->duration);
                                     $subscription->status = $status === 'paid' ? 'paid' : 'free';
                                     $subscription->update();
+                                    // insert this income in financilLedger table
+                                    \App\Models\FinancialLedger::create([
+                                        'owner_type' => \App\Models\Admin::class,
+                                        'owner_id' => 1, // أدمن المنصة
+
+                                        'source_type' => \App\Models\Supplier\SupplierPlanSubscription::class,
+                                        'source_id' => $subscription->id,
+
+                                        'amount' => $checkout->getAmount(),
+                                        'type' => 'income',
+                                        'category' => 'supplier_subscription',
+                                        'note' => 'تم دفع اشتراك مورد',
+                                    ]);
                                 }
                                 break;
 
@@ -502,6 +528,19 @@ class ChargilyPayController extends Controller
                                     $subscription->subscription_end_date = now()->addDays($order->duration);
                                     $subscription->status = $status === 'paid' ? 'paid' : 'free';
                                     $subscription->update();
+                                    // insert this income in financilLedger table
+                                    \App\Models\FinancialLedger::create([
+                                        'owner_type' => \App\Models\Admin::class,
+                                        'owner_id' => 1, // أدمن المنصة
+
+                                        'source_type' => \App\Models\Supplier\SupplierPlanSubscription::class,
+                                        'source_id' => $subscription->id,
+
+                                        'amount' => $checkout->getAmount(),
+                                        'type' => 'income',
+                                        'category' => 'supplier_subscription',
+                                        'note' => 'تم دفع اشتراك مورد',
+                                    ]);
                                 }
                                 break;
                             case 'supplier_order':
@@ -542,6 +581,19 @@ class ChargilyPayController extends Controller
                                     $subscription->subscription_end_date = now()->addDays($order->duration);
                                     $subscription->status = $status === 'paid' ? 'paid' : 'free';
                                     $subscription->update();
+                                    // insert this income in financilLedger table
+                                    \App\Models\FinancialLedger::create([
+                                        'owner_type' => \App\Models\Admin::class,
+                                        'owner_id' => 1, // أدمن المنصة
+
+                                        'source_type' => SellerPlanSubscription::class,
+                                        'source_id' => $subscription->id,
+
+                                        'amount' => $checkout->getAmount(),
+                                        'type' => 'income',
+                                        'category' => 'seller_subscription',
+                                        'note' => 'تم دفع اشتراك بائع',
+                                    ]);
                                 }
                                 break;
 
@@ -567,6 +619,19 @@ class ChargilyPayController extends Controller
                                     $subscription->subscription_end_date = now()->addDays($order->duration);
                                     $subscription->status = $status === 'paid' ? 'paid' : 'free';
                                     $subscription->update();
+                                    // insert this income in financilLedger table
+                                    \App\Models\FinancialLedger::create([
+                                        'owner_type' => \App\Models\Admin::class,
+                                        'owner_id' => 1, // أدمن المنصة
+
+                                        'source_type' => SellerPlanSubscription::class,
+                                        'source_id' => $subscription->id,
+
+                                        'amount' => $checkout->getAmount(),
+                                        'type' => 'income',
+                                        'category' => 'seller_subscription',
+                                        'note' => 'تم دفع اشتراك بائع',
+                                    ]);
                                 }
                                 break;
                             case 'seller_order':
@@ -597,6 +662,19 @@ class ChargilyPayController extends Controller
                                     'transaction_type' => 'addition',
                                     'amount' => $checkout->getAmount(),
                                     'description' => 'شحن الرصيد بواسطة '.$checkout->getPaymentMethod().' رابط العملية: <a href="'.$checkout->getUrl().'" target="_blank">إضغط هنا</a>',
+                                ]);
+                                // insert this income in financilLedger table
+                                \App\Models\FinancialLedger::create([
+                                    'owner_type' => \App\Models\Admin::class,
+                                    'owner_id' => 1, // أدمن المنصة
+
+                                    'source_type' => \App\Models\UserBalance::class,
+                                    'source_id' => $balance->id,
+
+                                    'amount' => $checkout->getAmount(),
+                                    'type' => 'income',
+                                    'category' => 'wallet_topup',
+                                    'note' => 'تم شحن الرصيد',
                                 ]);
 
                                 break;

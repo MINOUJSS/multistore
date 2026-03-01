@@ -7,13 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+
 // use Illuminate\Database\Eloquent\Model;
 
 class Admin extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
-    protected $guard='admin';
+    protected $guard = 'admin';
     /**
      * The attributes that are mass assignable.
      *
@@ -25,7 +28,7 @@ class Admin extends Authenticatable
         'email',
         'password',
         'phone',
-        'type'
+        'type',
     ];
 
     /**
@@ -47,4 +50,9 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function financialLedgers()
+    {
+        return $this->morphMany(FinancialLedger::class, 'owner');
+    }
 }

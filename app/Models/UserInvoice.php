@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserInvoice extends Model
 {
     use HasFactory;
-    //
+
     protected $fillable = [
         'user_id',
         'invoice_number',
@@ -19,16 +19,19 @@ class UserInvoice extends Model
         'due_date',
         'paid_at',
     ];
-    
-    //
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    //
+
     public function details()
     {
         return $this->hasMany(UserInvoiceDetails::class, 'invoice_id');
     }
 
+    public function financialLedgers()
+    {
+        return $this->morphOne(FinancialLedger::class, 'source');
+    }
 }

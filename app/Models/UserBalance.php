@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class UserBalance extends Model
 {
     use HasFactory;
-    //
+
     protected $fillable = [
         'user_id',
         'balance',
         'outstanding_amount',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
+
+    public function financialLedgers()
+    {
+        return $this->morphOne(FinancialLedger::class, 'source');
+    }
 }

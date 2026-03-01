@@ -6,3 +6,4 @@
 عمل لوقو للموقع
 تعديل الصور في الموقع ثم المتجر
 daily email OR telegram message raport about PANDDING PAIMENT
+set telegram webhook btn for admin
