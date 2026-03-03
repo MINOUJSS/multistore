@@ -5,6 +5,7 @@ use App\Http\Controllers\Admins\Admin\AdminDisputeController;
 use App\Http\Controllers\Admins\Admin\AdminEmployeeController;
 use App\Http\Controllers\Admins\admin\ArchivesDisputesController;
 use App\Http\Controllers\Admins\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admins\Admin\FinancialDashboardController;
 use App\Http\Controllers\Admins\Admin\NotificationController;
 use App\Http\Controllers\Admins\Admin\PaymentsController;
 use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedController;
@@ -95,6 +96,9 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::put('/ah-admin/employees/{id}', [AdminEmployeeController::class, 'update'])->name('employees.update');
                     Route::delete('/ah-admin/employees/{id}', [AdminEmployeeController::class, 'destroy'])->name('employees.destroy');
                 });
+                // finacial reports routes
+                Route::get('/ah-admin/financial-dashboard', [FinancialDashboardController::class, 'index'])
+    ->name('financial.dashboard');
             });
         });
     });

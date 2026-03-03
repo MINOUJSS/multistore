@@ -15,7 +15,7 @@ class SellerWalletController extends Controller
                                 ->where('transaction_type', 'addition')
                                 ->where('status', 'pending')
                                 ->sum('amount');
-        $additions = BalanceTransaction::where('user_id', auth()->user()->id)->where('transaction_type', 'addition')->where('status', '!=', 'null')->get();
+        $additions = BalanceTransaction::orderBy('id', 'desc')->where('user_id', auth()->user()->id)->where('transaction_type', 'addition')->where('status', '!=', 'null')->get();
 
         return view('users.sellers.payments.wallet.charge.index', compact('additions', 'current_balance', 'pending_balance'));
     }

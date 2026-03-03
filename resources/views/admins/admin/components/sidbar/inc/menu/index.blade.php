@@ -6,6 +6,7 @@
     <div class="menu">
         <div class="item"><a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-gauge"></i> الرئيسية</a></div>
         @if (auth()->guard('admin')->user()->type == 'admin')
+        <div class="item"><a href="{{ route('admin.financial.dashboard') }}"><i class="fa-solid fa-money-bill"></i> المالية</a></div>
         <div class="item">
             <a class="sub-btn" href="#"><i class="fa-solid fa-users-gear"></i>إدارة الموظفين
                 <i class="fa-solid fa-angle-left dropdown"></i>

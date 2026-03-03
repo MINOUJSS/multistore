@@ -15,6 +15,6 @@ class AdminController extends Controller
         $sellers = User::where('type', 'seller')->get();
         $marketers = User::where('type', 'marketer')->get();
 
-        return view('admins.admin.index', compact('users', 'suppliers', 'sellers', 'marketers'));
+        return view('admins.admin.dashboard.index', compact('users', 'suppliers', 'sellers', 'marketers'));
     }
 }
