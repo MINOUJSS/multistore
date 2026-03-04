@@ -90,9 +90,8 @@ class Kernel extends ConsoleKernel
                 ->with('supplier')
                 ->get();
 
-            $amount = ($order->price - $order->discount);
-
             foreach ($orders as $order) {
+                $amount = ($order->price - $order->discount);
                 $message = "
                     💰 <b>طلب اشتراك مورد يحتاج موافقة</b>
 
