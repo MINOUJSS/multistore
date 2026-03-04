@@ -3,7 +3,7 @@
 use App\Http\Controllers\Admins\Admin\AdminController;
 use App\Http\Controllers\Admins\Admin\AdminDisputeController;
 use App\Http\Controllers\Admins\Admin\AdminEmployeeController;
-use App\Http\Controllers\Admins\admin\ArchivesDisputesController;
+use App\Http\Controllers\Admins\Admin\ArchivesDisputesController;
 use App\Http\Controllers\Admins\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admins\Admin\FinancialDashboardController;
 use App\Http\Controllers\Admins\Admin\NotificationController;
