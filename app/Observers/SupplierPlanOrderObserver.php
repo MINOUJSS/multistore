@@ -15,14 +15,15 @@ class SupplierPlanOrderObserver
         ) {
             $telegram = app(TelegramService::class);
 
+            $amount = $order->price - $order->discount;
             $message = "
-💰 <b>طلب اشتراك مورد يحتاج موافقة</b>
+            💰 <b>طلب اشتراك مورد يحتاج موافقة</b>
 
-🏢 المورد: {$order->supplier->full_name}
-💵 المبلغ: {($order->price - $order->discount)}
-💳 طريقة الدفع: {$order->payment_method}
-🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
-";
+            🏢 المورد: {$order->supplier->full_name}
+            💵 المبلغ: {$amount}
+            💳 طريقة الدفع: {$order->payment_method}
+            🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
+            ";
 
             $telegram->sendMessage(
                 env('ADMIN_CHAT_ID'),

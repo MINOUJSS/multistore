@@ -85,26 +85,30 @@ class Kernel extends ConsoleKernel
         })->everyMinute();
         // 2-بالنسبة لطلبات الإشتراك للموردين
         $schedule->call(function () {
-            $orders = SupplierPlanOrder::where('status', 'pending')
-                ->whereNotIn('payment_method', ['wallet', 'chargily', null])
-                ->with('supplier')
-                ->get();
-
+            $orders = SupplierPlanOrder::all();
             foreach ($orders as $order) {
-                $amount = ($order->price - $order->discount);
-                $message = "
-                    💰 <b>طلب اشتراك مورد يحتاج موافقة</b>
+                if (
+                    !in_array($order->payment_method, ['wallet', 'chargily', null])
+                    && $order->status === 'pending'
+                ) {
+                    $telegram = app(TelegramService::class);
 
-                    👤 المورد: {$order->supplier->full_name}
-                    💵 المبلغ: {$amount}
-                    💳 طريقة الدفع: {$order->payment_method}
-                    🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
-                    ";
+                    $amount = ($order->price - $order->discount);
 
-                app(TelegramService::class)->sendMessage(
-                    env('ADMIN_CHAT_ID'),
-                    trim($message)
-                );
+                    $message = "
+                💰 <b>طلب اشتراك مورد يحتاج موافقة</b>
+
+                👤 المورد: {$order->supplier->full_name}
+                💵 المبلغ: {$amount}
+                💳 طريقة الدفع: {$order->payment_method}
+                🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
+                ";
+
+                    $telegram->sendMessage(
+                        env('ADMIN_CHAT_ID'),
+                        trim($message)
+                    );
+                }
             }
         })->everyMinute();
         // 3-بالنسبة لطلبات الشحن
