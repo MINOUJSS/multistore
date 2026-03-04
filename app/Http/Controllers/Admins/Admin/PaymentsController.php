@@ -98,7 +98,7 @@ class PaymentsController extends Controller
                 'owner_id' => 1, // أدمن المنصة
 
                 'source_type' => SupplierPlanSubscription::class,
-                'source_id' => $subscription->id,
+                'source_id' => $supplier_subscription->id,
 
                 'amount' => $request->price - $request->discount,
                 'type' => 'income',
@@ -156,7 +156,7 @@ class PaymentsController extends Controller
                 'owner_id' => 1, // أدمن المنصة
 
                 'source_type' => SellerPlanSubscription::class,
-                'source_id' => $subscription->id,
+                'source_id' => $seller_subscription->id,
 
                 'amount' => $request->price - $request->discount,
                 'type' => 'income',
