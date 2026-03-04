@@ -2,8 +2,11 @@
 
 namespace App\Console;
 
+use App\Models\BalanceTransaction;
 use App\Models\FinancialLedger;
+use App\Models\Seller\SellerPlanOrder;
 use App\Models\Seller\SellerPlanSubscription;
+use App\Models\Supplier\SupplierPlanOrder;
 use App\Models\Supplier\SupplierPlanSubscription;
 use App\Models\User;
 use App\Services\Users\Suppliers\TelegramService;
@@ -52,6 +55,80 @@ class Kernel extends ConsoleKernel
         /*:::::::::::::::::::::::::::::::::::::::::::::::::::::
                 تنبيه عن وجود دفع عن طريق تحويل بنكي
         :::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        // 1-بالنسبة لطلبات الإشتراك للبائعين
+        $schedule->call(function () {
+            $orders = SellerPlanOrder::all();
+            foreach ($orders as $order) {
+                if (
+                    !in_array($order->payment_method, ['wallet', 'chargily'])
+                    && $order->status === 'pending'
+                ) {
+                    $telegram = app(TelegramService::class);
+
+                    $message = "
+                💰 <b>طلب اشتراك تاجر يحتاج موافقة</b>
+
+                👤 التاجر: {$order->seller->name}
+                💵 المبلغ: {$order->amount}
+                💳 طريقة الدفع: {$order->payment_method}
+                🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
+                ";
+
+                    $telegram->sendMessage(
+                        env('ADMIN_CHAT_ID'),
+                        trim($message)
+                    );
+                }
+            }
+        })->evryMinute();
+        // 2-بالنسبة لطلبات الإشتراك للموردين
+        $schedule->call(function () {
+            $orders = SupplierPlanOrder::all();
+            foreach ($orders as $order) {
+                if (
+                    !in_array($order->payment_method, ['wallet', 'chargily'])
+                    && $order->status === 'pending'
+                ) {
+                    $telegram = app(TelegramService::class);
+
+                    $message = "
+                💰 <b>طلب اشتراك مورد يحتاج موافقة</b>
+
+                👤 المورد: {$order->supplier->name}
+                💵 المبلغ: {$order->amount}
+                💳 طريقة الدفع: {$order->payment_method}
+                🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
+                ";
+
+                    $telegram->sendMessage(
+                        env('ADMIN_CHAT_ID'),
+                        trim($message)
+                    );
+                }
+            }
+        })->evryMinute();
+        // 3-بالنسبة لطلبات الشحن
+        $schedule->call(function () {
+            $balancetransactions = BalanceTransaction::all();
+            foreach ($balancetransactions as $transaction) {
+                if ($transaction->status === 'pending') {
+                    $telegram = app(TelegramService::class);
+
+                    $message = "
+                    💰 <b>طلب شحن رصيد يحتاج مراجعة</b>
+
+                    👤 المستخدم: {$transaction->user->name}
+                    💵 المبلغ: {$transaction->amount}
+                    🕒 الوقت: {$transaction->created_at->format('Y-m-d H:i')}
+                    ";
+
+                    $telegram->sendMessage(
+                        env('ADMIN_CHAT_ID'),
+                        trim($message)
+                    );
+                }
+            }
+        })->evryMinute();
 
         /*::::::::::::::::::::::::::::::::::::::::::::::::::::
 
