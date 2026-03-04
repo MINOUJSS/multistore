@@ -10,7 +10,7 @@ class SupplierPlanOrderObserver
     public function created(SupplierPlanOrder $order)
     {
         if (
-            !in_array($order->payment_method, ['wallet', 'chargily'])
+            !in_array($order->payment_method, ['wallet', 'chargily', null])
             && $order->status === 'pending'
         ) {
             $telegram = app(TelegramService::class);

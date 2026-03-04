@@ -60,7 +60,7 @@ class Kernel extends ConsoleKernel
             $orders = SellerPlanOrder::all();
             foreach ($orders as $order) {
                 if (
-                    !in_array($order->payment_method, ['wallet', 'chargily'])
+                    !in_array($order->payment_method, ['wallet', 'chargily', null])
                     && $order->status === 'pending'
                 ) {
                     $telegram = app(TelegramService::class);
@@ -84,7 +84,7 @@ class Kernel extends ConsoleKernel
         // 2-بالنسبة لطلبات الإشتراك للموردين
         $schedule->call(function () {
             $orders = SupplierPlanOrder::where('status', 'pending')
-                ->whereNotIn('payment_method', ['wallet', 'chargily'])
+                ->whereNotIn('payment_method', ['wallet', 'chargily', null])
                 ->with('supplier')
                 ->get();
 
