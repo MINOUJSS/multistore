@@ -68,8 +68,8 @@ class Kernel extends ConsoleKernel
                     $message = "
                 💰 <b>طلب اشتراك تاجر يحتاج موافقة</b>
 
-                👤 التاجر: {$order->seller->name}
-                💵 المبلغ: {$order->amount}
+                👤 التاجر: {$order->seller->full_name}
+                💵 المبلغ: {($order->price - $order->discount)}
                 💳 طريقة الدفع: {$order->payment_method}
                 🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
                 ";
@@ -92,8 +92,8 @@ class Kernel extends ConsoleKernel
                 $message = "
                     💰 <b>طلب اشتراك مورد يحتاج موافقة</b>
 
-                    👤 المورد: {$order->supplier->name}
-                    💵 المبلغ: {$order->amount}
+                    👤 المورد: {$order->supplier->full_name}
+                    💵 المبلغ: {($order->price - $order->discount)}
                     💳 طريقة الدفع: {$order->payment_method}
                     🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
                     ";
