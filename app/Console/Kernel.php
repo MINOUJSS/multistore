@@ -65,11 +65,13 @@ class Kernel extends ConsoleKernel
                 ) {
                     $telegram = app(TelegramService::class);
 
+                    $amount = ($order->price - $order->discount);
+
                     $message = "
                 💰 <b>طلب اشتراك تاجر يحتاج موافقة</b>
 
                 👤 التاجر: {$order->seller->full_name}
-                💵 المبلغ: {($order->price - $order->discount)}
+                💵 المبلغ: {$amount}
                 💳 طريقة الدفع: {$order->payment_method}
                 🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
                 ";
@@ -88,12 +90,14 @@ class Kernel extends ConsoleKernel
                 ->with('supplier')
                 ->get();
 
+            $amount = ($order->price - $order->discount);
+
             foreach ($orders as $order) {
                 $message = "
                     💰 <b>طلب اشتراك مورد يحتاج موافقة</b>
 
                     👤 المورد: {$order->supplier->full_name}
-                    💵 المبلغ: {($order->price - $order->discount)}
+                    💵 المبلغ: {$amount}
                     💳 طريقة الدفع: {$order->payment_method}
                     🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
                     ";
