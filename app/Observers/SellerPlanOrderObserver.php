@@ -10,19 +10,23 @@ class SellerPlanOrderObserver
     public function created(SellerPlanOrder $order)
     {
         if (
-            !in_array($order->payment_method, ['wallet', 'chargily', null])
+            !in_array($order->payment_method, ['wallet', 'chargily'], true)
             && $order->status === 'pending'
         ) {
             $telegram = app(TelegramService::class);
 
-            $message = "
-                💰 <b>طلب اشتراك تاجر يحتاج موافقة</b>
+            $amount = $order->price - ($order->discount ?? 0);
 
-                👤 التاجر: {$order->seller->full_name}
-                💵 المبلغ: {($order->price - $order->discount)}
-                💳 طريقة الدفع: {$order->payment_method}
-                🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
-                ";
+            $link = route('admin.payments.sellers.subscribes_payments');
+
+            $message = "
+        💰 <b>طلب اشتراك تاجر ربما يحتاج موافقة</b>
+
+        🏢 المورد: {$order->supplier->full_name}
+        💵 المبلغ: {$amount}
+        💳 الرابط: {$link}
+        🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}
+        ";
 
             $telegram->sendMessage(
                 env('ADMIN_CHAT_ID'),
