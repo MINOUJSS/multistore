@@ -155,7 +155,7 @@ function get_rest_off_current_supplier_plan($supplier_id, $current_plan_id, $new
     $day_price = $current_subscription->price / $current_subscription->duration;
 
     // القيمة المتبقية
-    $rest_off_current_plan = $day_price * $rest_days;
+    $rest_off_current_plan = $day_price * ($rest_days + 1);
 
     // تقريب لرقمين بعد الفاصلة
     return round($rest_off_current_plan, 2);
