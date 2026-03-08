@@ -25,7 +25,7 @@
 
                     <!-- ملخص الاشتراك -->
                     @php
-                        $rest_days = $old_subscription->duration - appDiffInDays(now(), $old_subscription->subscription_start_date);
+                        $rest_days = $old_subscription->duration - appDiffInDays(now(), $old_subscription->subscription_start_date) ;
                         $subscription_rest = get_rest_off_current_supplier_plan(
                             $old_subscription->supplier_id,
                             $old_subscription->plan_id,

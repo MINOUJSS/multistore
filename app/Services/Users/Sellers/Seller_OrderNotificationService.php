@@ -48,7 +48,7 @@ class Seller_OrderNotificationService
         if ($order->phone_visiblity == 1) {
             $message .= "📞 الهاتف: <a href='tel:{$order->phone}'>{$order->phone}</a>\n\n";
         } else {
-            $message .= "📞 الهاتف: غير متوفر في الخطة المجانية\n\n";
+            $message .= "📞 الهاتف: عليك بترقية حسابك أو شحن رصيدك لإظهار رقم الهاتف\n\n";
         }
         $message .= "📦 المنتجات:\n";
 

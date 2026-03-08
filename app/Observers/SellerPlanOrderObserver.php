@@ -22,7 +22,7 @@ class SellerPlanOrderObserver
             $message = "
         💰 <b>طلب اشتراك تاجر ربما يحتاج موافقة</b>
 
-        🏢 المورد: {$order->supplier->full_name}
+        🏢 المورد: {$order->seller->full_name}
         💵 المبلغ: {$amount}
         💳 الرابط: {$link}
         🕒 الوقت: {$order->created_at->format('Y-m-d H:i')}

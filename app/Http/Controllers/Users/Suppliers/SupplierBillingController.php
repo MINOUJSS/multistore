@@ -27,7 +27,7 @@ class SupplierBillingController extends Controller
     {
         // جلب المعاملات غير المفوترة
         $billings = BalanceTransaction::where('user_id', auth()->id())
-            ->where('transaction_type', 'deduction')
+            ->where('transaction_type', 'order_deduction')
             ->where('invoiced', 0)
             ->get();
 

@@ -246,7 +246,7 @@
     .table-responsive {
         padding: 0;
         margin: 0;
-        overflow-x: visible;
+        /* overflow-x: visible; */
     }
 
     .orders-table {

@@ -46,7 +46,7 @@
   <div>
     <strong style="min-width:150px;">رابط الدفع بواسطة شارجيلي</strong>
     <br>
-    <span id="chargilyPayLink">
+    <span id="chargilyPayLink" style="word-break: break-all;">
       ${chagily_pay_link}
     </span>
   </div>
@@ -54,7 +54,7 @@
   <div>
     <strong style="min-width:150px;">رابط الدفع بواسطة تحويل بنكي</strong>
     <br>
-    <span id="vermentsPayLink">
+    <span id="vermentsPayLink" style="word-break: break-all;">
       ${verments_pay_link}
     </span>
   </div>

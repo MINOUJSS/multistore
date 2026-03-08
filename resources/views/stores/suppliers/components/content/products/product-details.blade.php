@@ -40,15 +40,22 @@
             position: relative !important;
             top: 0px;
         }
+
+            /*bay-now-btn*/
+
+            .bay-now-btn {
+            margin-top: 20px; 
+            }
     }
 
     /* Make the entire left column sticky */
     .col-md-6:first-child {
         position: sticky;
-        top: 20px;
+        margin-bottom: 10px;
         align-self: flex-start;
         height: fit-content;
     }
+
 </style>
 <div class="container">
     <div class="row mt-5 mb-5">
@@ -424,7 +431,7 @@
                   @else
                   <input type="hidden" name="form_total_amount" id="form_total_amount" value="{{($product->minimum_order_qty * $product->price)+300}}" />
                   @endif --}}
-                        <button type="submit" class="form-control btn btn-primary"><i
+                        <button type="submit" class="form-control btn btn-primary bay-now-btn"><i
                                 class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
                     </div>
                 </div>
