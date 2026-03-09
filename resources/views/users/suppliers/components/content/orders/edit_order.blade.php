@@ -83,6 +83,7 @@
 
                         {{-- المنتجات داخل الطلب --}}
                         <h5 class="mt-4 mb-3"><i class="fas fa-box me-2"></i>عناصر الطلب</h5>
+                        <div class="table-responsive">
                         <table class="table table-bordered align-middle">
                             <thead class="table-light">
                                 <tr>
@@ -158,6 +159,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        </div>
 
 
                         {{-- الأسعار الإجمالية --}}
@@ -378,3 +380,161 @@
         </div>
     </div>
 </div>
+<style>
+/* ===== Tablets ===== */
+@media (max-width: 992px) {
+
+    .container-fluid{
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    /* إزالة sticky في التابلت */
+    .sticky-top{
+        position: relative !important;
+        top:0 !important;
+    }
+
+    /* جدول الطلب */
+    table{
+        font-size:14px;
+    }
+
+}
+
+
+/* ===== Mobile ===== */
+@media (max-width: 768px) {
+
+    /* الأعمدة تصبح تحت بعضها */
+    .col-lg-7,
+    .col-lg-5,
+    .col-md-6{
+        width:100%;
+    }
+
+    /* تقليل حجم العناوين */
+    .card-header h5{
+        font-size:16px;
+    }
+
+    /* الأزرار */
+    .card-header button{
+        font-size:13px;
+        padding:5px 8px;
+    }
+
+    /* جدول الطلب */
+    table{
+        font-size:12px;
+    }
+
+    table th,
+    table td{
+        padding:6px;
+    }
+
+    /* المدخلات */
+    .form-control,
+    .form-select{
+        font-size:14px;
+        padding:6px;
+    }
+
+    /* عناصر الشحن */
+    .row.border .col-4{
+        width:100%;
+        margin-bottom:10px;
+    }
+    .table-responsive table thead {
+        display: none;
+    }
+
+    .table-responsive table,
+    .table-responsive tbody,
+    .table-responsive tr,
+    .table-responsive td {
+        display: block;
+        width: 100%;
+    }
+
+    .table-responsive tr {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        padding: 10px;
+        background: #fff;
+    }
+
+    .table-responsive td {
+        text-align: right;
+        padding: 8px 10px;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .table-responsive td:last-child {
+        border-bottom: none;
+    }
+
+    /* العناوين داخل الخلايا */
+    .table-responsive td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        display: block;
+        margin-bottom: 4px;
+        color: #555;
+        text-align: right;
+    }
+
+    /* المدخلات */
+    .table-responsive input,
+    .table-responsive select {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .delete-item-btn {
+        width: 100%;
+    }
+
+
+
+}
+
+
+/* ===== Small Mobile ===== */
+@media (max-width: 576px) {
+
+    /* تصغير الجدول أكثر */
+    table{
+        font-size:11px;
+    }
+
+    table th{
+        white-space:nowrap;
+    }
+
+    /* السماح بالسكرول الأفقي للجدول */
+    table{
+        display:block;
+        overflow-x:auto;
+        white-space:nowrap;
+    }
+
+    /* الملخص */
+    .order-summary{
+        font-size:14px;
+    }
+
+    /* زر الحفظ */
+    #saveOrderBtn{
+        font-size:14px;
+        padding:10px;
+    }
+
+  
+
+}
+</style>
