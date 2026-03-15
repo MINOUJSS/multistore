@@ -77,7 +77,7 @@
 
         </div>
 
-        <div class="col-lg-5 align-items-stretch order-1 order-lg-2 img" style='background-image: url("{{asset('asset/v1/site/defaulte')}}/img/why-us.png");' data-aos="zoom-in" data-aos-delay="150">&nbsp;</div>
+        <div class="col-lg-5 align-items-stretch order-1 order-lg-2 img" style='background-image: url("{{asset('asset/v1/site/defaulte')}}/img/why-us1.png");' data-aos="zoom-in" data-aos-delay="150">&nbsp;</div>
       </div>
 
     </div>

@@ -261,7 +261,7 @@
 
         {{-- العمود الأيسر: ملخص الطلب --}}
         <div class="col-lg-5 col-md-6 mt-2">
-            <div class="sticky-top" style="top: 20px; z-index: 1019;">
+            <div class="sticky-top" style="top: 20px; z-index: 0;">
                 {{-- test  --}}
                 <div class="card">
                     <div class="card-header">

@@ -4,7 +4,7 @@
 
       <div class="row">
         <div class="col-lg-6 d-flex align-items-center" data-aos="fade-right" data-aos-delay="100">
-          <img src="{{asset('asset/v1/site/defaulte')}}/img/skills.png" class="img-fluid" alt="">
+          <img src="{{asset('asset/v1/site/defaulte')}}/img/skills1.png" class="img-fluid" alt="">
         </div>
         <div class="col-lg-6 pt-4 pt-lg-0 content" data-aos="fade-left" data-aos-delay="100">
           <h3> نظام الدفع لدينا </h3>
