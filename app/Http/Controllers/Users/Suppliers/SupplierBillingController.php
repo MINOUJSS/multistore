@@ -88,7 +88,7 @@ class SupplierBillingController extends Controller
     {
         $invoice = UserInvoice::with('details')->findOrFail($id);
 
-        return response()->json([
+        $data = response()->json([
             'invoice_number' => $invoice->invoice_number,
             'invoice_date' => $invoice->created_at->format('Y-m-d'),
             'total_amount' => $invoice->amount,
@@ -102,6 +102,8 @@ class SupplierBillingController extends Controller
                 ];
             }),
         ]);
+
+        return view('users.suppliers.billing.show', compact('data'));
     }
 
     // pay invoice
