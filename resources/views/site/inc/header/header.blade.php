@@ -60,7 +60,7 @@
           <h1>منصة {{config('app.name')}} وجهتك الموثوقة للتجارة الإلكترونية</h1>
           <h2>تحّول من التجارة الكلاسيكية إلى التجارة الإلكترونية بسهولة و سرعة و أمتلك متجر إلكتروني خاص بك بجميع مزايا التجارة الإلكترونية مع توفير الخدمات المساندة له</h2>
           <div class="d-flex justify-content-center justify-content-lg-start">
-            <a href="#about" class="btn-get-started scrollto">إبدأ الآن</a>
+            <a href="#services" class="btn-get-started scrollto">إبدأ الآن</a>
             <a href="https://www.youtube.com/watch?v=cZRpUCWb_A4" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>فيديو تعريفي بالمنصة</span></a>
           </div>
         </div>

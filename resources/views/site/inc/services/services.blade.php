@@ -10,33 +10,37 @@
       <div class="row">
         <div class="col-xl-3 col-md-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
           <div class="icon-box">
-            <div class="icon"><i class="bx bxl-dribbble"></i></div>
+            <div class="icon"><i class="bx bx-store"></i></div>
             <h4><a href=""> الموردين وتجار الجملة</a></h4>
             <p>تمنحك منصتنا فرصة للوصول إلى قاعدة عملاء أوسع وزيادة مبيعاتك بشكل كبير. نقدم لك أدوات متقدمة لإدارة المنتجات والطلبات بكفاءة، ونظام دفع آمن وموثوق، بالإضافة إلى دعم فني متواصل لضمان تجربة تجارية سلسة وناجحة. انضم إلينا الآن واستفد من شراكات استراتيجية مع شركات الشحن لتوصيل منتجاتك بسرعة وفعالية.</p>
+            <a class="btn btn-primary getstarted scrollto mt-3" href="{{route('site.show_suppliers_plans')}}">إبدأ الآن</a>
           </div>
         </div>
 
         <div class="col-xl-3 col-md-3 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
           <div class="icon-box">
-            <div class="icon"><i class="bx bx-file"></i></div>
+            <div class="icon"><i class="bx bx-cart"></i></div>
             <h4><a href="">تجار التجزئة</a></h4>
             <p>تمنحك منصتنا فرصة لزيادة مبيعاتك من خلال الوصول إلى عملاء جدد بسهولة. نقدم لك أدوات مرنة لإدارة منتجاتك وطلباتك، مع خيارات دفع آمنة ومتعددة تناسب احتياجات عملائك. استفد من شراكاتنا مع شركات الشحن لتوفير توصيل سريع وموثوق، ودعم فني متواصل لضمان تجربة تجارية سلسة وناجحة. انضم إلينا الآن وطور أعمالك في عالم التجارة الإلكترونية.</p>
+          <a class="btn btn-primary getstarted scrollto mt-3" href="{{route('site.show_sellers_plans')}}">إبدأ الآن</a>
           </div>
         </div>
 
         <div class="col-xl-3 col-md-3 d-flex align-items-stretch mt-4 mt-xl-0" data-aos="zoom-in" data-aos-delay="300">
           <div class="icon-box">
-            <div class="icon"><i class="bx bx-tachometer"></i></div>
+            <div class="icon"><i class="bx bx-line-chart"></i></div>
             <h4><a href="">المسوقين بالعمولة</a></h4>
             <p>تقدم منصتنا للمسوقين بالعمولة فرصة لكسب عمولات مجزية من خلال ترويج المنتجات والخدمات المتنوعة. نوفر لك أدوات تتبع متقدمة وتقارير تفصيلية لقياس الأداء وتحقيق أفضل النتائج. انضم إلينا اليوم واستفد من دعم فني مستمر وبرامج تحفيزية تزيد من أرباحك في عالم التسويق الإلكتروني.</p>
+          <a class="btn btn-primary getstarted scrollto mt-3" href="{{route('site.show_affiliate_marketers_plans')}}">إبدأ الآن</a>
           </div>
         </div>
 
         <div class="col-xl-3 col-md-3 d-flex align-items-stretch mt-4 mt-xl-0" data-aos="zoom-in" data-aos-delay="400">
           <div class="icon-box">
-            <div class="icon"><i class="bx bx-layer"></i></div>
+            <div class="icon"><i class="bx bx-package"></i></div>
             <h4><a href="">شركات الشحن</a></h4>
             <p>توفر منصتنا لشركات الشحن الصغيرة والمتوسطة فرصة للتوسع وزيادة قاعدة عملائها. نمنحك الوصول إلى مجموعة واسعة من التجار والموردين الذين يحتاجون إلى خدمات الشحن الموثوقة. استمتع بإدارة عملياتك بكفاءة، وتحسين خدمات التوصيل من خلال شراكتنا. انضم إلينا الآن لتعزيز نموك في سوق التجارة الإلكترونية.</p>
+          <a class="btn btn-primary getstarted scrollto mt-3" href="{{route('site.show_shipers_plans')}}">إبدأ الآن</a>
           </div>
         </div>
 

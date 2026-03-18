@@ -390,6 +390,14 @@ class ChargilyPayController extends Controller
                     return redirect()->route('supplier.wallet')->with('success', 'تمت عملية الدفع بنجاح');
                 }
             }
+            if ($payment->payment_type == 'user_invoice') {
+                $user = get_user_data_from_id($payment->payment_reference_id);
+                if ($user->type == 'seller') {
+                    return redirect()->route('seller.billing.invoice.show')->with('success', 'تمت عملية الدفع بنجاح');
+                } elseif ($user->type == 'supplier') {
+                    return redirect()->route('supplier.billing.invoice.show')->with('success', 'تمت عملية الدفع بنجاح');
+                }
+            }
             if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || $payment->payment_type == 'supplier_order' || ($user !== null && $user->type == 'supplier')) {
                 return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
             } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'seller_order' || ($user !== null && $user->type == 'seller')) {

@@ -38,57 +38,9 @@
 
       <div class="row">
 
-        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="box">
-            <h3>الخطة المجانية</h3>
-            <h4>0<sup>د.ج</sup><span>في الشهر</span></h4>
-            <ul>
-                <li><i class="bx bx-check"></i> متجر إلكتروني إحترافي</li>
-              <li><i class="bx bx-check"></i> إضافة حتى 50 منتج</li>
-              <li><i class="bx bx-check"></i> إدارة الطلبات والمخزون</li>
-              <li><i class="bx bx-check"></i>خصم 1 % على كل طلبية</li>
-              <li><i class="bx bx-check"></i> خيار الدفع عن الإستلام فقط</li>
-              <li class="na"><i class="bx bx-x"></i> <span>الدفع بالبطاقة الذهبية و CIB</span></li>
-              <li class="na"><i class="bx bx-x"></i> <span> دومين خاص</span></li>
-              <li class="na"><i class="bx bx-x"></i> <span>حقوق النشر</span></li>
-            </ul>
-            <a href="#" class="buy-btn">إبدأ الآن</a>
-          </div>
-        </div>
-
-        <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="200">
-          <div class="box featured">
-            <h3>الخطة المتقدمة</h3>
-            <h4>2500<sup>د.ج</sup><span>في الشهر</span></h4>
-            <ul>
-                <li><i class="bx bx-check"></i> متجر إلكتروني إحترافي</li>
-                <li><i class="bx bx-check"></i> إضافة حتى 200 منتج</li>
-                <li><i class="bx bx-check"></i> إدارة الطلبات والمخزون</li>
-                <li><i class="bx bx-check"></i>طلبات غير محدودة</li>
-                <li><i class="bx bx-check"></i> خيار الدفع عن الإستلام فقط</li>
-                <li class="na"><i class="bx bx-x"></i> <span>الدفع بالبطاقة الذهبية و CIB</span></li>
-                <li class="na"><i class="bx bx-x"></i> <span> دومين خاص</span></li>
-                <li class="na"><i class="bx bx-x"></i> <span>حقوق النشر</span></li>
-            </ul>
-            <a href="#" class="buy-btn">إبدأ الآن</a>
-          </div>
-        </div>
-
-        <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="300">
-          <div class="box">
-            <h3>الخطة الاحترافية</h3>
-            <h4>5000<sup>د.ج</sup><span>في الشهر</span></h4>
-            <ul>
-                <li><i class="bx bx-check"></i> متجر إلكتروني إحترافي</li>
-                <li><i class="bx bx-check"></i> إضافة مالانهاية من المنتجات</li>
-                <li><i class="bx bx-check"></i> إدارة الطلبات والمخزون</li>
-                <li><i class="bx bx-check"></i>طلبات غير محدودة</li>
-                <li><i class="bx bx-check"></i> خيارات دفع متعددة وآمنة</li>
-                <li><i class="bx bx-check"></i> <span>الدفع بالبطاقة الذهبية و CIB</span></li>
-                <li><i class="bx bx-check"></i> <span> دومين خاص</span></li>
-                <li><i class="bx bx-check"></i> <span>حقوق النشر</span></li>
-            </ul>
-            <a href="#" class="buy-btn">إبدأ الآن</a>
+        <div class="col-lg-12 mt-12 mt-lg-0" data-aos="fade-up" data-aos-delay="200">
+          <div class="box featured text-center">
+            <h1>قريباً</h1>      
           </div>
         </div>
 

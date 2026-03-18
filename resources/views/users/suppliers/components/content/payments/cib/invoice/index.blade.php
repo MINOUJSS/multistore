@@ -3,7 +3,7 @@
 
     <!-- صورة البطاقة البنكية -->
     <div class="text-center mb-4">
-        <img src="{{ asset('asset/users/dashboard/img/payments/eldhahabia.png') }}" alt="الدفع بالبطاقة البنكية" class="img-fluid" style="max-width: 200px;">
+        <img src="{{ asset('asset/v1/users/dashboard/img/payments/eldhahabia.png') }}" alt="الدفع بالبطاقة البنكية" class="img-fluid" style="max-width: 200px;">
         <p class="text-muted mt-2">يرجى الدفع عبر البطاقة الذهبية أو بطاقة CIB</p>
     </div>
 

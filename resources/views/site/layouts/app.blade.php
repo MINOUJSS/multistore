@@ -60,9 +60,9 @@
 
     <nav id="navbar" class="navbar">
       <ul>
-        <li><a class="nav-link scrollto active" href="#hero">الرئيسية</a></li>
-        <li><a class="nav-link scrollto" href="#about">من نحن</a></li>
-        <li><a class="nav-link scrollto" href="#services">خدماتنا</a></li>
+        <li><a class="nav-link scrollto active" href="{{config('app.url')}}?#hero">الرئيسية</a></li>
+        <li><a class="nav-link scrollto" href="{{config('app.url')}}?#about">من نحن</a></li>
+        <li><a class="nav-link scrollto" href="{{config('app.url')}}?#services">خدماتنا</a></li>
         {{-- <li><a class="nav-link   scrollto" href="#portfolio">أعمالنا</a></li> --}}
         {{-- <li><a class="nav-link scrollto" href="#team">فريق العمل</a></li> --}}
         {{-- <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
@@ -82,8 +82,8 @@
             <li><a href="#">Drop Down 4</a></li>
           </ul>
         </li> --}}
-        <li><a class="nav-link scrollto" href="#contact">إتصل بنا</a></li>
-        <li><a class="getstarted scrollto" href="#about">إبدأ الآن</a></li>
+        <li><a class="nav-link scrollto" href="{{config('app.url')}}?#contact">إتصل بنا</a></li>
+        <li><a class="getstarted scrollto" href="{{config('app.url')}}?#services">إبدأ الآن</a></li>
       </ul>
       <i class="bi bi-list mobile-nav-toggle"></i>
     </nav><!-- .navbar -->

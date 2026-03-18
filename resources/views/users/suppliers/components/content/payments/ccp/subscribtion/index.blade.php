@@ -3,7 +3,7 @@
 
     <!-- صورة CCP -->
     <div class="text-center mb-4">
-        <img src="{{ asset('asset/users/dashboard/img/payments/algerie post.png') }}" alt="CCP" class="img-fluid" style="max-width: 200px;">
+        <img src="{{ asset('asset/v1/users/dashboard/img/payments/algerie post.png') }}" alt="CCP" class="img-fluid" style="max-width: 200px;">
         <p class="text-muted mt-2">يرجى إرسال الحوالة البريدية إلى الحساب الموضح أدناه ورفع إيصال الدفع</p>
     </div>
 
