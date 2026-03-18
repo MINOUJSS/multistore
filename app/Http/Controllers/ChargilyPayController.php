@@ -392,6 +392,7 @@ class ChargilyPayController extends Controller
                 }
             }
             if ($payment->payment_type == 'user_invoice') {
+                Log::info($payment->payment_reference_id);
                 $user = get_user_data_from_invoice_id($payment->payment_reference_id);
                 Log::info($user);
                 if ($user->type == 'seller') {

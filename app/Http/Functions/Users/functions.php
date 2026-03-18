@@ -40,7 +40,7 @@ function get_user_data_from_id($user_id)
 function get_user_data_from_invoice_id($invoice_id)
 {
     $invoice = App\Models\UserInvoice::find($invoice_id);
-    $user = get_user_data($invoice->user_id);
+    $user = get_user_data_from_id($invoice->user_id);
 
     return $user;
 }
