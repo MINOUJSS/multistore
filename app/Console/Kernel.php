@@ -82,7 +82,7 @@ class Kernel extends ConsoleKernel
                     );
                 }
             }
-        })->everyHour();
+        })->hourly();
         // 2-بالنسبة لطلبات الإشتراك للموردين
         $schedule->call(function () {
             $orders = SupplierPlanOrder::all();
@@ -110,7 +110,7 @@ class Kernel extends ConsoleKernel
                     );
                 }
             }
-        })->everyHour();
+        })->hourly();
         // 3-بالنسبة لطلبات الشحن
         $schedule->call(function () {
             $balancetransactions = BalanceTransaction::all();
@@ -132,7 +132,7 @@ class Kernel extends ConsoleKernel
                     );
                 }
             }
-        })->everyHour();
+        })->hourly();
 
         /*::::::::::::::::::::::::::::::::::::::::::::::::::::
 
