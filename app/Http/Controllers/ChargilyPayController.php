@@ -14,6 +14,7 @@ use App\Models\Supplier\SupplierPlan;
 use App\Models\Supplier\SupplierPlanOrder;
 use App\Models\Supplier\SupplierPlanPrices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ChargilyPayController extends Controller
 {
@@ -392,6 +393,7 @@ class ChargilyPayController extends Controller
             }
             if ($payment->payment_type == 'user_invoice') {
                 $user = get_user_data_from_invoice_id($payment->payment_reference_id);
+                Log::info($user);
                 if ($user->type == 'seller') {
                     return redirect()->route('seller.billing.invoice.show')->with('success', 'تمت عملية الدفع بنجاح');
                 } elseif ($user->type == 'supplier') {
