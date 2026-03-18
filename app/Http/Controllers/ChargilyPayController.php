@@ -22,7 +22,6 @@ class ChargilyPayController extends Controller
      */
     public function redirect(Request $request)
     {
-        dd($request);
         $user = auth()->user();
         $currency = 'dzd';
         $amount = $request->amount;
