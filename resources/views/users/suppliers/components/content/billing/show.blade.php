@@ -60,18 +60,18 @@
         <div class="invoice-header d-flex justify-content-between">
             <div>
                 <div class="invoice-title">فاتورة</div>
-                <div>رقم الفاتورة: {{ $data['invoice_number'] }}</div>
-                <div>التاريخ: {{ $data['invoice_date'] }}</div>
+                <div>رقم الفاتورة: {{ $invoice->invoice_number }}</div>
+                <div>التاريخ: {{ $invoice->invoice_date }}</div>
             </div>
 
             <div class="text-end">
                 <div>
                     الحالة:
-                    <span class="{{ $data['status'] == 'paid' ? 'status-paid' : 'status-pending' }}">
-                        {{ $data['status'] }}
+                    <span class="{{ $invoice->status == 'paid' ? 'status-paid' : 'status-pending' }}">
+                        {{ $invoice->status }}
                     </span>
                 </div>
-                <div>طريقة الدفع: {{ $data['payment_method'] }}</div>
+                <div>طريقة الدفع: {{ $invoice->payment_method }}</div>
             </div>
         </div>
 
@@ -87,7 +87,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($data['details'] as $item)
+                    @foreach($invoice->details as $item)
                         <tr>
                             <td>{{ $item['item_name'] }}</td>
                             <td>{{ $item['quantity'] }}</td>
@@ -104,7 +104,7 @@
         <!-- Total -->
         <div class="d-flex justify-content-end">
             <div class="total-box">
-                الإجمالي: {{ number_format($data['total_amount'], 2) }} دج
+                الإجمالي: {{ number_format($invoice->amount, 2) }} دج
             </div>
         </div>
 
