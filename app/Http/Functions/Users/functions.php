@@ -36,6 +36,14 @@ function get_user_data_from_id($user_id)
 
     return $user;
 }
+// get user data from invoice id
+function get_user_data_from_invoice_id($invoice_id)
+{
+    $invoice = App\Models\UserInvoice::find($invoice_id);
+    $user = get_user_data($invoice->user_id);
+
+    return $user;
+}
 
 function get_user_data_from_supplier_id($supplier_id)
 {
@@ -298,11 +306,10 @@ function is_valid_coupon_for_product(App\Models\userCoupons $coupon, $cart_amoun
 
 function is_blocked_customer($user_id, $order_id)
 {
-    if(get_user_data_from_id($user_id)->type=="supplier"){
-    $order = App\Models\Supplier\SupplierOrders::findOrfail($order_id);
-    }else
-    {
-     $order = App\Models\Seller\SellerOrders::findOrfail($order_id);   
+    if (get_user_data_from_id($user_id)->type == 'supplier') {
+        $order = App\Models\Supplier\SupplierOrders::findOrfail($order_id);
+    } else {
+        $order = App\Models\Seller\SellerOrders::findOrfail($order_id);
     }
     $ip_address = $order->ip_address;
     $device_fingerprint = $order->device_fingerprint;
@@ -342,7 +349,7 @@ function is_user_has_google_sheet_app($user_id)
         return false;
     }
 }
-//is_user_has_telegram_info_app
+// is_user_has_telegram_info_app
 function is_user_has_telegram_info_app($user_id)
 {
     $user = App\Models\User::find($user_id);
