@@ -125,7 +125,7 @@ class SupplierBillingController extends Controller
             }),
         ]);
 
-        return view('users.suppliers.billing.show', compact('data'));
+        return view('users.suppliers.billing.view', compact('data'));
     }
 
     // pay invoice
