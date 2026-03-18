@@ -396,9 +396,9 @@ class ChargilyPayController extends Controller
                 $user = get_user_data_from_invoice_id($payment->payment_reference_id);
                 Log::info($user);
                 if ($user->type == 'seller') {
-                    return redirect()->route('seller.billing.invoice.show')->with('success', 'تمت عملية الدفع بنجاح');
+                    return redirect()->route('seller.billing.invoice.show', $payment->payment_reference_id)->with('success', 'تمت عملية الدفع بنجاح');
                 } elseif ($user->type == 'supplier') {
-                    return redirect()->route('supplier.billing.invoice.show')->with('success', 'تمت عملية الدفع بنجاح');
+                    return redirect()->route('supplier.billing.invoice.show', $payment->payment_reference_id)->with('success', 'تمت عملية الدفع بنجاح');
                 }
             }
             if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || $payment->payment_type == 'supplier_order' || ($user !== null && $user->type == 'supplier')) {
