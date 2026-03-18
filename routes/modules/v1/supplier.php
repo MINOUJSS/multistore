@@ -212,8 +212,10 @@ Route::middleware([
                 Route::post('/supplier-panel/billing/pay/invoice', [SupplierBillingController::class, 'pay_invoice'])->name('billing.invoice.pay');
                 Route::delete('/supplier-panel/billing/invoice/{invoice}/delete-proof', [SupplierBillingController::class, 'deleteProof'])->name('billing.invoice.deleteProof');
                 // suppliere payments_proofs_refuseds
-                Route::get('/supplier-panel/payments-proofs-refuseds', [SupplierPaymentsProofsRefusedController::class, 'index'])->name('payments_proofs_refuseds');
-                Route::get('/supplier-panel/payments-proofs-refused/{id}/show', [SupplierPaymentsProofsRefusedController::class, 'show'])->name('payments_proofs_refused.show');
+                Route::middleware('SupplierRefusedPaymentProofs')->group(function () {
+                    Route::get('/supplier-panel/payments-proofs-refuseds', [SupplierPaymentsProofsRefusedController::class, 'index'])->name('payments_proofs_refuseds');
+                    Route::get('/supplier-panel/payments-proofs-refused/{id}/show', [SupplierPaymentsProofsRefusedController::class, 'show'])->name('payments_proofs_refused.show');
+                });
                 // supplier proofs refused messages routes
                 Route::prefix('/supplier-panel/proofs-refused/{proofId}/chat')->name('proofs.refused.chat.')->group(function () {
                     Route::get('/', [SupplierProofsRefusedChatController::class, 'index'])->name('index');

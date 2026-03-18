@@ -59,6 +59,8 @@ class Seller_plan_Authorization_Table_Seeder extends Seeder
                 ['key' => 'max_google_analytics', 'value' => 2, 'description' => '  جوجل أناليتيك (2)', 'is_enabled' => true],
                 ['key' => 'max_microsoft_clarity', 'value' => 2, 'description' => '  ميكروسوفت كلاريتي (2)', 'is_enabled' => true],
                 ['key' => 'google_sheet', 'value' => 1, 'description' => ' جوجل شيت', 'is_enabled' => true],
+                ['key' => 'chargily_pay', 'value' => 1, 'description' => 'ميزة الدفع بواسطة Chargily', 'is_enabled' => true],
+                ['key' => 'bank_transfer', 'value' => 1, 'description' => 'ميزة الدفع بواسطة حوالة بنكية(بريدي موب ,البريد الجاري ...إلخ)', 'is_enabled' => true],
                 ['key' => 'copy_right', 'value' => 1, 'description' => 'مع حقوق النشر للمنصة', 'is_enabled' => false],
             ],
         ];

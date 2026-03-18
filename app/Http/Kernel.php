@@ -74,5 +74,7 @@ class Kernel extends HttpKernel
         'SuppliersRedirectSubscriber' => Middleware\SuppliersRedirectSubscriber::class,
         'SellersRedirectSubscriber' => Middleware\SellersRedirectSubscriber::class,
         'ForBossOnly' => Middleware\ForBossOnly::class,
+        'SellerRefusedPaymentProofs' => Middleware\SellerRefusedPaymentProofs::class,
+        'SupplierRefusedPaymentProofs' => Middleware\SupplierRefusedPaymentProofs::class,
     ];
 }

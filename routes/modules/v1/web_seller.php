@@ -205,8 +205,11 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::post('/seller-panel/billing/pay/invoice', [SellerBillingController::class, 'pay_invoice'])->name('billing.invoice.pay');
                     Route::delete('/seller-panel/billing/invoice/{invoice}/delete-proof', [SellerBillingController::class, 'deleteProof'])->name('billing.invoice.deleteProof');
                     // sellere payments_proofs_refuseds
-                    Route::get('/seller-panel/payments-proofs-refuseds', [SellerPaymentsProofsRefusedController::class, 'index'])->name('payments_proofs_refuseds');
-                    Route::get('/seller-panel/payments-proofs-refused/{id}/show', [SellerPaymentsProofsRefusedController::class, 'show'])->name('payments_proofs_refused.show');
+                    Route::middleware('SellerRefusedPaymentProofs')->group(function () {
+                        Route::get('/seller-panel/payments-proofs-refuseds', [SellerPaymentsProofsRefusedController::class, 'index'])->name('payments_proofs_refuseds');
+                        Route::get('/seller-panel/payments-proofs-refused/{id}/show', [SellerPaymentsProofsRefusedController::class, 'show'])->name('payments_proofs_refused.show');
+                    });
+
                     // seller proofs refused messages routes
                     Route::prefix('/seller-panel/proofs-refused/{proofId}/chat')->name('proofs.refused.chat.')->group(function () {
                         Route::get('/', [SellerProofsRefusedChatController::class, 'index'])->name('index');

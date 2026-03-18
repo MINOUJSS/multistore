@@ -31,6 +31,8 @@
     <div class="item"><a href="{{route('seller.subscription')}}"><i class="fa-regular fa-address-card"></i> الإشتراك</a></div>
     <div class="item"><a href="{{route('seller.billing')}}"><i class="fas fa-file-invoice"></i> الفواتير</a></div>
     <div class="item"><a href="{{route('seller.wallet')}}"><i class="fas fa-wallet"></i> المحفظة</a></div>
+    @if(get_seller_data(Auth::user()->tenant_id)->plan_subscription->plan_id == 3 && get_seller_data(Auth::user()->tenant_id)->approval_status=='approved' && Auth::user()->bank_settings!=null)
     <div class="item"><a href="{{route('seller.payments_proofs_refuseds')}}"><i class="fa-solid fa-file-invoice-dollar"></i> إثباتات الدفع المرفوضة</a></div>
+    @endif
     <div class="item"><a href="{{route('seller.settings')}}"><i class="fa-solid fa-gear"></i> الإعدادت</a></div>
 </div>
