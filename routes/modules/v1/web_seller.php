@@ -212,7 +212,7 @@ foreach (config('tenancy.central_domains') as $domain) {
 
                     // seller proofs refused messages routes
                     Route::prefix('/seller-panel/proofs-refused/{proofId}/chat')->name('proofs.refused.chat.')->group(function () {
-                        Route::get('/', [SellerProofsRefusedChatController::class, 'index'])->name('index');
+                        Route::get('/', [SellerProofsRefusedChatController::class, 'index'])->name('ProofsRefused');
                         Route::get('/get_messages', [SellerProofsRefusedChatController::class, 'getMessages'])->name('get_messages');
                         Route::post('/read', [SellerProofsRefusedChatController::class, 'readMessages'])->name('read');
                         Route::post('/send', [SellerProofsRefusedChatController::class, 'sendMessage'])->name('send');

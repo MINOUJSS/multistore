@@ -218,7 +218,7 @@ Route::middleware([
                 });
                 // supplier proofs refused messages routes
                 Route::prefix('/supplier-panel/proofs-refused/{proofId}/chat')->name('proofs.refused.chat.')->group(function () {
-                    Route::get('/', [SupplierProofsRefusedChatController::class, 'index'])->name('index');
+                    Route::get('/', [SupplierProofsRefusedChatController::class, 'index'])->name('ProofsRefused');
                     Route::get('/get_messages', [SupplierProofsRefusedChatController::class, 'getMessages'])->name('get_messages');
                     Route::post('/read', [SupplierProofsRefusedChatController::class, 'readMessages'])->name('read');
                     Route::post('/send', [SupplierProofsRefusedChatController::class, 'sendMessage'])->name('send');
