@@ -49,6 +49,7 @@ foreach (config('tenancy.central_domains') as $domain) {
         // site routes
         Route::name('site.')->group(function () {
             Route::get('/', [SiteController::class, 'index'])->name('index');
+            Route::get('/privacy-policy', [SiteController::class, 'privacy_policy'])->name('privacy_policy');
             Route::get('/show_suppliers_plans', [SiteController::class, 'show_suppliers_plans'])->name('show_suppliers_plans');
             Route::get('/show_sellers_plans', [SiteController::class, 'show_sellers_plans'])->name('show_sellers_plans');
             Route::get('/show_shipers_plans', [SiteController::class, 'show_shipers_plans'])->name('show_shipers_plans');

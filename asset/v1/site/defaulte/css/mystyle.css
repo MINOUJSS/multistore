@@ -62,3 +62,16 @@
 {
     position: relative;
 }
+/*--------------------------------------------------------------
+# privacy-policy
+--------------------------------------------------------------*/
+.privacy-policy h2
+{
+    font-size: 30px !important;
+    color:#DE47A4 !important;
+}
+.privacy-policy h4
+{
+    font-size: 24px !important;
+    color:#DE47A4 !important;
+}

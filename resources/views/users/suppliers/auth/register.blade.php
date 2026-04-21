@@ -20,7 +20,7 @@
 
             <div class="mb-3">
                 <label for="full_name" class="form-label">الإسم الكامل</label>
-                <input type="text" name="full_name" class="form-control @error('full_name') is-invalid @enderror" value="{{old('full_name')}}" placeholder="كمل نور الدين" required >
+                <input type="text" name="full_name" class="form-control @error('full_name') is-invalid @enderror" value="{{old('full_name')}}" placeholder="الإسم و اللقب" required >
                 @error('full_name')
                 <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -67,7 +67,7 @@
             </div>
             <div class="mb-3 form-check">
               <input type="checkbox" name="terms" class="form-check-input">
-              <label class="form-check-label" for="terms">أوافق على <a href="#">السياسة الخصوصية</a></label>
+              <label class="form-check-label" for="terms">أوافق على <a href="{{route('site.privacy_policy')}}">السياسة الخصوصية</a></label>
               @error('terms')
               <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>

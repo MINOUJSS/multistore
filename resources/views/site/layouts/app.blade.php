@@ -19,6 +19,9 @@
   {{-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet"> --}}
   {{-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"> --}}
 
+  {{-- My Fonts --}}
+  <link rel="stylesheet" href="{{asset('asset/v1/site/defaulte')}}/css/kufi_font.css">
+
   <!-- Vendor CSS Files -->
   <link href="{{asset('asset/v1/site/defaulte')}}/css/aos.css" rel="stylesheet">
   <link href="{{asset('asset/v1/site/defaulte')}}/css/bootstrap.min.css" rel="stylesheet">
@@ -30,13 +33,12 @@
   <link href="{{asset('asset/v1/site/defaulte')}}/css/swiper-bundle.min.css" rel="stylesheet">
  <!-- js files -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
   <!-- Template Main CSS File -->
   <link href="{{asset('asset/v1/site/defaulte')}}/css/style.css" rel="stylesheet">
   <link href="{{asset('asset/v1/site/defaulte')}}/css/theme_one.css" rel="stylesheet">
   <!--My Editing-->
   <link href="{{asset('asset/v1/site/defaulte')}}/css/mystyle.css" rel="stylesheet">
-  {{-- My Fonts --}}
-  <link rel="stylesheet" href="{{asset('asset/v1/site/defaulte')}}/css/kufi_font.css">
   <!--google analitices-->
   @yield('google_analitics')
   <!-- =======================================================
@@ -54,7 +56,7 @@
 <header id="header" class="fixed-top ">
   <div class="container d-flex align-items-center">
 
-    <h1 class="logo my-me-auto"><a href="index.html">{{config('app.name')}}</a></h1>
+    <h1 class="logo my-me-auto"><a href="{{route('site.index')}}">{{config('app.name')}}</a></h1>
     <!-- Uncomment below if you prefer to use an image logo -->
     <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 

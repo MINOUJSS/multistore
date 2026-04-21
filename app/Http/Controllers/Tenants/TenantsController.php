@@ -39,6 +39,7 @@ use App\Models\UserStoreSetting;
 use App\Models\Wilaya;
 use App\Services\Users\Sellers\Seller_Cart;
 use App\Services\Users\Suppliers\Cart;
+use App\Services\Users\Suppliers\GoogleSheetService;
 use App\Services\Users\Suppliers\OrderNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -724,7 +725,7 @@ class TenantsController extends Controller
                         'shipping_address' => $supplierOrder->shipping_address,
                     ];
                     // $result = $this->sheetService->addOrder($data);
-                    // $result=$this->googleSheetService->addOrder($data);
+                    // $result = $this->googleSheetService->addOrder($data);
 
                     $result = sendOrderDataToGoogleSheet::dispatch(tenant('id'), $data);
 

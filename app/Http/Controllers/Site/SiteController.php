@@ -12,6 +12,12 @@ class SiteController extends Controller
         return view('site.index');
     }
 
+    // privacy_policy
+    public function privacy_policy()
+    {
+        return view('site.privacy_policy');
+    }
+
     // show_suppliers_plans
     public function show_suppliers_plans()
     {
