@@ -158,7 +158,7 @@
                     
                     <div class="mb-3">
                         <label class="form-label">معرف Google Sheet</label>
-                        <input type="text" name="sheet_id" id="sheet_id" class="form-control" placeholder="Enter Sheet ID">
+                        <input type="text" name="sheet_id" id="sheet_id" class="form-control" placeholder="Enter Deployment ID">
                         <div class="invalid-feedback" id="error-sheet_id"></div>
                     </div>
 
