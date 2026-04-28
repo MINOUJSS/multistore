@@ -13,7 +13,7 @@
         <div class="card-body">
             شكراً لشرائك منتجنا!❤️ قم بتحميله من هنا
         </div>
-        <a class="btn btn-primary m-5" href="{{$download_link}}">تحميل المنتج الرقمي</a>
+        <a class="btn btn-primary m-5" href="{{$download_link}}" target="_blank">تحميل المنتج الرقمي</a>
     </div>
 </div>
 @endif
