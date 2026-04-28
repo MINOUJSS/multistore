@@ -51,7 +51,6 @@ class SiteController extends Controller
     //download digital products
     public function download($id,$token)
     {
-        dd($id,$token);
         $order = SellerOrders::where('download_token', $token)->first();
     // ❌ Token غير صالح
     if (!$order) {
