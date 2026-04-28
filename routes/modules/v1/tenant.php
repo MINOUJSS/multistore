@@ -96,7 +96,7 @@ Route::middleware([
             Route::get('/coupons/product/fetch-coupon', [TenantsController::class, 'productFetchCoupon'])->name('coupons.product.fetchCoupon');
             // download route
             // seller digital products routes
-            Route::get('/product/download/{id}', [TenantsController::class, 'download'])->name('product.download')->middleware('signed');
+            Route::get('/product/download/{id}/{token}', [TenantsController::class, 'download'])->name('product.download')->middleware('signed');
             //start test download-----------------------
             Route::get('/create-download-link',function(){
               // إنشاء Signed URL
