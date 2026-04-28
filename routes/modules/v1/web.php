@@ -62,7 +62,7 @@ foreach (config('tenancy.central_domains') as $domain) {
             Route::get('/dispute/{token}/messages', [SiteDisputeController::class, 'fetchMessages']);
             //download route
             // seller digital products routes
-            Route::get('/product/download/{id}/{token}', [SiteDisputeController::class, 'download'])->name('product.download')->middleware('signed');
+            Route::get('/product/download/{id}/{token}', [SiteController::class, 'download'])->name('product.download')->middleware('signed');
         });
     });
 }
