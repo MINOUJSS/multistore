@@ -680,7 +680,7 @@ class ChargilyPayController extends Controller
 
                                         // إنشاء Signed URL
                                         $download_Link = URL::temporarySignedRoute(
-                                            'tenant.product.download',
+                                            'site.product.download',
                                             now()->addMinutes(15), // رابط قصير العمر
                                             ['id' => $order->items->first()->product_id, 'token' => $download_token]
                                         );

@@ -60,6 +60,9 @@ foreach (config('tenancy.central_domains') as $domain) {
             Route::get('/dispute/track/{token}', [SiteDisputeController::class, 'track'])->name('dispute.track');
             Route::post('/dispute/{token}/reply', [SiteDisputeController::class, 'reply'])->name('dispute.reply');
             Route::get('/dispute/{token}/messages', [SiteDisputeController::class, 'fetchMessages']);
+            //download route
+            // seller digital products routes
+            Route::get('/product/download/{id}/{token}', [SiteDisputeController::class, 'download'])->name('product.download')->middleware('signed');
         });
     });
 }

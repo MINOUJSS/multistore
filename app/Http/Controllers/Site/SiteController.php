@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
+use App\Models\Seller\SellerOrders;
+use App\Models\Seller\SellerProducts;
 use App\Models\Supplier\SupplierPlan;
+use Illuminate\Support\Facades\Storage;
 
 class SiteController extends Controller
 {
@@ -44,5 +47,42 @@ class SiteController extends Controller
     public function show_shipers_plans()
     {
         return view('site.show_shipers_plans');
+    }
+    //download digital products
+    public function download($id,$token)
+    {
+        dd($id,$token);
+        $order = SellerOrders::where('download_token', $token)->first();
+    // ❌ Token غير صالح
+    if (!$order) {
+        abort(403, 'رابط غير صالح');
+    }
+
+    // ❌ لم يتم الدفع
+    if ($order->status !== 'paid') {
+        abort(403, 'الدفع غير مكتمل');
+    }
+
+    // ❌ انتهت الصلاحية
+    if (now()->gt($order->download_expires_at)) {
+        abort(403, 'انتهت صلاحية الرابط');
+    }
+
+    // ❌ تجاوز عدد التحميلات
+    if ($order->downloads_count >= 3) {
+        abort(403, 'تم تجاوز عدد التحميلات');
+    }
+
+    // زيادة عدد التحميلات
+    $order->increment('downloads_count');
+
+        $product = SellerProducts::where('id', $id)->first();
+        $file=$product->file;
+        // تقسيم الرابط
+        $parts = explode('/storage/app/public/seller/', $file);
+        // المسار داخل storage
+        $filePath = $parts[1];
+        return Storage::disk('seller')->download($filePath);
+        // return response()->download($file);
     }
 }
