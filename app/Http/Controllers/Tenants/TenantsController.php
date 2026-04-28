@@ -2678,9 +2678,9 @@ class TenantsController extends Controller
         ]);
     }
     //download digital product
-    public function download(Request $request, $id)
+    public function download($id,$token)
     {
-        $order = SellerOrders::where('download_token', $request->token)->first();
+        $order = SellerOrders::where('download_token', $token)->first();
     // ❌ Token غير صالح
     if (!$order) {
         abort(403, 'رابط غير صالح');
