@@ -58,7 +58,7 @@ class SiteController extends Controller
     }
 
     // ❌ لم يتم الدفع
-    if ($order->status !== 'paid') {
+    if ($order->payment_status !== 'paid') {
         abort(403, 'الدفع غير مكتمل');
     }
 
