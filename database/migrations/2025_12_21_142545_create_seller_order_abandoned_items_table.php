@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('order_id')->constrained('seller_order_abandoneds')->onDelete('cascade'); // الطلب
             $table->foreignId('product_id')->constrained('seller_products')->onDelete('cascade'); // المنتج
+            $table->enum('product_type', ['physical', 'digital'])->default('physical');
             $table->foreignId('variation_id')->nullable()->constrained('seller_product_variations')->onDelete('set null'); // خيار المنتج (إن وجد)
             $table->foreignId('attribute_id')->nullable()->constrained('seller_product_attributes')->onDelete('set null'); // خيار المنتج (إن وجد)
             $table->integer('quantity'); // الكمية المطلوبة

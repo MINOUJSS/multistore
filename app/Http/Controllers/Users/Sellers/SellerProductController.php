@@ -62,38 +62,81 @@ class SellerProductController extends Controller
                 ]);
             }
         }
-        // التحقق من صحة البيانات
-        $validator = Validator::make($request->all(), [
+        // القواعد الأساسية
+        $rules = [
             'add_product_name' => 'required|string|min:3',
             'add_product_category' => 'nullable',
-            'add_product_cost' => 'required|numeric|min:0',
             'add_product_price' => 'required|numeric|min:0',
-            'add_product_qty' => 'required|integer|min:1',
+
             'add_product_min_qty' => 'required|integer|min:1',
             'add_product_short_description' => 'required|string',
             'add_product_description' => 'required|string',
+
             'add_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'add_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'add_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
             'add_product_sku.*' => 'required|string|min:3',
             'add_product_color.*' => 'required|string',
             'add_product_size.*' => 'required|string',
             'add_product_weight.*' => 'required|string',
             'add_product_variation_add_price.*' => 'required|numeric|min:0',
             'add_product_variation_stock.*' => 'required|integer|min:0',
+
             'add_discount_amount' => 'nullable|numeric|min:0',
             'add_discount_percentage' => 'nullable|numeric|min:0|max:100',
             'add_discount_start_date' => 'nullable|date',
             'add_discount_end_date' => 'nullable|date|after_or_equal:add_discount_start_date',
+
             'add_attribute_value.*' => 'required|string',
-            // ✅ التحقق من الفيديوهات
+
+            // الفيديوهات
             'video_url' => 'nullable|array',
             'video_url.*' => [
                 'nullable',
                 'string',
-                // ✅ regex للتحقق من روابط YouTube أو Vimeo
                 'regex:/^(https?:\/\/)?(www\.)?((youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}|vimeo\.com\/[0-9]+)$/',
             ],
-        ]);
+        ];
+        if ($request->add_product_type !== 'digital') {
+            $rules['add_product_qty'] = 'required|integer|min:1';
+            $rules['add_product_cost'] = 'required|numeric|min:0';
+        } else {
+            // للمنتج الرقمي
+            $rules['add_digital_file'] = 'required|file|mimes:zip,pdf,mp4|max:51200'; // 50MB
+        }
+        // التحقق من صحة البيانات
+        $validator = Validator::make($request->all(), $rules);
+        // $validator = Validator::make($request->all(), [
+        //     'add_product_name' => 'required|string|min:3',
+        //     'add_product_category' => 'nullable',
+        //     'add_product_cost' => 'required|numeric|min:0',
+        //     'add_product_price' => 'required|numeric|min:0',
+        //     'add_product_qty' => 'required|integer|min:1',
+        //     'add_product_min_qty' => 'required|integer|min:1',
+        //     'add_product_short_description' => 'required|string',
+        //     'add_product_description' => 'required|string',
+        //     'add_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        //     'add_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        //     'add_product_sku.*' => 'required|string|min:3',
+        //     'add_product_color.*' => 'required|string',
+        //     'add_product_size.*' => 'required|string',
+        //     'add_product_weight.*' => 'required|string',
+        //     'add_product_variation_add_price.*' => 'required|numeric|min:0',
+        //     'add_product_variation_stock.*' => 'required|integer|min:0',
+        //     'add_discount_amount' => 'nullable|numeric|min:0',
+        //     'add_discount_percentage' => 'nullable|numeric|min:0|max:100',
+        //     'add_discount_start_date' => 'nullable|date',
+        //     'add_discount_end_date' => 'nullable|date|after_or_equal:add_discount_start_date',
+        //     'add_attribute_value.*' => 'required|string',
+        //     // ✅ التحقق من الفيديوهات
+        //     'video_url' => 'nullable|array',
+        //     'video_url.*' => [
+        //         'nullable',
+        //         'string',
+        //         // ✅ regex للتحقق من روابط YouTube أو Vimeo
+        //         'regex:/^(https?:\/\/)?(www\.)?((youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}|vimeo\.com\/[0-9]+)$/',
+        //     ],
+        // ]);
 
         if ($validator->fails()) {
             return response()->json([
@@ -116,28 +159,46 @@ class SellerProductController extends Controller
             $product->short_description = $request->add_product_short_description;
             $product->description = $request->add_product_description;
             $product->price = $request->add_product_price;
-            $product->cost = $request->add_product_cost;
+            if ($request->add_product_type == 'physical') {
+                $product->cost = $request->add_product_cost;
+            } else {
+                $product->cost = 0;
+            }
             $product->qty = $request->add_product_qty;
-            $product->minimum_order_qty = $request->add_product_min_qty;
+            // $product->minimum_order_qty = $request->add_product_min_qty;
+            $product->minimum_order_qty = 1;
             $product->condition = $request->add_product_condition;
-            $product->free_shipping = $request->has('add_free_shipping') ? 'yes' : 'no';
+            $product->product_type = $request->add_product_type;
+            if ($request->add_product_type == 'physical') {
+                $product->free_shipping = $request->has('add_free_shipping') ? 'yes' : 'no';
+            } else {
+                $product->free_shipping = 'yes';
+            }
             $product->status = $request->has('add_status') ? 'active' : 'inactive';
-            // $product->save();
+            $product->save();
+
+            // رفع الملف
+            if ($request->add_product_type == 'digital') {
+                $path = $request->file('add_digital_file')->store(get_seller_store_name(auth()->user()->tenant_id)."/products/{$product->id}/file", 'seller');
+                $url = Storage::disk('seller')->url('app/public/seller/'.$path);
+                $product->file = $url;
+                $product->update();
+            }
 
             // رفع الصورة الأساسية
             if ($request->hasFile('add_image')) {
-                $path = $request->file('add_image')->store('seller/'.get_seller_store_name(auth()->user()->tenant_id)."/images/products/{$product->id}", 'public');
-                $url = Storage::disk('public')->url('app/public/'.$path);
+                $path = $request->file('add_image')->store(get_seller_store_name(auth()->user()->tenant_id)."/products/{$product->id}/images", 'seller');
+                $url = Storage::disk('seller')->url('app/public/seller/'.$path);
                 $product->image = $url;
-                $product->save();
+                $product->update();
             }
 
             // رفع الصور الإضافية
             if ($request->hasFile('add_images')) {
                 $imagesData = [];
                 foreach ($request->file('add_images') as $image) {
-                    $path = $image->store('seller/'.get_seller_store_name(auth()->user()->tenant_id)."/images/products/{$product->id}", 'public');
-                    $url = Storage::disk('public')->url('app/public/'.$path);
+                    $path = $image->store(get_seller_store_name(auth()->user()->tenant_id)."/products/{$product->id}/images", 'seller');
+                    $url = Storage::disk('seller')->url('app/public/seller/'.$path);
                     $imagesData[] = [
                         'product_id' => $product->id,
                         'image_path' => $url,
@@ -248,7 +309,7 @@ class SellerProductController extends Controller
                     if ($type === 'local' && isset($videos['file'][$i]) && $videos['file'][$i] instanceof \Illuminate\Http\UploadedFile) {
                         $file = $videos['file'][$i];
                         if ($file->isValid()) {
-                            $path = $file->store(get_seller_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'seller');
+                            $path = $file->store(get_seller_store_name(auth()->user()->tenant_id)."/products/{$product->id}/videos", 'seller');
                             $filePath = Storage::disk('seller')->url('app/public/seller/'.$path);
                         }
                     }
@@ -320,22 +381,62 @@ class SellerProductController extends Controller
         // if (!function_exists('getYoutubeVideoId')) {
 
         // }
-
-        // التحقق من صحة البيانات
-        $validator = Validator::make($request->all(), [
+        // القواعد الأساسية
+        $rules = [
             'product_name' => 'required|string|min:3',
-            'product_category' => 'required|integer',
-            'product_cost' => 'required|numeric|min:0',
+            'product_category' => 'nullable',
             'product_price' => 'required|numeric|min:0',
-            'product_qty' => 'required|integer|min:1',
+
             'product_min_qty' => 'required|integer|min:1',
             'product_short_description' => 'required|string',
             'product_description' => 'required|string',
+
+            'product_sku.*' => 'required|string|min:3',
+            'product_color.*' => 'required|string',
+            'product_size.*' => 'required|string',
+            'product_weight.*' => 'required|string',
+            'product_variation_add_price.*' => 'required|numeric|min:0',
+            'product_variation_stock.*' => 'required|integer|min:0',
+
             'discount_amount' => 'nullable|numeric|min:0',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'discount_start_date' => 'nullable|date',
-            'discount_end_date' => 'nullable|date|after_or_equal:discount_start_date',
-        ]);
+            'discount_end_date' => 'nullable|date|after_or_equal:add_discount_start_date',
+
+            'attribute_value.*' => 'required|string',
+
+            // الفيديوهات
+            'video_url' => 'nullable|array',
+            'video_url.*' => [
+                'nullable',
+                'string',
+                'regex:/^(https?:\/\/)?(www\.)?((youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}|vimeo\.com\/[0-9]+)$/',
+            ],
+        ];
+        if ($request->product_type !== 'digital') {
+            $rules['product_qty'] = 'required|integer|min:1';
+            $rules['product_cost'] = 'required|numeric|min:0';
+        } else {
+            // للمنتج الرقمي
+            // $rules['digital_file'] = 'required|file|mimes:zip,pdf,mp4|max:51200'; // 50MB
+        }
+
+        // التحقق من صحة البيانات
+        $validator = Validator::make($request->all(), $rules);
+        // $validator = Validator::make($request->all(), [
+        //     'product_name' => 'required|string|min:3',
+        //     'product_category' => 'required|integer',
+        //     'product_cost' => 'required|numeric|min:0',
+        //     'product_price' => 'required|numeric|min:0',
+        //     'product_qty' => 'required|integer|min:1',
+        //     'product_min_qty' => 'required|integer|min:1',
+        //     'product_short_description' => 'required|string',
+        //     'product_description' => 'required|string',
+        //     'discount_amount' => 'nullable|numeric|min:0',
+        //     'discount_percentage' => 'nullable|numeric|min:0|max:100',
+        //     'discount_start_date' => 'nullable|date',
+        //     'discount_end_date' => 'nullable|date|after_or_equal:discount_start_date',
+        // ]);
 
         if ($validator->fails()) {
             return response()->json([
@@ -363,26 +464,53 @@ class SellerProductController extends Controller
             $product->short_description = $request->product_short_description;
             $product->description = $request->product_description;
             $product->price = $request->product_price;
-            $product->cost = $request->product_cost;
+            if ($request->product_type == 'physical') {
+                $product->cost = $request->product_cost;
+            } else {
+                $product->cost = 0;
+            }
+            // $product->cost = $request->product_cost;
             $product->qty = $request->product_qty;
             $product->minimum_order_qty = $request->product_min_qty;
             $product->condition = $request->product_condition;
-            $product->free_shipping = $request->has('free_shipping') ? 'yes' : 'no';
+            if ($request->product_type == 'physical') {
+                $product->free_shipping = $request->has('free_shipping') ? 'yes' : 'no';
+            } else {
+                $product->free_shipping = 'yes';
+            }
+            $product->product_type = $request->product_type;
+            // $product->free_shipping = $request->has('free_shipping') ? 'yes' : 'no';
             $product->status = $request->has('status') ? 'active' : 'inactive';
+
+            // رفع الملف
+            if ($request->hasFile('digital_file')) {
+                // delete old image
+                $url = explode('storage/app/public/seller/', $product->file);
+                if (count($url) >= 2) {
+                    $filePath = $url[1];
+                    if (Storage::disk('seller')->exists($filePath)) {
+                        Storage::disk('seller')->delete($filePath);
+                    }
+                }
+
+                $path = $request->file('digital_file')->store(get_seller_store_name(auth()->user()->tenant_id).'/products/'.$product_id.'/file', 'seller'); // التخزين في قرص المستأجر
+                $url = Storage::disk('seller')->url('app/public/seller/'.$path); // رابط الصورة
+                $product->file = $url;
+            }
 
             // رفع الصورة إلى نطاق المستأجر
             if ($request->hasFile('image')) {
                 // delete old image
-                $url = explode('storage/app/public/', $product->image);
+                $url = explode('storage/app/public/seller/', $product->image);
                 if (count($url) >= 2) {
                     $imagePath = $url[1];
-                    if (Storage::disk('public')->exists($imagePath)) {
-                        Storage::disk('public')->delete($imagePath);
+                    if (Storage::disk('seller')->exists($imagePath)) {
+                        Storage::disk('seller')->delete($imagePath);
                     }
                 }
 
-                $path = $request->file('image')->store('seller/'.get_seller_store_name(auth()->user()->tenant_id).'/images/products/'.$product_id, 'public'); // التخزين في قرص المستأجر
-                $url = Storage::disk('public')->url('app/public/'.$path); // رابط الصورة
+                $path = $request->file('image')->store(get_seller_store_name(auth()->user()->tenant_id).'/products/'.$product_id.'/images', 'seller'); // التخزين في قرص المستأجر
+                $url = Storage::disk('seller')->url('app/public/seller/'.$path); // رابط الصورة
                 $product->image = $url;
             }
 
@@ -390,8 +518,8 @@ class SellerProductController extends Controller
             $imageUrls = [];
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
-                    $path = $image->store('seller/'.get_seller_store_name(auth()->user()->tenant_id).'/images/products/'.$product_id, 'public'); // حفظ الصور في storage/app/public/uploads/products
-                    $url = Storage::disk('public')->url('app/public/'.$path); // رابط الصورة
+                    $path = $image->store(get_seller_store_name(auth()->user()->tenant_id).'/products/'.$product_id.'/images', 'seller'); // حفظ الصور في storage/app/public/uploads/products
+                    $url = Storage::disk('seller')->url('app/public/seller/'.$path); // رابط الصورة
                     $imageUrls[] = $url;
                     // insert into product images table
                     $p_image = new SellerProductImages();
@@ -476,8 +604,8 @@ class SellerProductController extends Controller
 
                             // رفع الملف الجديد
                             // $path = $request->update_videos['file'][$i]->store('products/videos', 'seller');
-                            $path = $request->update_videos['file'][$i]->store(get_seller_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'seller');
-                            $updateData['file_path'] = Storage::disk('seller')->url('app/public/seller/'.$path);
+                            $path = $request->update_videos['file'][$i]->store(get_seller_store_name(auth()->user()->tenant_id)."/products/{$product->id}/videos", 'seller');
+                            $updateData['file_path'] = Storage::disk('seller')->url('app/public/'.$path);
                             $updateData['file_disk'] = 'seller';
                             $updateData['youtube_url'] = null;
                             $updateData['youtube_id'] = null;
@@ -509,7 +637,7 @@ class SellerProductController extends Controller
                             $data['youtube_id'] = get_vimeo_id($request->videos['youtube_url'][$i]);
                         }
                     } elseif ($type === 'local' && isset($request->videos['file'][$i])) {
-                        $path = $request->videos['file'][$i]->store(get_seller_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'seller');
+                        $path = $request->videos['file'][$i]->store(get_seller_store_name(auth()->user()->tenant_id)."/products/{$product->id}/videos", 'seller');
                         $data['file_path'] = Storage::disk('seller')->url('app/public/seller/'.$path);
                         $data['file_disk'] = 'seller';
                     }
@@ -649,9 +777,10 @@ class SellerProductController extends Controller
         $product = SellerProducts::findOrfail($id);
         // delete product images folder
         $store_name = get_seller_store_name(get_tenant_id_from_seller($product->seller_id));
-        $folderPath = '/seller/'.$store_name.'/images/products/'.$product->id;
-        if (Storage::disk('public')->exists($folderPath)) {
-            Storage::disk('public')->deleteDirectory($folderPath); // حذف المجلد بالكامل
+        $folderPath = $store_name.'/products/'.$product->id;
+
+        if (Storage::disk('seller')->exists($folderPath)) {
+            Storage::disk('seller')->deleteDirectory($folderPath); // حذف المجلد بالكامل
         }
         // delete product frome database
         $product->delete();

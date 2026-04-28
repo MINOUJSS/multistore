@@ -5,9 +5,14 @@
     <td>{{$product->name}}</td>
     <td>{{get_seller_product_category($product->id)}}</td>
     <td>{{get_seller_product_price($product->id)}}</td>
-    <td>{{$product->cost}}</td>
-    <td>{{$product->qty}}</td>
-    <td>{{$product->minimum_order_qty}}</td>
+    @if($product->product_type == "physical")
+    <td>{{ $product->cost }}</td>
+    <td>{{ $product->qty }}</td>    
+    @else
+    <td>غير مكلف</td>
+    <td>غير محدود</td>   
+    @endif
+    <td>{{$product->product_type}}</td>
     <td>{{seller_p_has_free_shipping($product->id)}}</td>
     <td><span class="badge bg-success">{{$product->status}}</span></td>
     <td>

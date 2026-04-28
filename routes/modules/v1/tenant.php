@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChargilyPayController;
 use App\Http\Controllers\Tenants\TenantsController;
 use App\Services\Users\Suppliers\GoogleSheetService;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -93,7 +94,23 @@ Route::middleware([
             Route::get('/coupons/fetch-coupon', [TenantsController::class, 'fetchCoupon'])->name('coupons.fetchCoupon');
             // fetch coupon in product details
             Route::get('/coupons/product/fetch-coupon', [TenantsController::class, 'productFetchCoupon'])->name('coupons.product.fetchCoupon');
-
+            // download route
+            // seller digital products routes
+            Route::get('/product/download/{id}', [TenantsController::class, 'download'])->name('product.download')->middleware('signed');
+            //start test download-----------------------
+            Route::get('/create-download-link',function(){
+              // إنشاء Signed URL
+              $download_token = Str::uuid();
+            $downloadLink = URL::temporarySignedRoute(
+                'tenant.product.download.test',
+                now()->addMinutes(15), // رابط قصير العمر
+                ['token' => $download_token]
+            ); // رابط قصير العمر
+            return $downloadLink;
+            });
+            Route::get('/product/download/test/{token}', [TenantsController::class, 'testDownload'])->name('product.download.test');
+            //end test download-------------------------
+            // test sheet
             Route::get('/test-sheet', function (GoogleSheetService $sheet) {
                 $result = $sheet->addOrder([
                     'id' => 'test_'.time(),

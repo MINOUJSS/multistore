@@ -143,6 +143,110 @@
             </h3>
             <p class="">{{ $product->short_description }}</p>
             {{-- order form  --}}
+            @if($product->product_type === 'digital')
+            <form id="orderForm" action="/order" class="row g-3 border p-3 rounded mt-3 mb-3 order-form" method="POST">
+                @csrf
+                <input type="hidden" name="device_fingerprint" id="device_fingerprint">
+                <div class="col-12 text-center">
+                    <p>{{ $order_form->form_title }}</p>
+                </div>
+                <input type="hidden" name="product_id" value="{{ $product->id }}" />
+                <div class="col-md-6">
+                    <label for="name" class="form-label">{{ $order_form->lable_customer_name }} <sup
+                            class="text-danger">
+                            @if ($order_form->customer_name_required === 'true')
+                                *
+                            @endif
+                        </sup></label>
+                    <input type="name" name="name" class="form-control @error('name') is-invalid @enderror"
+                        id="name" value="{{ old('name') }}"
+                        placeholder="{{ $order_form->input_placeholder_customer_name }}"
+                        @if ($order_form->customer_name_required === 'true') required @endif>
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">{{ $order_form->lable_customer_phone }} <sup
+                            class="text-danger">
+                            @if ($order_form->customer_phone_required === 'true')
+                                *
+                            @endif
+                        </sup></label>
+                    <input type="phone" name="phone" class="form-control @error('phone') is-invalid @enderror"
+                        id="phone" value="{{ old('phone') }}" onchange="create_abandoned_order();"
+                        placeholder="{{ $order_form->input_placeholder_customer_phone }}" required>
+                    @error('phone')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-md-6">
+                    <label for="email" class="form-label">{{ $order_form->lable_customer_email }} <sup
+                            class="text-danger">
+                            @if ($order_form->customer_email_required === 'true')
+                                *
+                            @endif
+                        </sup></label>
+                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                        id="email" value="{{ old('email') }}"
+                        placeholder="{{ $order_form->input_placeholder_customer_email }}" required>
+                    @error('email')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="row mb-4 mt-4">
+                    <div class="col-md-12">
+                        <h5 class="mb-3 fw-bold text-dark sub-title">طريقة الدفع</h5>
+                        <div class="d-flex flex-wrap gap-3">
+
+                            {{-- <!-- الدفع عند الاستلام -->
+                            <div class="payment-option">
+                                <input type="radio" name="payment_method" id="cod" value="cod"
+                                    class="payment-radio" checked>
+                                <label for="cod" class="payment-label">
+                                    <div class="payment-content">
+                                        <i class="fas fa-money-bill-wave payment-icon"></i>
+                                        <span class="payment-text">الدفع عند الاستلام</span>
+                                    </div>
+                                </label>
+                            </div> --}}
+                            @if (is_seller_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')))
+                                <!-- Chargily -->
+                                <div class="payment-option">
+                                    <input type="radio" name="payment_method" id="chargily" value="chargily"
+                                        class="payment-radio" checked>
+                                    <label for="chargily" class="payment-label">
+                                        <div class="payment-content">
+                                            <i class="fas fa-credit-card payment-icon"></i>
+                                            <span class="payment-text">Chargily</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            @endif
+
+                            @if (is_seller_aproved(tenant('id')) && is_seller_bank_account_exists(tenant('id')))
+                                <!-- التحويل البنكي -->
+                                <div class="payment-option">
+                                    <input type="radio" name="payment_method" id="bank_transfer" value="verments"
+                                        class="payment-radio" checked>
+                                    <label for="bank_transfer" class="payment-label">
+                                        <div class="payment-content">
+                                            <i class="fas fa-university payment-icon"></i>
+                                            <span class="payment-text">تحويل بنكي</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            @endif
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 text-center">
+                    <button type="submit" class="form-control btn btn-primary bay-now-btn"><i
+                            class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
+                </div>
+            </form>
+            @else 
             <form id="orderForm" action="/order" class="row g-3 border p-3 rounded mt-3 mb-3 order-form" method="POST">
                 @csrf
                 <input type="hidden" name="device_fingerprint" id="device_fingerprint">
@@ -537,6 +641,7 @@
                     </div>
                 </div>
             </form>
+            @endif
             {{-- end form  --}}
             {{-- start add to cart btn --}}
             <div class="row">
@@ -552,7 +657,7 @@
                     {{-- <input id="attribute_id" type="hidden" name="attribute_id"
                         value="@if (isset($product->attributes[0]->id)) {{ $product->attributes[0]->id }} @endif" /> --}}
                     <input id="attribute_id" type="hidden" name="attribute_id" value="0" />
-                    @if ($product->qty > 0 && !is_cart_has_this_product($product->id))
+                    @if ($product->qty > 0 && !is_cart_has_this_product($product->id) && $product->product_type == 'physical')
                         <button type="submit" class="btn btn-primary btn-sm add-to-cart-btn form-control p-2">
                             <i class="fas fa-cart-plus"></i> أضف للسلة
                         </button>

@@ -109,7 +109,7 @@
             <div class="col-md-4 local-input ${localClass}">
                 <label class="form-label">ملف الفيديو</label>
                 <input type="file" name="update_videos[file][]" accept="video/*" class="form-control">
-                ${v.file_path ? `<small class="text-muted mt-1 d-block">ملف حالي: <a href="/storage/${v.file_path}" target="_blank">${v.file_path.split('/').pop()}</a></small>` : ''}
+                ${v.file_path ? `<small class="text-muted mt-1 d-block">ملف حالي: <a href="${v.file_path}" target="_blank">${v.file_path.split('/').pop()}</a></small>` : ''}
             </div>
 
             <div class="col-md-8">

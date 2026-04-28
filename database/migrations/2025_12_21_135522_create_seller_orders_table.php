@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('order_number')->unique(); // رقم الطلب الفريد
             $table->string('customer_name')->nullable();
             $table->string('phone');
+            $table->string('email')->nullable();
             $table->boolean('phone_visiblity')->default(false);
             $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'canceled'])
                   ->default('pending'); // حالة الطلب
@@ -77,6 +78,12 @@ return new class extends Migration {
             ])->default('pending');
             $table->timestamp('reviewed_at')->nullable();
             // ------------------------
+            //خاص بالمنتجات الرقمية
+            $table->string('download_token')->nullable()->unique();
+            $table->string('download_link')->nullable();
+            $table->timestamp('download_expires_at')->nullable();
+            $table->integer('downloads_count')->default(0);
+            //-------------------------
             $table->timestamps();
         });
     }

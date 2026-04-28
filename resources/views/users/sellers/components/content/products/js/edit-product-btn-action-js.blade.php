@@ -1,4 +1,68 @@
 <script>
+       //drop zone functions
+    
+    
+    function edit_previewDigitalFile(event) {
+        let file = event.target.files[0];
+
+        if (file) {
+            let preview = document.getElementById('edit_digitalPreview');
+            preview.innerHTML = `
+                <div class="text-center">
+                    <i class="fa fa-file fa-2x"></i>
+                    <p>${file.name}</p>
+                    <small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+                </div>
+            `;
+        }
+    }
+    function edit_browsDigitalFile() {
+        document.getElementById('edit_digital_file').click();
+    }
+    // تغيير نوع المنتج
+        function toggleEditProductType(value) {
+
+            if (value === 'digital') {
+
+                // إخفاء العناصر الخاصة بالمنتجات الفيزيائية
+                $('#edit_inputQty').closest('.col-md-6').hide();
+                $('#edit_free_shipping').closest('.col-md-3').hide();
+                $('#edit_inputCost').closest('.col-md-6').hide();
+                $('#edit_attribute_color_section').hide();
+                $('#edit_inputCondition').closest('.col-md-6').hide();
+
+                // إخفاء حقل الحالة (اختياري)
+                $('#edit_inputProductType').closest('.col-md-6').show(); // نتركه ظاهر لأنه يحتوي digital
+                $('#edit_digital_file_section').show();
+
+                // تعيين القيم تلقائياً
+                $('#edit_inputQty').val(0);
+                $('#edit_free_shipping').prop('checked', false);
+
+            } else {
+
+                // إظهار العناصر الخاصة بالمنتجات الفيزيائية
+                $('#edit_inputQty').closest('.col-md-6').show();
+                $('#edit_inputCost').closest('.col-md-6').show();
+                $('#edit_free_shipping').closest('.col-md-3').show();
+                $('#edit_attribute_color_section').show();
+                $('#edit_inputCondition').closest('.col-md-6').show();
+
+                //
+                $('#edit_digital_file_section').hide();
+
+                // إعادة القيم الافتراضية (اختياري)
+                $('#edit_inputQty').val('');
+                $('#edit_free_shipping').prop('checked', true);
+            }
+        }
+        // عند التغيير
+        $('#edit_inputProductType').on('change', function () {
+            let value = $(this).val();
+            toggleEditProductType(value);
+        });
+
+        
     //on click on edit button
     $('.editproduct').click(function() {
 
@@ -21,18 +85,22 @@
             type: 'GET',
             url: '/seller-panel/product/edit/' + p_id,
             success: function(response) {
+                //detecte if product is digital or not
+                var product_type =response.product.product_type; ;
+                toggleEditProductType(product_type);
 
                 //product variation variables
                 var product_variation = document.getElementById("product_variation");
                 //end product variation variables
                 // console.log(response);
                 $('#product_id').val(response.product.id);
+                $('#edit_inputProductType').val(response.product.product_type);
                 $('#product_name').val(response.product.name);
                 $("#p_cat_" + response.product.category_id).prop('selected', true);
-                $("#inputCost").val(response.product.cost);
+                $("#edit_inputCost").val(response.product.cost);
                 $("#inputPrice").val(response.product.price);
-                $("#inputQty").val(response.product.qty);
-                $("#inputMinQty").val(response.product.minimum_order_qty);
+                $("#edit_inputQty").val(response.product.qty);
+                $("#edit_inputMinQty").val(response.product.minimum_order_qty);
                 //  console.log(response);
                 if (response.product_review != null) {
                     $("#inputReview").val(response.product_review.rating);
@@ -43,9 +111,9 @@
                 $("#product_status_" + response.product.condition).prop('selected', true);
 
                 if (response.product.free_shipping == "yes") {
-                    $("#free_shipping").prop('checked', true);
+                    $("#edit_free_shipping").prop('checked', true);
                 } else {
-                    $("#free_shipping").prop('checked', false);
+                    $("#edit_free_shipping").prop('checked', false);
                 }
 
                 if (response.product.status == "active") {
@@ -281,3 +349,4 @@
 
     });
 </script>
+

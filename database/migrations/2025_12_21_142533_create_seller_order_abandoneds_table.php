@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('order_number')->unique(); // رقم الطلب الفريد
             $table->string('customer_name')->nullable();
             $table->string('phone');
+            $table->string('email')->nullable();
             $table->boolean('phone_visiblity')->default(false);
             $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'canceled', 'returned'])
                   ->default('pending'); // حالة الطلب

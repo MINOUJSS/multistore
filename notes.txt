@@ -2,6 +2,8 @@
 --------------------------------------------
 أعمال اليوم
 إنجاز الشاشة الرئيسية للأدمن 
+create page for contact us in admin panel
+create news later table and page for admin
 تعديل الصور في الموقع ثم المتجر
 set telegram webhook btn for admin
 عمل فيديو تعريفي بالمنصة

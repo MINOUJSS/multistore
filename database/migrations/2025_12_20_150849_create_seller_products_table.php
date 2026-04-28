@@ -21,9 +21,11 @@ return new class extends Migration {
             $table->decimal('price', 10, 2);
             $table->decimal('cost', 10, 2);
             $table->string('image')->nullable();
+            $table->string('file')->nullable();
             $table->integer('qty')->default(0);
             $table->integer('minimum_order_qty')->default(0);
-            $table->enum('condition', ['new', 'used', 'refurbished'])->default('new');
+            $table->enum('condition', ['new', 'used', 'refurbished', 'old'])->default('new');
+            $table->enum('product_type', ['digital', 'physical'])->default('physical');
             $table->enum('free_shipping', ['yes', 'no'])->default('no');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->integer('view_count')->default(0);

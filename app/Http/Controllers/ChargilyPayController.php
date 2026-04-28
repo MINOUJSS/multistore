@@ -15,6 +15,8 @@ use App\Models\Supplier\SupplierPlanOrder;
 use App\Models\Supplier\SupplierPlanPrices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 class ChargilyPayController extends Controller
 {
@@ -28,7 +30,7 @@ class ChargilyPayController extends Controller
         $amount = $request->amount;
         $type = $request->payment_type; // 'invoice' | 'subscription' | 'other'
         $referenceId = $request->reference_id;
-        // dd($request);
+        
         // validation
         if ($type == 'wallet_topup') {
             $validated = $request->validate([
@@ -371,10 +373,14 @@ class ChargilyPayController extends Controller
         $checkout_id = $request->input('checkout_id');
         $checkout = $this->chargilyPayInstance()->checkouts()->get($checkout_id);
         $payment = null;
-
         if ($checkout) {
             $metadata = $checkout->getMetadata();
-            $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
+            if($metadata['payment_type'] == 'supplier_order' || $metadata['payment_type'] == 'seller_order'){
+                $payment = \App\Models\ChargilyPaymentForTenants::find($metadata['payment_id']);
+            }else
+            {
+                $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
+            }
             // //
             // // Is not recomended to process payment in back page / success or fail page
             // // Doing payment processing in webhook for best practices
@@ -401,10 +407,17 @@ class ChargilyPayController extends Controller
                     return redirect()->route('supplier.billing.invoice.show', $payment->payment_reference_id)->with('success', 'تمت عملية الدفع بنجاح');
                 }
             }
-            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || $payment->payment_type == 'supplier_order' || ($user !== null && $user->type == 'supplier')) {
+            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || ($user !== null && $user->type == 'supplier')) {
                 return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
-            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'seller_order' || ($user !== null && $user->type == 'seller')) {
+            }elseif($payment->payment_type == 'supplier_order'){
+                return redirect()->route('tenant.thanks')->with('success', 'تمت عملية الدفع بنجاح');
+            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || ($user !== null && $user->type == 'seller')) {
                 return redirect()->route('seller.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
+            }elseif($payment->payment_type == 'seller_order'){
+                return redirect()->route('tenant.thanks')->with([
+                        'success' => 'تمت عملية الدفع بنجاح',
+                        'order_id' => $payment->payment_reference_id
+                    ]);
             }
         // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
         } else {
@@ -412,6 +425,10 @@ class ChargilyPayController extends Controller
                 return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
             } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'seller_order') {
                 return redirect()->route('seller.dashboard')->with('error', 'فشل في عملية الدفع');
+            }elseif($payment->payment_type == 'supplier_order'){
+                return redirect()->back()->with('error', 'فشل في عملية الدفع');
+            }elseif($payment->payment_type == 'seller_order'){
+                return redirect()->back()->with('error', 'فشل في عملية الدفع');
             }
 
             // return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
@@ -431,7 +448,7 @@ class ChargilyPayController extends Controller
             if ($checkout and $checkout instanceof \Chargily\ChargilyPay\Elements\CheckoutElement) {
                 if ($checkout) {
                     $metadata = $checkout->getMetadata();
-                    if ($metadata['payment_type'] == 'supplier_order') {
+                    if ($metadata['payment_type'] == 'supplier_order' || $metadata['payment_type'] == 'seller_order') {
                         $payment = \App\Models\ChargilyPaymentForTenants::find($metadata['payment_id']);
                     } else {
                         $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
@@ -646,6 +663,7 @@ class ChargilyPayController extends Controller
                             case 'seller_order':
                                 // get order data
                                 $order = SellerOrders::find($payment->payment_reference_id);
+                                 
                                 // update order status
                                 if ($order) {
                                     $order->payment_status = $status === 'paid' ? 'paid' : 'failed';
@@ -653,9 +671,29 @@ class ChargilyPayController extends Controller
                                     $order->confirmation_status = $status === 'paid' ? 'confirmed' : 'pending';
                                     $order->confirmed_by_user_id = $status === 'paid' ? get_user_data(get_seller_data_from_id($order->seller_id)->tenant_id)->id : null;
                                     $order->confirmed_at = $status === 'paid' ? now() : null;
-                                    $order->status = $status === 'paid' ? 'processing' : 'pending';
-                                    $order->update();
-                                }
+                                    //check if order items has only one and the type of this item is digital product
+                                    if (count($order->items) == 1 && $order->items->first()->product_type == 'digital') {
+                                    $order->status = $status === 'paid' ? 'delivered' : 'processing';
+                                    //start test
+                                        // إنشاء token
+                                        $download_token = Str::uuid();
+
+                                        // إنشاء Signed URL
+                                        $download_Link = URL::temporarySignedRoute(
+                                            'tenant.product.download',
+                                            now()->addMinutes(15), // رابط قصير العمر
+                                            ['id' => $order->items->first()->product_id, 'token' => $download_token]
+                                        );
+
+                                        // تحديث الرابط
+                                        $order->download_link = $download_Link;
+                                        $order->download_token = $download_token;
+                                        $order->download_expires_at = now()->addHours(24);
+                                        //$order->save();
+                                    //end test
+                                    }
+                                        $order->update();
+                                    }
                                 // end seller actions
 
                                 // no break

@@ -1,4 +1,47 @@
 <style>
+#add_digital_dropzone  {
+    margin-top: 10px;
+     height: 100px;
+        width:100px;
+        cursor: pointer;
+        border: 2px dashed #706c6cfd;
+        border-radius: 5px;
+        align-content: center;
+        text-align: center;
+        padding: 30px;
+    transition: 0.3s;
+}
+#edit_digital_dropzone  {
+    margin-top: 10px;
+     height: 100px;
+        width:100px;
+        cursor: pointer;
+        border: 2px dashed #706c6cfd;
+        border-radius: 5px;
+        align-content: center;
+        text-align: center;
+        padding: 30px;
+    transition: 0.3s;
+}
+
+#add_digital_dropzone:hover{
+    background: #f8f9fa;
+}
+#edit_digital_dropzone:hover{
+    background: #f8f9fa;
+}
+     #add_digitalPreview
+      {
+        margin-top: 10px;
+        height: 100px !important;
+        width:100% !important;
+      }
+           #edit_digitalPreview
+      {
+        margin-top: 10px;
+        height: 100px !important;
+        width:100% !important;
+      }
 /* ================================
    FORCE FULL WIDTH TABLE (MOBILE)
    ================================ */
@@ -115,7 +158,7 @@
                             <th>السعر</th>
                             <th>التكلفة</th>
                             <th>المخزون</th>
-                            <th>أقل كمية عند الطلب</th>
+                            <th>نوع المنتج</th>
                             <th>التوصيل المجاني</th>
                             <th>الحالة</th>
                             <th>الإجراءات</th>
@@ -128,9 +171,14 @@
                                 <td>{{ $product->name }}</td>
                                 <td>{{ get_seller_product_category($product->id) }}</td>
                                 <td>{{ get_seller_product_price($product->id) }}</td>
+                                @if($product->product_type == "physical")
                                 <td>{{ $product->cost }}</td>
-                                <td>{{ $product->qty }}</td>
-                                <td>{{ $product->minimum_order_qty }}</td>
+                                <td>{{ $product->qty }}</td>    
+                                @else
+                                <td>غير مكلف</td>
+                                 <td>غير محدود</td>   
+                                @endif
+                                <td>{{ $product->product_type }}</td>
                                 <td>{{ seller_p_has_free_shipping($product->id) }}</td>
                                 <td><span class="badge bg-success">{{ $product->status }}</span></td>
                                 <td>
@@ -217,6 +265,14 @@
                         <div class="col-12 bg-primary rounded ronded p-2 text-center">معلومات المنتج</div>
                         <input type="hidden" name="add_product_id" id="add_product_id">
                         <div class="col-md-6">
+                            <label for="add_inputProductType" class="form-label">نوع المنتج</label>
+                            <select id="add_inputProductType" class="form-select" name="add_product_type">
+                                <option value="physical" id="add_product_type_physical">مادي</option>
+                                <option value="digital" id="add_product_type_digital">رقمي</option>
+                            </select>
+                            <span class="text-danger error-product_type"></span>
+                        </div>
+                        <div class="col-md-6">
                             <label for="add_product_name" class="form-label">إسم المنتج</label>
                             <input type="text" class="form-control" id="add_product_name"
                                 name="add_product_name">
@@ -251,12 +307,12 @@
                                 required>
                             <span class="text-danger error-add_product_qty error-validation"></span>
                         </div>
-                        <div class="col-md-6">
-                            <label for="inputMiniQty" class="form-label">أقل كمية ممكنة للطلب</label>
-                            <input type="text" class="form-control" id="add_inputMinQty"
-                                name="add_product_min_qty" required>
-                            <span class="text-danger error-add_product_min_qty error-validation"></span>
-                        </div>
+                        {{-- <div class="col-md-6">
+                            <label for="inputMiniQty" class="form-label">أقل كمية ممكنة للطلب</label> --}}
+                            <input type="hidden" class="form-control" id="add_inputMinQty"
+                                name="add_product_min_qty" required value="1">
+                            {{-- <span class="text-danger error-add_product_min_qty error-validation"></span>
+                        </div> --}}
                         <div class="col-md-6">
                             <label for="inputMiniQty" class="form-label">تقييم المنتج</label>
                             <input type="number" class="form-control" id="add_inputReview"
@@ -269,9 +325,11 @@
                                 <option value="new" id="add_product_status_new">جديد</option>
                                 <option value="used" id="add_product_status_used">مستعمل</option>
                                 <option value="refurbished" id="add_product_status_refurbished">تم تجديده</option>
+                                <option value="old" id="add_product_status_old">قديم</option>
                             </select>
                             <span class="text-danger error-add_product_condition error-validation"></span>
                         </div>
+                        
                         <div class="col-md-3">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" name="add_free_shipping" id="add_free_shipping"
@@ -326,6 +384,37 @@
                                 </div>
                             </div>
                         </div>
+                    <section id="digital_file_section" style="display: none;">
+                        <div class="col-12 bg-primary rounded ronded p-2 text-center">الملف الرقمي</div>
+                        <div class="row">
+                        <div class="col-md-6">
+                            <ul class="p-3" style="float:right;">
+                                <li>الملف الرئيسي</li>
+                                <li>الصيغ المسموحة: ZIP, PDF, MP4</li>
+                                <li>الحجم الأقصى: 50MB</li>
+                            </ul>
+
+                            <div id="add_digital_dropzone" onclick="add_browsDigitalFile()" onchange="add_previewDigitalFile(event)">
+                                <i class="fa fa-cloud-upload"></i>
+                                <input type="file"
+                                    name="add_digital_file"
+                                    class="form-control"
+                                    id="add_digital_file"
+                                    accept=".zip,.pdf,.mp4"
+                                    style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div id="add_digitalPreview" class="preview"
+                                style="display:flex; align-items:center; justify-content:center; height:150px; border:1px dashed #ccc;">
+                                <span>لم يتم اختيار ملف</span>
+                            </div>
+                            <span class="text-danger error-add_digital_file error-validation"></span>
+                        </div>
+                        </div>
+                    </section>
+
                         <div class="col-12 bg-primary rounded ronded p-2 text-center">فيديوهات المنتج</div>
                         <div class="container mb-5">
                             <div class="d-flex justify-content-center m-3"><a class="btn btn-primary"
@@ -336,6 +425,7 @@
                                 <!---->
                             </div>
                         </div>
+                        <section id="add_attribute_color_section">
 
                         <div class="col-12 bg-primary rounded ronded p-2 text-center">خصائص المنتج</div>
                         <div class="container mb-5">
@@ -351,6 +441,7 @@
                                 <!---->
                             </div>
                         </div>
+                        
                         <div class="col-12 bg-primary rounded ronded p-2 text-center">ألوان المنتج</div>
                         <div class="container mb-5">
                             <div class="d-flex justify-content-center m-3"><a class="btn btn-primary"
@@ -367,6 +458,8 @@
                             <div class="container" id="add_product_discount">
                             </div>
                         </div>
+
+                        </section> 
 
                         <div class="col-12 bg-primary rounded ronded p-2 text-center">وصف المنتج</div>
                         <div class="col-12">
@@ -409,6 +502,14 @@
                         <div class="col-12 bg-primary rounded ronded p-2 text-center">معلومات المنتج</div>
                         <input type="hidden" name="product_id" id="product_id">
                         <div class="col-md-6">
+                            <label for="edit_inputProductType" class="form-label">نوع المنتج</label>
+                            <select id="edit_inputProductType" class="form-select" name="product_type">
+                                <option value="physical" id="edit_product_type_physical">مادي</option>
+                                <option value="digital" id="edit_product_type_digital">رقمي</option>
+                            </select>
+                            <span class="text-danger error-product_type"></span>
+                        </div>
+                        <div class="col-md-6">
                             <label for="product_name" class="form-label">إسم المنتج</label>
                             <input type="text" class="form-control" id="product_name" name="product_name">
                             <span class="text-danger error-product_name"></span>
@@ -416,7 +517,7 @@
                         <div class="col-md-6">
                             <label for="inputCategory" class="form-label">الأصناف</label>
                             <select id="inputCategory" class="form-select" name="product_category">
-                                <option value="null"selected>اختر صنف</option>
+                                {{-- <option value="null"selected>اختر صنف</option> --}}
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}" id="p_cat_{{ $category->id }}">
                                         {{ $category->name }}</option>
@@ -426,7 +527,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="inputCost" class="form-label">التكلفة</label>
-                            <input type="text" class="form-control" id="inputCost" name="product_cost" required>
+                            <input type="text" class="form-control" id="edit_inputCost" name="product_cost" required>
                             <span class="text-danger error-product_cost"></span>
                         </div>
                         <div class="col-md-6">
@@ -437,12 +538,12 @@
                         </div>
                         <div class="col-md-6">
                             <label for="inputQty" class="form-label">الكمية المتوفرة</label>
-                            <input type="text" class="form-control" id="inputQty" name="product_qty" required>
+                            <input type="text" class="form-control" id="edit_inputQty" name="product_qty" required>
                             <span class="text-danger error-product_qty"></span>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" style="display: none;">
                             <label for="inputMiniQty" class="form-label">أقل كمية ممكنة للطلب</label>
-                            <input type="text" class="form-control" id="inputMinQty" name="product_min_qty"
+                            <input type="text" class="form-control" id="edit_inputMinQty" name="product_min_qty"
                                 required>
                             <span class="text-danger error-product_min_qty"></span>
                         </div>
@@ -453,17 +554,19 @@
                             <span class="text-danger error-product_review error-validation"></span>
                         </div>
                         <div class="col-md-6">
-                            <label for="inputCondition" class="form-label">حالة المنتج</label>
-                            <select id="inputCondition" class="form-select" name="product_condition">
-                                <option value="new" id="product_status_new">جديد</option>
-                                <option value="used" id="product_status_used">مستعمل</option>
-                                <option value="refurbished" id="product_status_refurbished">تم تجديده</option>
+                            <label for="edit_inputCondition" class="form-label">حالة المنتج</label>
+                            <select id="edit_inputCondition" class="form-select" name="product_condition">
+                                <option value="new" id="edit_product_status_new">جديد</option>
+                                <option value="used" id="edit_product_status_used">مستعمل</option>
+                                <option value="refurbished" id="edit_product_status_refurbished">تم تجديده</option>
+                                <option value="old" id="edit_product_status_old">قديم</option>
                             </select>
                             <span class="text-danger error-product_category"></span>
                         </div>
+                        
                         <div class="col-md-3">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" name="free_shipping" id="free_shipping"
+                                <input class="form-check-input" name="free_shipping" id="edit_free_shipping"
                                     type="checkbox" checked>
                                 <label class="form-check-label" for="free_shipping">توصيل مجاني</label>
                             </div>
@@ -519,6 +622,36 @@
                                 </div>
                             </div>
                         </div>
+                        <section id="edit_digital_file_section" style="display: none;">
+                        <div class="col-12 bg-primary rounded ronded p-2 text-center">الملف الرقمي</div>
+                        <div class="row">
+                        <div class="col-md-6">
+                            <ul class="p-3" style="float:right;">
+                                <li>الملف الرئيسي</li>
+                                <li>الصيغ المسموحة: ZIP, PDF, MP4</li>
+                                <li>الحجم الأقصى: 50MB</li>
+                            </ul>
+
+                            <div id="edit_digital_dropzone" onclick="edit_browsDigitalFile()" onchange="edit_previewDigitalFile(event)">
+                                <i class="fa fa-cloud-upload"></i>
+                                <input type="file"
+                                    name="digital_file"
+                                    class="form-control"
+                                    id="edit_digital_file"
+                                    accept=".zip,.pdf,.mp4"
+                                    style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div id="edit_digitalPreview" class="preview"
+                                style="display:flex; align-items:center; justify-content:center; height:150px; border:1px dashed #ccc;">
+                                <span>لم يتم اختيار ملف</span>
+                            </div>
+                            <span class="text-danger error-edit_digital_file error-validation"></span>
+                        </div>
+                        </div>
+                    </section>
                         <div class="col-12 bg-primary rounded ronded p-2 text-center">فيديوهات المنتج</div>
                         <div class="container mb-5">        
                             <div class="d-flex justify-content-center m-3"><a class="btn btn-primary"

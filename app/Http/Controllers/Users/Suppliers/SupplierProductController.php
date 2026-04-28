@@ -122,22 +122,22 @@ class SupplierProductController extends Controller
             $product->condition = $request->add_product_condition;
             $product->free_shipping = $request->has('add_free_shipping') ? 'yes' : 'no';
             $product->status = $request->has('add_status') ? 'active' : 'inactive';
-            // $product->save();
+            $product->save();
 
             // رفع الصورة الأساسية
             if ($request->hasFile('add_image')) {
-                $path = $request->file('add_image')->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id)."/images/products/{$product->id}", 'public');
-                $url = Storage::disk('public')->url('tenantsupplier/app/public/'.$path);
+                $path = $request->file('add_image')->store(get_supplier_store_name(auth()->user()->tenant_id)."/products/{$product->id}/images", 'supplier');
+                $url = Storage::disk('supplier')->url('tenantsupplier/'.$path);
                 $product->image = $url;
-                $product->save();
+                $product->update();
             }
 
             // رفع الصور الإضافية
             if ($request->hasFile('add_images')) {
                 $imagesData = [];
                 foreach ($request->file('add_images') as $image) {
-                    $path = $image->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id)."/images/products/{$product->id}", 'public');
-                    $url = Storage::disk('public')->url('tenantsupplier/app/public/'.$path);
+                    $path = $image->store(get_supplier_store_name(auth()->user()->tenant_id)."/products/{$product->id}/images", 'supplier');
+                    $url = Storage::disk('supplier')->url('tenantsupplier/'.$path);
                     $imagesData[] = [
                         'product_id' => $product->id,
                         'image_path' => $url,
@@ -248,8 +248,8 @@ class SupplierProductController extends Controller
                     if ($type === 'local' && isset($videos['file'][$i]) && $videos['file'][$i] instanceof \Illuminate\Http\UploadedFile) {
                         $file = $videos['file'][$i];
                         if ($file->isValid()) {
-                            $path = $file->store(get_supplier_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'supplier');
-                            $filePath = Storage::disk('supplier')->url('tenantsupplier/app/public/supplier/'.$path);
+                            $path = $file->store(get_supplier_store_name(auth()->user()->tenant_id)."/products/{$product->id}/videos", 'supplier');
+                            $filePath = Storage::disk('supplier')->url('tenantsupplier/'.$path);
                         }
                     }
 
@@ -649,9 +649,9 @@ class SupplierProductController extends Controller
         $product = SupplierProducts::findOrfail($id);
         // delete product images folder
         $store_name = get_supplier_store_name(get_tenant_id_from_supplier($product->supplier_id));
-        $folderPath = '/supplier/'.$store_name.'/images/products/'.$product->id;
-        if (Storage::disk('public')->exists($folderPath)) {
-            Storage::disk('public')->deleteDirectory($folderPath); // حذف المجلد بالكامل
+        $folderPath = $store_name.'/products/'.$product->id;
+        if (Storage::disk('supplier')->exists($folderPath)) {
+            Storage::disk('supplier')->deleteDirectory($folderPath); // حذف المجلد بالكامل
         }
         // delete product frome database
         $product->delete();

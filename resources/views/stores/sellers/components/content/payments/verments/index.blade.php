@@ -121,7 +121,47 @@
         <div class="row g-3">
             <div class="col-lg-7 col-md-6">
                 <div class="sticky-top" style="top: 20px; z-index: 1019;">
-                    <h5 class="mb-3"><i class="fas fa-truck me-2"></i>معلومات الشحن</h5>
+
+                    @if ($order->items->count() ==1 && $order->items->first()->product_type =="digital")
+                        <h5 class="mb-3"><i class="fas fa-truck me-2"></i>معلوماتك الشخصية</h5>
+                    <form>
+                        <div class="row g-3">
+                            {{-- test --}}
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">الإسم الكامل</label>
+                                <input type="name" name="name"
+                                    class="form-control @error('name') is-invalid @enderror" id="name"
+                                    value="@if (old('name')) {{ old('name') }}@else{{ $order->customer_name }} @endif"
+                                    disabled>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">رقم الهاتف</label>
+                                <input type="phone" name="phone"
+                                    class="form-control @error('phone') is-invalid @enderror" id="phone"
+                                    value="@if (old('phone')) {{ old('phone') }}@else{{ $order->phone }} @endif"
+                                    disabled>
+                                @error('phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">البريد الإلكتروني</label>
+                                <input type="email" name="email"
+                                    class="form-control @error('email') is-invalid @enderror" id="email"
+                                    value="@if (old('email')) {{ old('email') }}@else{{ $order->email }} @endif"
+                                    disabled>
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>                          
+                    
+                        </div>
+                    </form> 
+                    @else
+                        <h5 class="mb-3"><i class="fas fa-truck me-2"></i>معلومات الشحن</h5>
                     <form>
                         <div class="row g-3">
                             {{-- test --}}
@@ -218,107 +258,12 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            {{-- <div class="row mt-3 mb-3">
-                    <div class="col-md-12">
-                      <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5>التوصيل</h5>
-                      </div>
-                      <div id="shipping_method" class="row d-flex justify-content-between align-items-center" style="display: none !important;">
- 
-                        <div class="col-md-6">
-                            <div class="card p-3 text-center border option-card" id="card_home" onclick="selectOption('home');show_to_home_price();countTotalPrice();">
-                                <input class="form-check-input d-none" type="radio" id="to_home" name="shipping_and_point" value="home" 
-                                    {{ old('shipping_and_point','home') == 'home' ? 'checked' : '' }}>
-                                <label class="form-check-label fw-bold" for="to_home">التوصيل للمنزل</label>
-                                <p id="to_home_price">00</p><sup> د.ج</sup>
-                            </div>
-                        </div> 
-                        
-                        <div class="col-md-6">
-                          <div class="card p-3 text-center border option-card" id="card_descktop" onclick="selectOption('descktop');show_to_desck_price();countTotalPrice();">
-                              <input class="form-check-input d-none" type="radio" id="to_descktop" name="shipping_and_point" value="descktop" 
-                                  {{ old('shipping_and_point') == 'descktop' ? 'checked' : '' }}>
-                              <label class="form-check-label fw-bold" for="to_descktop">التوصيل للمكتب</label>
-                              <p id="to_desck_price">00</p><sup> د.ج</sup>
-                          </div>
-                      </div>
-
-                    </div>
                     
-                      @error('shipping_and_point')
-                      <div class="text-danger">{{ $message }}</div>
-                      @enderror
-                    </div>
-                  </div> --}}
+                        </div>
+                    </form>  
+                    @endif
+                  
 
-                            {{-- <div class="col-md-6">
-                            <label for="fullName" class="form-label">الاسم الكامل</label>
-                            <input type="text" class="form-control" id="fullName" value="{{$order->customer_name}}" required>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="phone" class="form-label">رقم الهاتف</label>
-                            <input type="tel" class="form-control" id="phone" value="{{$order->phone}}" required>
-                        </div>
-                        
-                        <div class="col-12">
-                            <label for="address" class="form-label">العنوان</label>
-                            <textarea class="form-control" id="address" rows="2" required></textarea>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="city" class="form-label">المدينة</label>
-                            <select class="form-select" id="city" required>
-                                <option value="" selected disabled>اختر المدينة</option>
-                                <option value="الرياض">الرياض</option>
-                                <option value="جدة">جدة</option>
-                                <option value="مكة">مكة</option>
-                                <option value="الدمام">الدمام</option>
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="district" class="form-label">الحي</label>
-                            <input type="text" class="form-control" id="district" required>
-                        </div> --}}
-                        </div>
-                    </form>
-
-                    {{-- <h5 class="mt-4 mb-3"><i class="fas fa-credit-card me-2"></i>طريقة الدفع</h5>
-                <div class="payment-methods">
-                    <div class="form-check mb-2 p-3 border rounded">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
-                        <label class="form-check-label d-flex align-items-center" for="creditCard">
-                            <i class="far fa-credit-card me-2 fs-5"></i>
-                            <div>
-                                <div>بطاقة ائتمانية</div>
-                                <small class="text-muted">Visa, MasterCard, Mada</small>
-                            </div>
-                        </label>
-                    </div>
-                    
-                    <div class="form-check mb-2 p-3 border rounded">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="mada">
-                        <label class="form-check-label d-flex align-items-center" for="mada">
-                            <i class="fas fa-credit-card me-2 fs-5"></i>
-                            <div>
-                                <div>مدى</div>
-                                <small class="text-muted">مدفوعات آمنة عبر مدى</small>
-                            </div>
-                        </label>
-                    </div>
-                    
-                    <div class="form-check p-3 border rounded">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery">
-                        <label class="form-check-label d-flex align-items-center" for="cashOnDelivery">
-                            <i class="fas fa-money-bill-wave me-2 fs-5"></i>
-                            <div>
-                                <div>الدفع عند الاستلام</div>
-                                <small class="text-muted">الدفع نقداً عند التسليم</small>
-                            </div>
-                        </label>
-                    </div>
-                </div> --}}
                 </div>
             </div>
 

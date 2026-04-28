@@ -43,7 +43,7 @@ return [
         ],
         'supplier' => [
             'driver' => 'local',
-            'root' => storage_path('tenantsupplier/app/public/supplier'),
+            'root' => storage_path('tenantsupplier'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,

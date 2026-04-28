@@ -94,4 +94,5 @@
 @include('users.sellers.components.content.products.js.delete-product-js')
 @include('users.sellers.components.content.products.js.save-product-js')
 @include('users.sellers.components.content.products.js.search-product-js')
+@include('users.sellers.components.content.products.js.digital-product-js')
 @endsection
