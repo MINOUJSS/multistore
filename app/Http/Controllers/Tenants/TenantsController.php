@@ -2075,14 +2075,13 @@ class TenantsController extends Controller
             $order = SellerOrders::find($order_id);
             // $download_link = $order->download_link;
             $download_link = null;
+            $product_type = 'physical'; 
             if($order){
                $product_id = $order->items()->first()->product_id;
             if ($order->items()->count() == 1 && $order->items()->first()->product_type == 'digital') {
                 $product_type = 'digital';
                 $download_link = route('site.download.entry', ['token' => $order->download_token]);
-            } else {
-                $product_type = 'physical';     
-            } 
+            }  
             }
         
             // end check if order has only one item and it is a digital product
