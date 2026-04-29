@@ -695,7 +695,7 @@ class ChargilyPayController extends Controller
                                     $order->update();
                                 }
                                 // end seller actions
-
+                                break;
                                 // no break
                             case 'wallet_topup':
                                 // update balance
