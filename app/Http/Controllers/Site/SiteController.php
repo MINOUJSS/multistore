@@ -72,6 +72,10 @@ class SiteController extends Controller
             now()->addMinutes(15), // رابط قصير العمر
             ['id' => $order->items->first()->product_id, 'token' => $token]
         );
+        $order->status = $status === 'paid' ? 'delivered' : 'processing';
+        $order->update();
+
+        //send mail to customer
 
         // إعادة التوجيه للرابط الموقّع
         return redirect($signedUrl);

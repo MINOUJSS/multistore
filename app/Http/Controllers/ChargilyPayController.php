@@ -425,9 +425,9 @@ class ChargilyPayController extends Controller
             } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'seller_order') {
                 return redirect()->route('seller.dashboard')->with('error', 'فشل في عملية الدفع');
             } elseif ($payment->payment_type == 'supplier_order') {
-                return redirect()->back()->with('error', 'فشل في عملية الدفع');
+                return redirect()->route('tenant.thanks')->with('payment_error', 'فشل في عملية الدفع');
             } elseif ($payment->payment_type == 'seller_order') {
-                return redirect()->back()->with([
+                return redirect()->route('tenant.thanks')->with([
                     'payment_error' => 'فشل في عملية الدفع',
                     'order_id' => $payment->payment_reference_id,
                 ]);
@@ -675,7 +675,7 @@ class ChargilyPayController extends Controller
                                     $order->confirmed_at = $status === 'paid' ? now() : null;
                                     // check if order items has only one and the type of this item is digital product
                                     if (count($order->items) == 1 && $order->items->first()->product_type == 'digital') {
-                                        $order->status = $status === 'paid' ? 'delivered' : 'processing';
+                                        // $order->status = $status === 'paid' ? 'delivered' : 'processing';
                                         // start test
                                         // إنشاء token
                                         $download_token = Str::uuid();
