@@ -2076,6 +2076,7 @@ class TenantsController extends Controller
             // $download_link = $order->download_link;
             $download_link = null;
             $product_type = 'physical'; 
+            $product_id=null;
             if($order){
                $product_id = $order->items()->first()->product_id;
             if ($order->items()->count() == 1 && $order->items()->first()->product_type == 'digital') {
@@ -2083,9 +2084,14 @@ class TenantsController extends Controller
                 $download_link = route('site.download.entry', ['token' => $order->download_token]);
             }  
             }
-        
-            // end check if order has only one item and it is a digital product
-            return view('stores.sellers.pages.thanks', compact('product_type', 'product_id', 'download_link'));
+            if($product_id != null){
+                return view('stores.sellers.pages.thanks', compact('product_type', 'product_id', 'download_link'));
+            }else
+            {
+                return view('stores.sellers.pages.thanks',compact('product_type',));
+            }
+           
+            
         }
     }
 

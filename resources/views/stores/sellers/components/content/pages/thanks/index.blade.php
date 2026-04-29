@@ -1,21 +1,31 @@
-@if($product_type== "physical") 
+@if(session()->has('payment_error'))
 <div class="container d-flex justify-content-center align-items-center">
-    <div class="card mt-4 mb-4 col-md-6 thank-you-card">
-        <div class="card-header">شكراً</div>
-        <div class="card-body">شكراً لطلبك!❤️ سيتم التواصل معك قريبًا.</div>
-        <a class="btn btn-primary m-5" href="{{route('tenant.products')}}">العودة للتسوق</a>
-    </div>
-</div>
-@else 
-<div class="container d-flex justify-content-center align-items-center">
-    <div class="card mt-4 mb-4 col-md-6 thank-you-card">
-        <div class="card-header">شكراً</div>
-        <div class="card-body">
-            شكراً لشرائك منتجنا!❤️ قم بتحميله من هنا
+        <div class="card mt-4 mb-4 col-md-6 thank-you-card">
+            <div class="card-header">فشل عملية الدفع</div>
+            <div class="card-body">يرجى المحاولة مرة أخرى</div>
+            <a class="btn btn-primary m-5" href="{{route('tenant.payments.show_chargily_pay',session()->get('order_id'))}}">إعادة المحاولة للدفع </a>
         </div>
-        <a class="btn btn-primary m-5" href="{{$download_link}}" target="_blank">تحميل المنتج الرقمي</a>
     </div>
-</div>
+@else
+    @if($product_type== "physical") 
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="card mt-4 mb-4 col-md-6 thank-you-card">
+            <div class="card-header">شكراً</div>
+            <div class="card-body">شكراً لطلبك!❤️ سيتم التواصل معك قريبًا.</div>
+            <a class="btn btn-primary m-5" href="{{route('tenant.products')}}">العودة للتسوق</a>
+        </div>
+    </div>
+    @else 
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="card mt-4 mb-4 col-md-6 thank-you-card">
+            <div class="card-header">شكراً</div>
+            <div class="card-body">
+                شكراً لشرائك منتجنا!❤️ قم بتحميله من هنا
+            </div>
+            <a class="btn btn-primary m-5" href="{{$download_link}}" target="_blank">تحميل المنتج الرقمي</a>
+        </div>
+    </div>
+    @endif
 @endif
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
