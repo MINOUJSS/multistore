@@ -56,7 +56,7 @@ class SiteController extends Controller
         $order = SellerOrders::where('download_token', $token)->firstOrFail();
 
         // تحقق من الدفع
-        if ($order->status !== 'paid') {
+        if ($order->payment_status !== 'paid') {
             abort(403);
         }
 
