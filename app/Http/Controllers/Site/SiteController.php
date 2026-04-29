@@ -7,6 +7,7 @@ use App\Models\Seller\SellerOrders;
 use App\Models\Seller\SellerProducts;
 use App\Models\Supplier\SupplierPlan;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 class SiteController extends Controller
 {
@@ -48,39 +49,67 @@ class SiteController extends Controller
     {
         return view('site.show_shipers_plans');
     }
-    //download digital products
-    public function download($id,$token)
+
+    // download digital products
+    public function entry($token)
+    {
+        $order = SellerOrders::where('download_token', $token)->firstOrFail();
+
+        // تحقق من الدفع
+        if ($order->status !== 'paid') {
+            abort(403);
+        }
+
+        // إنشاء رابط موقّت (5 دقائق)
+        // $signedUrl = URL::temporarySignedRoute(
+        //     'download.file',
+        //     now()->addMinutes(5),
+        //     ['token' => $order->download_token]
+        // );
+        // إنشاء Signed URL
+        $signedUrl = URL::temporarySignedRoute(
+            'site.product.download',
+            now()->addMinutes(15), // رابط قصير العمر
+            ['id' => $order->items->first()->product_id, 'token' => $download_token]
+        );
+
+        // إعادة التوجيه للرابط الموقّع
+        return redirect($signedUrl);
+    }
+
+    public function download($id, $token)
     {
         $order = SellerOrders::where('download_token', $token)->first();
-    // ❌ Token غير صالح
-    if (!$order) {
-        abort(403, 'رابط غير صالح');
-    }
+        // ❌ Token غير صالح
+        if (!$order) {
+            abort(403, 'رابط غير صالح');
+        }
 
-    // ❌ لم يتم الدفع
-    if ($order->payment_status !== 'paid') {
-        abort(403, 'الدفع غير مكتمل');
-    }
+        // ❌ لم يتم الدفع
+        if ($order->payment_status !== 'paid') {
+            abort(403, 'الدفع غير مكتمل');
+        }
 
-    // ❌ انتهت الصلاحية
-    if (now()->gt($order->download_expires_at)) {
-        abort(403, 'انتهت صلاحية الرابط');
-    }
+        // ❌ انتهت الصلاحية
+        if (now()->gt($order->download_expires_at)) {
+            abort(403, 'انتهت صلاحية الرابط');
+        }
 
-    // ❌ تجاوز عدد التحميلات
-    if ($order->downloads_count >= 3) {
-        abort(403, 'تم تجاوز عدد التحميلات');
-    }
+        // ❌ تجاوز عدد التحميلات
+        if ($order->downloads_count >= 3) {
+            abort(403, 'تم تجاوز عدد التحميلات');
+        }
 
-    // زيادة عدد التحميلات
-    $order->increment('downloads_count');
+        // زيادة عدد التحميلات
+        $order->increment('downloads_count');
 
         $product = SellerProducts::where('id', $id)->first();
-        $file=$product->file;
+        $file = $product->file;
         // تقسيم الرابط
         $parts = explode('/storage/app/public/seller/', $file);
         // المسار داخل storage
         $filePath = $parts[1];
+
         return Storage::disk('seller')->download($filePath);
         // return response()->download($file);
     }

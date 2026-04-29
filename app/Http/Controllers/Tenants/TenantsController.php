@@ -940,7 +940,7 @@ class TenantsController extends Controller
                 } else {
                     $shipping_cost = get_shipping_cost($request->shipping_and_point, $request->wilaya, $request->dayra, $request->baladia);
                 }
-                
+
                 if (seller_product_has_discount($product->id)) {
                     $unit_price = $product->activeDiscount->discount_amount + $additional_price;
                     $coupon_discount = get_coupon_discount($request->product_id, $request->coupon, get_user_data(tenant('id'))->type);
@@ -948,12 +948,10 @@ class TenantsController extends Controller
                 } else {
                     $unit_price = $product->price + $additional_price;
                     $coupon_discount = get_coupon_discount($request->product_id, $request->coupon, get_user_data(tenant('id'))->type);
-                   if($product->product_type == "digital")
-                    {
-                      $requst_qty=1;
-                    }else
-                    {
-                        $requst_qty=$request->qty;
+                    if ($product->product_type == 'digital') {
+                        $requst_qty = 1;
+                    } else {
+                        $requst_qty = $request->qty;
                     }
                     $total_price = ((($product->price + $additional_price) * $requst_qty) + $shipping_cost) - $coupon_discount;
                 }
@@ -980,7 +978,7 @@ class TenantsController extends Controller
                     'order_number' => $orderNumber,
                     'customer_name' => $request->name,
                     'phone' => $customer_phone,
-                    'email' => $request->email??null,
+                    'email' => $request->email ?? null,
                     'phone_visiblity' => $phoneVisibility,
                     'status' => 'pending',
                     'total_price' => $total_price,
@@ -1006,33 +1004,32 @@ class TenantsController extends Controller
                     'fraud_status' => $fraudStatus,
                     // --------
                 ]);
-                
+
                 // إدراج عنصر الطلب
-                if($product->product_type == 'physical'){
-                  $order_item = SellerOrderItems::create([
-                    'order_id' => $sellerOrder->id,
-                    'product_id' => $request->product_id,
-                    'variation_id' => $request->product_varition,
-                    'attribute_id' => $request->product_attribute,
-                    'quantity' => $request->qty,
-                    'unit_price' => $unit_price,
-                    'total_price' => $total_price,
-                ]);
-                
-                // إدارة المخزون
-                $this->decreaseStock($order_item);  
-                }else
-                {
-                  $order_item = SellerOrderItems::create([
-                    'order_id' => $sellerOrder->id,
-                    'product_id' => $request->product_id,
-                    'product_type' => 'digital',
-                    'quantity' => 1,
-                    'unit_price' => $unit_price,
-                    'total_price' => $total_price,
-                ]);
+                if ($product->product_type == 'physical') {
+                    $order_item = SellerOrderItems::create([
+                        'order_id' => $sellerOrder->id,
+                        'product_id' => $request->product_id,
+                        'variation_id' => $request->product_varition,
+                        'attribute_id' => $request->product_attribute,
+                        'quantity' => $request->qty,
+                        'unit_price' => $unit_price,
+                        'total_price' => $total_price,
+                    ]);
+
+                    // إدارة المخزون
+                    $this->decreaseStock($order_item);
+                } else {
+                    $order_item = SellerOrderItems::create([
+                        'order_id' => $sellerOrder->id,
+                        'product_id' => $request->product_id,
+                        'product_type' => 'digital',
+                        'quantity' => 1,
+                        'unit_price' => $unit_price,
+                        'total_price' => $total_price,
+                    ]);
                 }
-                
+
                 DB::commit(); // تأكيد العملية
 
                 // notify the seller about this order
@@ -1262,7 +1259,7 @@ class TenantsController extends Controller
                     'order_number' => $orderNumber,
                     'customer_name' => $request->name,
                     'phone' => $request->phone,
-                    'email' => $request->email??null,
+                    'email' => $request->email ?? null,
                     'phone_visiblity' => $phoneVisibility,
                     'status' => 'pending',
                     'total_price' => $total_price,
@@ -1277,18 +1274,17 @@ class TenantsController extends Controller
                 ]);
 
                 // إدراج عنصر الطلب
-                if($product->product_type =='physical'){
-                SellerOrderAbandonedItems::create([
-                    'order_id' => $sellerOrder->id,
-                    'product_id' => $request->product_id,
-                    'variation_id' => $request->product_varition,
-                    'attribute_id' => $request->product_attribute,
-                    'quantity' => $request->qty,
-                    'unit_price' => $unit_price,
-                    'total_price' => $total_price,
-                ]);
-                }else
-                {
+                if ($product->product_type == 'physical') {
+                    SellerOrderAbandonedItems::create([
+                        'order_id' => $sellerOrder->id,
+                        'product_id' => $request->product_id,
+                        'variation_id' => $request->product_varition,
+                        'attribute_id' => $request->product_attribute,
+                        'quantity' => $request->qty,
+                        'unit_price' => $unit_price,
+                        'total_price' => $total_price,
+                    ]);
+                } else {
                     SellerOrderAbandonedItems::create([
                         'order_id' => $sellerOrder->id,
                         'product_id' => $request->product_id,
@@ -2074,18 +2070,20 @@ class TenantsController extends Controller
         if (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'supplier') {
             return view('stores.suppliers.pages.thanks');
         } elseif (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'seller') {
-            //check if order has only one item and it is a digital product
+            // check if order has only one item and it is a digital product
             $order_id = session()->get('order_id');
             $order = SellerOrders::find($order_id);
-            $download_link = $order->download_link;
-            $product_id=$order->items()->first()->product_id;
+            // $download_link = $order->download_link;
+            $download_link = route('site.download.entry', ['token' => $order->download_token]);
+            $product_id = $order->items()->first()->product_id;
             if ($order->items()->count() == 1 && $order->items()->first()->product_type == 'digital') {
-                $product_type='digital';
-            }else{
-                $product_type='physical';
+                $product_type = 'digital';
+            } else {
+                $product_type = 'physical';
             }
+
             // end check if order has only one item and it is a digital product
-            return view('stores.sellers.pages.thanks',compact('product_type','product_id','download_link'));
+            return view('stores.sellers.pages.thanks', compact('product_type', 'product_id', 'download_link'));
         }
     }
 
@@ -2262,8 +2260,8 @@ class TenantsController extends Controller
                     $filename,
                     'seller'
                 );
-                 $url = Storage::disk('seller')->url('app/public/seller/'.$path);
-                //$url = asset('storage/tenantseller/app/public/seller/'.$path);
+                $url = Storage::disk('seller')->url('app/public/seller/'.$path);
+            // $url = asset('storage/tenantseller/app/public/seller/'.$path);
             } else {
                 // Handle invalid file upload
                 throw new \Exception('Invalid file upload');
@@ -2677,53 +2675,57 @@ class TenantsController extends Controller
             // Add any other coupon details you need
         ]);
     }
-    //download digital product
-    public function download($id,$token)
+
+    // download digital product
+    public function download($id, $token)
     {
-        dd($id,$token);
+        dd($id, $token);
         $order = SellerOrders::where('download_token', $token)->first();
-    // ❌ Token غير صالح
-    if (!$order) {
-        abort(403, 'رابط غير صالح');
-    }
+        // ❌ Token غير صالح
+        if (!$order) {
+            abort(403, 'رابط غير صالح');
+        }
 
-    // ❌ لم يتم الدفع
-    if ($order->status !== 'paid') {
-        abort(403, 'الدفع غير مكتمل');
-    }
+        // ❌ لم يتم الدفع
+        if ($order->status !== 'paid') {
+            abort(403, 'الدفع غير مكتمل');
+        }
 
-    // ❌ انتهت الصلاحية
-    if (now()->gt($order->download_expires_at)) {
-        abort(403, 'انتهت صلاحية الرابط');
-    }
+        // ❌ انتهت الصلاحية
+        if (now()->gt($order->download_expires_at)) {
+            abort(403, 'انتهت صلاحية الرابط');
+        }
 
-    // ❌ تجاوز عدد التحميلات
-    if ($order->downloads_count >= 3) {
-        abort(403, 'تم تجاوز عدد التحميلات');
-    }
+        // ❌ تجاوز عدد التحميلات
+        if ($order->downloads_count >= 3) {
+            abort(403, 'تم تجاوز عدد التحميلات');
+        }
 
-    // زيادة عدد التحميلات
-    $order->increment('downloads_count');
+        // زيادة عدد التحميلات
+        $order->increment('downloads_count');
 
         $product = SellerProducts::where('id', $id)->first();
-        $file=$product->file;
+        $file = $product->file;
         // تقسيم الرابط
         $parts = explode('/storage/app/public/seller/', $file);
         // المسار داخل storage
         $filePath = $parts[1];
+
         return Storage::disk('seller')->download($filePath);
         // return response()->download($file);
     }
-    //test download
+
+    // test download
     public function testDownload(Request $request, $token)
     {
         $product = SellerProducts::where('id', 5)->first();
-        $file=$product->file;
+        $file = $product->file;
         // تقسيم الرابط
         $parts = explode('/storage/app/public/seller/', $file);
         // المسار داخل storage
         $filePath = $parts[1];
-        //dd(Storage::disk('seller'));
+
+        // dd(Storage::disk('seller'));
         return Storage::disk('seller')->download($filePath);
     }
 }

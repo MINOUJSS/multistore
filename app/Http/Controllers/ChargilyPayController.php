@@ -30,7 +30,7 @@ class ChargilyPayController extends Controller
         $amount = $request->amount;
         $type = $request->payment_type; // 'invoice' | 'subscription' | 'other'
         $referenceId = $request->reference_id;
-        
+
         // validation
         if ($type == 'wallet_topup') {
             $validated = $request->validate([
@@ -375,10 +375,9 @@ class ChargilyPayController extends Controller
         $payment = null;
         if ($checkout) {
             $metadata = $checkout->getMetadata();
-            if($metadata['payment_type'] == 'supplier_order' || $metadata['payment_type'] == 'seller_order'){
+            if ($metadata['payment_type'] == 'supplier_order' || $metadata['payment_type'] == 'seller_order') {
                 $payment = \App\Models\ChargilyPaymentForTenants::find($metadata['payment_id']);
-            }else
-            {
+            } else {
                 $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
             }
             // //
@@ -409,15 +408,15 @@ class ChargilyPayController extends Controller
             }
             if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || ($user !== null && $user->type == 'supplier')) {
                 return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
-            }elseif($payment->payment_type == 'supplier_order'){
+            } elseif ($payment->payment_type == 'supplier_order') {
                 return redirect()->route('tenant.thanks')->with('success', 'تمت عملية الدفع بنجاح');
             } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || ($user !== null && $user->type == 'seller')) {
                 return redirect()->route('seller.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
-            }elseif($payment->payment_type == 'seller_order'){
+            } elseif ($payment->payment_type == 'seller_order') {
                 return redirect()->route('tenant.thanks')->with([
-                        'success' => 'تمت عملية الدفع بنجاح',
-                        'order_id' => $payment->payment_reference_id
-                    ]);
+                    'success' => 'تمت عملية الدفع بنجاح',
+                    'order_id' => $payment->payment_reference_id,
+                ]);
             }
         // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
         } else {
@@ -425,9 +424,9 @@ class ChargilyPayController extends Controller
                 return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
             } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'seller_order') {
                 return redirect()->route('seller.dashboard')->with('error', 'فشل في عملية الدفع');
-            }elseif($payment->payment_type == 'supplier_order'){
+            } elseif ($payment->payment_type == 'supplier_order') {
                 return redirect()->back()->with('error', 'فشل في عملية الدفع');
-            }elseif($payment->payment_type == 'seller_order'){
+            } elseif ($payment->payment_type == 'seller_order') {
                 return redirect()->back()->with('error', 'فشل في عملية الدفع');
             }
 
@@ -663,7 +662,7 @@ class ChargilyPayController extends Controller
                             case 'seller_order':
                                 // get order data
                                 $order = SellerOrders::find($payment->payment_reference_id);
-                                 
+
                                 // update order status
                                 if ($order) {
                                     $order->payment_status = $status === 'paid' ? 'paid' : 'failed';
@@ -671,29 +670,30 @@ class ChargilyPayController extends Controller
                                     $order->confirmation_status = $status === 'paid' ? 'confirmed' : 'pending';
                                     $order->confirmed_by_user_id = $status === 'paid' ? get_user_data(get_seller_data_from_id($order->seller_id)->tenant_id)->id : null;
                                     $order->confirmed_at = $status === 'paid' ? now() : null;
-                                    //check if order items has only one and the type of this item is digital product
+                                    // check if order items has only one and the type of this item is digital product
                                     if (count($order->items) == 1 && $order->items->first()->product_type == 'digital') {
-                                    $order->status = $status === 'paid' ? 'delivered' : 'processing';
-                                    //start test
+                                        $order->status = $status === 'paid' ? 'delivered' : 'processing';
+                                        // start test
                                         // إنشاء token
                                         $download_token = Str::uuid();
 
                                         // إنشاء Signed URL
-                                        $download_Link = URL::temporarySignedRoute(
-                                            'site.product.download',
-                                            now()->addMinutes(15), // رابط قصير العمر
-                                            ['id' => $order->items->first()->product_id, 'token' => $download_token]
-                                        );
+                                        // $download_Link = URL::temporarySignedRoute(
+                                        //     'site.product.download',
+                                        //     now()->addMinutes(15), // رابط قصير العمر
+                                        //     ['id' => $order->items->first()->product_id, 'token' => $download_token]
+                                        // );
 
                                         // تحديث الرابط
-                                        $order->download_link = $download_Link;
+                                        // $order->download_link = $download_Link;
+                                        $order->max_downloads = 3;
                                         $order->download_token = $download_token;
                                         $order->download_expires_at = now()->addHours(24);
-                                        //$order->save();
-                                    //end test
+                                        // $order->save();
+                                        // end test
                                     }
-                                        $order->update();
-                                    }
+                                    $order->update();
+                                }
                                 // end seller actions
 
                                 // no break

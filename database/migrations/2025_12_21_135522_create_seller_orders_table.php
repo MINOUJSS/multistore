@@ -78,12 +78,12 @@ return new class extends Migration {
             ])->default('pending');
             $table->timestamp('reviewed_at')->nullable();
             // ------------------------
-            //خاص بالمنتجات الرقمية
+            // خاص بالمنتجات الرقمية
             $table->string('download_token')->nullable()->unique();
-            $table->string('download_link')->nullable();
+            $table->integer('max_downloads')->default(3);
             $table->timestamp('download_expires_at')->nullable();
             $table->integer('downloads_count')->default(0);
-            //-------------------------
+            // -------------------------
             $table->timestamps();
         });
     }
