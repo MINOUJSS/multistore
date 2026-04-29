@@ -70,7 +70,7 @@ class SiteController extends Controller
         $signedUrl = URL::temporarySignedRoute(
             'site.product.download',
             now()->addMinutes(15), // رابط قصير العمر
-            ['id' => $order->items->first()->product_id, 'token' => $download_token]
+            ['id' => $order->items->first()->product_id, 'token' => $token]
         );
 
         // إعادة التوجيه للرابط الموقّع
