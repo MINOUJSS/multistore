@@ -427,7 +427,10 @@ class ChargilyPayController extends Controller
             } elseif ($payment->payment_type == 'supplier_order') {
                 return redirect()->back()->with('error', 'فشل في عملية الدفع');
             } elseif ($payment->payment_type == 'seller_order') {
-                return redirect()->back()->with('error', 'فشل في عملية الدفع');
+                return redirect()->back()->with([
+                    'payment_error' => 'فشل في عملية الدفع',
+                    'order_id' => $payment->payment_reference_id,
+                ]);
             }
 
             // return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
