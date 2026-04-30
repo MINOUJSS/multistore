@@ -2064,7 +2064,7 @@ class TenantsController extends Controller
     // function thanks
     public function thanks()
     {
-        if (!session()->has('success')) {
+        if (!session()->has('success') || !session()->has('payment_error')) {
             return redirect()->back();
         }
         if (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'supplier') {
