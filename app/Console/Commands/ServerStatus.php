@@ -31,11 +31,20 @@ class ServerStatus extends Command
 
         // 🌐 تحقق من الموقع نفسه
         try {
-            $response = Http::timeout(5)->get(config('app.url'));
+            // $response = Http::timeout(5)->get(config('app.url'));
+            $response = Http::withoutVerifying()->get(config('app.url'));
             $appStatus = $response->successful() ? 'UP' : 'DOWN';
         } catch (\Exception $e) {
             $appStatus = 'DOWN';
         }
+
+        //db
+        try {
+    \DB::connection()->getPdo();
+    $dbStatus = 'UP';
+} catch (\Exception $e) {
+    $dbStatus = 'DOWN';
+}
 
         $data = [
             'disk_usage' => $diskUsage . '%',
@@ -43,6 +52,7 @@ class ServerStatus extends Command
             'memory_peak' => $memoryPeak . ' MB',
             'cpu_load' => $cpuLoad,
             'app_status' => $appStatus,
+            'db_status' => $dbStatus,
             'time' => now()->toDateTimeString(),
         ];
 
