@@ -16,6 +16,7 @@ use App\Models\Wilaya;
 use App\Notifications\Users\Suppliers\PaymentRejected;
 use App\Services\Users\CourierdzService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SellerOrderController extends Controller
 {
@@ -487,6 +488,15 @@ class SellerOrderController extends Controller
             'confirmed_at' => now(),
             'status' => 'processing',
         ]);
+        //order has digital product
+        if (count($order->items) == 1 && $order->items->first()->product_type == 'digital') {
+        $download_token = Str::uuid();    
+        $order->update([
+            'max_downloads' => 3,
+            'download_token' => $download_token,
+            'download_expires_at' => now()->addHours(24),
+        ]);
+        }
 
         return response()->json(['message' => 'تم قبول الدفع']);
     }

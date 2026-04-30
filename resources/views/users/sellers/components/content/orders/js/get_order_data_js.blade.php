@@ -1,4 +1,5 @@
 <script>
+    let baseUrl ='{{ env('APP_URL')}}';
     let baseDomain = '{{ env('APP_DOMAIN') }}'; // سيتم استبدالها عند تحميل الصفحة
     let Seller_domain = window.location.protocol + '//' + '{{ auth()->user()->tenant_id }}.' + baseDomain;
     document.addEventListener("DOMContentLoaded", function() {
@@ -22,6 +23,7 @@
     function updateOrderUI(order) {
         // أولاً: جهّز رابط الدفع القادم من السيرفر
         let to_pay_links = "";
+        let download_link="";
         // تحديث معلومات العميل
         document.getElementById("order-number").textContent = `#${order.order_number}`;
         document.getElementById("customer-name").textContent = order.customer_name;
@@ -36,8 +38,11 @@
         document.getElementById("shipping-zipcode").textContent = order.wilaya_id ?? "غير متوفر";
         document.getElementById("customer-note").textContent = order.note ?? "غير متوفر";
         if (order.payment_status == 'paid') {
-            document.getElementById("payment-status").innerHTML = '<span class="text-success">مدفوع</span>' +
-                to_pay_links;
+            if(order.download_token != null)
+            {
+                download_link=`${baseUrl}/download/${order.download_token}`;
+            }
+            document.getElementById("payment-status").innerHTML = (order.download_token != null)? `<span class="text-success">مدفوع</span><br/><smal>قم بنسخ الرابط و إرساله إلى العميل إذا تعذر عليه تحميل المنتج الرقمي</smal><br/><span>${download_link}</span>` :'<span class="text-success">مدفوع</span><br/>';
         } else if (order.payment_status == 'pending') {
             chagily_pay_link = `${Seller_domain}/payments/chargily_pay/${order.id}`;
             verments_pay_link = `${Seller_domain}/payments/verments_pay/${order.id}`;

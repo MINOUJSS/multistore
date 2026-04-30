@@ -54,7 +54,7 @@ class SiteController extends Controller
     public function entry($token)
     {
         $order = SellerOrders::where('download_token', $token)->firstOrFail();
-
+        //dd($order);
         // تحقق من الدفع
         if ($order->payment_status !== 'paid') {
             abort(403);
@@ -72,7 +72,7 @@ class SiteController extends Controller
             now()->addMinutes(15), // رابط قصير العمر
             ['id' => $order->items->first()->product_id, 'token' => $token]
         );
-        $order->status = $status === 'paid' ? 'delivered' : 'processing';
+        $order->status ='delivered';
         $order->update();
 
         //send mail to customer
