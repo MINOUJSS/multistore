@@ -420,9 +420,9 @@ class ChargilyPayController extends Controller
             }
         // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
         } else {
-            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription' || $payment->payment_type == 'supplier_order') {
+            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription') {
                 return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
-            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription' || $payment->payment_type == 'seller_order') {
+            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription') {
                 return redirect()->route('seller.dashboard')->with('error', 'فشل في عملية الدفع');
             } elseif ($payment->payment_type == 'supplier_order') {
                 return redirect()->route('tenant.thanks')->with('payment_error', 'فشل في عملية الدفع');
@@ -699,7 +699,6 @@ class ChargilyPayController extends Controller
                                 }
                                 // end seller actions
                                 break;
-                                // no break
                             case 'wallet_topup':
                                 // update balance
                                 $user = get_user_data_from_id($payment->payment_reference_id);
