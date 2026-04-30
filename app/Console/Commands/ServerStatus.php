@@ -3,50 +3,82 @@ namespace App\Console\Commands;
 
 use App\Services\Users\Suppliers\TelegramService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ServerStatus extends Command
 {
     protected $signature = 'server:status';
-    protected $description = 'Check server health';
+    protected $description = 'Check server health (PHP only)';
 
     public function handle()
     {
-        // RAM
-        $freeMemory = shell_exec('free -m');
-        
-        // Disk
-        $disk = disk_free_space("/");
-        $diskTotal = disk_total_space("/");
+        // 💽 Disk
+        $diskTotal = disk_total_space('/');
+        $diskFree  = disk_free_space('/');
+        $diskUsage = round((1 - $diskFree / $diskTotal) * 100, 2);
 
-        $diskUsage = 100 - (($disk / $diskTotal) * 100);
+        // 🧠 RAM
+        $memoryUsage = round(memory_get_usage(true) / 1024 / 1024, 2); // MB
+        $memoryPeak  = round(memory_get_peak_usage(true) / 1024 / 1024, 2); // MB
 
-        // CPU Load
-        $load = sys_getloadavg();
+        // ⚙️ CPU (تقريبي عبر load)
+        $cpuLoad = null;
+        if (function_exists('sys_getloadavg')) {
+            $load = sys_getloadavg();
+            $cpuLoad = $load[0]; // 1 minute average
+        }
+
+        // 🌐 تحقق من الموقع نفسه
+        try {
+            $response = Http::timeout(5)->get(config('app.url'));
+            $appStatus = $response->successful() ? 'UP' : 'DOWN';
+        } catch (\Exception $e) {
+            $appStatus = 'DOWN';
+        }
 
         $data = [
-            'cpu' => $load[0],
-            'disk' => round($diskUsage, 2),
-            'memory' => $freeMemory,
+            'disk_usage' => $diskUsage . '%',
+            'memory_usage' => $memoryUsage . ' MB',
+            'memory_peak' => $memoryPeak . ' MB',
+            'cpu_load' => $cpuLoad,
+            'app_status' => $appStatus,
+            'time' => now()->toDateTimeString(),
         ];
 
-        // شرط التنبيه
-        if ($data['cpu'] > 5 || $data['disk'] > 80) {
-        $message =json_encode($data);
-        //send with telegram
-        app(TelegramService::class)
+        // 📄 Log دائم
+        Log::info('Server Status', $data);
+
+        // 🚨 شرط التنبيه
+        if ($diskUsage > 85 || $memoryUsage > 200) {
+
+            // Telegram (أفضل من email)
+            // $this->sendTelegramAlert($data);
+            $message = "🚨 Server Alert\n" . json_encode($data, JSON_PRETTY_PRINT);
+            app(TelegramService::class)
                 ->sendMessage(env('ADMIN_CHAT_ID'), trim($message));
-
-        //log info
-        \Log::info('Server Status', $data);
-
-            // Mail::raw("Server Alert:\n" . json_encode($data), function ($msg) {
-            //     $msg->to('you@example.com')
-            //         ->subject('🚨 Server Alert');
-            // });
 
         }
 
+        // عرض في الكونسول
+        $this->info(json_encode($data, JSON_PRETTY_PRINT));
+
         return 0;
     }
+
+    // private function sendTelegramAlert($data)
+    // {
+    //     $token = env('TELEGRAM_BOT_TOKEN');
+    //     $chatId = env('TELEGRAM_CHAT_ID');
+
+    //     if (!$token || !$chatId) return;
+
+    //     $message = "🚨 Server Alert\n" . json_encode($data, JSON_PRETTY_PRINT);
+
+    //     Http::get("https://api.telegram.org/bot{$token}/sendMessage", [
+    //         'chat_id' => $chatId,
+    //         'text' => $message
+    //     ]);
+    // }
 }
+
