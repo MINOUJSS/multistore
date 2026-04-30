@@ -63,10 +63,7 @@ class ServerStatus extends Command
         if ($diskUsage > 85 || $memoryUsage > 200) {
 
             // Telegram (أفضل من email)
-            // $this->sendTelegramAlert($data);
-            $message = "🚨 Server Alert\n" . json_encode($data, JSON_PRETTY_PRINT);
-            app(TelegramService::class)
-                ->sendMessage(env('ADMIN_CHAT_ID'), trim($message));
+            $this->sendTelegramAlert($data);
 
         }
 
@@ -76,19 +73,19 @@ class ServerStatus extends Command
         return 0;
     }
 
-    // private function sendTelegramAlert($data)
-    // {
-    //     $token = env('TELEGRAM_BOT_TOKEN');
-    //     $chatId = env('TELEGRAM_CHAT_ID');
+    private function sendTelegramAlert($data)
+    {
+        $token = env('TELEGRAM_BOT_TOKEN');
+        $chatId = env('ADMIN_CHAT_ID');
 
-    //     if (!$token || !$chatId) return;
+        if (!$token || !$chatId) return;
 
-    //     $message = "🚨 Server Alert\n" . json_encode($data, JSON_PRETTY_PRINT);
+        $message = "🚨 Server Alert\n" . json_encode($data, JSON_PRETTY_PRINT);
 
-    //     Http::get("https://api.telegram.org/bot{$token}/sendMessage", [
-    //         'chat_id' => $chatId,
-    //         'text' => $message
-    //     ]);
-    // }
+        Http::get("https://api.telegram.org/bot{$token}/sendMessage", [
+            'chat_id' => $chatId,
+            'text' => $message
+        ]);
+    }
 }
 
