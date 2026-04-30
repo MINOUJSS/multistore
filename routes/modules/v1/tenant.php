@@ -72,6 +72,8 @@ Route::middleware([
             Route::post('/order-abandoned', [TenantsController::class, 'order_abandoned'])->name('order-abandoned');
             // thanks
             Route::get('/thanks', [TenantsController::class, 'thanks'])->name('thanks');
+            // repayment
+            Route::get('/repayment', [TenantsController::class, 'repayment'])->name('repayment');
             // cart
             Route::post('/add-to-cart', [TenantsController::class, 'add_to_cart'])->name('add-to-cart');
             Route::get('/remove-from-cart/{id}', [TenantsController::class, 'remove_from_cart'])->name('remove-from-cart');

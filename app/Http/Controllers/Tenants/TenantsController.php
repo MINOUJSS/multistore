@@ -2064,7 +2064,7 @@ class TenantsController extends Controller
     // function thanks
     public function thanks()
     {
-        if ((!session()->has('success') && session()->has('payment_error')) ||(session()->has('success') && !session()->has('payment_error'))) {
+        if (!session()->has('success')) {
             return redirect()->back();
         }
         if (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'supplier') {
@@ -2090,6 +2090,22 @@ class TenantsController extends Controller
                 return view('stores.sellers.pages.thanks', compact('product_type'));
             }
         }
+    }
+    //function repayment
+    public function repayment()
+    {
+        if (!session()->has('payment_error')) {
+            return redirect()->back();
+        }
+        if (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'supplier') {
+            return view('stores.suppliers.pages.repayment');
+        } elseif (get_user_data(tenant('id')) && get_user_data(tenant('id'))->type == 'seller') {
+            // check if order has only one item and it is a digital product
+            $order_id = session()->get('order_id');
+            $order = SellerOrders::find($order_id);
+            return view('stores.sellers.pages.repayment');
+        }
+        
     }
 
     // cod checkout

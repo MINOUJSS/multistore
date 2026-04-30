@@ -427,8 +427,8 @@ class ChargilyPayController extends Controller
             } elseif ($payment->payment_type == 'supplier_order') {
                 return redirect()->route('tenant.thanks')->with('payment_error', 'فشل في عملية الدفع');
             } elseif ($payment->payment_type == 'seller_order') {
-                return redirect()->route('tenant.thanks')->with([
-                    'payment_error' => 'فشل في عملية الدفع',
+                return redirect()->route('tenant.repayment')->with([
+                    'payment_error' => 'فشل في عملية الدفع يرجى إعادة المحاولة',
                     'order_id' => $payment->payment_reference_id,
                 ]);
             }

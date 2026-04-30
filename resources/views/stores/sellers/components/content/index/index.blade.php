@@ -256,7 +256,7 @@
                             <div class="card h-100 shadow-sm border-0 product-card position-relative overflow-hidden">
 
                                 <!-- شارة نفاد الكمية -->
-                                @if ($product->qty == 0)
+                                @if ($product->qty == 0 && $product->product_type == 'physical')
                                     <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">غير
                                         متوفر</span>
                                 @endif
@@ -329,7 +329,7 @@
                                         <a href="/product/{{ $product->id }}"
                                             class="btn btn-outline-primary btn-sm w-100">عرض التفاصيل</a>
 
-                                        @if ($product->qty > 0 && !is_cart_has_this_product($product->id))
+                                        @if ($product->qty > 0 && !is_cart_has_this_product($product->id) && $product->product_type == 'physical')
                                             <form method="post" action="{{ route('tenant.add-to-cart') }}"
                                                 class="d-inline-block">
                                                 @csrf

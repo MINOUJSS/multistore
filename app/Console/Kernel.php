@@ -23,6 +23,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        /*::::::::::::::::::::::::::::::::::::::::::::
+                       تقرير عن حالة السيرفر
+        :::::::::::::::::::::::::::::::::::::::::::::*/
+        $schedule->command('server:status')->everyFiveMinutes();
         /*:::::::::::::::::::::::::::::::::::::::::::::::::::::
         // تقرير المالي اليومي
         :::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
