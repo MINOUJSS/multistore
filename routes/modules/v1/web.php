@@ -2,6 +2,8 @@
 
 // use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ChargilyPayController;
+use App\Http\Controllers\Site\ContactMessageController;
+use App\Http\Controllers\Site\NewsletterSubscriberController;
 use App\Http\Controllers\Site\SiteController;
 use App\Http\Controllers\Site\SiteDisputeController;
 use App\Http\Controllers\Users\Suppliers\TelegramController;
@@ -66,6 +68,10 @@ foreach (config('tenancy.central_domains') as $domain) {
                 ->name('download.entry');
             // رابط التحميل الفعلي (موقّع)
             Route::get('/download/{id}/{token}', [SiteController::class, 'download'])->name('product.download')->middleware('signed');
+            // Contact Message Routes
+            Route::post('/contact/store', [ContactMessageController::class, 'store'])->name('contact.store')->middleware('throttle:5,1');
+            // Newsletter Routes
+            Route::post('/newsletter/subscribe', [NewsletterSubscriberController::class, 'subscribe'])->name('newsletter.subscribe');
         });
     });
 }

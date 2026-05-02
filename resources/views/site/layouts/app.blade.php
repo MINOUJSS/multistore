@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   @yield('meta')
   <meta content="" name="description">
   <meta content="" name="keywords">
@@ -145,10 +146,10 @@
         <div class="col-lg-3 col-md-6 footer-links">
           <h4>روابط مهمة</h4>
           <ul>
-            <li><i class="bx bx-chevron-left"></i> <a href="#">الرئيسية</a></li>
-            <li><i class="bx bx-chevron-left"></i> <a href="#">من نحن</a></li>
-            <li><i class="bx bx-chevron-left"></i> <a href="#">خدماتنا</a></li>
-            <li><i class="bx bx-chevron-left"></i> <a href="#">سياسة خصوصية</a></li>
+            <li><i class="bx bx-chevron-left"></i> <a href="{{config('app.url')}}?#hero">الرئيسية</a></li>
+            <li><i class="bx bx-chevron-left"></i> <a href="{{config('app.url')}}?#about">من نحن</a></li>
+            <li><i class="bx bx-chevron-left"></i> <a href="{{config('app.url')}}?#services">خدماتنا</a></li>
+            <li><i class="bx bx-chevron-left"></i> <a href="{{ route('site.privacy_policy')}}">سياسة خصوصية</a></li>
             {{-- <li><i class="bx bx-chevron-left"></i> <a href="#">Privacy policy</a></li> --}}
           </ul>
         </div>

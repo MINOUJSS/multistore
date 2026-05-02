@@ -36,7 +36,9 @@
         </div>
 
         <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
-          <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+          <form action="{{route('site.contact.store')}}" method="post" role="form" class="php-email-form">
+            @csrf
+            <input type="text" name="website" style="display:none">
             <div class="row">
               <div class="form-group col-md-6">
                 <label for="name">اسمك</label>

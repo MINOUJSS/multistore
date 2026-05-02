@@ -58,3 +58,7 @@
 @section('footer-newsletter')
 @include('site.inc.footer_newsletter.footer_newsletter')
 @endsection
+
+@section('footer_js')
+    @include('site.inc.footer_newsletter.js.newsletter_js')
+@endsection

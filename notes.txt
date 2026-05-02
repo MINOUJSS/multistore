@@ -1,6 +1,4 @@
 أعمال اليوم
-تغيير مسار حفظ المنتج الرقمي create privet disk
-إضافة سكريبت يراقب عمل الموقع و يرسل رسائل إطمئنان كل ساعة عبر التليغرام
 إنجاز الشاشة الرئيسية للأدمن 
 create page for contact us in admin panel
 create news later table and page for admin
