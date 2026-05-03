@@ -1,6 +1,8 @@
     @php
         use App\Models\Dispute;
+        use App\Models\ContactMessage;
         $newPaymentProofDisputesCount = Dispute::where('status', 'open')->count();
+        $unread_message_count=Contactmessage::where('is_read',0)->count();
         $DisputesCount = $newPaymentProofDisputesCount;
     @endphp
     <div class="menu">
@@ -21,6 +23,25 @@
             </div>
         </div>
         @endif
+        <!--start messages and chat-->
+        <div class="item">
+            <a class="sub-btn" href="#"><i class="fa-solid fa-envelope"></i>إدارة الرسائل 
+                @if ($unread_message_count > 0)
+                    <span class="badge bg-danger ms-2">{{ $unread_message_count }}</span>
+                @endif
+                <i class="fa-solid fa-angle-left dropdown"></i>
+            </a>
+            <div class="sub-menu">
+                <a class="sub-item d-flex" href="{{ route('admin.contact.messages') }}"><i class="fa-solid fa-envelope"></i>
+                    رسائل صفحة الهبوط
+                </a>
+                {{-- <a class="sub-item d-flex" href="{{ route('admin.general.chat') }}"><i class="fa-solid fa-user-plus"></i>
+                   غرفة الدردشة العامة
+                </a> --}}
+                 
+            </div>
+        </div>
+        <!--end messages and chat-->
         <div class="item">
             <a class="sub-btn" href="#"><i class="fa-solid fa-scale-balanced"></i>الشكاوى والنزاعات
                 @if ($DisputesCount > 0)

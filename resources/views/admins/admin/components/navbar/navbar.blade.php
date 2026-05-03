@@ -3,12 +3,13 @@
         'admin_id',
         auth()->guard('admin')->user()->id,
     )->first();
+    $unreadContactUsMessages =App\Models\ContactMessage::where('is_read', 0)->get();
     if ($ProofsRefused && $ProofsRefused->messages()) {
         $UnradesProofsRefusedMessages = $ProofsRefused->messages()->where('is_read_by_admin', false)->count();
     } else {
         $UnradesProofsRefusedMessages = 0;
     }
-    $UnreadMessages = $UnradesProofsRefusedMessages;
+    $UnreadMessages = $UnradesProofsRefusedMessages + $unreadContactUsMessages->count();
 @endphp
 <span id="UnradesProofsRefusedMessages" data-value="{{ $UnradesProofsRefusedMessages }}"></span>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -64,11 +65,20 @@
                     </span>
                     @if ($UnreadMessages > 0)
                         <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                            @if($ProofsRefused && $UnradesProofsRefusedMessages>0)
                             @foreach ($ProofsRefused->messages()->where('is_read_by_admin', false)->get() as $Message)
                                 <li><a class="dropdown-item"
                                         href="{{ route('admin.payment_proof.dispute.refused.show', $Message->payment_proof_id) }}">رسالة
                                         من {{ $Message->sender_type }}</a></li>
                             @endforeach
+                            @endif
+                            @if($unreadContactUsMessages)
+                            @foreach ($unreadContactUsMessages as $Message)
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.contact.message.show', $Message->id) }}">رسالة
+                                        من {{ $Message->name }}</a></li>
+                            @endforeach
+                            @endif
                         </ul>
                     @endif
                 </li>

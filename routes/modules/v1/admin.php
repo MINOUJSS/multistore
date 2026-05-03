@@ -5,6 +5,7 @@ use App\Http\Controllers\Admins\Admin\AdminDisputeController;
 use App\Http\Controllers\Admins\Admin\AdminEmployeeController;
 use App\Http\Controllers\Admins\Admin\ArchivesDisputesController;
 use App\Http\Controllers\Admins\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admins\Admin\ContactUsMessageController;
 use App\Http\Controllers\Admins\Admin\FinancialDashboardController;
 use App\Http\Controllers\Admins\Admin\NotificationController;
 use App\Http\Controllers\Admins\Admin\PaymentsController;
@@ -98,7 +99,12 @@ foreach (config('tenancy.central_domains') as $domain) {
                 });
                 // finacial reports routes
                 Route::get('/ah-admin/financial-dashboard', [FinancialDashboardController::class, 'index'])
-    ->name('financial.dashboard');
+                ->name('financial.dashboard');
+                // contact us messagesroutes
+                Route::get('/ah-admin/contact-us-messages', [ContactUsMessageController::class, 'index'])->name('contact.messages');
+                Route::get('/ah-admin/contact-us-message/{id}/show', [ContactUsMessageController::class, 'show'])->name('contact.message.show');
+                Route::delete('/ah-admin/contact-us-message/{id}/destroy', [ContactUsMessageController::class, 'destroy'])->name('contact.message.destroy');
+                Route::post('/ah-admin/contact-us-message/{id}/reply', [ContactUsMessageController::class, 'reply'])->name('contact.message.reply');
             });
         });
     });
