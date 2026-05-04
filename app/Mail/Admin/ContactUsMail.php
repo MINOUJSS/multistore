@@ -31,9 +31,9 @@ class ContactUsMail extends Mailable implements ShouldQueue
     {
         return new Envelope(
             subject: config('app.name').'-Contact Us-Reply',
-            replyTo: [
-                $this->data['email'] ?? config('mail.from.address'),
-            ],
+            // replyTo: [
+            //     $this->data['email'] ?? config('mail.from.address'),
+            // ],
         );
     }
 
