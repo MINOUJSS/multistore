@@ -102,6 +102,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                 ->name('financial.dashboard');
                 // contact us messagesroutes
                 Route::get('/ah-admin/contact-us-messages', [ContactUsMessageController::class, 'index'])->name('contact.messages');
+                Route::get('/ah-admin/contact-us-message/filter-messages', [ContactUsMessageController::class, 'filter'])->name('contact.message.filter');
                 Route::get('/ah-admin/contact-us-message/{id}/show', [ContactUsMessageController::class, 'show'])->name('contact.message.show');
                 Route::delete('/ah-admin/contact-us-message/{id}/destroy', [ContactUsMessageController::class, 'destroy'])->name('contact.message.destroy');
                 Route::post('/ah-admin/contact-us-message/{id}/reply', [ContactUsMessageController::class, 'reply'])->name('contact.message.reply');

@@ -9,13 +9,11 @@
         <td data-label="تاريخ الرسالة">{{ $message->created_at->format('Y-m-d') }}</td>
         <td data-label="حالة الرسالة">{{ $message->is_read }}</td>
         <td>
-            <button class="btn btn-sm btn-info view-message" data-message-id="{{ $message->id }}"
-                onclick="view_message({{ $message->id }});">
+            <a href="{{ route('admin.contact.message.show', $message->id) }}" class="btn btn-sm btn-info view-message">
                 <i class="fas fa-eye"></i>
-            </button>
+            </a>
 
-            <button class="btn btn-sm btn-danger delete-message" data-message-id="{{ $message->id }}"
-                onclick="delete_message({{ $message->id }});">
+            <button onclick="deleteContactMessage({{ $message->id }})" class="btn btn-sm btn-danger delete-message" >
                 <i class="fas fa-trash"></i>
             </button>
 

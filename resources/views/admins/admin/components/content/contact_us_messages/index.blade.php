@@ -18,7 +18,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">تاريخ الرسالة</label>
-                    <input id="orderDateFilter" type="date" class="form-control">
+                    <input id="messageDateFilter" type="date" class="form-control">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">بحث</label>

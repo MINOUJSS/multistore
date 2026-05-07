@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admins\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\Admin\ContactUsMail;
 use App\Models\ContactMessage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class ContactUsMessageController extends Controller
@@ -55,5 +56,50 @@ class ContactUsMessageController extends Controller
 
         // redirect to show
         return redirect()->route('admin.contact.message.show', $id)->with('success', 'تم ارسال الرد بنجاح');
+    }
+
+    public function destroy($id)
+    {
+        $message = ContactMessage::findorFail($id);
+        $message->delete();
+
+        return response()->json(['message' => "Message with ID: {$id} deleted successfully"]);
+        // return redirect()->route('admin.contact.messages')->with('success', 'تم حذف الرسالة بنجاح');
+    }
+
+    public function filter(Request $request)
+    {
+        $query = ContactMessage::query();
+
+        // Filter by status
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('is_read', $request->status);
+        }
+
+        // Filter by date
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
+        }
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%")
+                  ->orWhere('subject', 'LIKE', "%{$search}%")
+                  ->orWhere('message', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $messages = $query
+            ->latest()
+            ->paginate(10);
+
+        return view(
+            'admins.admin.components.content.contact_us_messages.partials.messages_table',
+            compact('messages')
+        )->render();
     }
 }

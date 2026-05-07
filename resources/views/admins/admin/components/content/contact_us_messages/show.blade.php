@@ -38,7 +38,8 @@
             </div>
         </div>
     </div> --}}
-    <div class="row">
+    @if(count($message->replies)==0)
+    <div class="row mt-4">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
@@ -57,5 +58,23 @@
             </div>
         </div>
     </div>
-
+    @else
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"><b>رد الرسالة</b> </h5>
+                </div>
+                <div class="card-body">
+                    @foreach($message->replies as $reply)
+                    <h5 class="card-title"><b>تم الرد من طرف: </b> {{ get_admin_data_from_id($reply->admin_id)->name }} </h5>
+                    <small>{{ $reply->created_at->diffForHumans() }}</small>
+                    <p class="card-text"><b>الرد: </b>{{ $reply->reply }}</p>
+                    <hr>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
