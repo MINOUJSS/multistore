@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Admins\admin;
+namespace App\Jobs\Admins\Admin;
 
 use App\Services\Users\Suppliers\TelegramService;
 use Illuminate\Bus\Queueable;
