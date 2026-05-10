@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users\Suppliers\Auth;
 use App\Events\CreateSupplierEvent;
 use App\Events\UserLogedInEvent;
 use App\Http\Controllers\Controller;
+use App\Jobs\Admins\admin\SendTelegramInfoAboutNewSupplier;
 use App\Models\Admin;
 use App\Models\Supplier\Supplier;
 use App\Models\Supplier\SupplierPlan;
@@ -169,11 +170,19 @@ class RegistredSupplierController extends Controller
 
                 event(new CreateSupplierEvent($supplier));
 
-                // inform admins about new seller
-                $admins = Admin::all();
-                foreach ($admins as $admin) {
-                    $admin->notify(new NewUserNotification($user));
-                }
+                // inform admins about new supplier
+                // $admins = Admin::all();
+                // foreach ($admins as $admin) {
+                //     $admin->notify(new NewUserNotification($user));
+                // }
+                // with telegram
+                $data = [
+                    'full_name' => $request->full_name,
+                    'store_name' => $request->store_name,
+                    'email' => $request->email,
+                    'plan_name' => $request->plan,
+                ];
+                SendTelegramInfoAboutNewSupplier::dispatch($data);
 
                 // redirect to dashboard of confirme plan page
                 if ($plan->price == 0) {
