@@ -85,10 +85,10 @@ class RegistredSupplierController extends Controller
                 // Start a transaction for atomicity
                 \DB::beginTransaction();
                 // check if supplier exists
-                $path = 'supplier/'.$request->store_name;
-                if (!Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->makeDirectory($path);
-                }
+                // $path = 'supplier/'.$request->store_name;
+                // if (!Storage::disk('public')->exists($path)) {
+                //     Storage::disk('public')->makeDirectory($path);
+                // }
                 // insert data into supplier table and tenant table and domain table
                 $tenant = Tenant::create([
                     'id' => $request->store_name.'.supplier',
