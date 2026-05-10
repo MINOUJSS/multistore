@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Users\Suppliers\Auth;
 use App\Events\CreateSupplierEvent;
 use App\Events\UserLogedInEvent;
 use App\Http\Controllers\Controller;
-use App\Jobs\Admins\admin\SendTelegramInfoAboutNewSupplier;
+use App\Jobs\Admins\Admin\SendTelegramInfoAboutNewSupplier;
 use App\Models\Admin;
 use App\Models\Supplier\Supplier;
 use App\Models\Supplier\SupplierPlan;
