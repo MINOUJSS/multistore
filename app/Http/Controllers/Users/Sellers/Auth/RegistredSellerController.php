@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users\Sellers\Auth;
 use App\Events\CreateSellerEvent;
 use App\Events\UserLogedInEvent;
 use App\Http\Controllers\Controller;
+use App\Jobs\Admins\Admin\SendTelegramInfoAboutNewSeller;
 use App\Models\Admin;
 use App\Models\Seller\Seller;
 use App\Models\Seller\SellerPlan;
@@ -170,11 +171,13 @@ class RegistredSellerController extends Controller
                 event(new CreateSellerEvent($seller));
 
                 // inform admins about new seller
-                $admins = Admin::all();
-                foreach ($admins as $admin) {
-                    $admin->notify(new NewUserNotification($user));
-                }
-
+                // with email
+                // $admins = Admin::all();
+                // foreach ($admins as $admin) {
+                //     $admin->notify(new NewUserNotification($user));
+                // }
+                // with telegram
+                $job = SendTelegramInfoAboutNewSeller::dispatch($seller);
                 // redirect to dashboard of confirme plan page
                 if ($plan->price == 0) {
                     return redirect(route('seller.dashboard'));
