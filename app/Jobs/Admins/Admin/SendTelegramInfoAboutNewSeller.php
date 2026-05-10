@@ -2,7 +2,6 @@
 
 namespace App\Jobs\Admins\Admin;
 
-use App\Models\Seller\Seller;
 use App\Services\Users\Suppliers\TelegramService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,11 +19,11 @@ class SendTelegramInfoAboutNewSeller implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public $seller;
+    public $data;
 
-    public function __construct(Seller $seller)
+    public function __construct($data)
     {
-        $this->seller = $seller;
+        $this->data = $data;
     }
 
     /**
@@ -33,7 +32,11 @@ class SendTelegramInfoAboutNewSeller implements ShouldQueue
     public function handle(): void
     {
         $telegramservice = new TelegramService();
-        $message = '<b>تم تسجيل بائع جديد جديد</b> \n\n';
+        $message = '<b>تم تسجيل بائع جديد جديد</b><br/>';
+        $message .= '<b>الإسم : </b><span>'.$this->data['full_name'].'</span>';
+        $message .= '<b>إسم المتجر : </b><span>'.$this->data['store_name'].'</span>';
+        $message .= '<b>البريد الإلكتروني : </b><span>'.$this->data['email'].'</span>';
+        $message .= '<b>الخطة(الباقة) : </b><span>'.$this->data['paln_name'].'</span>';
 
         $telegramservice->sendMessage(env('ADMIN_CHAT_ID'), $message);
     }

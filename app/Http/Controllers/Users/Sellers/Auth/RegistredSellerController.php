@@ -177,7 +177,13 @@ class RegistredSellerController extends Controller
                 //     $admin->notify(new NewUserNotification($user));
                 // }
                 // with telegram
-                $job = SendTelegramInfoAboutNewSeller::dispatch($seller);
+                $data = [
+                    'full_name' => $request->full_name,
+                    'store_name' => $request->store_name,
+                    'email' => $request->email,
+                    'paln_name' => $request->plan,
+                ];
+                $job = SendTelegramInfoAboutNewSeller::dispatch($data);
                 // redirect to dashboard of confirme plan page
                 if ($plan->price == 0) {
                     return redirect(route('seller.dashboard'));
