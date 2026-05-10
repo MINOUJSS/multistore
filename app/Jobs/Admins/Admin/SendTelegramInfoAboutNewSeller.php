@@ -32,11 +32,15 @@ class SendTelegramInfoAboutNewSeller implements ShouldQueue
     public function handle(): void
     {
         $telegramservice = new TelegramService();
-        $message = '<b>تم تسجيل بائع جديد جديد</b><br/>';
-        $message .= '<b>الإسم : </b><span>'.$this->data['full_name'].'</span>';
-        $message .= '<b>إسم المتجر : </b><span>'.$this->data['store_name'].'</span>';
-        $message .= '<b>البريد الإلكتروني : </b><span>'.$this->data['email'].'</span>';
-        $message .= '<b>الخطة(الباقة) : </b><span>'.$this->data['paln_name'].'</span>';
+        $message = "🆕 <b>تم تسجيل بائع جديد</b>\n\n";
+
+        $message .= "👤 <b>الإسم:</b> {$this->data['full_name']}\n";
+
+        $message .= "🏪 <b>إسم المتجر:</b> {$this->data['store_name']}\n";
+
+        $message .= "📧 <b>البريد الإلكتروني:</b> {$this->data['email']}\n";
+
+        $message .= "📦 <b>الخطة:</b> {$this->data['plan_name']}";
 
         $telegramservice->sendMessage(env('ADMIN_CHAT_ID'), $message);
     }

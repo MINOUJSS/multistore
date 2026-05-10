@@ -181,7 +181,7 @@ class RegistredSellerController extends Controller
                     'full_name' => $request->full_name,
                     'store_name' => $request->store_name,
                     'email' => $request->email,
-                    'paln_name' => $request->plan,
+                    'plan_name' => $request->plan,
                 ];
                 $job = SendTelegramInfoAboutNewSeller::dispatch($data);
                 // redirect to dashboard of confirme plan page
