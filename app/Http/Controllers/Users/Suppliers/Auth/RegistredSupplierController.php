@@ -76,30 +76,32 @@ class RegistredSupplierController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'terms' => 'accepted',
         ]);
+        $store_name = strtolower(trim($request->store_name));
+        $store_name = preg_replace('/[^a-z0-9]/', '', $store_name);
         // --------START--------------
         // verify if supplier exists
-        if (!supplier_exists($request->store_name)) {
+        if (!supplier_exists($store_name)) {
             return redirect()->back();
         } else {
             try {
                 // Start a transaction for atomicity
                 \DB::beginTransaction();
                 // check if supplier exists
-                // $path = 'supplier/'.$request->store_name;
+                // $path = 'supplier/'.$store_name;
                 // if (!Storage::disk('public')->exists($path)) {
                 //     Storage::disk('public')->makeDirectory($path);
                 // }
                 // insert data into supplier table and tenant table and domain table
                 $tenant = Tenant::create([
-                    'id' => $request->store_name.'.supplier',
+                    'id' => $store_name.'.supplier',
                     'type' => 'supplier',
                 ]);
-                $tenant->domains()->create(['domain' => $request->store_name.'.'.request()->host()]);
+                $tenant->domains()->create(['domain' => $store_name.'.'.request()->host()]);
                 // inserte supplier data to database
                 $supplier = Supplier::create([
-                    'tenant_id' => $request->store_name.'.supplier',
+                    'tenant_id' => $store_name.'.supplier',
                     'full_name' => $request->full_name,
-                    'store_name' => $request->store_name,
+                    'store_name' => $store_name,
                     'email' => $request->email,
                 ]);
                 // insert data into user table
@@ -178,7 +180,7 @@ class RegistredSupplierController extends Controller
                 // with telegram
                 $data = [
                     'full_name' => $request->full_name,
-                    'store_name' => $request->store_name,
+                    'store_name' => $store_name,
                     'email' => $request->email,
                     'plan_name' => $request->plan,
                 ];
@@ -193,10 +195,10 @@ class RegistredSupplierController extends Controller
             } catch (\Exception $e) {
                 // delete the folder containing
                 // check if supplier exists
-                $path = $request->store_name;
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->deleteDirectory($path);
-                }
+                // $path = $store_name;
+                // if (Storage::disk('public')->exists($path)) {
+                //     Storage::disk('public')->deleteDirectory($path);
+                // }
                 // Rollback the transaction
                 \DB::rollBack();
                 // Log the error for debugging

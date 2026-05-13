@@ -3,6 +3,7 @@
 namespace App\Models\Seller;
 
 use App\Models\FinancialLedger;
+use App\Models\Tenant;
 use App\Notifications\Users\Sellers\SellerResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;

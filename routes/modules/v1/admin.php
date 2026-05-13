@@ -45,9 +45,11 @@ foreach (config('tenancy.central_domains') as $domain) {
                 // suppliers actions
                 Route::get('/ah-admin/suppliers', [SupplierController::class, 'index'])->name('suppliers');
                 Route::delete('/ah-admin/supplier/destroy/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
+                Route::get('/ah-admin/supplier/{id}/show', [SupplierController::class, 'show'])->name('supplier.show');
                 // sellers actions
                 Route::get('/ah-admin/sellers', [SellerController::class, 'index'])->name('sellers');
                 Route::delete('/ah-admin/seller/destroy/{id}', [SellerController::class, 'destroy'])->name('seller.destroy');
+                Route::get('/ah-admin/seller/{id}/show', [SellerController::class, 'show'])->name('seller.show');
                 // payments Routes
                 Route::get('/ah-admin/payments/rechage-requests', [PaymentsController::class, 'recharge_requests'])->name('payments.recharge_requests');
                 Route::patch('/admin/payments/recharge-request/approve/{id}', [PaymentsController::class, 'approve_recharge'])->name('payments.recharge.approve');
@@ -106,6 +108,8 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::get('/ah-admin/contact-us-message/{id}/show', [ContactUsMessageController::class, 'show'])->name('contact.message.show');
                 Route::delete('/ah-admin/contact-us-message/{id}/destroy', [ContactUsMessageController::class, 'destroy'])->name('contact.message.destroy');
                 Route::post('/ah-admin/contact-us-message/{id}/reply', [ContactUsMessageController::class, 'reply'])->name('contact.message.reply');
+                // ignored replys to messages routes
+                Route::post('/ah-admin/contact-us-message/{id}/ignore', [ContactUsMessageController::class, 'ignore_reply'])->name('contact.message.ignore');
             });
         });
     });

@@ -38,7 +38,7 @@
             </div>
         </div>
     </div> --}}
-    @if(count($message->replies)==0)
+    @if(count($message->replies)==0 && $message->is_read==0)
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
@@ -52,13 +52,14 @@
                             <label for="reply">الرد</label>
                             <textarea class="form-control" name="reply" id="reply" rows="3"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3">ارسال</button>
+                        <button type="submit" class="btn btn-primary mt-3">ارسال</button> <button type="button" class="btn btn-danger mt-3" onclick="ignoreReply({{ $message->id }})">تجاهل الرد</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
     @else
+    @if(count($message->replies)>0)
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
@@ -76,5 +77,19 @@
             </div>
         </div>
     </div>
+    @else 
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"><b>رد الرسالة</b> </h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"><b>تم تجاهل الرد </b> </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     @endif
 </div>

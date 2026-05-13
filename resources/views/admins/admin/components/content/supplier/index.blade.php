@@ -148,7 +148,7 @@
                               @endif
                             </span></td>
 
-                            <td>
+                            {{-- <td>
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-outline-primary dropdown-toggle"
                                             data-bs-toggle="dropdown">
@@ -178,7 +178,53 @@
                                         </li>
                                     </ul>
                                 </div>
+                            </td> --}}
+
+                            <td>
+                                <div class="d-flex justify-content-center align-items-center gap-2 action-buttons">
+
+                                    <!-- View -->
+                                    <a href="#"
+                                    class="btn btn-sm btn-light border action-btn view-btn"
+                                    data-bs-toggle="tooltip"
+                                    title="عرض التفاصيل">
+
+                                        <i class="fa-solid fa-eye"></i>
+
+                                    </a>
+
+                                    <!-- Activate -->
+                                    <a href="#"
+                                    class="btn btn-sm btn-light border action-btn active-btn"
+                                    data-bs-toggle="tooltip"
+                                    title="تفعيل المورد">
+
+                                        <i class="fa-solid fa-circle-check"></i>
+
+                                    </a>
+
+                                    <!-- Delete -->
+                                    <form method="POST"
+                                        action="{{ route('admin.supplier.destroy', get_user_data($supplier->tenant->id)->id) }}"
+                                        onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-light border action-btn delete-btn"
+                                                data-bs-toggle="tooltip"
+                                                title="حذف المورد">
+
+                                            <i class="fa-solid fa-trash"></i>
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
                             </td>
+
                         </tr>
                     @empty
                         <tr>
@@ -208,3 +254,92 @@
         });
     });
 </script>
+
+<script>
+
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+
+const tooltipList = [...tooltipTriggerList].map(
+    tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
+);
+
+</script>
+
+<style>
+
+.action-buttons .action-btn{
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: all .25s ease;
+
+    font-size: 14px;
+
+    background: #fff;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+
+}
+
+.action-buttons .action-btn i{
+
+    transition: all .25s ease;
+
+}
+
+/* View */
+.view-btn{
+
+    color: #0d6efd;
+
+}
+
+.view-btn:hover{
+
+    background: #0d6efd;
+    color: #fff;
+
+    transform: translateY(-2px);
+
+}
+
+/* Activate */
+.active-btn{
+
+    color: #198754;
+
+}
+
+.active-btn:hover{
+
+    background: #198754;
+    color: #fff;
+
+    transform: translateY(-2px);
+
+}
+
+/* Delete */
+.delete-btn{
+
+    color: #dc3545;
+
+}
+
+.delete-btn:hover{
+
+    background: #dc3545;
+    color: #fff;
+
+    transform: translateY(-2px);
+
+}
+
+</style>

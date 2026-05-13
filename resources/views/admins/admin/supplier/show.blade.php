@@ -9,9 +9,5 @@
 @endsection
 
 @section('content')
-    @include('admins.admin.components.content.contact_us_messages.show')
-@endsection
-
-@section('footer_js')
-    @include('admins.admin.components.content.contact_us_messages.js.ignore_reply_js')
+    @include('admins.admin.components.content.supplier.show')
 @endsection

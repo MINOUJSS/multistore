@@ -102,4 +102,14 @@ class ContactUsMessageController extends Controller
             compact('messages')
         )->render();
     }
+
+    // function ignore_reply
+    public function ignore_reply($id)
+    {
+        $message = ContactMessage::findorFail($id);
+        $message->update(['is_read' => 1]);
+
+        return response()->json(['status' => 'success', 'message' => "Message with ID: {$id} marked as read successfully"]);
+        // return redirect()->route('admin.contact.messages')->with('success', 'تم تجاهيز الرد بنجاح');
+    }
 }

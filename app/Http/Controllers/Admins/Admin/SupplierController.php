@@ -19,6 +19,14 @@ class SupplierController extends Controller
         return view('admins.admin.supplier.index', compact('suppliers'));
     }
 
+    // show
+    public function show($id)
+    {
+        $supplier = Supplier::find($id);
+
+        return view('admins.admin.supplier.show', compact('supplier'));
+    }
+
     // destroy
     public function destroy($id)
     {

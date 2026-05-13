@@ -77,29 +77,31 @@ class RegistredSellerController extends Controller
             'terms' => 'accepted',
         ]);
         // --------START--------------
+        $store_name = strtolower(trim($request->store_name));
+        $store_name = preg_replace('/[^a-z0-9]/', '', $store_name);
         // verify if seller exists
-        if (!seller_exists($request->store_name)) {
+        if (!seller_exists($store_name)) {
             return redirect()->back();
         } else {
             try {
                 // Start a transaction for atomicity
                 \DB::beginTransaction();
                 // check if seller exists
-                $path = 'seller/'.$request->store_name;
+                $path = 'seller/'.$store_name;
                 if (!Storage::disk('public')->exists($path)) {
                     Storage::disk('public')->makeDirectory($path);
                 }
                 // insert data into seller table and tenant table and domain table
                 $tenant = Tenant::create([
-                    'id' => $request->store_name,
+                    'id' => $store_name,
                     'type' => 'seller',
                 ]);
-                $tenant->domains()->create(['domain' => $request->store_name.'.'.request()->host()]);
+                $tenant->domains()->create(['domain' => $store_name.'.'.request()->host()]);
                 // inserte seller data to database
                 $seller = Seller::create([
-                    'tenant_id' => $request->store_name,
+                    'tenant_id' => $store_name,
                     'full_name' => $request->full_name,
-                    'store_name' => $request->store_name,
+                    'store_name' => $store_name,
                     'email' => $request->email,
                 ]);
                 // insert data into user table
@@ -179,7 +181,7 @@ class RegistredSellerController extends Controller
                 // with telegram
                 $data = [
                     'full_name' => $request->full_name,
-                    'store_name' => $request->store_name,
+                    'store_name' => $store_name,
                     'email' => $request->email,
                     'plan_name' => $request->plan,
                 ];
@@ -193,10 +195,10 @@ class RegistredSellerController extends Controller
             } catch (\Exception $e) {
                 // delete the folder containing
                 // check if seller exists
-                $path = $request->store_name;
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->deleteDirectory($path);
-                }
+                // $path = $store_name;
+                // if (Storage::disk('public')->exists($path)) {
+                //     Storage::disk('public')->deleteDirectory($path);
+                // }
                 // Rollback the transaction
                 \DB::rollBack();
                 // Log the error for debugging

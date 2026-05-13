@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admins\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Seller\Seller;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -12,9 +13,18 @@ class SellerController extends Controller
     // index
     public function index()
     {
-        $sellers = User::where('type', 'seller')->orderBy('id', 'desc')->get();
+        // $sellers = User::where('type', 'seller')->orderBy('id', 'desc')->get();
+        $sellers = Seller::orderBy('id', 'desc')->paginate(10);
 
         return view('admins.admin.seller.index', compact('sellers'));
+    }
+
+    // show seller
+    public function show($id)
+    {
+        $seller = Seller::find($id);
+
+        return view('admins.admin.seller.show', compact('seller'));
     }
 
     // destroy

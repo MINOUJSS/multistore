@@ -1,78 +1,342 @@
-<div class="container">
-    <h1>الموردون</h1>
-<div class="messages">
+<div class="container-fluid py-4">
+    <!-- ===== Page Header ===== -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0">
+            <i class="fa-solid fa-store text-primary me-2"></i>
+            إدارة البائعين
+        </h3>
+    </div>
+
+    <!-- ===== Alerts ===== -->
     @if (session()->has('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success alert-dismissible fade show shadow-sm">
+            <i class="fa-solid fa-circle-check me-1"></i>
             {{ session()->get('success') }}
+            <button class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
-</div>
-<div class="card">
-    <div class="card-header">
-      جدول الموردون
+
+    <!-- ===== Stats ===== -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm border-0 text-center">
+                <div class="card-body">
+                    <i class="fa-solid fa-users fa-2x text-primary mb-2"></i>
+                    <h6 class="text-muted">إجمالي البائعين</h6>
+                    <h4 class="fw-bold">{{ $sellers->count() }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm border-0 text-center">
+                <div class="card-body">
+                    <i class="fa-solid fa-circle-check fa-2x text-success mb-2"></i>
+                    <h6 class="text-muted">بائعين نشطون</h6>
+                    <h4 class="fw-bold">—</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm border-0 text-center">
+                <div class="card-body">
+                    <i class="fa-solid fa-box fa-2x text-info mb-2"></i>
+                    <h6 class="text-muted">المنتجات</h6>
+                    <h4 class="fw-bold">—</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm border-0 text-center">
+                <div class="card-body">
+                    <i class="fa-solid fa-cart-shopping fa-2x text-dark mb-2"></i>
+                    <h6 class="text-muted">الطلبات</h6>
+                    <h4 class="fw-bold">—</h4>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-      {{-- start table  --}}
-      <div class="table-responsive">
-      <table class="table table-sm">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">الإسم الكامل</th>
-            <th scope="col">البريد الإلكتروني</th>
-            <th scope="col">رقم الهاتف</th>
-            <th scope="col">إسم المتجر</th>
-            <th scope="col">الحالة</th>
-            <th scope="col">التقييم</th>
-            <th scope="col">عدد المنتجات</th>
-            <th scope="col">تاريخ التسجيل</th>
-            <th scope="col">عدد الطلبيات</th>
-            <th scope="col">تاريخ نهاية الإشتراك</th>
-            <th scope="col">العمليات</th>
-          </tr>
-          @if ($sellers->count() > 0)
-          @foreach ($sellers as $index =>$seller)
-          <tr>
-            <th scope="row">{{$index+1}}</th>
-            <td>{{$seller->full_name}}</td>
-            <td>{{$seller->email}}</td>
-            <td>{{$seller->phone}}</td>
-            <td>{{get_seller_store_name($seller->tenant->id)}}</td>
-            <td>{{get_seller_status($seller->tenant->id)}}</td>
-            <td>التقييم</td>
-            <td>عدد المنتجات</td>
-            <td>{{$seller->created_at->format('d-m-Y')}}</td>
-            <td>عدد الطلبات</td>
-            <td>تاريخ نهاية الإشتراك</td>
-            <td>
-              <div class="btn-group" role="group">
-                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  العمليات
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                  <li><a class="dropdown-item" href="#">تفعيل الحساب</a></li>
-                  <li>
-                    <form action="{{route('admin.seller.destroy', get_user_data($seller->tenant->id)->id)}}" method="POST">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" class="dropdown-item text-danger"><i class="fa-solid fa-trash"></i> حذف الحساب</button>
-                    </form>
-                  </li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          @endforeach
-          @else
-            <th>
-              <td>لا يوجد موردين</td>
-            </th> 
-          @endif       
-        </thead>
-        <tbody>
-      </table>
-      {{-- end table  --}}
-      </div>
+
+    <!-- ===== Filters ===== -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" id="searchInput" class="form-control"
+                           placeholder="🔍 البحث بالاسم أو البريد أو الهاتف">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option value="">كل الحالات</option>
+                        <option value="active">نشط</option>
+                        <option value="inactive">غير نشط</option>
+                        <option value="blocked">محظور</option>
+                    </select>
+                </div>
+                <div class="col-md-3 text-end">
+                    <span class="badge bg-secondary p-2">
+                        {{ $sellers->count() }} مورد
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <!-- ===== Table ===== -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white fw-bold">
+            <i class="fa-solid fa-table me-1"></i>
+            قائمة الموردين
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle mb-0" id="sellersTable">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>#</th>
+                        <th>الاسم</th>
+                        <th>البريد</th>
+                        <th>الهاتف</th>
+                        <th>المتجر</th>
+                        <th>الحالة</th>
+                        <th>الباقة</th>
+                        <th>المنتجات</th>
+                        <th>التسجيل</th>
+                        <th>الطلبات</th>
+                        <th>الاشتراك</th>
+                        <th>العمليات</th>
+                    </tr>
+                </thead>
+
+                <tbody class="text-center">
+                    @forelse ($sellers as $index => $seller)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+
+                            <td class="fw-semibold">
+                                {{ $seller->full_name }}
+                            </td>
+
+                            <td>{{ get_user_data($seller->tenant_id)->email }}</td>
+                            <td>{{ get_user_data($seller->tenant_id)->phone }}</td>
+
+                            <td>
+                                <span class="badge bg-info">
+                                    {{ get_seller_store_name($seller->tenant->id) }}
+                                </span>
+                            </td>
+
+                            <td>{!! get_seller_status($seller->tenant->id) !!}</td>
+
+                            <td>{{get_seller_plan_data($seller->plan_subscription->plan_id)->name}}</td>
+
+                            <td><span class="badge bg-primary">{{$seller->products->count()}}</span></td>
+
+                            <td>{{ $seller->created_at->format('d-m-Y') }}</td>
+
+                            <td><span class="badge bg-dark">{{$seller->orders->count()}}</span></td>
+
+                            <td><span class="text-muted">
+                              @if ($seller->plan_subscription->plan_id!=1)
+                              {{-- {{dd($seller->plan_subscription)}} --}}
+                                  {{ $seller->plan_subscription->subscription_end_date }}
+                              @else
+                              مدى الحياة
+                              @endif
+                            </span></td>
+
+                            {{-- <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                            data-bs-toggle="dropdown">
+                                        العمليات
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fa-solid fa-eye me-1"></i> عرض
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fa-solid fa-circle-check me-1 text-success"></i> تفعيل
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <form method="POST"
+                                                  action="{{ route('admin.seller.destroy', get_user_data($seller->tenant->id)->id) }}"
+                                                  onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="dropdown-item text-danger">
+                                                    <i class="fa-solid fa-trash me-1"></i> حذف
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td> --}}
+                            <td>
+                                <div class="d-flex justify-content-center align-items-center gap-2 action-buttons">
+
+                                    <!-- View -->
+                                    <a href="#"
+                                    class="btn btn-sm btn-light border action-btn view-btn"
+                                    data-bs-toggle="tooltip"
+                                    title="عرض التفاصيل">
+
+                                        <i class="fa-solid fa-eye"></i>
+
+                                    </a>
+
+                                    <!-- Activate -->
+                                    <a href="#"
+                                    class="btn btn-sm btn-light border action-btn active-btn"
+                                    data-bs-toggle="tooltip"
+                                    title="تفعيل المورد">
+
+                                        <i class="fa-solid fa-circle-check"></i>
+
+                                    </a>
+
+                                    <!-- Delete -->
+                                    <form method="POST"
+                                        action="{{ route('admin.seller.destroy', get_user_data($seller->tenant->id)->id) }}"
+                                        onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-light border action-btn delete-btn"
+                                                data-bs-toggle="tooltip"
+                                                title="حذف المورد">
+
+                                            <i class="fa-solid fa-trash"></i>
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="12" class="py-4 text-muted">
+                                <i class="fa-solid fa-circle-info me-1"></i>
+                                لا يوجد موردين
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== Pagination ===== -->
+        <div class="card-footer bg-white">
+            {{ $sellers->links('pagination::bootstrap-5') }}
+        </div>
+    </div>
 </div>
+
+<!-- ===== Simple Search Script ===== -->
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function () {
+        let value = this.value.toLowerCase();
+        document.querySelectorAll('#sellersTable tbody tr').forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? '' : 'none';
+        });
+    });
+</script>
+
+<script>
+
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+
+const tooltipList = [...tooltipTriggerList].map(
+    tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
+);
+
+</script>
+
+<style>
+
+.action-buttons .action-btn{
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: all .25s ease;
+
+    font-size: 14px;
+
+    background: #fff;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+
+}
+
+.action-buttons .action-btn i{
+
+    transition: all .25s ease;
+
+}
+
+/* View */
+.view-btn{
+
+    color: #0d6efd;
+
+}
+
+.view-btn:hover{
+
+    background: #0d6efd;
+    color: #fff;
+
+    transform: translateY(-2px);
+
+}
+
+/* Activate */
+.active-btn{
+
+    color: #198754;
+
+}
+
+.active-btn:hover{
+
+    background: #198754;
+    color: #fff;
+
+    transform: translateY(-2px);
+
+}
+
+/* Delete */
+.delete-btn{
+
+    color: #dc3545;
+
+}
+
+.delete-btn:hover{
+
+    background: #dc3545;
+    color: #fff;
+
+    transform: translateY(-2px);
+
+}
+
+</style>
