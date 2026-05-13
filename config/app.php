@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -59,7 +58,7 @@ return [
 
     'asset_url' => env('ASSET_URL'),
 
-    'domain' => env('APP_DOMAIN','localhost'),
+    'domain' => env('APP_DOMAIN', 'localhost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -85,7 +84,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'ar',
 
     /*
     |--------------------------------------------------------------------------
@@ -188,5 +187,4 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
-
 ];
