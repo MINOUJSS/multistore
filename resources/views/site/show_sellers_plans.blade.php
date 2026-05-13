@@ -5,7 +5,7 @@
 @endsection
 
 @section('hero')
- @include('site.inc.header.header')
+ @include('site.inc.header.seller_plan_header')
 @endsection
 @section('pricing')
      <!-- ======= Pricing Section ======= -->
