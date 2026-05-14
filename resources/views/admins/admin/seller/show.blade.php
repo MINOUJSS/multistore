@@ -11,3 +11,7 @@
 @section('content')
     @include('admins.admin.components.content.seller.show')
 @endsection
+
+@section('footer_js')
+    @include('admins.admin.components.content.seller.js.show.approve_seller_js')
+@endsection

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Supplier\Supplier;
 use App\Models\Tenant;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class SupplierController extends Controller
@@ -23,8 +24,9 @@ class SupplierController extends Controller
     public function show($id)
     {
         $supplier = Supplier::find($id);
+        $user = get_user_data($supplier->tenant_id);
 
-        return view('admins.admin.supplier.show', compact('supplier'));
+        return view('admins.admin.supplier.show', compact('supplier', 'user'));
     }
 
     // destroy
@@ -62,5 +64,49 @@ class SupplierController extends Controller
             //     }
             return redirect()->back()->with('success', 'تم حذف المورد بنجاح');
         }
+    }
+
+    // approve supplier
+    public function approve($id)
+    {
+        $supplier = Supplier::find($id);
+        $supplier->update(['approval_status' => 'approved']);
+        // insert reason
+        // insert reason
+        $supplier->approveReasons()->create([
+            'admin_id' => auth('admin')->id(),
+            'status' => 'approved',
+            'reason' => 'تم توثيق البائع دون توضيحات',
+        ]);
+
+        return response()->json(['success' => true, 'approval_status' => 'approved', 'message' => 'تم توثيق البائع بنجاح']);
+    }
+
+    // un approve supplier
+    public function unapprove(Request $request)
+    {
+        $request->validate([
+            'supplier_id' => 'required|exists:suppliers,id',
+            'reason' => 'required|string|max:1000',
+        ]);
+
+        $supplier = Supplier::findOrFail($request->supplier_id);
+
+        $supplier->update([
+            'approval_status' => 'pending',
+        ]);
+
+        // insert reason
+        $supplier->approveReasons()->create([
+            'admin_id' => auth('admin')->id(),
+            'status' => 'unapproved',
+            'reason' => $request->reason,
+        ]);
+
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'تم حذف توثيق البائع بنجاح',
+        // ]);
+        return redirect()->back()->with(['approval_status' => 'unapproved', 'success' => true, 'message' => 'تم حذف توثيق البائع بنجاح']);
     }
 }

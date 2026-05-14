@@ -204,4 +204,12 @@ class Seller extends Authenticatable implements CanResetPasswordContract
     {
         return $this->morphMany(FinancialLedger::class, 'owner');
     }
+
+    public function approveReasons()
+    {
+        return $this->hasMany(
+            SellerApproveUnApproveStatusReason::class,
+            'seller_id'
+        );
+    }
 }

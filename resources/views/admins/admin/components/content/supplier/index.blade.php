@@ -184,7 +184,7 @@
                                 <div class="d-flex justify-content-center align-items-center gap-2 action-buttons">
 
                                     <!-- View -->
-                                    <a href="#"
+                                    <a href="{{ route('admin.supplier.show', $supplier->id) }}"
                                     class="btn btn-sm btn-light border action-btn view-btn"
                                     data-bs-toggle="tooltip"
                                     title="عرض التفاصيل">

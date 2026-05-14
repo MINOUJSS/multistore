@@ -46,10 +46,14 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::get('/ah-admin/suppliers', [SupplierController::class, 'index'])->name('suppliers');
                 Route::delete('/ah-admin/supplier/destroy/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
                 Route::get('/ah-admin/supplier/{id}/show', [SupplierController::class, 'show'])->name('supplier.show');
+                Route::post('/ah-admin/supplier/{id}/approve', [SupplierController::class, 'approve'])->name('supplier.approve');
+                Route::post('/ah-admin/supplier/unapprove', [SupplierController::class, 'unapprove'])->name('supplier.unapprove');
                 // sellers actions
                 Route::get('/ah-admin/sellers', [SellerController::class, 'index'])->name('sellers');
                 Route::delete('/ah-admin/seller/destroy/{id}', [SellerController::class, 'destroy'])->name('seller.destroy');
                 Route::get('/ah-admin/seller/{id}/show', [SellerController::class, 'show'])->name('seller.show');
+                Route::post('/ah-admin/seller/{id}/approve', [SellerController::class, 'approve'])->name('seller.approve');
+                Route::post('/ah-admin/seller/unapprove', [SellerController::class, 'unapprove'])->name('seller.unapprove');
                 // payments Routes
                 Route::get('/ah-admin/payments/rechage-requests', [PaymentsController::class, 'recharge_requests'])->name('payments.recharge_requests');
                 Route::patch('/admin/payments/recharge-request/approve/{id}', [PaymentsController::class, 'approve_recharge'])->name('payments.recharge.approve');
