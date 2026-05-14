@@ -7,7 +7,9 @@
           <h1>إختر الخطة (الباقة) التي تناسبك و إبدأ بتنمية تجارتك الآن</h1>
           <h2>تحّول من التجارة الكلاسيكية إلى التجارة الإلكترونية بسهولة و سرعة و أمتلك متجر إلكتروني خاص بك بجميع مزايا التجارة الإلكترونية مع توفير الخدمات المساندة له</h2>
           <div class="d-flex justify-content-center justify-content-lg-start">
-            {{-- <a href="#services" class="btn-get-started scrollto">إبدأ الآن</a> --}}
+            <h2>أنت تمتلك حساب؟ سجل الدخول من هنا
+            <a href="{{ 'http://supplier.' . request()->getHost() . route('supplier.login', [], false) }}" class="btn-get-started scrollto">تسجيل الدخول</a>
+            </h2>
             {{-- <a href="https://www.youtube.com/watch?v=cZRpUCWb_A4" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>فيديو تعريفي بالمنصة</span></a> --}}
           </div>
         </div>
