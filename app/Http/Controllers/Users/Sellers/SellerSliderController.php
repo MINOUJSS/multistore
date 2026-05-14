@@ -49,10 +49,10 @@ class SellerSliderController extends Controller
             $imagePath = null;
             if ($request->hasFile('image')) {
                 $path = $request->file('image')->store(
-                    'seller/'.get_seller_store_name(auth()->user()->tenant_id).'/images/sliders',
-                    'public'
+                    get_seller_store_name(auth()->user()->tenant_id).'/images/sliders',
+                    'seller'
                 );
-                $url = Storage::disk('public')->url('tenantseller/app/public/'.$path);
+                $url = Storage::disk('seller')->url('app/public/seller/'.$path);
                 $imagePath = $url;
             }
             $link = null;
@@ -121,7 +121,7 @@ class SellerSliderController extends Controller
             // Handle image update if new image is provided
             if ($request->hasFile('image')) {
                 // get old image name in storage
-                $oldImageName = explode('seller/'.get_seller_store_name(auth()->user()->tenant_id).'/images/sliders/', $slider->image)[1];
+                $oldImageName = explode(get_seller_store_name(auth()->user()->tenant_id).'/images/sliders/', $slider->image)[1];
                 // Delete old image if exists from storage
                 if ($slider->image && Storage::disk('seller')->exists(get_seller_store_name(auth()->user()->tenant_id).'/images/sliders/'.$oldImageName)) {
                     Storage::disk('seller')->delete(get_seller_store_name(auth()->user()->tenant_id).'/images/sliders/'.$oldImageName);
@@ -129,12 +129,12 @@ class SellerSliderController extends Controller
 
                 // Store new image
                 $path = $request->file('image')->store(
-                    'seller/'.get_seller_store_name(auth()->user()->tenant_id).'/images/sliders',
-                    'public'
+                    get_seller_store_name(auth()->user()->tenant_id).'/images/sliders',
+                    'seller'
                 );
 
                 // Generate full URL
-                $url = Storage::disk('public')->url('tenantseller/app/public/'.$path);
+                $url = Storage::disk('seller')->url('app/public/seller/'.$path);
                 $data['image'] = $url;
             }
 
@@ -159,10 +159,10 @@ class SellerSliderController extends Controller
         try {
             // Delete associated image
             if ($slider->image) {
-                $fullPath = 'seller/'.get_seller_store_name(auth()->user()->tenant_id).'/images/sliders/'.basename($slider->image);
+                $fullPath = get_seller_store_name(auth()->user()->tenant_id).'/images/sliders/'.basename($slider->image);
 
-                if (Storage::disk('public')->exists($fullPath)) {
-                    Storage::disk('public')->delete($fullPath);
+                if (Storage::disk('seller')->exists($fullPath)) {
+                    Storage::disk('seller')->delete($fullPath);
                 }
             }
 

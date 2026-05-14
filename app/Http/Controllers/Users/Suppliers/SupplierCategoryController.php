@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Users\Suppliers;
 
-use App\Models\Category;
-use Illuminate\Http\Request;
-use App\Models\UserStoreSetting;
-use App\Models\UserStoreCategory;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\UserStoreCategory;
+use App\Models\UserStoreSetting;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -85,8 +85,8 @@ class SupplierCategoryController extends Controller
         //     $data['image'] = Storage::url($path);
         // }
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/categories', 'public');
-            $data['image'] = Storage::disk('public')->url('tenantsupplier/app/public/'.$path);
+            $path = $request->file('image')->store(get_supplier_store_name(auth()->user()->tenant_id).'/images/categories', 'supplier');
+            $data['image'] = Storage::disk('supplier')->url('tenantsupplier/'.$path);
         }
 
         $storeCategory = UserStoreCategory::create($data);
@@ -166,14 +166,14 @@ class SupplierCategoryController extends Controller
         if ($request->hasFile('image')) {
             // Delete associated image
             if ($category->image) {
-                $fullPath = 'supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/categories/'.basename($category->image);
+                $fullPath = get_supplier_store_name(auth()->user()->tenant_id).'/images/categories/'.basename($category->image);
 
-                if (Storage::disk('public')->exists($fullPath)) {
-                    Storage::disk('public')->delete($fullPath);
+                if (Storage::disk('supplier')->exists($fullPath)) {
+                    Storage::disk('supplier')->delete($fullPath);
                 }
             }
-            $path = $request->file('image')->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/categories', 'public');
-            $data['image'] = Storage::disk('public')->url('tenantsupplier/app/public/'.$path);
+            $path = $request->file('image')->store(get_supplier_store_name(auth()->user()->tenant_id).'/images/categories', 'supplier');
+            $data['image'] = Storage::disk('supplier')->url('tenantsupplier/'.$path);
             // if ($data['image']) {
             //     $category->update($data);
             // }
@@ -237,10 +237,10 @@ class SupplierCategoryController extends Controller
         $category = UserStoreCategory::findOrFail($id);
         // Delete associated image
         if ($category->image) {
-            $fullPath = 'supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/categories/'.basename($category->image);
+            $fullPath = get_supplier_store_name(auth()->user()->tenant_id).'/images/categories/'.basename($category->image);
 
-            if (Storage::disk('public')->exists($fullPath)) {
-                Storage::disk('public')->delete($fullPath);
+            if (Storage::disk('supplier')->exists($fullPath)) {
+                Storage::disk('supplier')->delete($fullPath);
             }
         }
         $category->delete();
@@ -264,17 +264,17 @@ class SupplierCategoryController extends Controller
     //     return response()->json(['message' => 'تم الحذف بنجاح']);
     // }
 
-        //updateStatus
+    // updateStatus
     public function updateStatus(Request $request)
     {
         $categories_status = UserStoreSetting::where('user_id', auth()->user()->id)->where('key', 'store_section_categories_visibility')->first();
-        if($request->categories_status == 'on'){
-          $categories_status->value='true'; 
-        }else
-        {
-            $categories_status->value='false';            
+        if ($request->categories_status == 'on') {
+            $categories_status->value = 'true';
+        } else {
+            $categories_status->value = 'false';
         }
         $categories_status->save();
+
         // return response()->json([
         //     'success' => true,
         //     'message' => 'تم تحديث حالة السلايدر بنجاح',

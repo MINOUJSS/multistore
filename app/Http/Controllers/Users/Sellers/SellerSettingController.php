@@ -32,23 +32,23 @@ class SellerSettingController extends Controller
             $name = explode('.', $image->getClientOriginalName())[0];
             $image_name = $name.'-'.time().'.'.$extension;
             $store_name = get_seller_data(auth()->user()->tenant_id)->store_name;
-            $path = 'seller/'.$store_name.'/images/logo';
-            if (!Storage::disk('public')->exists($path)) {
-                Storage::disk('public')->makeDirectory($path);
+            $path = $store_name.'/images/logo';
+            if (!Storage::disk('seller')->exists($path)) {
+                Storage::disk('seller')->makeDirectory($path);
             } else {
-                Storage::disk('public')->deleteDirectory($path);
-                Storage::disk('public')->makeDirectory($path);
+                Storage::disk('seller')->deleteDirectory($path);
+                Storage::disk('seller')->makeDirectory($path);
             }
-            $image->storeAs($path, $image_name, 'public');
+            $image->storeAs($path, $image_name, 'seller');
             $seller_logo = UserStoreSetting::where('user_id', $user_id)->where('key', 'store_logo')->first();
             if ($seller_logo == null) {
                 $seller_logo = new UserStoreSetting();
                 $seller_logo->user_id = $user_id;
                 $seller_logo->key = 'store_logo';
-                $seller_logo->value = '/storage/tenantseller/app/public/'.$path.'/'.$image_name;
+                $seller_logo->value = '/storage/app/public/seller/'.$path.'/'.$image_name;
                 $seller_logo->save();
             }
-            $seller_logo->value = '/storage/tenantseller/app/public/'.$path.'/'.$image_name;
+            $seller_logo->value = '/storage/app/public/seller/'.$path.'/'.$image_name;
             $seller_logo->update();
         }
         $seller_theme = UserStoreSetting::where('user_id', $user_id)->where('key', 'store_theme')->first();

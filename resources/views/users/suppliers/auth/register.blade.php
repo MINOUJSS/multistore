@@ -49,7 +49,10 @@
             @livewire('supplier-store-validator')
             <div class="mb-3">
               <label for="password" class="form-label">كلمة المرور</label>
-              <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="كلمة المرور" required>
+              <div class="input-group mb-3">
+              <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="كلمة المرور" required>
+              <button class="btn btn-outline-secondary" type="button" id="togglePassword"><i class="fa fa-eye-slash"></i></button>
+              </div>
               @error('password')
               <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>
@@ -58,7 +61,10 @@
             </div>
             <div class="mb-3">
                 <label for="password_confirmation" class="form-label">تأكيد كلمة المرور</label>
-                <input type="password" name="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror" placeholder="تأكيد كلمة المرور" required>
+                <div class="input-group mb-3">
+                <input type="password" id="confirmPassword" name="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror" placeholder="تأكيد كلمة المرور" required>
+                <button class="btn btn-outline-secondary" type="button" id="toggleconfirmPassword"><i class="fa fa-eye-slash"></i></button>
+                </div>
                 @error('password_confirmation')
                 <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -106,4 +112,9 @@
         </div>
       </div>
       <!--end left side-->
+@endsection
+
+@section('footer_js')
+    @include('users.suppliers.auth.js.show_password_js')
+    @include('users.suppliers.auth.js.show_confirm_password_js')
 @endsection

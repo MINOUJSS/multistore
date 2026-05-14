@@ -27,5 +27,7 @@
     <!--App js-->
     <script src="{{asset('asset/v1/users/auth')}}/js/jQuery-v3-7-1.js"></script>
     <script src="{{asset('asset/v1/users/auth')}}/js/app.js"></script>
+    <!--My js-->
+    @yield('footer_js')
   </body>
 </html>

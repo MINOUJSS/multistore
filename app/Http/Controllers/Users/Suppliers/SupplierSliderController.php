@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Users\Suppliers;
 
-use App\Models\UserSlider;
-use Illuminate\Http\Request;
-use App\Models\UserStoreSetting;
 use App\Http\Controllers\Controller;
+use App\Models\UserSlider;
+use App\Models\UserStoreSetting;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,7 +15,7 @@ class SupplierSliderController extends Controller
     {
         // get supplier silders
         $sliders = UserSlider::where('user_id', auth()->user()->id)->orderBy('order', 'asc')->get();
-        //get slider status
+        // get slider status
         $slider_status = UserStoreSetting::where('user_id', auth()->user()->id)->where('key', 'store_section_slider_visibility')->first();
 
         return view('users.suppliers.pages.sections.slider.index', compact('sliders', 'slider_status'));
@@ -49,10 +49,10 @@ class SupplierSliderController extends Controller
             $imagePath = null;
             if ($request->hasFile('image')) {
                 $path = $request->file('image')->store(
-                    'supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders',
-                    'public'
+                    get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders',
+                    'supplier'
                 );
-                $url = Storage::disk('public')->url('tenantsupplier/app/public/'.$path);
+                $url = Storage::disk('supplier')->url('tenantsupplier/'.$path);
                 $imagePath = $url;
             }
             $link = null;
@@ -120,8 +120,8 @@ class SupplierSliderController extends Controller
 
             // Handle image update if new image is provided
             if ($request->hasFile('image')) {
-                //get old image name in storage
-                $oldImageName = explode('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders/',$slider->image)[1];                
+                // get old image name in storage
+                $oldImageName = explode(get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders/', $slider->image)[1];
                 // Delete old image if exists from storage
                 if ($slider->image && Storage::disk('supplier')->exists(get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders/'.$oldImageName)) {
                     Storage::disk('supplier')->delete(get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders/'.$oldImageName);
@@ -129,12 +129,12 @@ class SupplierSliderController extends Controller
 
                 // Store new image
                 $path = $request->file('image')->store(
-                    'supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders',
-                    'public'
+                    get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders',
+                    'supplier'
                 );
 
                 // Generate full URL
-                $url = Storage::disk('public')->url('tenantsupplier/app/public/'.$path);
+                $url = Storage::disk('supplier')->url('tenantsupplier/'.$path);
                 $data['image'] = $url;
             }
 
@@ -156,13 +156,13 @@ class SupplierSliderController extends Controller
     {
         $slider = UserSlider::findOrFail($id);
 
-        try { 
+        try {
             // Delete associated image
             if ($slider->image) {
-                $fullPath = 'supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders/'.basename($slider->image);
+                $fullPath = get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders/'.basename($slider->image);
 
-                if (Storage::disk('public')->exists($fullPath)) {
-                    Storage::disk('public')->delete($fullPath);
+                if (Storage::disk('supplier')->exists($fullPath)) {
+                    Storage::disk('supplier')->delete($fullPath);
                 }
             }
 
@@ -179,17 +179,18 @@ class SupplierSliderController extends Controller
             ], 500);
         }
     }
-    //updateStatus
+
+    // updateStatus
     public function updateStatus(Request $request)
     {
         $slider_status = UserStoreSetting::where('user_id', auth()->user()->id)->where('key', 'store_section_slider_visibility')->first();
-        if($request->slider_status == 'on'){
-          $slider_status->value='true'; 
-        }else
-        {
-            $slider_status->value='false';            
+        if ($request->slider_status == 'on') {
+            $slider_status->value = 'true';
+        } else {
+            $slider_status->value = 'false';
         }
         $slider_status->save();
+
         // return response()->json([
         //     'success' => true,
         //     'message' => 'تم تحديث حالة السلايدر بنجاح',

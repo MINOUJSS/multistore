@@ -39,6 +39,10 @@ $UnreadMessages=$UnradesProofsRefusedMessages;
                         <div class="dz-nav-profile-info">
                             <p class="text-center">{{ Auth::user()->email }}</p>
                             <hr>
+                            @if(get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 1)
+                              <p class="text-center"><i class=""></i>متوفر <span class="text-success">({{auth()->user()->freeOrder->quantity}})</span> طلب مجاناً</p>
+                              <hr>
+                             @endif
                         </div>
                         <li><a class="dropdown-item" href="{{ route('supplier.subscription') }}"><i
                                     class="fa-solid fa-boxes-packing"></i>
@@ -129,6 +133,10 @@ $UnreadMessages=$UnradesProofsRefusedMessages;
                     <div class="dz-nav-profile-info">
                         <p class="text-center">{{ Auth::user()->email }}</p>
                         <hr>
+                        @if(get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 1)
+                              <p class="text-center"><i class=""></i>متوفر <span class="text-success">({{auth()->user()->freeOrder->quantity}})</span> طلب مجاناً</p>
+                              <hr>
+                        @endif
                     </div>
                     <li class="text-center"><a class="dropdown-item" href="{{ route('supplier.subscription') }}"><i
                                 class="fa-solid fa-boxes-packing"></i> الخطة
