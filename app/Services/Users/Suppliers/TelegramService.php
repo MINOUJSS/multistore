@@ -12,7 +12,8 @@ class TelegramService
 
     public function __construct()
     {
-        $this->botToken = env('TELEGRAM_BOT_TOKEN');
+        // $this->botToken = env('TELEGRAM_BOT_TOKEN');
+        $this->botToken = config('services.telegram.bot_token');
         $this->apiUrl = "https://api.telegram.org/bot{$this->botToken}";
     }
 
@@ -39,6 +40,9 @@ class TelegramService
         Log::info('Telegram API response', [
             'status' => $response->status(),
             'body' => $response->body(),
+        ]);
+        Log::info('TOKEN', [
+            'token' => env('TELEGRAM_BOT_TOKEN'),
         ]);
 
         return $response->json();
