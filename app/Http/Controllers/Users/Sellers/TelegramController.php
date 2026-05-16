@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Users\Suppliers\TelegramChatBotService;
 use App\Services\Users\Suppliers\TelegramService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TelegramController extends Controller
 {
@@ -62,7 +63,11 @@ class TelegramController extends Controller
                 $response .= "🔹 <b>الشات أيدي الخاص بك هو:</b> <code>{$chatId}</code>\n";
                 $response .= '🔹 سيتم إرسال إشعارات الطلبات هنا تلقائيًا';
                 // send response
-                $this->telegramService->sendMessage($chatId, $response);
+                $result = $this->telegramService->sendMessage($chatId, $response);
+
+                Log::info('Telegram sendMessage response', [
+                    'response' => $result,
+                ]);
 
                 Log::info("Responded to /start command for chat $chatId");
             }

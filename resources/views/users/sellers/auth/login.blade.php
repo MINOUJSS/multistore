@@ -1,6 +1,6 @@
 @extends('layouts.users.guest')
 @section('title')
-    تسجيل دخول مورد
+    تسجيل دخول بائع
 @endsection
 @section('content')
     <!--start sid-->

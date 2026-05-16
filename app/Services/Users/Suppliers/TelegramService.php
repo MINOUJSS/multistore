@@ -3,6 +3,7 @@
 namespace App\Services\Users\Suppliers;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class TelegramService
 {
@@ -17,13 +18,30 @@ class TelegramService
 
     public function sendMessage($chatId, $message)
     {
-        $response = Http::post("{$this->apiUrl}/sendMessage", [
-            'chat_id' => $chatId,
-            'text' => $message,
-            'parse_mode' => 'HTML',
+        // $response = Http::post("{$this->apiUrl}/sendMessage", [
+        //     'chat_id' => $chatId,
+        //     'text' => $message,
+        //     'parse_mode' => 'HTML',
+        // ]);
+
+        // return $response->successful();
+        $token = $this->botToken;
+
+        $response = Http::post(
+            "https://api.telegram.org/bot{$token}/sendMessage",
+            [
+                'chat_id' => $chatId,
+                'text' => $message,
+                'parse_mode' => 'HTML',
+            ]
+        );
+
+        Log::info('Telegram API response', [
+            'status' => $response->status(),
+            'body' => $response->body(),
         ]);
 
-        return $response->successful();
+        return $response->json();
     }
 
     // get Updates
