@@ -165,7 +165,7 @@
                 <select name="update_videos[type][]" class="form-select video-type-select">
                     <option value="youtube" ${v.type === 'youtube' ? 'selected' : ''}>YouTube</option>
                     <option value="vimeo" ${v.type === 'vimeo' ? 'selected' : ''}>Vimeo</option>
-                    <option value="local" ${v.type === 'local' ? 'selected' : ''}>محلي (رفع ملف)</option>
+                    <!-- <option value="local" ${v.type === 'local' ? 'selected' : ''}>محلي (رفع ملف)</option>-->
                 </select>
             </div>
 
