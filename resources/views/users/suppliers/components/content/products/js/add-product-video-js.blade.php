@@ -18,7 +18,7 @@
                 <select name="videos[type][]" class="form-select video-type-select">
                     <option value="youtube">YouTube</option>
                     <option value="vimeo">Vimeo</option>
-                    <option value="local">محلي (رفع ملف)</option>
+                    <!-- <option value="local">محلي (رفع ملف)</option> -->
                 </select>
             </div>
 
