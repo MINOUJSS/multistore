@@ -1,7 +1,7 @@
-<?php 
+<?php
+
 namespace App\Console\Commands;
 
-use App\Services\Users\Suppliers\TelegramService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -15,12 +15,12 @@ class ServerStatus extends Command
     {
         // 💽 Disk
         $diskTotal = disk_total_space('/');
-        $diskFree  = disk_free_space('/');
+        $diskFree = disk_free_space('/');
         $diskUsage = round((1 - $diskFree / $diskTotal) * 100, 2);
 
         // 🧠 RAM
         $memoryUsage = round(memory_get_usage(true) / 1024 / 1024, 2); // MB
-        $memoryPeak  = round(memory_get_peak_usage(true) / 1024 / 1024, 2); // MB
+        $memoryPeak = round(memory_get_peak_usage(true) / 1024 / 1024, 2); // MB
 
         // ⚙️ CPU (تقريبي عبر load)
         $cpuLoad = null;
@@ -38,18 +38,18 @@ class ServerStatus extends Command
             $appStatus = 'DOWN';
         }
 
-        //db
+        // db
         try {
-    \DB::connection()->getPdo();
-    $dbStatus = 'UP';
-} catch (\Exception $e) {
-    $dbStatus = 'DOWN';
-}
+            \DB::connection()->getPdo();
+            $dbStatus = 'UP';
+        } catch (\Exception $e) {
+            $dbStatus = 'DOWN';
+        }
 
         $data = [
-            'disk_usage' => $diskUsage . '%',
-            'memory_usage' => $memoryUsage . ' MB',
-            'memory_peak' => $memoryPeak . ' MB',
+            'disk_usage' => $diskUsage.'%',
+            'memory_usage' => $memoryUsage.' MB',
+            'memory_peak' => $memoryPeak.' MB',
             'cpu_load' => $cpuLoad,
             'app_status' => $appStatus,
             'db_status' => $dbStatus,
@@ -61,10 +61,13 @@ class ServerStatus extends Command
 
         // 🚨 شرط التنبيه
         if ($diskUsage > 85 || $memoryUsage > 200) {
-
             // Telegram (أفضل من email)
             $this->sendTelegramAlert($data);
-
+        }
+        // شرط التنبيه
+        if ($appStatus === 'DOWN' || $dbStatus === 'DOWN') {
+            // Email
+            $this->sendTelegramAlert($data);
         }
 
         // عرض في الكونسول
@@ -78,14 +81,15 @@ class ServerStatus extends Command
         $token = env('TELEGRAM_BOT_TOKEN');
         $chatId = env('ADMIN_CHAT_ID');
 
-        if (!$token || !$chatId) return;
+        if (!$token || !$chatId) {
+            return;
+        }
 
-        $message = "🚨 Server Alert\n" . json_encode($data, JSON_PRETTY_PRINT);
+        $message = "🚨 Server Alert\n".json_encode($data, JSON_PRETTY_PRINT);
 
         Http::get("https://api.telegram.org/bot{$token}/sendMessage", [
             'chat_id' => $chatId,
-            'text' => $message
+            'text' => $message,
         ]);
     }
 }
-
