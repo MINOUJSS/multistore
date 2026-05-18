@@ -61,7 +61,7 @@ class Seller_OrderNotificationService
         $message .= "\n💸 الخصم: <b>{$order->discount}</b>\n";
         $message .= "\n💰 المجموع: <b>{$order->total_price} دج</b>\n";
         $message .= "📍 العنوان: {$order->shipping_address}\n";
-        $message .= "<a href='seller.".request()->server('HTTP_HOST').'/seller-panel/orders'."'>🔗 قائمة الطلبات</a>\n";
+        $message .= "<a href='".request()->server('HTTP_HOST').'/seller-panel/orders'."'>🔗 قائمة الطلبات</a>\n";
 
         return $message;
     }
