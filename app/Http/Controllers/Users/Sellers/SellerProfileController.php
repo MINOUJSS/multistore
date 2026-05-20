@@ -46,8 +46,8 @@ class SellerProfileController extends Controller
             if (Storage::disk('seller')->exists(get_seller_store_name(auth()->user()->tenant_id).'/images/profile/id_card_image')) {
                 Storage::disk('seller')->deleteDirectory(get_seller_store_name(auth()->user()->tenant_id).'/images/profile/id_card_image');
             }
-            $path = $request->file('id_card_image')->store('seller/'.get_seller_store_name(auth()->user()->tenant_id).'/images/profile/id_card_image', 'public');
-            $url = Storage::disk('public')->url('tenantseller/app/public/'.$path);
+            $path = $request->file('id_card_image')->store(get_seller_store_name(auth()->user()->tenant_id).'/images/profile/id_card_image', 'seller');
+            $url = Storage::disk('seller')->url('app/public/seller/'.$path);
             $seller->id_card_image = $url;
             // chenge approval_status
             $seller->approval_status == 'pending';
@@ -56,9 +56,10 @@ class SellerProfileController extends Controller
         $user->name = $request->full_name;
         $seller->last_name = $request->last_name;
         $seller->first_name = $request->first_name;
-        $user->email == $request->email;
-        $user->phone == $request->phone;
-        $user->update();
+        $user->update([
+            'email' => $request->email,
+            'phone' => $request->phone,
+        ]);
         $user_beta = User::findOrfail(get_user_data(auth()->user()->tenant_id)->id);
         if ($old_email != $user_beta->email || $old_phone != $user_beta->phone) {
             // chenge approval_status
@@ -90,7 +91,7 @@ class SellerProfileController extends Controller
         $seller->address = $request->address;
         $seller->update();
 
-        return redirect()->back()->with('success', 'تم تحديث بيانات المورد بنجاح');
+        return redirect()->back()->with('success', 'تم تحديث البيانات  بنجاح');
     }
 
     // Change password
@@ -244,8 +245,8 @@ class SellerProfileController extends Controller
             if (Storage::disk('seller')->exists(get_seller_store_name(auth()->user()->tenant_id).'/images/profile/avatar')) {
                 Storage::disk('seller')->deleteDirectory(get_seller_store_name(auth()->user()->tenant_id).'/images/profile/avatar');
             }
-            $path = $request->file('avatar_Image')->store('seller/'.get_seller_store_name(auth()->user()->tenant_id).'/images/profile/avatar', 'public');
-            $url = Storage::disk('public')->url('tenantseller/app/public/'.$path);
+            $path = $request->file('avatar_Image')->store(get_seller_store_name(auth()->user()->tenant_id).'/images/profile/avatar', 'seller');
+            $url = Storage::disk('seller')->url('app/public/seller/'.$path);
             $seller->avatar = $url;
             // chenge approval_status
             $seller->approval_status == 'pending';

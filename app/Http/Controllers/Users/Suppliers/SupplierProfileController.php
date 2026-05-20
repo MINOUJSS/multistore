@@ -56,9 +56,13 @@ class SupplierProfileController extends Controller
         $user->name = $request->full_name;
         $supplier->last_name = $request->last_name;
         $supplier->first_name = $request->first_name;
-        $user->email == $request->email;
-        $user->phone == $request->phone;
-        $user->update();
+        $user->update([
+            'email' => $request->email,
+            'phone' => $request->phone,
+        ]);
+        // $user->email == $request->email;
+        // $user->phone == $request->phone;
+        // $user->update();
         $user_beta = User::findOrfail(get_user_data(auth()->user()->tenant_id)->id);
         if ($old_email != $user_beta->email || $old_phone != $user_beta->phone) {
             // chenge approval_status
@@ -90,7 +94,7 @@ class SupplierProfileController extends Controller
         $supplier->address = $request->address;
         $supplier->update();
 
-        return redirect()->back()->with('success', 'تم تحديث بيانات المورد بنجاح');
+        return redirect()->back()->with('success', 'تم تحديث البيانات بنجاح');
     }
 
     // Change password

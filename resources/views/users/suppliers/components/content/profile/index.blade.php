@@ -153,7 +153,7 @@
                                     <label class="form-label fw-medium">البريد الإلكتروني</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i class="fas fa-envelope"></i></span>
-                                        <input type="email" class="form-control" value="{{ $user->email }}">
+                                        <input type="email" name="email" class="form-control" value="{{ $user->email }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
