@@ -9,7 +9,7 @@
 @endsection
 
 @section('title')
-  قسم السلايدر
+  الأقسام 
 @endsection
 
 @section('style')
