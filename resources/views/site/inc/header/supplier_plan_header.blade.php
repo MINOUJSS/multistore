@@ -9,9 +9,8 @@
           <div class="d-flex justify-content-center justify-content-lg-start">
             <h2>أنت تمتلك حساب؟ سجل الدخول من هنا
             <a href="{{ 'http://supplier.' . request()->getHost() . route('supplier.login', [], false) }}" class="btn-get-started scrollto">تسجيل الدخول</a>
-          <a href="https://youtu.be/ZZABbglFOT4" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>كيفية التسجيل في المنصة كتاجر جملة</span></a>  
+          <a href="https://youtu.be/REQ9iOLgLxg" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>كيفية التسجيل في المنصة كتاجر جملة</span></a>  
           </h2>
-            {{-- <a href="https://www.youtube.com/watch?v=cZRpUCWb_A4" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>فيديو تعريفي بالمنصة</span></a> --}}
           </div>
         </div>
         <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
