@@ -22,6 +22,7 @@
                 </a>
             </div>
         </div>
+        <div class="item"><a href="{{ route('admin.backup.index') }}"><i class="fa-solid fa-box-archive"></i> النسخ الإحتياطية</a></div>
         @endif
         <!--start messages and chat-->
         <div class="item">

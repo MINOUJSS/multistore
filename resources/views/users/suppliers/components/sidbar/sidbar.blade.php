@@ -1,11 +1,19 @@
 <!-- Start Sid Bar  -->
 <div class="app-sidebar">
-    <div class="logo-box text-center">
+    <div class="logo-box text-center position-relative">
         <img class="logo-image" src="{{asset('asset/v1/users/dashboard')}}/img/logo/store.png" alt="" widgh="50px" height="50px">
-        <div class="user-name">
+            {{-- شارة التوثيق --}}
+    @if(get_supplier_data(Auth::user()->tenant_id)->approval_status == 'approved')  
+        <span
+            class="position-absolute bottom-0 end-50 bg-primary rounded-circle d-flex align-items-center justify-content-center border border-3 border-white"
+            style="width: 20px; height: 20px;">
+            <i class="bi bi-check-lg text-white"></i>
+        </span>
+    @endif
+    </div>  
+    <div class="user-name">
             <h6 class="text-center">{{Auth::user()->tenant_id}}</h6>
-        </div>
-    </div>   
+        </div> 
     <hr>
     <!--Start Menu-->
     @include('users.suppliers.components.sidbar.inc.menu.index')

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admins\Admin\AdminDisputeController;
 use App\Http\Controllers\Admins\Admin\AdminEmployeeController;
 use App\Http\Controllers\Admins\Admin\ArchivesDisputesController;
 use App\Http\Controllers\Admins\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admins\Admin\BackupController;
 use App\Http\Controllers\Admins\Admin\ContactUsMessageController;
 use App\Http\Controllers\Admins\Admin\FinancialDashboardController;
 use App\Http\Controllers\Admins\Admin\NotificationController;
@@ -102,6 +103,15 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::get('/ah-admin/employees/{id}/edit', [AdminEmployeeController::class, 'edit'])->name('employees.edit');
                     Route::put('/ah-admin/employees/{id}', [AdminEmployeeController::class, 'update'])->name('employees.update');
                     Route::delete('/ah-admin/employees/{id}', [AdminEmployeeController::class, 'destroy'])->name('employees.destroy');
+                    // backup routes
+                    Route::get('/ah-admin/backups', [BackupController::class, 'index'])
+                    ->name('backup.index');
+
+                    Route::get('/ah-admin/backup/download/{file}', [BackupController::class, 'download'])
+                        ->name('backup.download');
+
+                    Route::delete('/ah-admin/backup/delete/{file}', [BackupController::class, 'delete'])
+                        ->name('backup.delete');
                 });
                 // finacial reports routes
                 Route::get('/ah-admin/financial-dashboard', [FinancialDashboardController::class, 'index'])

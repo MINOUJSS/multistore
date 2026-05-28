@@ -24,6 +24,11 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         /*::::::::::::::::::::::::::::::::::::::::::::
+                  التعامل مع الملفات الإحتياطية
+        :::::::::::::::::::::::::::::::::::::::::::::*/
+        $schedule->command('backup:clean')->dailyAt('1:00');
+        $schedule->command('backup:run')->dailyAt('2:00');
+        /*::::::::::::::::::::::::::::::::::::::::::::
                        تقرير عن حالة السيرفر
         :::::::::::::::::::::::::::::::::::::::::::::*/
         $schedule->command('server:status')->everyFiveMinutes();
