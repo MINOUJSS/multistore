@@ -49,16 +49,16 @@ class AppServiceProvider extends ServiceProvider
         SupplierPlanOrder::observe(SupplierPlanOrderObserver::class);
         BalanceTransaction::observe(BalanceTransactionObserver::class);
 
-        // Mail::extend('brevo', function () {
-        //     $config = $this->app['config']->get('services.brevo', []);
+        Mail::extend('brevo', function () {
+            $config = $this->app['config']->get('services.brevo', []);
 
-        //     return (new BrevoTransportFactory())->create(
-        //         new Dsn(
-        //             'brevo+api',
-        //             'default',
-        //             $config['key']
-        //         )
-        //     );
-        // });
+            return (new BrevoTransportFactory())->create(
+                new Dsn(
+                    'brevo+api',
+                    'default',
+                    $config['key']
+                )
+            );
+        });
     }
 }
