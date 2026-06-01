@@ -49,16 +49,32 @@ class AppServiceProvider extends ServiceProvider
         SupplierPlanOrder::observe(SupplierPlanOrderObserver::class);
         BalanceTransaction::observe(BalanceTransactionObserver::class);
 
-        Mail::extend('brevo', function () {
-            $config = $this->app['config']->get('services.brevo', []);
+        // Mail::extend('brevo', function () {
+        //     $config = $this->app['config']->get('services.brevo', []);
 
-            return (new BrevoTransportFactory())->create(
-                new Dsn(
-                    'brevo+api',
-                    'default',
-                    $config['key']
-                )
+        //     return (new BrevoTransportFactory())->create(
+        //         new Dsn(
+        //             'brevo+api',
+        //             'default',
+        //             $config['key']
+        //         )
+        //     );
+        // });
+        Mail::extend('brevo', function () {
+            $config = config('services.brevo');
+
+            if (empty($config['key'])) {
+                throw new \InvalidArgumentException('Brevo API key is missing.');
+            }
+
+            // ✅ IMPORTANT: correct DSN format for Symfony 6/7
+            $dsn = new Dsn(
+                'brevo+api',
+                null, // host must be NULL (NOT "default")
+                $config['key']
             );
+
+            return (new BrevoTransportFactory())->create($dsn);
         });
     }
 }
