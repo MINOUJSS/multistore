@@ -77,6 +77,7 @@ foreach (config('tenancy.central_domains') as $domain) {
             // test sending email
             Route::get('/send-test-mail', function () {
                 try {
+                    $config = config('services.brevo');
                     $to = 'minoujss@gmail.com';
 
                     Mail::raw(
@@ -91,11 +92,13 @@ foreach (config('tenancy.central_domains') as $domain) {
                         'status' => 'success',
                         'message' => 'Email sent to '.$to,
                         'time' => now()->toDateTimeString(),
+                        'brevo-key' => $config['key'],
                     ], 200);
                 } catch (Exception $e) {
                     return response()->json([
                         'status' => 'failed',
                         'error' => $e->getMessage(),
+                        'brevo-key' => $config['key'],
                     ], 500);
                 }
             });

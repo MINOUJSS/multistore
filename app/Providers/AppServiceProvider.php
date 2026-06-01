@@ -61,7 +61,7 @@ class AppServiceProvider extends ServiceProvider
         //     );
         // });
         Mail::extend('brevo', function () {
-            $config = $this->app['config']->get('services.brevo', []);
+            $config = config('services.brevo');
 
             if (empty($config['key'])) {
                 throw new \InvalidArgumentException('Brevo API key is missing.');
