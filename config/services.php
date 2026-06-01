@@ -32,4 +32,8 @@ return [
     'telegram' => [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
     ],
+    'brevo' => [
+        'key' => env('BREVO_API_KEY'),
+        'dsn' => 'brevo+api://'.env('BREVO_API_KEY').'@default',
+    ],
 ];

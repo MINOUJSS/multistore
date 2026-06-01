@@ -63,6 +63,9 @@ return [
             //     'timeout' => 5,
             // ],
         ],
+        'brevo' => [
+            'transport' => 'brevo', // must match the name in Mail::extend()
+        ],
 
         'sendmail' => [
             'transport' => 'sendmail',

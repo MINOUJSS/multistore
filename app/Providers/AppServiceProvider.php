@@ -13,7 +13,10 @@ use App\Observers\SupplierPlanOrderObserver;
 use App\Services\Users\Suppliers\OrderNotificationService;
 use App\Services\Users\Suppliers\TelegramService;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory;
+use Symfony\Component\Mailer\Transport\Dsn;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -45,5 +48,17 @@ class AppServiceProvider extends ServiceProvider
         SellerPlanOrder::observe(SellerPlanOrderObserver::class);
         SupplierPlanOrder::observe(SupplierPlanOrderObserver::class);
         BalanceTransaction::observe(BalanceTransactionObserver::class);
+
+        Mail::extend('brevo', function () {
+            $config = $this->app['config']->get('services.brevo', []);
+
+            return (new BrevoTransportFactory())->create(
+                new Dsn(
+                    'brevo+api',
+                    'default',
+                    $config['key']
+                )
+            );
+        });
     }
 }

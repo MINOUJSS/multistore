@@ -7,6 +7,7 @@ use App\Http\Controllers\Site\NewsletterSubscriberController;
 use App\Http\Controllers\Site\SiteController;
 use App\Http\Controllers\Site\SiteDisputeController;
 use App\Http\Controllers\Users\Suppliers\TelegramController;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -72,6 +73,33 @@ foreach (config('tenancy.central_domains') as $domain) {
             Route::post('/contact/store', [ContactMessageController::class, 'store'])->name('contact.store')->middleware('throttle:5,1');
             // Newsletter Routes
             Route::post('/newsletter/subscribe', [NewsletterSubscriberController::class, 'subscribe'])->name('newsletter.subscribe');
+
+            // test sending email
+            Route::get('/send-test-mail', function () {
+                try {
+                    $to = 'minoujss@gmail.com';
+
+                    Mail::raw(
+                        'Test mail from Laravel + Brevo API. Time: '.now(),
+                        function ($message) use ($to) {
+                            $message->to($to)
+                                    ->subject('Laravel Brevo Test — '.now());
+                        }
+                    );
+
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Email sent to '.$to,
+                        'time' => now()->toDateTimeString(),
+                    ], 200);
+                } catch (Exception $e) {
+                    return response()->json([
+                        'status' => 'failed',
+                        'error' => $e->getMessage(),
+                    ], 500);
+                }
+            });
+            // end test sending email
         });
     });
 }

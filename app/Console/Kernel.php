@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
         /*::::::::::::::::::::::::::::::::::::::::::::
                   التعامل مع الملفات الإحتياطية
         :::::::::::::::::::::::::::::::::::::::::::::*/
-        $schedule->command('backup:clean')->dailyAt('1:00');
+        // $schedule->command('backup:clean')->dailyAt('1:00');
         $schedule->command('backup:run')->dailyAt('2:00');
         /*::::::::::::::::::::::::::::::::::::::::::::
                        تقرير عن حالة السيرفر

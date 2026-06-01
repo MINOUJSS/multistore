@@ -24,6 +24,7 @@
         "realrashid/sweet-alert": "^7.2",
         "spatie/laravel-backup": "^9",
         "stancl/tenancy": "^3.8",
+        "symfony/brevo-mailer": "^7.1",
         "symfony/http-client": "^7.4",
         "symfony/mailgun-mailer": "^7.1"
     },
