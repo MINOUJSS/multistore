@@ -138,8 +138,8 @@
             {{-- A108 Adam Street <br>
             New York, NY 535022<br> --}}
             الجزائر العاصمة <br><br>
-            <strong>الهاتف:</strong> +1 5589 55488 55<br>
-            <strong>البريد الإلكتروني:</strong> info@example.com<br>
+            <strong>الهاتف:</strong> +213672816709<br>
+            <strong>البريد الإلكتروني:</strong> dzora.net@gmail.com<br>
           </p>
         </div>
 
