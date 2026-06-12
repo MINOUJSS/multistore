@@ -177,4 +177,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ShippingCompaines::class, 'user_id');
     }
+
+    public function last_seen()
+    {
+        return $this->hasMany(LastSeen::class, 'user_id')->orderBy('id', 'desc');
+    }
 }

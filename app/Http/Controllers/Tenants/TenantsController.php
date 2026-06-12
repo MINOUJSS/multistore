@@ -2091,7 +2091,8 @@ class TenantsController extends Controller
             }
         }
     }
-    //function repayment
+
+    // function repayment
     public function repayment()
     {
         if (!session()->has('payment_error')) {
@@ -2103,9 +2104,9 @@ class TenantsController extends Controller
             // check if order has only one item and it is a digital product
             $order_id = session()->get('order_id');
             $order = SellerOrders::find($order_id);
+
             return view('stores.sellers.pages.repayment');
         }
-        
     }
 
     // cod checkout

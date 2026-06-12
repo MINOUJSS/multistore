@@ -64,12 +64,13 @@ Route::middleware([
                 // get wilaya data
                 Route::get('/supplier-panel/get-wilaya-data/{id}', [SupplierController::class, 'get_wilaya_data'])->name('get-wilaya-data');
                 // get dayra
-                Route::post('/supplier-panel/get-dayras/', [SupplierController::class, 'get_dayras'])->name('get-dayras');
+                Route::post('/supplier-panel/get-dayras/{wilaya_id}', [SupplierController::class, 'get_dayras'])->name('get-dayras');
                 // get baladia
-                Route::post('supplier-panel/get-baladias/', [SupplierController::class, 'get_baladias'])->name('get-baladias');
+                Route::post('supplier-panel/get-baladias/{dayra_id}', [SupplierController::class, 'get_baladias'])->name('get-baladias');
                 // supplier profile routes
                 Route::get('/supplier-panel/profile', [SupplierProfileController::class, 'index'])->name('profile');
                 Route::post('/supplier-panel/profile/update', [SupplierProfileController::class, 'update'])->name('profile.update');
+                Route::post('/supplier-panel/profile/validation/request', [SupplierProfileController::class, 'request_validation'])->name('profile.request.validation');
                 // supplier password routes
                 Route::post('/supplier-panel/profile/password/update', [SupplierProfileController::class, 'update_password'])->name('profile.password.update');
                 // suuplier create or update chargily pay settings

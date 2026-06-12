@@ -15,6 +15,7 @@
                                 @elseif($supplier->approval_status == 'pending')
                                     <button class="btn btn-primary" onclick="approveSupplier({{$supplier->id}})"> توثيق المورد</button>
                                 @endif
+                                <a href="#" class="btn btn-success">طباعة معلومات المستخدم</a>
                     
                 </div>
             </div>

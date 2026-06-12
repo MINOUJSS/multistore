@@ -36,6 +36,16 @@
                         <div class="progress" style="height: 8px;">
                             <div class="progress-bar bg-primary progress-bar-striped" style="width: 75%"></div>
                         </div>
+                        <!--request validation-->
+                        @if ($seller->approval_status !='approved')
+                        <div class="m-3">
+                            <form id="requestValidationForm" action="{{ route('seller.profile.request.validation') }}" method="POST">
+                                @csrf
+                            </form>
+                             <button id="submit-validation-request" type="submit" class="btn btn-primary">طلب توثيق الحساب</button>
+                        </div>
+                        @endif
+                        <!--en request validation-->
                     </div>
                 </div>
 

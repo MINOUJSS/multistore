@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class LastSeen extends Model
 {
     use HasFactory;
-    //
-    protected $fillable=[
+
+    protected $fillable = [
         'user_id',
         'ip_address',
         'device',
         'browser',
         'logged_in_at',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

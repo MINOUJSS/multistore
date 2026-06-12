@@ -77,7 +77,7 @@
                 </div>
                 <div class="col-md-3 text-end">
                     <span class="badge bg-secondary p-2">
-                        {{ $sellers->count() }} مورد
+                        {{ $sellers->count() }} بائع
                     </span>
                 </div>
             </div>
@@ -100,6 +100,7 @@
                         <th>البريد</th>
                         <th>الهاتف</th>
                         <th>المتجر</th>
+                        <th>تاريخ آخر نشاط</th>
                         <th>الحالة</th>
                         <th>الباقة</th>
                         <th>المنتجات</th>
@@ -127,6 +128,8 @@
                                     {{ get_seller_store_name($seller->tenant->id) }}
                                 </span>
                             </td>
+
+                            <td>{{get_user_data($seller->tenant_id)->last_seen[0]->created_at->diffForHumans()}}</td>
 
                             <td>{!! get_seller_status($seller->tenant->id) !!}</td>
 

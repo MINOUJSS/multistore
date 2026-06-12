@@ -1,5 +1,6 @@
         <div class="row g-3">
             <div class="col-sm-12 col-md-6 col-lg-3">
+                <a href="#" style="text-decoration: none;">
                 <div class="card bg-white text-white h-100 border-primary">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2 text-primary">
@@ -12,8 +13,10 @@
                         </div>
                     </div>
                 </div>
+                </a>
             </div>
              <div class="col-sm-12 col-md-6 col-lg-3">
+                <a href="{{route('admin.suppliers')}}" style="text-decoration: none;">
                 <div class="card bg-white text-success h-100 border-success">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
@@ -26,9 +29,11 @@
                         </div>
                     </div>
                 </div>
+                </a>
             </div>
             
             <div class="col-sm-12 col-md-6 col-lg-3">
+                <a href="{{route('admin.sellers')}}" style="text-decoration: none;">
                 <div class="card bg-white text-danger h-100 border-danger">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2">
@@ -41,6 +46,7 @@
                         </div>
                     </div>
                 </div>
+                </a>
             </div>
             <div class="col-sm-12 col-md-6 col-lg-3">
                 <a class="text-decoration-none" href="#">

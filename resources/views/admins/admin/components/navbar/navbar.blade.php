@@ -4,12 +4,13 @@
         auth()->guard('admin')->user()->id,
     )->first();
     $unreadContactUsMessages =App\Models\ContactMessage::where('is_read', 0)->get();
+    $UnreadRequestValidation=App\Models\UserRequestsValidation::where('status','pending')->get();
     if ($ProofsRefused && $ProofsRefused->messages()) {
         $UnradesProofsRefusedMessages = $ProofsRefused->messages()->where('is_read_by_admin', false)->count();
     } else {
         $UnradesProofsRefusedMessages = 0;
     }
-    $UnreadMessages = $UnradesProofsRefusedMessages + $unreadContactUsMessages->count();
+    $UnreadMessages = $UnradesProofsRefusedMessages + $unreadContactUsMessages->count() +$UnreadRequestValidation->count();
 @endphp
 <span id="UnradesProofsRefusedMessages" data-value="{{ $UnradesProofsRefusedMessages }}"></span>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -77,6 +78,22 @@
                                 <li><a class="dropdown-item"
                                         href="{{ route('admin.contact.message.show', $Message->id) }}">رسالة
                                         من {{ $Message->name }}</a></li>
+                            @endforeach
+                            @endif
+                            @if($UnreadRequestValidation)
+                            @foreach ($UnreadRequestValidation as $Message)
+                                    @if($Message->user->type == 'seller')
+                                    @php
+                                    $show_id=get_seller_data($Message->user->tenant_id)->id;
+                                    @endphp
+                                    @else 
+                                    @php
+                                    $show_id=get_supplier_data($Message->user->tenant_id)->id;
+                                    @endphp
+                                    @endif
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.'.$Message->user->type.'.show', $show_id) }}">طلب توثيق 
+                                        من {{ $Message->user->name }}</a></li>
                             @endforeach
                             @endif
                         </ul>

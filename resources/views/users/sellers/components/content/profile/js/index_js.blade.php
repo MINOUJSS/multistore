@@ -11,6 +11,11 @@
             });
         });
 
+        //submit request validation form
+        document.getElementById('submit-validation-request').addEventListener('click', function() {
+            document.getElementById('requestValidationForm').submit();
+        });
+
         //open avatar dialog
         document.getElementById('avataruploadbtn').addEventListener('click', function() {
             document.getElementById('avatarInput').click();
@@ -97,7 +102,8 @@
         });
         //
         $.ajax({
-            url: '/get-dayras/' + wilaya_id,
+            url: "{{ route('seller.get-dayras', ['wilaya_id' => ':id']) }}"
+        .replace(':id', wilaya_id),
             method: 'POST',
             success: function(response) {
                 //    console.log(response);
@@ -130,7 +136,8 @@
         });
         //
         $.ajax({
-            url: '/get-baladias/' + dayra_id,
+            url: "{{ route('seller.get-baladias', ['dayra_id' => ':id']) }}"
+        .replace(':id', dayra_id),
             method: 'POST',
             success: function(response) {
                 // console.log(response);

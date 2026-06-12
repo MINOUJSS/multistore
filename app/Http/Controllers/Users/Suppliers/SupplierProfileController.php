@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Users\Suppliers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Admins\Admin\SendTelegramInfoAboutRequestValidation;
 use App\Models\ChargilySettingForTenants;
 use App\Models\Supplier\Supplier;
 use App\Models\User;
 use App\Models\UserBanckAccounts;
+use App\Models\UserRequestsValidation;
 use App\Models\Wilaya;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -261,5 +264,58 @@ class SupplierProfileController extends Controller
             'avatar' => $url,
             'message' => 'تم تحديث الصورة بنجاح',
         ]);
+    }
+
+    // validation_request
+    public function request_validation(Request $request)
+    {
+        // verify profile data before validation
+
+        // get user data
+        $user = auth()->user();
+        // insert request to validation request table
+
+        $exists = UserRequestsValidation::where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($exists) {
+            // return response()->json([
+            //     'success' => false,
+            //     'message' => 'لديك طلب توثيق قيد المراجعة بالفعل.',
+            // ], 422);
+            return redirect()->route('supplier.profile')->with('error', 'لديك طلب توثيق قيد المراجعة بالفعل.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $validation = UserRequestsValidation::create([
+                'user_id' => $user->id,
+                'request_number' => 'VAL-'.now()->format('YmdHis'),
+                'type' => 'identity',
+                'status' => 'pending',
+                'ip_address' => $request->ip(),
+            ]);
+
+            DB::commit();
+            // send telegram message to admin
+            SendTelegramInfoAboutRequestValidation::dispatch($user);
+
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => 'تم إرسال طلب التوثيق بنجاح.',
+            // ]);
+            return redirect()->route('supplier.profile')->with('success', 'تم إرسال طلب التوثيق بنجاح.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+
+        // return redirect to profile page with status
     }
 }

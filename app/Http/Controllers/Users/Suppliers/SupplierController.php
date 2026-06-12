@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Users\Suppliers;
 
-use App\Models\Wilaya;
-use Illuminate\Support\Carbon;
-use App\Models\Supplier\Supplier;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Baladia;
+use App\Models\Dayra;
+use App\Models\Supplier\Supplier;
+use App\Models\Supplier\SupplierOrderItems;
 use App\Models\Supplier\SupplierOrders;
 use App\Models\Supplier\SupplierProducts;
-use App\Models\Supplier\SupplierOrderItems;
 use App\Models\Supplier\SupplierProductsVisits;
+use App\Models\Wilaya;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class SupplierController extends Controller
 {
     public function index()
     {
-        //get top products
+        // get top products
         $topProducts = SupplierOrderItems::select(
             'supplier_products.id',
             'supplier_products.name',
@@ -64,19 +66,19 @@ class SupplierController extends Controller
             ->orderBy('date')
             ->pluck('total', 'date');
 
-            //get supplier products
-            $products_ids = get_supplier_products_ids(get_supplier_data(auth()->user()->tenant_id)->id);
-            //dailyVisitorsRow
-            $dailyVisitorsRaw = DB::table('supplier_products_visits')
-            ->select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('COUNT(*) as total')
-            )
-            ->whereIn('product_id',$products_ids)
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('date')
-            ->orderBy('date')
-            ->pluck('total', 'date');
+        // get supplier products
+        $products_ids = get_supplier_products_ids(get_supplier_data(auth()->user()->tenant_id)->id);
+        // dailyVisitorsRow
+        $dailyVisitorsRaw = DB::table('supplier_products_visits')
+        ->select(
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as total')
+        )
+        ->whereIn('product_id', $products_ids)
+        ->whereBetween('created_at', [$start, $end])
+        ->groupBy('date')
+        ->orderBy('date')
+        ->pluck('total', 'date');
 
         // تجهيز مصفوفة 7 أيام (بما فيها الأيام بدون طلبات = 0)
         $dailyOrders = collect();
@@ -107,7 +109,7 @@ class SupplierController extends Controller
             }
             $dailyOrders[$lables] = $dailyOrdersRaw[$formatted] ?? 0;
         }
-        //$dailyVisitors = collect();
+        // $dailyVisitors = collect();
         $dailyVisitors = collect();
         for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
             $formatted = $date->format('Y-m-d'); // شكل التاريخ
@@ -161,17 +163,17 @@ class SupplierController extends Controller
             ->orderBy('yearweek')
             ->pluck('total', 'yearweek');
 
-            //weeklyVisitorsRow
-            $weeklyVisitorsRaw = DB::table('supplier_products_visits')
-            ->select(
-                DB::raw('YEARWEEK(created_at, 1) as yearweek'), // صيغة السنة+الأسبوع
-                DB::raw('COUNT(*) as total')
-            )
-            ->whereIn('product_id',$products_ids)
-            ->whereBetween('created_at', [$startOfRange, $endOfRange])
-            ->groupBy('yearweek')
-            ->orderBy('yearweek')
-            ->pluck('total', 'yearweek');
+        // weeklyVisitorsRow
+        $weeklyVisitorsRaw = DB::table('supplier_products_visits')
+        ->select(
+            DB::raw('YEARWEEK(created_at, 1) as yearweek'), // صيغة السنة+الأسبوع
+            DB::raw('COUNT(*) as total')
+        )
+        ->whereIn('product_id', $products_ids)
+        ->whereBetween('created_at', [$startOfRange, $endOfRange])
+        ->groupBy('yearweek')
+        ->orderBy('yearweek')
+        ->pluck('total', 'yearweek');
 
         // تجهيز مصفوفة كاملة (بما فيها الأسابيع بدون طلبات = 0)
         $weeklyOrders = collect();
@@ -180,7 +182,7 @@ class SupplierController extends Controller
             $label = 'أسبوع '.$date->format('W'); // مثال: "أسبوع 40"
             $weeklyOrders[$label] = $weeklyOrdersRaw[$yearweek] ?? 0;
         }
-        //
+
         $weeklyVisitors = collect();
         for ($date = $startOfRange->copy(); $date->lte($endOfRange); $date->addWeek()) {
             $yearweek = $date->format('oW'); // o=ISO year, W=ISO week number (مثلاً 202540)
@@ -209,13 +211,13 @@ class SupplierController extends Controller
             ->groupBy('ym')
             ->pluck('total', 'ym');
 
-        //monthlyVisitorsRow
+        // monthlyVisitorsRow
         $monthlyVisitorsRaw = DB::table('supplier_products_visits')
             ->select(
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m') as ym"),
                 DB::raw('COUNT(*) as total')
             )
-            ->whereIn('product_id',$products_ids)
+            ->whereIn('product_id', $products_ids)
             ->whereBetween('created_at', [$startMonth, $endMonth])
             ->groupBy('ym')
             ->pluck('total', 'ym');
@@ -231,7 +233,7 @@ class SupplierController extends Controller
             $monthlyData[] = $monthlyOrdersRaw[$ym] ?? 0;
             $current->addMonth();
         }
-        //
+
         $monthlyVisitorsLabels = [];
         $monthlyVisitorsData = [];
 
@@ -512,7 +514,7 @@ class SupplierController extends Controller
             'percentageConfirmedWeekChange' => round($percentageConfirmedWeekChange, 2), // رقم عشريين فقط
             'isWeekConfirmedIncrease' => $percentageConfirmedWeekChange >= 0, // لمعرفة إذا النسبة زيادة أو نقصان
             'topProducts' => $topProducts,
-            'topViewed'=> $topViewed,
+            'topViewed' => $topViewed,
         ]);
     }
 

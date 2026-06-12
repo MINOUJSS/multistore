@@ -31,6 +31,7 @@ return [
     ],
     'telegram' => [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'admin_chat_id' => env('ADMIN_CHAT_ID'),
     ],
     'brevo' => [
         'key' => env('BREVO_API_KEY'),

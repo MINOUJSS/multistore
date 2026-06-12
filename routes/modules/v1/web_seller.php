@@ -57,12 +57,13 @@ foreach (config('tenancy.central_domains') as $domain) {
                     // get wilaya data
                     Route::get('/seller-panel/get-wilaya-data/{id}', [SellerController::class, 'get_wilaya_data'])->name('get-wilaya-data');
                     // get dayra
-                    Route::post('/seller-panel/get-dayras/', [SellerController::class, 'get_dayras'])->name('get-dayras');
+                    Route::post('/seller-panel/get-dayras/{wilaya_id}', [SellerController::class, 'get_dayras'])->name('get-dayras');
                     // get baladia
-                    Route::post('seller-panel/get-baladias/', [SellerController::class, 'get_baladias'])->name('get-baladias');
+                    Route::post('seller-panel/get-baladias/{dayra_id}', [SellerController::class, 'get_baladias'])->name('get-baladias');
                     // seller profile routes
                     Route::get('/seller-panel/profile', [SellerProfileController::class, 'index'])->name('profile');
                     Route::post('/seller-panel/profile/update', [SellerProfileController::class, 'update'])->name('profile.update');
+                    Route::post('/seller-panel/profile/validation/request', [SellerProfileController::class, 'request_validation'])->name('profile.request.validation');
                     // seller password routes
                     Route::post('/seller-panel/profile/password/update', [SellerProfileController::class, 'update_password'])->name('profile.password.update');
                     // suuplier create or update chargily pay settings

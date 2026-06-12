@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Seller\Seller;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\UserRequestsValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -71,7 +72,17 @@ class SellerController extends Controller
     {
         $seller = Seller::find($id);
         $seller->update(['approval_status' => 'approved']);
-        // insert reason
+        // update status inuserRequestValidation table
+        $user = get_user_data($seller->tenant_id);
+        $requestValidation = UserRequestsValidation::where('user_id', $user->id)->where('status', 'pending')->first();
+        if ($requestValidation) {
+            $requestValidation->update([
+                'status' => 'approved',
+                'approval_notes' => 'تم توثيق البائع دون توضيحات',
+                'reviewed_at' => now(),
+                'admin_id' => auth('admin')->id(),
+            ]);
+        }
         // insert reason
         $seller->approveReasons()->create([
             'admin_id' => auth('admin')->id(),
@@ -102,6 +113,19 @@ class SellerController extends Controller
             'status' => 'unapproved',
             'reason' => $request->reason,
         ]);
+        // update status inuserRequestValidation table
+        $user = get_user_data($seller->tenant_id);
+        $requestValidation = UserRequestsValidation::where('user_id', $user->id)->where('status', 'pending')->first();
+        if ($requestValidation) {
+            $requestValidation->update([
+                'status' => 'rejected',
+                'reject_reason' => $request->reason,
+                'reviewed_at' => now(),
+                'admin_id' => auth('admin')->id(),
+            ]);
+        }
+
+        // send notification to user
 
         // return response()->json([
         //     'success' => true,

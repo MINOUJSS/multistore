@@ -101,6 +101,7 @@
                         <th>البريد</th>
                         <th>الهاتف</th>
                         <th>المتجر</th>
+                        <th>تاريخ آخر نشاط</th>
                         <th>الحالة</th>
                         <th>الباقة</th>
                         <th>المنتجات</th>
@@ -128,6 +129,8 @@
                                     {{ get_supplier_store_name($supplier->tenant->id) }}
                                 </span>
                             </td>
+
+                            <td>{{get_user_data($supplier->tenant_id)->last_seen[0]->created_at->diffForHumans()}}</td>
 
                             <td>{!! get_supplier_status($supplier->tenant->id) !!}</td>
 

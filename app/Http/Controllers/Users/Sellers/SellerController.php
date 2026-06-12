@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Users\Sellers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Baladia;
+use App\Models\Dayra;
 use App\Models\Seller\Seller;
 use App\Models\Seller\SellerOrderItems;
 use App\Models\Seller\SellerOrders;
