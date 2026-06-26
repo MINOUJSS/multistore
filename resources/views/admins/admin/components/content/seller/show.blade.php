@@ -15,13 +15,16 @@
                                 @elseif($seller->approval_status == 'pending')
                                     <button class="btn btn-primary" onclick="approveSeller({{$seller->id}})"> توثيق البائع</button>
                                 @endif
-                                <a href="#" class="btn btn-success">طباعة معلومات المستخدم</a>
+                                <button class="btn btn-success" onclick="printSellerInfo()">
+                                 طباعة معلومات المستخدم
+                                </button>
+                                {{-- <button onclick="window.print()">طباعة</button> --}}
                     
                 </div>
             </div>
         </div>
     </div>
-    
+ <div id="printableArea">   
     {{-- معلومات البائع الرئيسية --}}
     <div class="row mb-4 mt-4">
 
@@ -377,7 +380,7 @@
         </div>
 
     </div>
-
+ </div>
 </div>
 
 {{-- :::::::::::: Modals ::::::::::::: --}}

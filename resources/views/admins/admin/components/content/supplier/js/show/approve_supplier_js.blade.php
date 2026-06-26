@@ -59,4 +59,47 @@
         });
     }
 
+        // print profile
+    function printSellerInfo() {
+    const content = document.getElementById("printableArea").innerHTML;
+
+    const printWindow = window.open('', '', 'width=900,height=700');
+
+    printWindow.document.write(`
+        <html dir="rtl">
+        <head>
+            <title>طباعة معلومات المستخدم</title>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+            <style>
+                body {
+                    padding: 20px;
+                    direction: rtl;
+                    font-family: Arial, sans-serif;
+                }
+                .card {
+                    border: 1px solid #ddd;
+                    margin-bottom: 20px;
+                }
+                .badge {
+                    padding: 6px 10px;
+                }
+            </style>
+        </head>
+        <body>
+            ${content}
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+
+    
+
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 500);
+}
+
 </script>

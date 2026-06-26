@@ -15,13 +15,15 @@
                                 @elseif($supplier->approval_status == 'pending')
                                     <button class="btn btn-primary" onclick="approveSupplier({{$supplier->id}})"> توثيق المورد</button>
                                 @endif
-                                <a href="#" class="btn btn-success">طباعة معلومات المستخدم</a>
+                                <button class="btn btn-success" onclick="printSellerInfo()">
+                                 طباعة معلومات المستخدم
+                                </button>
                     
                 </div>
             </div>
         </div>
     </div>
-    
+  <div id="printableArea">    
     {{-- معلومات المورد الرئيسية --}}
     <div class="row mb-4 mt-4">
 
@@ -377,6 +379,8 @@
         </div>
 
     </div>
+
+  </div>
 
 </div>
 
