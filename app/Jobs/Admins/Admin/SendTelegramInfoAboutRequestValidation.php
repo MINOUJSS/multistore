@@ -48,9 +48,9 @@ class SendTelegramInfoAboutRequestValidation implements ShouldQueue
         $message .= "━━━━━━━━━━━━━━\n";
         $message .= '⚡ <i>يرجى مراجعة الوثائق واتخاذ القرار المناسب.</i>';
         if ($this->user->type == 'supplier') {
-            $message .= "\n\n🔗 <b>رابط لوحة التحكم: ".route('admin.supplier.show', $this->user->id)."</b>\n";
+            $message .= "\n\n🔗 <b>رابط لوحة التحكم: ".route('admin.supplier.show', get_supplier_data($this->user->tenant_id))."</b>\n";
         } else {
-            $message .= "\n\n🔗 <b>رابط لوحة التحكم: ".route('admin.seller.show', $this->user->id)."</b>\n";
+            $message .= "\n\n🔗 <b>رابط لوحة التحكم: ".route('admin.seller.show', get_seller_data($this->user->tenant_id))."</b>\n";
         }
 
         try {
