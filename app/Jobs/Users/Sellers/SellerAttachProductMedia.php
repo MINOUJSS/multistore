@@ -52,19 +52,20 @@ class SellerAttachProductMedia implements ShouldQueue
             $newPath = "{$directory}/{$filename}";
 
             // copy temp -> final
-            Storage::disk('seller')->copy(
+
+            \Log::info('upload path', ['path' => $upload->path]);
+
+            \Log::info('exists?', [
+                'exists' => Storage::disk('seller')->exists($upload->path),
+            ]);
+
+            Storage::disk('seller')->move(
                 $upload->path,
                 $newPath
             );
 
             // delete temp file
-            Storage::disk('seller')->delete($upload->path);
-
-            // update product
-            // $this->product->update([
-            //     'file' => $newPath,
-            //     // 'digital_file_url' => Storage::disk('seller')->url($newPath),
-            // ]);
+            // Storage::disk('seller')->delete($upload->path);
 
             $this->product->file = $newPath;
             $this->product->save();
