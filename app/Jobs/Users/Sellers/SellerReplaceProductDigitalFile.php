@@ -60,12 +60,12 @@ class SellerReplaceProductDigitalFile implements ShouldQueue
 
         Storage::disk('seller')->move($upload->path, $newPath);
 
-        $product->update([
-            'file' => $newPath,
-        ]);
+        // $product->update([
+        //     'file' => $newPath,
+        // ]);
 
-        // $product->file = $newPath;
-        // $product->save();
+        $product->file = $newPath;
+        $product->save();
 
         $upload->delete();
     }

@@ -67,12 +67,12 @@ class SellerAttachProductMedia implements ShouldQueue
             // delete temp file
             // Storage::disk('seller')->delete($upload->path);
 
-            // $this->product->file = $newPath;
-            // $this->product->save();
+            $this->product->file = $newPath;
+            $this->product->save();
 
-            $this->product->update([
-                'file' => $newPath,
-            ]);
+            // $this->product->update([
+            //     'file' => $newPath,
+            // ]);
 
             // delete temp db record
             $upload->delete();
