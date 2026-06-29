@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="{{ asset('asset/v1/users/dashboard/css/modal.css') }}" />
 <!-- Include stylesheet -->
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+<link href="https://unpkg.com/filepond/dist/filepond.min.css" rel="stylesheet">
 @endsection
 @section('title')
   الصفحة المنتجات
@@ -94,4 +95,7 @@
 @include('users.suppliers.components.content.products.js.delete-product-js')
 @include('users.suppliers.components.content.products.js.save-product-js')
 @include('users.suppliers.components.content.products.js.search-product-js')
+
+<script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+
 @endsection

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChargilyPayController;
+use App\Http\Controllers\TempUploadController;
 use App\Http\Controllers\Users\CourierdzController;
 use App\Http\Controllers\Users\Sellers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Users\Sellers\Auth\NewPasswordController;
@@ -98,6 +99,15 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::delete('/seller-panel/product/attributes/delete/{id}', [SellerProductController::class, 'delete_product_attribute'])->name('product.delete_product_attribute');
                     Route::get('/seller-panel/product/get-json-data/{id}', [SellerProductController::class, 'get_json_data'])->name('product.get_json_data');
                     Route::get('/seller-panel/filter-products', [SellerProductController::class, 'filterProducts'])->name('product.filterProducts');
+                    // upload and delete digital product to temp folder
+                    Route::post('/seller-panel/upload-temp', [TempUploadController::class, 'store'])
+                       ->name('temp.store');
+
+                    Route::delete('/seller-panel/upload-temp', [TempUploadController::class, 'delete'])
+                        ->name('temp.delete');
+                    // Route::post('/seller-panel/upload-digital-product', [TempUploadController::class, 'store'])->name('temp.upload-digital-product');
+                    // Route::post('/seller-panel/edit-upload-digital-product/{id}', [TempUploadController::class, 'update'])->name('temp.update-digital-product');
+                    // Route::post('/seller-panel/delete-digital-product', [TempUploadController::class, 'destroy'])->name('temp.delete-digital-product');
                     // seller coupons routes
                     Route::get('/seller-panel/coupons', [SellerCouponController::class, 'index'])->name('coupons');
                     Route::post('/seller-panel/coupons/store', [SellerCouponController::class, 'store'])->name('coupons.store');

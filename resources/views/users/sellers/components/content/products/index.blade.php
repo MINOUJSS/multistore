@@ -387,32 +387,33 @@
                     <section id="digital_file_section" style="display: none;">
                         <div class="col-12 bg-primary rounded ronded p-2 text-center">الملف الرقمي</div>
                         <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <ul class="p-3" style="float:right;">
                                 <li>الملف الرئيسي</li>
                                 <li>الصيغ المسموحة: ZIP, PDF, MP4</li>
                                 <li>الحجم الأقصى: 50MB</li>
                             </ul>
 
-                            <div id="add_digital_dropzone" onclick="add_browsDigitalFile()" onchange="add_previewDigitalFile(event)">
-                                <i class="fa fa-cloud-upload"></i>
+                            <div id="add_digital_dropzone1" onclick="add_browsDigitalFile()" onchange="add_previewDigitalFile(event)">
+                                {{-- <i class="fa fa-cloud-upload"></i> --}}
                                 <input type="file"
                                     name="add_digital_file"
                                     class="form-control"
-                                    id="add_digital_file"
+                                    id="addDigitalFile"
                                     accept=".zip,.pdf,.mp4"
                                     style="display: none;">
+                                     <input type="hidden" name="digital_temp_id" id="add_digital_temp_id">
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div id="add_digitalPreview" class="preview"
                                 style="display:flex; align-items:center; justify-content:center; height:150px; border:1px dashed #ccc;">
                                 <span>لم يتم اختيار ملف</span>
                             </div>
                             <span class="text-danger error-add_digital_file error-validation"></span>
                         </div>
-                        </div>
+                        </div> --}}
                     </section>
 
                         <div class="col-12 bg-primary rounded ronded p-2 text-center">فيديوهات المنتج</div>
@@ -632,24 +633,25 @@
                                 <li>الحجم الأقصى: 50MB</li>
                             </ul>
 
-                            <div id="edit_digital_dropzone" onclick="edit_browsDigitalFile()" onchange="edit_previewDigitalFile(event)">
-                                <i class="fa fa-cloud-upload"></i>
+                            <div id="edit_digital_dropzone1" onclick="edit_browsDigitalFile()" onchange="edit_previewDigitalFile(event)">
+                                {{-- <i class="fa fa-cloud-upload"></i> --}}
                                 <input type="file"
                                     name="digital_file"
                                     class="form-control"
-                                    id="edit_digital_file"
+                                    id="editDigitalFile"
                                     accept=".zip,.pdf,.mp4"
                                     style="display: none;">
+                                    <input type="hidden" name="digital_temp_id" id="edit_digital_temp_id">
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div id="edit_digitalPreview" class="preview"
                                 style="display:flex; align-items:center; justify-content:center; height:150px; border:1px dashed #ccc;">
                                 <span>لم يتم اختيار ملف</span>
                             </div>
                             <span class="text-danger error-edit_digital_file error-validation"></span>
-                        </div>
+                        </div> --}}
                         </div>
                     </section>
                         <div class="col-12 bg-primary rounded ronded p-2 text-center">فيديوهات المنتج</div>

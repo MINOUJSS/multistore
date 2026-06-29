@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Users\Sellers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Users\Sellers\SellerAttachProductMedia;
+use App\Jobs\Users\Sellers\SellerReplaceProductDigitalFile;
 use App\Models\Category;
 use App\Models\Seller\SellerAttribute;
 use App\Models\Seller\SellerProductAttributes;
@@ -102,7 +104,7 @@ class SellerProductController extends Controller
             $rules['add_product_cost'] = 'required|numeric|min:0';
         } else {
             // للمنتج الرقمي
-            $rules['add_digital_file'] = 'required|file|mimes:zip,pdf,mp4|max:51200'; // 50MB
+            // $rules['digital_temp_id'] = 'required|file|mimes:zip,pdf,mp4|max:51200'; // 50MB
         }
         // التحقق من صحة البيانات
         $validator = Validator::make($request->all(), $rules);
@@ -178,12 +180,18 @@ class SellerProductController extends Controller
             $product->save();
 
             // رفع الملف
-            if ($request->add_product_type == 'digital') {
-                $path = $request->file('add_digital_file')->store(get_seller_store_name(auth()->user()->tenant_id)."/products/{$product->id}/file", 'seller');
-                $url = Storage::disk('seller')->url('app/public/seller/'.$path);
-                $product->file = $url;
-                $product->update();
+            if ($request->digital_temp_id) {
+                SellerAttachProductMedia::dispatch(
+                    $product,
+                    [$request->digital_temp_id]
+                );
             }
+            // if ($request->add_product_type == 'digital') {
+            // $path = $request->file('digital_temp_id')->store(get_seller_store_name(auth()->user()->tenant_id)."/products/{$product->id}/file", 'seller');
+            // $url = Storage::disk('seller')->url('app/public/seller/'.$path);
+            //     $product->file = $url;
+            //     $product->update();
+            // }
 
             // رفع الصورة الأساسية
             if ($request->hasFile('add_image')) {
@@ -483,20 +491,26 @@ class SellerProductController extends Controller
             $product->status = $request->has('status') ? 'active' : 'inactive';
 
             // رفع الملف
-            if ($request->hasFile('digital_file')) {
-                // delete old image
-                $url = explode('storage/app/public/seller/', $product->file);
-                if (count($url) >= 2) {
-                    $filePath = $url[1];
-                    if (Storage::disk('seller')->exists($filePath)) {
-                        Storage::disk('seller')->delete($filePath);
-                    }
-                }
-
-                $path = $request->file('digital_file')->store(get_seller_store_name(auth()->user()->tenant_id).'/products/'.$product_id.'/file', 'seller'); // التخزين في قرص المستأجر
-                $url = Storage::disk('seller')->url('app/public/seller/'.$path); // رابط الصورة
-                $product->file = $url;
+            if ($request->digital_temp_id) {
+                SellerReplaceProductDigitalFile::dispatch(
+                    $product->id,
+                    $request->digital_temp_id
+                );
             }
+            // if ($request->hasFile('digital_file')) {
+            //     // delete old image
+            //     $url = explode('storage/app/public/seller/', $product->file);
+            //     if (count($url) >= 2) {
+            //         $filePath = $url[1];
+            //         if (Storage::disk('seller')->exists($filePath)) {
+            //             Storage::disk('seller')->delete($filePath);
+            //         }
+            //     }
+
+            //     $path = $request->file('digital_file')->store(get_seller_store_name(auth()->user()->tenant_id).'/products/'.$product_id.'/file', 'seller'); // التخزين في قرص المستأجر
+            //     $url = Storage::disk('seller')->url('app/public/seller/'.$path); // رابط الصورة
+            //     $product->file = $url;
+            // }
 
             // رفع الصورة إلى نطاق المستأجر
             if ($request->hasFile('image')) {

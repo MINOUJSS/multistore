@@ -29,6 +29,12 @@
             });
             // Get form data
             var product_id=document.getElementById('product_id').value;
+            // //chek if edit_digital_file has file
+            // if (document.getElementById('edit_digital_file').files.length != 0) {
+            //     //update the file
+            //     updatethefile(product_id);
+            // }
+
             //get form data
             var formData = new FormData($('#editForm')[0]); // يشمل الحقول والملفات
             // Show loader and disable save button

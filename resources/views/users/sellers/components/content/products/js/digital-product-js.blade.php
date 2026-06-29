@@ -17,13 +17,13 @@
         }
     }
     function add_browsDigitalFile() {
-        document.getElementById('add_digital_file').click();
+        document.getElementById('addDigitalFile').click();
     }
 
     $(document).ready(function () {
     
     // مهم: ربط onchange
-    document.getElementById('add_digital_file').addEventListener('change', add_previewDigitalFile);
+    document.getElementById('addDigitalFile').addEventListener('change', add_previewDigitalFile);
 
         // تغيير نوع المنتج
         function toggleProductType(value) {
@@ -45,6 +45,14 @@
                 $('#add_inputQty').val(0);
                 $('#add_free_shipping').prop('checked', false);
 
+                //---------------------
+                const addPond = initDigitalFilePond(
+                    '#addDigitalFile',
+                    '#add_digital_temp_id'
+                );
+                //-------------------------------
+               
+
             } else {
 
                 // إظهار العناصر الخاصة بالمنتجات الفيزيائية
@@ -60,6 +68,15 @@
                 // إعادة القيم الافتراضية (اختياري)
                 $('#add_inputQty').val('');
                 $('#add_free_shipping').prop('checked', true);
+
+                //---------------------
+                const addPond = initDigitalFilePond(
+                    '#addDigitalFile',
+                    '#add_digital_temp_id'
+                );
+                //-------------------------------
+
+                
             }
         }
 

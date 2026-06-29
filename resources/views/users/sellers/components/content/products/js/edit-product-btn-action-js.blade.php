@@ -4,7 +4,7 @@
     
     function edit_previewDigitalFile(event) {
         let file = event.target.files[0];
-
+        
         if (file) {
             let preview = document.getElementById('edit_digitalPreview');
             preview.innerHTML = `
@@ -67,7 +67,7 @@
     $('.editproduct').click(function() {
 
         //clear varitions from
-
+    
         //clear discount from
 
         //get product id
@@ -88,6 +88,13 @@
                 //detecte if product is digital or not
                 var product_type =response.product.product_type; ;
                 toggleEditProductType(product_type);
+
+                //------------------------------------------------
+                const editPond = initDigitalFilePond(
+                    '#editDigitalFile',
+                    '#edit_digital_temp_id'
+                );
+                //------------------------------------------------
 
                 //product variation variables
                 var product_variation = document.getElementById("product_variation");

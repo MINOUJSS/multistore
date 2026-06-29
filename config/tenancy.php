@@ -21,7 +21,7 @@ return [
         'localhost',
         'multistore.test',
         'dzora.net',
-        // 'https://39e5-154-121-45-197.ngrok-free.app',
+        // 'https://d1e0-154-121-44-162.ngrok-free.app',
     ],
 
     /*

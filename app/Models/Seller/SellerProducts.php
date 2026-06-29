@@ -4,9 +4,12 @@ namespace App\Models\Seller;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class SellerProducts extends Model
+class SellerProducts extends Model implements HasMedia
 {
+    use InteractsWithMedia;
     use HasFactory;
     protected $fillable = [
         'seller_id',
@@ -93,5 +96,12 @@ class SellerProducts extends Model
     public function reviews()
     {
         return $this->hasMany(SellerProductReviews::class, 'product_id');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('cover')->singleFile();
+        $this->addMediaCollection('gallery');
+        $this->addMediaCollection('digital-files')->singleFile();
     }
 }

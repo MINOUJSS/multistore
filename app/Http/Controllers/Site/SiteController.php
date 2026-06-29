@@ -54,7 +54,7 @@ class SiteController extends Controller
     public function entry($token)
     {
         $order = SellerOrders::where('download_token', $token)->firstOrFail();
-        //dd($order);
+        // dd($order);
         // تحقق من الدفع
         if ($order->payment_status !== 'paid') {
             abort(403);
@@ -72,10 +72,10 @@ class SiteController extends Controller
             now()->addMinutes(15), // رابط قصير العمر
             ['id' => $order->items->first()->product_id, 'token' => $token]
         );
-        $order->status ='delivered';
+        $order->status = 'delivered';
         $order->update();
 
-        //send mail to customer
+        // send mail to customer
 
         // إعادة التوجيه للرابط الموقّع
         return redirect($signedUrl);
@@ -108,11 +108,12 @@ class SiteController extends Controller
         $order->increment('downloads_count');
 
         $product = SellerProducts::where('id', $id)->first();
-        $file = $product->file;
-        // تقسيم الرابط
-        $parts = explode('/storage/app/public/seller/', $file);
-        // المسار داخل storage
-        $filePath = $parts[1];
+        // $file = $product->file;
+        // // تقسيم الرابط
+        // $parts = explode('/storage/app/public/seller/', $file);
+        // // المسار داخل storage
+        // $filePath = $parts[1];
+        $filePath = $product->file;
 
         return Storage::disk('seller')->download($filePath);
         // return response()->download($file);
