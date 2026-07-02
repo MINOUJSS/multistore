@@ -7,6 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--supplier meta-->
     @yield('meta')
+    @if(isset($product))
+    <!-- opimazetion meta -->
+    <meta property="og:type" content="product">
+    <meta property="og:title" content="{{ $product->name }}">
+    <meta property="og:description" content="{{ Str::limit(strip_tags($product->description), 160) }}">
+    <meta property="og:image" content="{{ asset('storage/'.$product->image) }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $product->name }}">
+    <meta name="twitter:description" content="{{ Str::limit(strip_tags($product->description), 160) }}">
+    <meta name="twitter:image" content="{{ asset('storage/'.$product->image) }}">
+    @endif
+    <!---->
     <link rel="icon" type="image/png" href="{{ asset(get_store_logo(tenant('id'))) }}">
     <title>@yield('title')</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css"
