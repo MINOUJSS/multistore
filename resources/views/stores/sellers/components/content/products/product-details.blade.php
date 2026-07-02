@@ -72,13 +72,13 @@
                   <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button> --}}
                 </div>
                 <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="{{ $product->image }}" class="d-block w-100" alt="...">
+                    <div class="carousel-item carousel-image-wrapper active">
+                        <img src="{{ $product->image }}" class="d-block w-100 product-carousel-img" alt="...">
                     </div>
                     @if (count($product_images) > 0)
                         @foreach ($product_images as $product_image)
-                            <div class="carousel-item">
-                                <img src="{{ $product_image->image_path }}" class="d-block w-100" alt="...">
+                            <div class="carousel-item carousel-image-wrapper">
+                                <img src="{{ $product_image->image_path }}" class="d-block w-100 product-carousel-img" alt="...">
                             </div>
                         @endforeach
                     @endif
@@ -675,7 +675,9 @@
             {{-- end add to cart btn  --}}
             {{-- product description section  --}}
             <div class="row mt-4">
+                <div class="col-md-12">
                 {!! $product->description !!}
+                </div>
             </div>
             {{-- end product description section  --}}
             @if(count($product->videos) > 0)
