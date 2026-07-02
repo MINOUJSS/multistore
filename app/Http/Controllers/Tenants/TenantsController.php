@@ -347,6 +347,8 @@ class TenantsController extends Controller
     // product details
     public function product($id, Request $request)
     {
+        // get user store seting
+        $store_settings = UserStoreSetting::where('user_id', get_user_data(tenant('id'))->id)->get();
         // check user type
         if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'supplier') {
             // insert this visit to supplier product visit table
@@ -387,7 +389,7 @@ class TenantsController extends Controller
             }
 
             // return idex view with user data
-            return view('stores.suppliers.product-details', compact('product', 'order_form', 'wilayas', 'product_images', 'product_variations', 'product_attributes'));
+            return view('stores.suppliers.product-details', compact('product', 'order_form', 'wilayas', 'product_images', 'product_variations', 'product_attributes','store_settings'));
         } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // insert this visit to supplier product visit table
 
@@ -427,7 +429,7 @@ class TenantsController extends Controller
             }
 
             // return idex view with user data
-            return view('stores.sellers.product-details', compact('product', 'order_form', 'wilayas', 'product_images', 'product_variations', 'product_attributes'));
+            return view('stores.sellers.product-details', compact('product', 'order_form', 'wilayas', 'product_images', 'product_variations', 'product_attributes','store_settings'));
         }
 
         return 'This is your multi-tenant application. The id of the current tenant is '.tenant('id');

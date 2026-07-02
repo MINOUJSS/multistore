@@ -24,7 +24,6 @@ class SellerProductController extends Controller
 {
     public function index()
     {
-        // dd(get_seller_data(auth()->user()->tenant_id)->id);
         $store_categories = UserStoreCategory::where('user_id', auth()->user()->id)->get();
         $categories_ids = [];
         foreach ($store_categories as $category) {

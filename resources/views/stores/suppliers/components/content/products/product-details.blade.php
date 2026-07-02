@@ -144,6 +144,12 @@
                 @endif
             </h3>
             <p class="">{{ $product->short_description }}</p>
+                         @php
+             $cash_status=json_decode($store_settings[17]['value'])->Cash->status;
+             $chargily_status=json_decode($store_settings[17]['value'])->Chargily_Pay->status;
+             $ccp_status=json_decode($store_settings[17]['value'])->Ccp->status;
+             $baridimob_status= json_decode($store_settings[17]['value'])->BaridiMob->status; 
+            @endphp
             {{-- order form  --}}
             <form id="orderForm" action="/order" class="row g-3 border p-3 rounded mt-3 mb-3 order-form" method="POST">
                 @csrf
@@ -337,7 +343,7 @@
                     <div class="col-md-12">
                         <h5 class="mb-3 fw-bold text-dark sub-title">طريقة الدفع</h5>
                         <div class="d-flex flex-wrap gap-3">
-
+                            @if($cash_status=='active')
                             <!-- الدفع عند الاستلام -->
                             <div class="payment-option">
                                 <input type="radio" name="payment_method" id="cod" value="cod"
@@ -349,7 +355,8 @@
                                     </div>
                                 </label>
                             </div>
-                            @if (is_supplier_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')))
+                            @endif
+                            @if (is_supplier_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')) && is_chargily_settings_exists(tenant('id')) && $chargily_status=='active')
                                 <!-- Chargily -->
                                 <div class="payment-option">
                                     <input type="radio" name="payment_method" id="chargily" value="chargily"
@@ -363,7 +370,7 @@
                                 </div>
                             @endif
 
-                            @if (is_supplier_aproved(tenant('id')) && is_supplier_bank_account_exists(tenant('id')))
+                            @if (is_supplier_aproved(tenant('id')) && is_supplier_bank_account_exists(tenant('id')) && ($ccp_status =='active' || $baridimob_status == 'active'))
                                 <!-- التحويل البنكي -->
                                 <div class="payment-option">
                                     <input type="radio" name="payment_method" id="bank_transfer" value="verments"

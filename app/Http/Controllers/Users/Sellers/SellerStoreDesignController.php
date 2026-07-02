@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Users\Sellers;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserStoreSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SellerStoreDesignController extends Controller
 {
