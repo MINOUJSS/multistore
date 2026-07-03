@@ -57,8 +57,8 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
-          <h1>منصة {{config('app.name')}} وجهتك الموثوقة للتجارة الإلكترونية</h1>
-          <h2>تحّول من التجارة الكلاسيكية إلى التجارة الإلكترونية بسهولة و سرعة و أمتلك متجر إلكتروني خاص بك بجميع مزايا التجارة الإلكترونية مع توفير الخدمات المساندة له</h2>
+          <h1>حوّل تجارتك إلى تجارة إلكترونية متكاملة خلال دقائق </h1>    
+          <h2>منصة {{config('app.name')}} تجمع الموردين، التجار، المسوقين، وشركات الشحن في مكان واحد.</h2>
           <div class="d-flex justify-content-center justify-content-lg-start">
             <a href="#services" class="btn-get-started scrollto">إبدأ الآن</a>
             {{-- <a href="https://www.youtube.com/watch?v=cZRpUCWb_A4" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>فيديو تعريفي بالمنصة</span></a> --}}
