@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Users\Sellers;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProofsRefusedMessage;
+use App\Models\UsersPaymentsProofsRefused;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SellerProofsRefusedChatController extends Controller
 {

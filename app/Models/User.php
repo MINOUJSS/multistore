@@ -182,4 +182,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(LastSeen::class, 'user_id')->orderBy('id', 'desc');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(UserNotification::class);
+    }
 }

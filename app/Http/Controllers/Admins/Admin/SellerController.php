@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Seller\Seller;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\UserNotification;
 use App\Models\UserRequestsValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -90,6 +91,21 @@ class SellerController extends Controller
             'reason' => 'تم توثيق البائع دون توضيحات',
         ]);
 
+        // send notification to user
+        $user->notify(new \App\Notifications\Users\Sellers\SellerApprovedNotification($seller));
+        // insert message in user notification table
+        $user_notification = UserNotification::create([
+            'user_id' => $user->id,
+            'sender_id' => auth('admin')->id(),
+            'type' => 'system',
+            'title' => 'توثيق الحساب',
+            'body' => 'تم توثيق حسابك بنجاح',
+            'icon' => 'check-circle',
+            'color' => 'success',
+            'action_url' => route('seller.profile'),
+            'is_read' => false,
+        ]);
+
         return response()->json(['success' => true, 'approval_status' => 'approved', 'message' => 'تم توثيق البائع بنجاح']);
     }
 
@@ -126,6 +142,19 @@ class SellerController extends Controller
         }
 
         // send notification to user
+        $user->notify(new \App\Notifications\Users\Sellers\SellerUnApprovedNotification($seller));
+        // insert message in user notification table
+        $user_notification = UserNotification::create([
+            'user_id' => $user->id,
+            'sender_id' => auth('admin')->id(),
+            'type' => 'system',
+            'title' => 'تم حذف أو رفض توثيق الحساب',
+            'body' => 'تم حذف أو رفض توثيق الحساب  للسبب أو الأسباب التالية : '.$request->reason,
+            'icon' => 'fas fa-ban',
+            'color' => 'danger',
+            'action_url' => route('seller.profile'),
+            'is_read' => false,
+        ]);
 
         // return response()->json([
         //     'success' => true,

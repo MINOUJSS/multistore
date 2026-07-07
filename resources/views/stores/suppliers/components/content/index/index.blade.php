@@ -99,114 +99,7 @@
         </section>
     @endif
 
-
-    {{-- category section  --}}
-
-    <style>
-        .zoom-hover:hover {
-            transform: scale(1.05);
-            transition: 0.3s ease-in-out;
-        }
-    </style>
-
-    @if (!empty($categories) && count(get_supplier_categories(tenant('id'))) > 0 && $categories_status->value == 'true')
-        <section class="featured-products py-5">
-            <div class="container">
-                <h2 class="text-center mb-5 fade-in title">الأصناف المميزة</h2>
-                <div class="row g-3 justify-content-center">
-
-                    <!-- كارت "كل الأصناف" -->
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                        <div class="card text-center shadow-sm border-0 zoom-hover p-2 h-100">
-                            <img src="{{ asset('asset/v1/users/store/img/categories/0.png') }}"
-                                class="rounded-circle mx-auto d-block" alt="كل الأصناف" width="80" height="80">
-                            <div class="card-body p-2">
-                                <h6 class="card-title fw-bold mb-1 small">كل الأصناف</h6>
-                                <p class="text-muted small mb-2">أحدث المنتجات</p>
-                                <a href="/products" class="btn btn-sm btn-outline-primary btn-ripple w-100">عرض</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- الكروت الديناميكية -->
-                    @foreach ($categories as $key => $category)
-                        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                            <div class="card text-center shadow-sm border-0 zoom-hover p-2 h-100">
-                                <img src="{{ asset($category->image) }}" class="rounded-circle mx-auto d-block"
-                                    alt="{{ $category->category->name }}" width="80" height="80">
-                                <div class="card-body p-2">
-                                    <h6 class="card-title fw-bold mb-1 small">{{ $category->category->name }}</h6>
-                                    <p class="text-muted small mb-2">
-                                        {{ Str::limit($category->category->description, 30) }}</p>
-                                    <a href="/products-by-category/{{ $category->category_id }}"
-                                        class="btn btn-sm btn-outline-primary btn-ripple w-100">عرض</a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-
-                </div>
-            </div>
-        </section>
-    @endif
-
-
-    <style>
-        .icon-circle {
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            margin: 0 auto;
-            background-color: #0d6efd;
-            /* Bootstrap primary */
-            color: white;
-        }
-
-        .hover-shadow:hover {
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            transform: translateY(-5px);
-        }
-
-        .transition-all {
-            transition: all 0.3s ease-in-out;
-        }
-
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 20px;
-        }
-    </style>
-    @if ($benefit_section->status == 'active')
-        <section class="benefits-section py-5 glass-effect">
-            <div class="container">
-                <h2 class="text-center fw-bold fade-in title">{{ $benefit_section->title }}</h2>
-                <p class="text-center mb-5 fade-in">{{ $benefit_section->description }}</p>
-                <div class="row justify-content-center g-4">
-                    @foreach ($benefit_elements as $element)
-                        <div class="col-12 col-sm-6 col-md-4">
-                            <div
-                                class="benefit-card text-center p-4 shadow-sm rounded-4 h-100 bg-white hover-shadow transition-all">
-                                <div class="icon-circle bg-primary text-white mb-3">
-                                    {!! $element->icon !!}
-                                </div>
-                                <h5 class="fw-semibold">{{ $element->title }}</h5>
-                                <p class="text-muted small mb-0">{{ $element->description }}</p>
-                            </div>
-                        </div>
-                    @endforeach
-
-                </div>
-            </div>
-        </section>
-    @endif
-
-
-
-
+{{-- products section  --}}
     <style>
         .zoom-hover img {
             transition: transform 0.3s ease-in-out;
@@ -364,7 +257,109 @@
         </section>
     @endif
 
+    {{-- benifit section  --}}
+        <style>
+        .icon-circle {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto;
+            background-color: #0d6efd;
+            /* Bootstrap primary */
+            color: white;
+        }
 
+        .hover-shadow:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .transition-all {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+        }
+    </style>
+    @if ($benefit_section->status == 'active')
+        <section class="benefits-section py-5 glass-effect">
+            <div class="container">
+                <h2 class="text-center fw-bold fade-in title">{{ $benefit_section->title }}</h2>
+                <p class="text-center mb-5 fade-in">{{ $benefit_section->description }}</p>
+                <div class="row justify-content-center g-4">
+                    @foreach ($benefit_elements as $element)
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div
+                                class="benefit-card text-center p-4 shadow-sm rounded-4 h-100 bg-white hover-shadow transition-all">
+                                <div class="icon-circle bg-primary text-white mb-3">
+                                    {!! $element->icon !!}
+                                </div>
+                                <h5 class="fw-semibold">{{ $element->title }}</h5>
+                                <p class="text-muted small mb-0">{{ $element->description }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+
+                </div>
+            </div>
+        </section>
+    @endif
+
+        {{-- category section  --}}
+
+    <style>
+        .zoom-hover:hover {
+            transform: scale(1.05);
+            transition: 0.3s ease-in-out;
+        }
+    </style>
+
+    @if (!empty($categories) && count(get_supplier_categories(tenant('id'))) > 0 && $categories_status->value == 'true')
+        <section class="featured-products py-5">
+            <div class="container">
+                <h2 class="text-center mb-5 fade-in title">الأصناف المميزة</h2>
+                <div class="row g-3 justify-content-center">
+
+                    <!-- كارت "كل الأصناف" -->
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                        <div class="card text-center shadow-sm border-0 zoom-hover p-2 h-100">
+                            <img src="{{ asset('asset/v1/users/store/img/categories/0.png') }}"
+                                class="rounded-circle mx-auto d-block" alt="كل الأصناف" width="80" height="80">
+                            <div class="card-body p-2">
+                                <h6 class="card-title fw-bold mb-1 small">كل الأصناف</h6>
+                                <p class="text-muted small mb-2">أحدث المنتجات</p>
+                                <a href="/products" class="btn btn-sm btn-outline-primary btn-ripple w-100">عرض</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- الكروت الديناميكية -->
+                    @foreach ($categories as $key => $category)
+                        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                            <div class="card text-center shadow-sm border-0 zoom-hover p-2 h-100">
+                                <img src="{{ asset($category->image) }}" class="rounded-circle mx-auto d-block"
+                                    alt="{{ $category->category->name }}" width="80" height="80">
+                                <div class="card-body p-2">
+                                    <h6 class="card-title fw-bold mb-1 small">{{ $category->category->name }}</h6>
+                                    <p class="text-muted small mb-2">
+                                        {{ Str::limit($category->category->description, 30) }}</p>
+                                    <a href="/products-by-category/{{ $category->category_id }}"
+                                        class="btn btn-sm btn-outline-primary btn-ripple w-100">عرض</a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+
+                </div>
+            </div>
+        </section>
+    @endif
 
     {{-- fqa section  --}}
     @if ($faqs_status->value == 'true')

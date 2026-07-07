@@ -221,6 +221,9 @@ foreach (config('tenancy.central_domains') as $domain) {
                         Route::get('/seller-panel/payments-proofs-refused/{id}/show', [SellerPaymentsProofsRefusedController::class, 'show'])->name('payments_proofs_refused.show');
                     });
 
+                    // seller notifications Routes
+                    Route::post('/seller-panel/notifications/mark-as-read/{id}', [App\Http\Controllers\UserNotificationController::class, 'mark_notification_as_read'])->name('mark_notificationas_read');
+
                     // seller proofs refused messages routes
                     Route::prefix('/seller-panel/proofs-refused/{proofId}/chat')->name('proofs.refused.chat.')->group(function () {
                         Route::get('/', [SellerProofsRefusedChatController::class, 'index'])->name('index');
