@@ -92,6 +92,44 @@
         }
 
     }
+    /* animate buy btn  */
+    /* 1 */
+            @keyframes swingButton {
+            0%   { transform: rotate(0deg); }
+            20%  { transform: rotate(-3deg); }
+            40%  { transform: rotate(3deg); }
+            60%  { transform: rotate(-2deg); }
+            80%  { transform: rotate(2deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .buy-btn-attention{
+            animation: swingButton 8s infinite;
+            transform-origin: center;
+        }
+        /* 3  */
+        @keyframes pulse{
+
+        0%{
+        transform:scale(1);
+        }
+
+        50%{
+        transform:scale(1.04);
+        }
+
+        100%{
+        transform:scale(1);
+        }
+
+        }
+
+        .buy-btn{
+
+        animation:pulse 2.5s infinite;
+
+        }
+       
     /* endtest  */
 </style>
 <div class="container">
@@ -287,7 +325,7 @@
                     </div>
                 </div>
                 <div class="col-12 text-center">
-                    <button id="buyNowButton" type="submit" class="form-control btn btn-primary bay-now-btn"><i
+                    <button id="buyNowButton" type="submit" class="form-control btn btn-primary bay-now-btn buy-btn-attention buy-btn"><i
                             class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
                 </div>
             </form>
@@ -579,7 +617,7 @@
                   @else
                   <input type="hidden" name="form_total_amount" id="form_total_amount" value="{{($product->minimum_order_qty * $product->price)+300}}" />
                   @endif --}}
-                        <button id="buyNowButton" type="submit" class="form-control btn btn-primary bay-now-btn"><i
+                        <button id="buyNowButton" type="submit" class="form-control btn btn-primary bay-now-btn buy-btn-attention buy-btn"><i
                                 class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
                     </div>
                 </div>
@@ -692,7 +730,7 @@
             <div id="floatingBuyBar" class="floating-buy-bar">
 
                 <button id="floatingBuyButton"
-                    class="btn btn-primary w-100">
+                    class="btn btn-primary w-100 buy-btn-attention buy-btn">
 
                     <i class="fas fa-shopping-cart"></i>
 

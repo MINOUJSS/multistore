@@ -94,6 +94,43 @@
         }
 
     }
+        /* animate buy btn  */
+    /* 1 */
+            @keyframes swingButton {
+            0%   { transform: rotate(0deg); }
+            20%  { transform: rotate(-3deg); }
+            40%  { transform: rotate(3deg); }
+            60%  { transform: rotate(-2deg); }
+            80%  { transform: rotate(2deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .buy-btn-attention{
+            animation: swingButton 8s infinite;
+            transform-origin: center;
+        }
+        /* 3  */
+        @keyframes pulse{
+
+        0%{
+        transform:scale(1);
+        }
+
+        50%{
+        transform:scale(1.04);
+        }
+
+        100%{
+        transform:scale(1);
+        }
+
+        }
+
+        .buy-btn{
+
+        animation:pulse 2.5s infinite;
+
+        }
     /* endtest  */
 
 </style>
