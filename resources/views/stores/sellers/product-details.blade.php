@@ -70,4 +70,5 @@
     @include('stores.sellers.components.content.products.js.coupon_js')
     @include('stores.sellers.components.content.products.product-details-js')
     @include('stores.sellers.components.content.products.js.device_fingerprint_js')
+    @include('stores.sellers.components.content.products.js.floating-buy-bar-js')
 @endsection

@@ -56,6 +56,46 @@
         height: fit-content;
     }
 
+    /* test  */
+        .floating-buy-bar{
+
+        position:fixed;
+
+        bottom:0;
+
+        right:0;
+
+        left:0;
+
+        background:#fff;
+
+        padding:12px;
+
+        box-shadow:0 -5px 20px rgba(0,0,0,.15);
+
+        display:none;
+
+        z-index:9999;
+
+    }
+
+    @media(min-width:992px){
+
+        .floating-buy-bar{
+
+            width:420px;
+
+            left:auto;
+
+            right:25px;
+
+            border-radius:12px;
+
+        }
+
+    }
+    /* endtest  */
+
 </style>
 <div class="container">
     <div class="row mt-5 mb-5">
@@ -438,7 +478,7 @@
                   @else
                   <input type="hidden" name="form_total_amount" id="form_total_amount" value="{{($product->minimum_order_qty * $product->price)+300}}" />
                   @endif --}}
-                        <button type="submit" class="form-control btn btn-primary bay-now-btn"><i
+                        <button id="buyNowButton" type="submit" class="form-control btn btn-primary bay-now-btn"><i
                                 class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
                     </div>
                 </div>
@@ -546,6 +586,20 @@
                     </div>
                 </div>
             </form>
+                        {{-- start test  --}}
+            <div id="floatingBuyBar" class="floating-buy-bar">
+
+                <button id="floatingBuyButton"
+                    class="btn btn-primary w-100">
+
+                    <i class="fas fa-shopping-cart"></i>
+
+                    {{ $order_form->form_submit_button }}
+
+                </button>
+
+            </div>
+            {{-- end test  --}}
             {{-- end form  --}}
             {{-- start add to cart btn --}}
             <div class="row">
