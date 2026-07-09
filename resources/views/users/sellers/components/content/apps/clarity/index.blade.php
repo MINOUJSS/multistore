@@ -89,7 +89,7 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-center">إعدادات Microsoft Clarity</h2>
 @php
-    $plan_id=get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
+    $plan_id=get_seller_data(auth()->user()->tenant_id)->plan_subscription->plan_id;
     $clarity=get_user_data(auth()->user()->tenant_id)->clarity;
     $apps_count=$clarity->count();
 @endphp
