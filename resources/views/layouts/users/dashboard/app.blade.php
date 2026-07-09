@@ -146,8 +146,8 @@
                             نرحب بجميع اقتراحاتكم لتطوير المنصة.
                         </p>
 
-                        <a href="?#contact"
-                           class="btn btn-outline-primary w-100">
+                        <a href="{{ route('site.index')}}?#contact"
+                           class="btn btn-outline-primary w-100" target="_blank">
                             إرسال اقتراح
                         </a>
 

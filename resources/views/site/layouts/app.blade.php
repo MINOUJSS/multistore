@@ -138,7 +138,7 @@
             {{-- A108 Adam Street <br>
             New York, NY 535022<br> --}}
             الجزائر العاصمة <br><br>
-            <strong>الهاتف:</strong> +213672816709<br>
+            <strong>الهاتف:</strong>0672816709 (+213)<br>
             <strong>البريد الإلكتروني:</strong> dzora.net@gmail.com<br>
           </p>
         </div>
@@ -169,11 +169,11 @@
           <h4>حساباتنا على مواقع التواصل الإجتماعي</h4>
           <p>انضم إلى مجتمعنا على وسائل التواصل الاجتماعي للحصول على آخر الأخبار والعروض الحصرية! كن أول من يعلم عن التحديثات والفعاليات، وتواصل معنا مباشرة لمشاركة أفكارك وتجاربك. تابعنا الآن لجعل تجربتك معنا أكثر تفاعلاً وإثارة!</p>
           <div class="social-links mt-3">
-            <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
-            <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
-            <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
-            <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
-            <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+            <a href="https://www.youtube.com/@Dzora-net" class="twitter"><i class="bx bxl-youtube"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=61589654940299" class="facebook"><i class="bx bxl-facebook"></i></a>
+            <a href="https://www.instagram.com/dzora_net/" class="instagram"><i class="bx bxl-instagram"></i></a>
+            {{-- <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+            <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a> --}}
           </div>
         </div>
 
