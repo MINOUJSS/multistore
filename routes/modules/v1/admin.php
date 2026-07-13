@@ -43,6 +43,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::post('/ah-logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
                 // setting admin routes here
                 Route::get('/ah-admin/settings', [SettingController::class, 'index'])->name('settings');
+                Route::post('/ah-admin/settings/update-settings', [SettingController::class, 'update_settings'])->name('settings.update');
                 // suppliers actions
                 Route::get('/ah-admin/suppliers', [SupplierController::class, 'index'])->name('suppliers');
                 Route::delete('/ah-admin/supplier/destroy/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
