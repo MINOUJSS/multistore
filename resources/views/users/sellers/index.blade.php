@@ -8,7 +8,7 @@
       )
 
       @php
-          $measurementId = get_platform_data('google_analitics')->value;
+          $measurementId = trim(get_platform_data('google_analitics')->value);
       @endphp
 
       <script async src="https://www.googletagmanager.com/gtag/js?id={{ $measurementId }}"></script>

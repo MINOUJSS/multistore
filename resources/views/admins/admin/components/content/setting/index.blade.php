@@ -12,7 +12,7 @@
           <!--tabs-->
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="google-analitics-tab" data-bs-toggle="tab" data-bs-target="#google-analitics" type="button" role="tab" aria-controls="google analitics" aria-selected="true">google analitics</button>
+              <button class="nav-link active" id="google-analitics-tab" data-bs-toggle="tab" data-bs-target="#google-analitics" type="button" role="tab" aria-controls="google analitics" aria-selected="true">Platform Settings</button>
             </li>
             <li class="nav-item" role="presentation">
               <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
