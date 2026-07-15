@@ -126,7 +126,7 @@
 
                             <td>
                                 <span class="badge bg-info">
-                                    {{ get_supplier_store_name($supplier->tenant->id) }}
+                                    <a href="{{supplier_store_url($supplier->tenant->id)}}" target="_blank">{{ get_supplier_store_name($supplier->tenant->id) }}</a>
                                 </span>
                             </td>
 

@@ -798,3 +798,12 @@ function seller_product_min_qty($product_id)
 
     return $product->minimum_order_qty ?? 1;
 }
+
+function seller_store_url($tenantId)
+{
+    $store = get_seller_store_name($tenantId);
+
+    $scheme = parse_url(config('app.url'), PHP_URL_SCHEME) ?? 'https';
+
+    return "{$scheme}://{$store}.".config('app.domain');
+}
