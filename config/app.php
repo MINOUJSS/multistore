@@ -54,11 +54,11 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://dzora.net'),
 
     'asset_url' => env('ASSET_URL'),
 
-    'domain' => env('APP_DOMAIN', 'localhost'),
+    'domain' => env('APP_DOMAIN', 'dzora.net'),
 
     /*
     |--------------------------------------------------------------------------
