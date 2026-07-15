@@ -113,6 +113,9 @@ foreach (config('tenancy.central_domains') as $domain) {
 
                     Route::delete('/ah-admin/backup/delete/{file}', [BackupController::class, 'delete'])
                         ->name('backup.delete');
+
+                    Route::delete('/admin-panel/backups/delete-selected', [BackupController::class, 'deleteSelected'])
+                        ->name('backup.bulk-delete');
                 });
                 // finacial reports routes
                 Route::get('/ah-admin/financial-dashboard', [FinancialDashboardController::class, 'index'])

@@ -11,3 +11,7 @@
 @section('content')
     @include('admins.admin.components.content.backup.index')
 @endsection
+
+@section('footer_js')
+    @include('admins.admin.components.content.backup.js.check_all_js')
+@endsection

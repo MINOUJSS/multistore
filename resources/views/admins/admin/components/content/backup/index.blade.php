@@ -22,11 +22,33 @@
     @endif
      <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body p-0">
+            <form id="bulkDeleteForm"
+            action="{{ route('admin.backup.bulk-delete') }}"
+            method="POST">
+
+            @csrf
+            @method('DELETE')
+
+            <div class="m-3 d-flex gap-2">
+
+                <button
+                    type="submit"
+                    form="bulkDeleteForm"
+                    class="btn btn-danger"
+                    onclick="return confirm('هل تريد حذف جميع الملفات المحددة؟')">
+
+                    حذف المحدد
+                </button>
+
+            </div>
 
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
                     <thead class="table-light">
                         <tr>
+                            <th width="40">
+                             <input type="checkbox" id="checkAll">
+                            </th>
                             <th>إسم الملف</th>
                             <th>حجم الملف</th>
                             <th>مسار الملف</th>
@@ -38,6 +60,13 @@
                     <tbody>
                          @forelse($files as $file)
                             <tr>
+                                                                <td>
+                                    <input
+                                        type="checkbox"
+                                        class="file-checkbox"
+                                        name="files[]"
+                                        value="{{ $file['name'] }}">
+                                </td>
                                 <td>
                                     <strong>{{ $file['name'] }}</strong>
                                 </td>
@@ -79,7 +108,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center py-5">
+                                <td colspan="5" class="text-center py-5">
                                     لاتوجد ملفات إحتياطية.
                                 </td>
                             </tr>
@@ -87,6 +116,7 @@
                     </tbody>
                 </table>
             </div>
+            </form>
 
         </div>
     </div>

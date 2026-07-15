@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admins\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class BackupController extends Controller
@@ -57,5 +58,38 @@ class BackupController extends Controller
         Storage::disk($this->disk)->delete($path);
 
         return redirect()->back()->with('success', 'Backup deleted successfully.');
+    }
+
+    public function deleteSelected(Request $request)
+    {
+        $request->validate([
+            'files' => ['required', 'array'],
+            'files.*' => ['string'],
+        ]);
+
+        $deleted = 0;
+
+        // return response()->json([
+        //     'ok' => true,
+        //     'request' => $request['files'],
+        // ]);
+
+        foreach ($request['files'] as $file) {
+            // حماية من Path Traversal
+            $file = basename($file);
+
+            $path = $this->backupPath.'/'.$file;
+
+            if (Storage::disk($this->disk)->exists($path)) {
+                Storage::disk($this->disk)->delete($path);
+
+                ++$deleted;
+            }
+        }
+
+        return back()->with(
+            'success',
+            "تم حذف {$deleted} ملف بنجاح."
+        );
     }
 }
