@@ -7,7 +7,13 @@ $UnradesProofsRefusedMessages=$ProofsRefused->messages()->where('is_read_by_sell
 {
     $UnradesProofsRefusedMessages=0;
 }
-$UnreadMessages=$UnradesProofsRefusedMessages;
+$user_notifications=App\Models\UserNotification::where('user_id',auth()->user()->id)->where('is_read',false)->get();
+if($user_notifications && $user_notifications->count()>0){
+$unread_user_notificatios=App\Models\UserNotification::where('user_id',auth()->user()->id)->where('is_read',false)->count();
+}else{
+    $unread_user_notificatios=0;
+}
+$UnreadMessages=$UnradesProofsRefusedMessages+$unread_user_notificatios;
 @endphp
 <span id="UnradesProofsRefusedMessages" data-value="{{$UnradesProofsRefusedMessages}}"></span>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -100,9 +106,18 @@ $UnreadMessages=$UnradesProofsRefusedMessages;
                     </span>
                     @if ($UnreadMessages > 0)
                     <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                        @if($ProofsRefused && $ProofsRefused->messages())
                         @foreach($ProofsRefused->messages()->where('is_read_by_seller',false)->get() as $Message)
                         <li><a class="dropdown-item" href="{{route('supplier.payments_proofs_refused.show',$Message->payment_proof_id)}}">رسالة من {{ $Message->sender_type }}</a></li>
                         @endforeach
+                        @endif
+                        @if($user_notifications && $user_notifications->count()>0)
+                        @foreach($user_notifications as $not)
+                        <li><a class="dropdown-item" onclick="mark_notification_as_read({{$not->id}})" href="{{ $not->action_url }}">{{ $not->title }}</a></li>
+                        {{-- <li onclick="mark_notification_as_read({{$not->id}})">{{ $not->title }}</li> --}}
+                        @endforeach
+                        @endif
+                        
                     </ul>
                     @endif
                 </li>

@@ -59,6 +59,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                 // payments Routes
                 Route::get('/ah-admin/payments/rechage-requests', [PaymentsController::class, 'recharge_requests'])->name('payments.recharge_requests');
                 Route::patch('/admin/payments/recharge-request/approve/{id}', [PaymentsController::class, 'approve_recharge'])->name('payments.recharge.approve');
+                Route::patch('/admin/payments/recharge-request/unapprove/{id}', [PaymentsController::class, 'unapprove_recharge'])->name('payments.recharge.unapprove');
                 Route::get('/ah-admin/payments/invoices-payments', [PaymentsController::class, 'invoices_payments'])->name('payments.invoices_payments');
                 Route::patch('/admin/payments/invoice/approve/{id}', [PaymentsController::class, 'approve_invoice_payment'])->name('payments.invoice.approve');
                 Route::get('/ah-admin/payments/subscribes-payments', [PaymentsController::class, 'subscribes_payments'])->name('payments.subscribes_payments');

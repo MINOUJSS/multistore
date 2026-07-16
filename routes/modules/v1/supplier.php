@@ -217,6 +217,10 @@ Route::middleware([
                     Route::get('/supplier-panel/payments-proofs-refuseds', [SupplierPaymentsProofsRefusedController::class, 'index'])->name('payments_proofs_refuseds');
                     Route::get('/supplier-panel/payments-proofs-refused/{id}/show', [SupplierPaymentsProofsRefusedController::class, 'show'])->name('payments_proofs_refused.show');
                 });
+
+                // supplier notifications Routes
+                Route::post('/supplier-panel/notifications/mark-as-read/{id}', [App\Http\Controllers\UserNotificationController::class, 'mark_notification_as_read'])->name('mark_notificationas_read');
+
                 // supplier proofs refused messages routes
                 Route::prefix('/supplier-panel/proofs-refused/{proofId}/chat')->name('proofs.refused.chat.')->group(function () {
                     Route::get('/', [SupplierProofsRefusedChatController::class, 'index'])->name('index');

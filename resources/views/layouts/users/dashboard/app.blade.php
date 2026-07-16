@@ -200,6 +200,7 @@
     <script src="{{ asset('asset/v1/users/dashboard') }}/js/jQuery-v3-7-1.js"></script>
     <script src="{{ asset('asset/v1/users/dashboard') }}/js/app.js"></script>
     @include('users/sellers/components/navbar/js/user_notification_js')
+    @include('users/suppliers/components/navbar/js/user_notification_js')
     @include('sweetalert::alert')
     @yield('footer_js')
 </body>

@@ -11,6 +11,7 @@ use App\Models\Supplier\SupplierPlanSubscription;
 use App\Models\UserBalance;
 use App\Models\UserInvoice;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentsController extends Controller
 {
@@ -209,7 +210,79 @@ class PaymentsController extends Controller
             'note' => 'تم شحن الرصيد',
         ]);
 
+        // informe user about this action
+
+        $user_type = get_user_data_from_id($request->user_id)->type;
+
+        if ($user_type == 'seller') {
+            $action_url = route('seller.wallet');
+        } else {
+            $scheme = parse_url(config('app.url'), PHP_URL_SCHEME) ?? 'https';
+            $action_url = $scheme.'://supplier.'.config('app.domain').'/supplier-panel/wallet';
+        }
+
+        $user = \App\Models\User::find($request->user_id);
+        $user->notifications()->create([
+            'user_id' => $request->user_id,
+            'sender_id' => auth('admin')->id(),
+            'type' => 'system',
+            'title' => 'تم قبول طلب شحن الرصيد.',
+            'body' => 'تم قبول الموافقة على طلب شحن الرصيد.',
+            'icon' => 'fas fa-ban',
+            'color' => 'danger',
+            'action_url' => $action_url,
+        ]);
+
         return back()->with('success', 'تمت الموافقة على الطلب وتم شحن الرصيد.');
+    }
+
+    public function unapprove_recharge($id)
+    {
+        $request = BalanceTransaction::findOrFail($id);
+        $path = $request->payment_proof;
+        $user_type = get_user_data_from_id($request->user_id)->type;
+
+        // حذف إثبات الدفع
+
+        // switch ($user_type) {
+        //     case 'seller':
+        //         if (Storage::disk('seller')->exists($path)) {
+        //             Storage::disk('seller')->delete($path);
+        //         }
+        //         break;
+        //     case 'supplier':
+        //         if (Storage::disk('supplier')->exists($path)) {
+        //             Storage::disk('supplier')->delete($path);
+        //         }
+        //         break;
+        // }
+
+        if ($user_type == 'seller') {
+            $action_url = route('seller.wallet');
+        } else {
+            $scheme = parse_url(config('app.url'), PHP_URL_SCHEME) ?? 'https';
+            $action_url = $scheme.'://supplier.'.config('app.domain').'/supplier-panel/wallet';
+        }
+
+        // تحديث الحالة الرصيد
+        $request->status = 'unapproved';
+        $request->description = 'تم رفض الموافقة على طلب شحن الرصيد.';
+        $request->save();
+
+        // informe user about this action
+        $user = \App\Models\User::find($request->user_id);
+        $user->notifications()->create([
+            'user_id' => $request->user_id,
+            'sender_id' => auth('admin')->id(),
+            'type' => 'system',
+            'title' => 'تم رفض طلب شحن الرصيد.',
+            'body' => 'تم رفض الموافقة على طلب شحن الرصيد.',
+            'icon' => 'fas fa-ban',
+            'color' => 'danger',
+            'action_url' => $action_url,
+        ]);
+
+        return back()->with('success', 'تم رفض الموافقة على الطلب وتم شحن الرصيد.');
     }
 
     public function approve_invoice_payment($id)

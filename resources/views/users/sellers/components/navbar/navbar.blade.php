@@ -105,16 +105,19 @@ $UnreadMessages=$UnradesProofsRefusedMessages+$unread_user_notificatios;
                     <span id="unreadMessages" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         {{$UnreadMessages}}
                     </span>
-                    @if ($UnreadMessages > 0)
+                    @if ($UnreadMessages > 0)                   
                     <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                        @if($ProofsRefused && $ProofsRefused->messages())
                         @foreach($ProofsRefused->messages()->where('is_read_by_seller',false)->get() as $Message)
                         <li><a class="dropdown-item" href="{{route('seller.payments_proofs_refused.show',$Message->payment_proof_id)}}">رسالة من {{ $Message->sender_type }}</a></li>
                         @endforeach
+                        @endif
+                         @if($user_notifications && $user_notifications->count()>0)
                         @foreach($user_notifications as $not)
                         <li><a class="dropdown-item" onclick="mark_notification_as_read({{$not->id}})" href="{{ $not->action_url }}">{{ $not->title }}</a></li>
                         {{-- <li onclick="mark_notification_as_read({{$not->id}})">{{ $not->title }}</li> --}}
-
                         @endforeach
+                        @endif
                     </ul>
                     @endif
                 </li>

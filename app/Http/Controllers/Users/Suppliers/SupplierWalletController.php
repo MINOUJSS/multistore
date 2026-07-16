@@ -43,7 +43,7 @@ class SupplierWalletController extends Controller
 
         try {
             // رفع ملف إثبات الدفع
-            $proofPath = $request->file('payment_proof')->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/wallet_proofs', 'public');
+            $proofPath = $request->file('payment_proof')->store(get_supplier_store_name(auth()->user()->tenant_id).'/wallet_proofs', 'supplier');
 
             // إنشاء سجل في قاعدة البيانات
             BalanceTransaction::create([
@@ -55,7 +55,7 @@ class SupplierWalletController extends Controller
                 'status' => 'pending', // قيد المراجعة
             ]);
 
-            return redirect()->back()->with('success', 'تم إرسال طلب شحن الرصيد عبر بريدي موب بنجاح، وسيتم مراجعته في أقرب وقت.');
+            return redirect()->back()->with('order', 'تم إرسال طلب شحن الرصيد عبر بريدي موب بنجاح، وسيتم مراجعته في أقرب وقت.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء معالجة الطلب: '.$e->getMessage());
         }
@@ -71,7 +71,7 @@ class SupplierWalletController extends Controller
 
         try {
             // رفع ملف إثبات الدفع
-            $proofPath = $request->file('payment_proof')->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/wallet_proofs', 'public');
+            $proofPath = $request->file('payment_proof')->store(get_supplier_store_name(auth()->user()->tenant_id).'/wallet_proofs', 'supplier');
 
             // إنشاء سجل في قاعدة البيانات
             BalanceTransaction::create([
@@ -83,7 +83,7 @@ class SupplierWalletController extends Controller
                 'status' => 'pending', // قيد المراجعة
             ]);
 
-            return redirect()->back()->with('success', 'تم إرسال طلب شحن الرصيد عبر بريدي الجزائر (CCP) بنجاح، وسيتم مراجعته في أقرب وقت.');
+            return redirect()->back()->with('order', 'تم إرسال طلب شحن الرصيد عبر بريدي الجزائر (CCP) بنجاح، وسيتم مراجعته في أقرب وقت.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء معالجة الطلب: '.$e->getMessage());
         }

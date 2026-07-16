@@ -155,7 +155,7 @@
                             <td>{{ $addition->description }}</td>
                             <td>
                               @if($addition->payment_proof)
-                                  <a href="{{ asset('storage/app/public/' . $addition->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                  <a href="{{ asset('storage/app/public/seller/' . $addition->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                       عرض الإثبات
                                   </a>
                               @else
@@ -163,9 +163,25 @@
                               @endif
                             </td>
                             <td>
-                              <span class="badge {{ $addition->status == 'approved' ? 'bg-success' : 'bg-warning' }}">
-                                {{ $addition->status }}
-                              </span>
+                                @php
+                                    switch ($addition->status) {
+                                        case 'pending':
+                                            $statusClass = 'bg-warning';
+                                            break;
+
+                                        case 'approved':
+                                            $statusClass = 'bg-success';
+                                            break;
+
+                                        default:
+                                            $statusClass = 'bg-danger';
+                                            break;
+                                    }
+                                @endphp
+
+                                <span class="badge {{ $statusClass }}">
+                                    {{ $addition->status }}
+                                </span>
                             </td>              
                             <td>
                                 <button class="btn btn-primary btn-sm"
@@ -217,10 +233,21 @@
 <script>
     Swal.fire({
         icon: 'success',
-        title: 'تم  شحن الفاتورة بنجاح',
+        title: 'تم  شحن الرصيد بنجاح',
         text: '{{ session('success') }}',
         confirmButtonText: 'حسناً',
         timer: 3000
+    });
+</script>
+@endif
+@if(session()->has('order'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'تم إرسال طلب شحن الرصيد بنجاح',
+        text: '{{ session('order') }}',
+        confirmButtonText: 'حسناً'
+        // timer: 3000
     });
 </script>
 @endif

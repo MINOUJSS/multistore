@@ -35,11 +35,11 @@
                             <td>
                                 @if($request->payment_proof)
                                     @if(get_user_data_from_user_id($request->user_id)->type==='supplier')
-                                                                    <a href="{{ asset('storage/tenantsupplier/app/public/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                                    <a href="{{ asset('storage/tenantsupplier/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         عرض الإثبات
                                     </a>
                                     @elseif(get_user_data_from_user_id($request->user_id)->type==='seller')
-                                                                    <a href="{{ asset('storage/app/public/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                                    <a href="{{ asset('storage/app/public/seller/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         عرض الإثبات
                                     </a>
                                     @endif
@@ -57,11 +57,18 @@
                             </td>
                             <td>
                                 @if($request->status === 'pending')
+                                <span class="d-flex justify-content-center">
                                     <form action="{{ route('admin.payments.recharge.approve', $request->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من الموافقة على هذا الطلب؟');">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" class="btn btn-success btn-sm">الموافقة</button>
                                     </form>
+                                    <form class="mx-2" action="{{ route('admin.payments.recharge.unapprove', $request->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من عدم الموافقة على هذا الطلب؟');">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-danger btn-sm">عدم الموافقة</button>
+                                    </form>
+                                </span>
                                 @else
                                     —
                                 @endif
