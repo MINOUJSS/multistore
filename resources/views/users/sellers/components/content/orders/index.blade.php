@@ -211,93 +211,96 @@
 
 {{-- Responsive CSS for Mobile/Tablet --}}
 <style>
-/* Make container and cards full width on mobile/tablet */
-@media (max-width: 991.98px) {
-    .container-fluid {
-        padding-left: 0rem;
-        padding-right: 0rem;
-    }
+/* =========================================
+   Orders Table Responsive
+   ========================================= */
 
-    .card,
-    .card-body {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
+.orders-table {
+    width: 100%;
+}
 
-    /* Header stacked */
-    .d-flex.justify-content-between.align-items-center {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+/* الشاشات الصغيرة */
+@media (max-width: 768px) {
 
-    .d-flex.justify-content-between.align-items-center h1 {
-        text-align: center;
-        width: 100%;
-        margin-bottom: 1rem;
-    }
-
-    /* Filters full width */
-    .card .row > div {
-        flex: 0 0 100%;
-        max-width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    /* Table full width */
-    .table-responsive {
-        padding: 0;
-        margin: 0;
-        overflow-x: visible;
-    }
-
-    .orders-table {
-        width: 100% !important;
-        min-width: 100%;
-        table-layout: fixed; /* make columns adjust nicely */
-    }
-
-    .orders-table td,
-    .orders-table th {
-        padding: 0.5rem 0.75rem;
-        vertical-align: middle;
-    }
-
-    /* Hide thead and transform rows into card-like blocks */
     .orders-table thead {
         display: none;
     }
 
-    .orders-table tbody tr {
+    .orders-table,
+    .orders-table tbody,
+    .orders-table tr,
+    .orders-table td {
         display: block;
-        margin-bottom: 1rem;
-        border: 1px solid #dee2e6;
-        border-radius: 5px;
-        padding: 0.5rem;
         width: 100%;
-        box-sizing: border-box;
+    }
+
+    .orders-table tr {
+        margin-bottom: 20px;
+        padding: 12px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
         background: #fff;
     }
 
-    .orders-table tbody tr td {
+    .orders-table td {
         display: flex;
         justify-content: space-between;
-        padding: 0.25rem 0.5rem;
-        border: 0;
-        white-space: normal;
-        width: 100%;
+        align-items: center;
+        gap: 15px;
+        padding: 10px 5px;
+        border: none;
+        border-bottom: 1px solid #f1f1f1;
+        text-align: right;
+    }
+
+    .orders-table td:last-child {
+        border-bottom: none;
+    }
+
+    .orders-table td::before {
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+
+    .orders-table td:nth-child(1)::before {
+        content: "رقم الطلب";
+    }
+
+    .orders-table td:nth-child(2)::before {
+        content: "العميل";
+    }
+
+    .orders-table td:nth-child(3)::before {
+        content: "رقم الهاتف";
+    }
+
+    .orders-table td:nth-child(4)::before {
+        content: "الإجمالي";
+    }
+
+    .orders-table td:nth-child(5)::before {
+        content: "تأكيد الطلب";
+    }
+
+    .orders-table td:nth-child(6)::before {
+        content: "تاريخ الطلب";
+    }
+
+    .orders-table td:nth-child(7)::before {
+        content: "حالة الشحن";
+    }
+
+    .orders-table td:nth-child(8)::before {
+        content: "الإجراءات";
+    }
+
+    /* منع الأزرار من الخروج خارج البطاقة */
+    .orders-table td:last-child {
         flex-wrap: wrap;
     }
 
-    .orders-table tbody tr td::before {
-        content: attr(data-label);
-        font-weight: bold;
-        flex: 1 1 50%;
-        text-align: left;
-    }
-
-    .orders-table tbody tr td:last-child {
-        justify-content: flex-end;
+    .orders-table td:last-child > * {
+        max-width: 100%;
     }
 }
 </style>
-

@@ -161,6 +161,143 @@ select {
 
 </style>
 <div class="container">
+    <!-- info section -->
+    {{-- info bar  --}}
+        <div class="row">
+           <div class="container">
+            <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+
+            <div>
+            <i class="fas fa-flask me-2"></i>
+            <strong>منصة دزورة في المرحلة التجريبية</strong>
+            </div>
+
+             <button class="btn btn-sm btn-dark"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#betaSupport"
+                aria-expanded="true">
+              <i class="fas fa-chevron-down"></i>
+             </button>
+
+         </div>
+
+         <div class="collapse show" id="betaSupport">
+
+                <div class="card-body">
+
+            <div class="alert alert-warning mb-4">
+                <h5 class="mb-3">
+                    👋 مرحباً بك في النسخة التجريبية من <strong>Dzora</strong>
+                </h5>
+
+                <p class="mb-2">
+                    شكراً لاستخدامك المنصة ومساهمتك في تطويرها.
+                </p>
+
+                <p class="mb-2">
+                    قد تواجه بعض الأخطاء أو تحتاج إلى مساعدة أثناء استخدام المنصة،
+                    وهذا أمر طبيعي خلال المرحلة التجريبية.
+                </p>
+
+                <p class="mb-0">
+                    إذا واجهتك أي مشكلة أو كان لديك أي استفسار أو اقتراح،
+                    فإن فريق الدعم جاهز لمساعدتك.
+                </p>
+            </div>
+
+            <div class="row g-3">
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="border rounded p-3 h-100 text-center">
+
+                        <div class="fs-2 mb-2">
+                            📞
+                        </div>
+
+                        <h6>الهاتف</h6>
+
+                        <div class="fw-bold mb-3">
+                            0672816709
+                        </div>
+
+                        <a href="tel:672816709"
+                           class="btn btn-primary w-100">
+                            اتصال مباشر
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="border rounded p-3 h-100 text-center">
+
+                        <div class="fs-2 mb-2">
+                            💬
+                        </div>
+
+                        <h6>واتساب</h6>
+
+                        <div class="fw-bold mb-3">
+                            0672816709 (213+)
+                        </div>
+
+                        <a href="https://wa.me/213672816709"
+                           target="_blank"
+                           class="btn btn-success w-100">
+                            مراسلة واتساب
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4 col-md-12">
+
+                    <div class="border rounded p-3 h-100 text-center">
+
+                        <div class="fs-2 mb-2">
+                            💡
+                        </div>
+
+                        <h6>لديك اقتراح؟</h6>
+
+                        <p class="small text-muted mb-3">
+                            نرحب بجميع اقتراحاتكم لتطوير المنصة.
+                        </p>
+
+                        <a href="{{ route('site.index')}}?#contact"
+                           class="btn btn-outline-primary w-100" target="_blank">
+                            إرسال اقتراح
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="text-center text-muted small">
+
+                🚀 شكراً لمساهمتك في تطوير منصة
+                <strong>Dzora</strong>.
+                كل ملاحظة منك تساعدنا على تقديم تجربة أفضل للجميع.
+
+            </div>
+
+                </div>
+
+                </div>
+         </div>
+           </div>
+         </div>
+    <!-- end info section -->
     <h1>لوحة التحكم</h1>
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">

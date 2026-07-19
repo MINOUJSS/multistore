@@ -481,9 +481,12 @@
                                     <input type="hidden" name="wilaya_id" value="{{ $order->wilaya_id }}">
                                     <input type="hidden" name="dayra_id" value="{{ $order->dayra_id }}">
                                     <input type="hidden" name="baladia_id" value="{{ $order->baladia_id }}">
-                                    <input type="file" name="payment_proof" id="payment_proof"
-                                        class="form-control mb-3 mt-3 @error('payment_proof') is-invalid @enderror"
-                                        accept="application/pdf, image/jpeg, image/png" required>
+                                    <div class="card shadow-sm border-1 mt-3 p-3 mb-3">
+                                        <label for="file" class="form-label mt-3 "><b> إثبات الدفع</B></label>
+                                        <input type="file" name="payment_proof" id="payment_proof"
+                                            class="form-control mb-3 mt-3 @error('payment_proof') is-invalid @enderror"
+                                            accept="application/pdf, image/jpeg, image/png" required>
+                                    </div>
                                     @error('payment_proof')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

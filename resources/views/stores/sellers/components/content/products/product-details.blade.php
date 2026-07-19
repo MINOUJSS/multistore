@@ -50,7 +50,7 @@
     /* Make the entire left column sticky */
     .col-md-6:first-child {
         position: sticky;
-        top: 20px;
+        margin-bottom: 10px;
         align-self: flex-start;
         height: fit-content;
     }
