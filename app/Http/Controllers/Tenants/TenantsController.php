@@ -365,8 +365,8 @@ class TenantsController extends Controller
             $product_images = SupplierProductImages::where('product_id', $product->id)->get();
             $product_variations = SupplierProductVariations::where('product_id', $product->id)->get();
             $product_attributes = SupplierProductAttributes::where('product_id', $product->id)->get();
-            $products_for_you=SupplierProducts::where('supplier_id', get_supplier_data(tenant('id'))->id)->where('category_id',$product->category_id)->where('id','!=',$product->id)->get();
-            $other_products = SupplierProducts::where('supplier_id', get_supplier_data(tenant('id'))->id)->where('id', '!=', $product->id)->where('product_type',$product->product_type)->inRandomOrder()->take(4)->get();
+            $products_for_you=SupplierProducts::where('supplier_id', get_supplier_data(tenant('id'))->id)->where('category_id',$product->category_id)->where('id','!=',$product->id)->inRandomOrder()->take(4)->get();
+            $other_products = SupplierProducts::where('supplier_id', get_supplier_data(tenant('id'))->id)->where('id', '!=', $product->id)->inRandomOrder()->take(4)->get();
             // جلب عنوان IP ومعلومات المتصفح
             $ipAddress = $request->ip();
             $userAgent = $request->header('User-Agent');
@@ -407,7 +407,7 @@ class TenantsController extends Controller
             $product_images = SellerProductImages::where('product_id', $product->id)->get();
             $product_variations = SellerProductVariations::where('product_id', $product->id)->get();
             $product_attributes = SellerProductAttributes::where('product_id', $product->id)->get();
-            $products_for_you=SellerProducts::where('seller_id', get_seller_data(tenant('id'))->id)->where('category_id',$product->category_id)->where('id','!=',$product->id)->get();
+            $products_for_you=SellerProducts::where('seller_id', get_seller_data(tenant('id'))->id)->where('category_id',$product->category_id)->where('id','!=',$product->id)->inRandomOrder()->take(4)->get();
             $other_products = SellerProducts::where('seller_id', get_seller_data(tenant('id'))->id)->where('id', '!=', $product->id)->where('product_type',$product->product_type)->inRandomOrder()->take(4)->get();
             // جلب عنوان IP ومعلومات المتصفح
             $ipAddress = $request->ip();

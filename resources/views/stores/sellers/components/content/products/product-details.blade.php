@@ -826,11 +826,9 @@
             {{-- end product videos section  --}}
 
         </div>
-
-        {{-- start test div --}}
             {{-- start products for you  --}}
             @if(count($products_for_you)!=0)
-                <div class="col-12">
+                <div class="col-12 mt-3">
                 <h2 class="text-center mb-5 fade-in title">قد يعجبك أيضا</h2>
                 <div class="row g-4 justify-content-center">
                 <!-- Product Card Template -->
@@ -942,7 +940,7 @@
                         </div>
             @endif
             @if(count($products_for_you)==0 && count($other_products)!=0)
-                <div class="col-12">
+                <div class="col-12 mt-3">
                 <h2 class="text-center mb-5 fade-in title">إخترنا لك</h2>
                 <div class="row g-4 justify-content-center">
                 <!-- Product Card Template -->
@@ -1052,10 +1050,9 @@
                             </div>
                         @endforeach
                         </div>
-            @endif
-            {{-- end products for you  --}}
+            @endif          
         </div>
-        {{-- end test div  --}}
+        {{-- end products for you  --}}
     </div>
 </div>
 
