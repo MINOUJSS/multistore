@@ -1,10 +1,10 @@
 الأخطاء الواجب تصليحها فورا
 -------------------------------------------------
-عند طلب منتج رقمي بواسطة حوالة بنكية لايتم تغيير حالة الطلب إلى مكتمل بعد تحميل المنتج الرقمي
-multiple delete for products
+multiple delete for products for seller and supplier
+multiple delete for orders for seller and supplier
+notyfi the seller about downloading of digital products
 إضافة بانر تيليغرام للإشتراك فيها و تطوير المنصة
 مشكل في رسالة التليغرام إلى البائع خلط بين تكاليف الشحن و الخصم
-add section in product details to show other products below
 -----------------------------------------
 add system of notification about all payments for admin panel
 العمل على إضافة اللغات للمنصة

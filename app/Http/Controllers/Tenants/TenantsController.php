@@ -365,6 +365,8 @@ class TenantsController extends Controller
             $product_images = SupplierProductImages::where('product_id', $product->id)->get();
             $product_variations = SupplierProductVariations::where('product_id', $product->id)->get();
             $product_attributes = SupplierProductAttributes::where('product_id', $product->id)->get();
+            $products_for_you=SupplierProducts::where('supplier_id', get_supplier_data(tenant('id'))->id)->where('category_id',$product->category_id)->where('id','!=',$product->id)->get();
+            $other_products = SupplierProducts::where('supplier_id', get_supplier_data(tenant('id'))->id)->where('id', '!=', $product->id)->where('product_type',$product->product_type)->inRandomOrder()->take(4)->get();
             // جلب عنوان IP ومعلومات المتصفح
             $ipAddress = $request->ip();
             $userAgent = $request->header('User-Agent');
@@ -389,7 +391,7 @@ class TenantsController extends Controller
             }
 
             // return idex view with user data
-            return view('stores.suppliers.product-details', compact('product', 'order_form', 'wilayas', 'product_images', 'product_variations', 'product_attributes','store_settings'));
+            return view('stores.suppliers.product-details', compact('product', 'order_form', 'wilayas', 'product_images', 'product_variations', 'product_attributes', 'store_settings','products_for_you','other_products'));
         } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
             // insert this visit to supplier product visit table
 
@@ -405,6 +407,8 @@ class TenantsController extends Controller
             $product_images = SellerProductImages::where('product_id', $product->id)->get();
             $product_variations = SellerProductVariations::where('product_id', $product->id)->get();
             $product_attributes = SellerProductAttributes::where('product_id', $product->id)->get();
+            $products_for_you=SellerProducts::where('seller_id', get_seller_data(tenant('id'))->id)->where('category_id',$product->category_id)->where('id','!=',$product->id)->get();
+            $other_products = SellerProducts::where('seller_id', get_seller_data(tenant('id'))->id)->where('id', '!=', $product->id)->where('product_type',$product->product_type)->inRandomOrder()->take(4)->get();
             // جلب عنوان IP ومعلومات المتصفح
             $ipAddress = $request->ip();
             $userAgent = $request->header('User-Agent');
@@ -429,7 +433,7 @@ class TenantsController extends Controller
             }
 
             // return idex view with user data
-            return view('stores.sellers.product-details', compact('product', 'order_form', 'wilayas', 'product_images', 'product_variations', 'product_attributes','store_settings'));
+            return view('stores.sellers.product-details', compact('product', 'order_form', 'wilayas', 'product_images', 'product_variations', 'product_attributes', 'store_settings','products_for_you','other_products'));
         }
 
         return 'This is your multi-tenant application. The id of the current tenant is '.tenant('id');
@@ -2703,7 +2707,7 @@ class TenantsController extends Controller
     // download digital product
     public function download($id, $token)
     {
-        dd($id, $token);
+        // dd($id, $token);
         $order = SellerOrders::where('download_token', $token)->first();
         // ❌ Token غير صالح
         if (!$order) {
@@ -2727,6 +2731,10 @@ class TenantsController extends Controller
 
         // زيادة عدد التحميلات
         $order->increment('downloads_count');
+
+        // تحديث حالة الأوردر إلى مكتمل
+        $order->status = 'delivered';
+        $order->update();
 
         $product = SellerProducts::where('id', $id)->first();
         $file = $product->file;
