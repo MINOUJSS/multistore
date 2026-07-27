@@ -3,7 +3,7 @@
     <div class="container" data-aos="fade-up">
 
       <div class="section-title">
-        <h2>من نحن</h2>
+        <h2>{{__('site.about')}}</h2>
       </div>
 
       <div class="row content">

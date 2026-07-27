@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{app()->getLocale()}}">
 
 <head>
   <meta charset="utf-8">
@@ -26,7 +26,9 @@
   <!-- Vendor CSS Files -->
   <link href="{{asset('asset/v1/site/defaulte')}}/css/aos.css" rel="stylesheet">
   <link href="{{asset('asset/v1/site/defaulte')}}/css/bootstrap.min.css" rel="stylesheet">
+  @if(app()->getLocale() == 'ar')
   <link href="{{asset('asset/v1/site/defaulte')}}/css/bootstrap-rtl.min.css" rel="stylesheet">
+  @endif
   <link href="{{asset('asset/v1/site/defaulte')}}/css/bootstrap-icons.css" rel="stylesheet">
   <link href="{{asset('asset/v1/site/defaulte')}}/css/boxicons.css" rel="stylesheet">
   <link href="{{asset('asset/v1/site/defaulte')}}/css/glightbox.min.css" rel="stylesheet">
@@ -57,15 +59,15 @@
 <header id="header" class="fixed-top ">
   <div class="container d-flex align-items-center">
 
-    <h1 class="logo my-me-auto"><a href="{{route('site.index')}}">{{config('app.name')}}</a></h1>
+    <h1 class="logo" @if(app()->getLocale() == 'ar') style="margin-left: auto !important;" @else style="margin-right: auto !important;" @endif><a href="{{route('site.index')}}">{{config('app.name')}}</a></h1>
     <!-- Uncomment below if you prefer to use an image logo -->
     <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
     <nav id="navbar" class="navbar">
       <ul>
-        <li><a class="nav-link scrollto active" href="{{config('app.url')}}?#hero">الرئيسية</a></li>
-        <li><a class="nav-link scrollto" href="{{config('app.url')}}?#about">من نحن</a></li>
-        <li><a class="nav-link scrollto" href="{{config('app.url')}}?#services">خدماتنا</a></li>
+        <li><a class="nav-link scrollto active" href="{{config('app.url')}}?#hero">{{__('site.home')}}</a></li>
+        <li><a class="nav-link scrollto" href="{{config('app.url')}}?#about">{{__('site.about')}}</a></li>
+        <li><a class="nav-link scrollto" href="{{config('app.url')}}?#services">{{__('site.services')}}</a></li>
         {{-- <li><a class="nav-link   scrollto" href="#portfolio">أعمالنا</a></li> --}}
         {{-- <li><a class="nav-link scrollto" href="#team">فريق العمل</a></li> --}}
         {{-- <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
@@ -85,8 +87,8 @@
             <li><a href="#">Drop Down 4</a></li>
           </ul>
         </li> --}}
-        <li><a class="nav-link scrollto" href="{{config('app.url')}}?#contact">إتصل بنا</a></li>
-        <li><a class="getstarted scrollto" href="{{config('app.url')}}?#services">إبدأ الآن</a></li>
+        <li><a class="nav-link scrollto" href="{{config('app.url')}}?#contact">{{__('site.contact')}}</a></li>
+        <li><a class="getstarted scrollto" href="{{config('app.url')}}?#services">{{__('site.get_started')}}</a></li>
       </ul>
       <i class="bi bi-list mobile-nav-toggle"></i>
     </nav><!-- .navbar -->

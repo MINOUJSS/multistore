@@ -76,5 +76,6 @@ class Kernel extends HttpKernel
         'ForBossOnly' => Middleware\ForBossOnly::class,
         'SellerRefusedPaymentProofs' => Middleware\SellerRefusedPaymentProofs::class,
         'SupplierRefusedPaymentProofs' => Middleware\SupplierRefusedPaymentProofs::class,
+        'setlang' => Middleware\SetLang::class,
     ];
 }

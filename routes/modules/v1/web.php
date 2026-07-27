@@ -48,34 +48,42 @@ foreach (config('tenancy.central_domains') as $domain) {
         Route::post('chargilypay/redirect', [ChargilyPayController::class, 'redirect'])->name('chargilypay.redirect');
         Route::get('chargilypay/back', [ChargilyPayController::class, 'back'])->name('chargilypay.back');
         Route::post('chargilypay/webhook', [ChargilyPayController::class, 'webhook'])->name('chargilypay.webhook_endpoint');
+        // lang route
+        Route::get('setlang/{lang}', function ($lang) {
+            session()->put('locale', $lang);
+
+            return redirect()->back();
+        });
         // site routes
-        Route::name('site.')->group(function () {
-            Route::get('/', [SiteController::class, 'index'])->name('index');
-            Route::get('/privacy-policy', [SiteController::class, 'privacy_policy'])->name('privacy_policy');
-            Route::get('/show_suppliers_plans', [SiteController::class, 'show_suppliers_plans'])->name('show_suppliers_plans');
-            Route::get('/show_sellers_plans', [SiteController::class, 'show_sellers_plans'])->name('show_sellers_plans');
-            Route::get('/show_shipers_plans', [SiteController::class, 'show_shipers_plans'])->name('show_shipers_plans');
-            Route::get('/show_affiliate_marketers_plans', [SiteController::class, 'show_affiliate_marketers_plans'])->name('show_affiliate_marketers_plans');
-            // disputes routes
-            Route::get('/dispute/create', [SiteDisputeController::class, 'create'])->name('dispute.create');
-            Route::post('/dispute/store', [SiteDisputeController::class, 'store'])->name('dispute.store');
-            Route::get('/dispute/track/{token}', [SiteDisputeController::class, 'track'])->name('dispute.track');
-            Route::post('/dispute/{token}/reply', [SiteDisputeController::class, 'reply'])->name('dispute.reply');
-            Route::get('/dispute/{token}/messages', [SiteDisputeController::class, 'fetchMessages']);
-            // download route
-            // رابط الدخول (دائم)
-            Route::get('/download/{token}', [SiteController::class, 'entry'])
-                ->name('download.entry');
-            // رابط التحميل الفعلي (موقّع)
-            Route::get('/download/{id}/{token}', [SiteController::class, 'download'])->name('product.download')->middleware('signed');
-            // Contact Message Routes
-            Route::post('/contact/store', [ContactMessageController::class, 'store'])->name('contact.store')->middleware('throttle:5,1');
-            // Newsletter Routes
-            Route::post('/newsletter/subscribe', [NewsletterSubscriberController::class, 'subscribe'])->name('newsletter.subscribe');
+        Route::middleware('setlang')->group(function () {
+            Route::name('site.')->group(function () {
+                Route::get('/', [SiteController::class, 'index'])->name('index');
+                Route::get('/privacy-policy', [SiteController::class, 'privacy_policy'])->name('privacy_policy');
+                Route::get('/show_suppliers_plans', [SiteController::class, 'show_suppliers_plans'])->name('show_suppliers_plans');
+                Route::get('/show_sellers_plans', [SiteController::class, 'show_sellers_plans'])->name('show_sellers_plans');
+                Route::get('/show_shipers_plans', [SiteController::class, 'show_shipers_plans'])->name('show_shipers_plans');
+                Route::get('/show_affiliate_marketers_plans', [SiteController::class, 'show_affiliate_marketers_plans'])->name('show_affiliate_marketers_plans');
+                // disputes routes
+                Route::get('/dispute/create', [SiteDisputeController::class, 'create'])->name('dispute.create');
+                Route::post('/dispute/store', [SiteDisputeController::class, 'store'])->name('dispute.store');
+                Route::get('/dispute/track/{token}', [SiteDisputeController::class, 'track'])->name('dispute.track');
+                Route::post('/dispute/{token}/reply', [SiteDisputeController::class, 'reply'])->name('dispute.reply');
+                Route::get('/dispute/{token}/messages', [SiteDisputeController::class, 'fetchMessages']);
+                // download route
+                // رابط الدخول (دائم)
+                Route::get('/download/{token}', [SiteController::class, 'entry'])
+                    ->name('download.entry');
+                // رابط التحميل الفعلي (موقّع)
+                Route::get('/download/{id}/{token}', [SiteController::class, 'download'])->name('product.download')->middleware('signed');
+                // Contact Message Routes
+                Route::post('/contact/store', [ContactMessageController::class, 'store'])->name('contact.store')->middleware('throttle:5,1');
+                // Newsletter Routes
+                Route::post('/newsletter/subscribe', [NewsletterSubscriberController::class, 'subscribe'])->name('newsletter.subscribe');
 
-            // test sending email
+                // test sending email
 
-            // end test sending email
+                // end test sending email
+            });
         });
     });
 }

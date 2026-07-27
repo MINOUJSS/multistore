@@ -1,0 +1,24 @@
+<?php
+
+return [
+    'home' => 'Home',
+    'about' => 'About',
+    'services' => 'Services',
+    'contact' => 'Contact',
+    'get_started' => 'Get Started',
+    'header_title' => 'Transform your business into a fully-fledged e-commerce business in minutes',
+    'header_description' => 'Our platform brings together suppliers, traders, marketers, and shipping companies in one place.',
+    'header_seller_plan_title' => 'Choose the plan (package) that suits you and start growing your business now.',
+    'header_seller_plan_description' => 'Easily and quickly transition from traditional commerce to e-commerce and own your own online store with all the advantages of e-commerce, along with supporting services.',
+    'header_supplier_plan_title' => 'Choose the plan (package) that suits you and start growing your business now.',
+    'header_supplier_plan_description' => 'Easily and quickly transition from traditional commerce to e-commerce and own your own online store with all the advantages of e-commerce, along with supporting services.',
+    'have_account_quistion' => 'Do you have an account? Log in here',
+    'how_to_register_on_the_platform_as_a_seller' => 'How to register on the platform as a seller',
+    'how_to_register_on_the_platform_as_a_supplier' => 'How to register on the platform as a supplier',
+    'login' => 'Login',
+    'register' => 'Register',
+    'logout' => 'Logout',
+    'dashboard' => 'Dashboard',
+    'profile' => 'Profile',
+    'settings' => 'Settings',
+];
