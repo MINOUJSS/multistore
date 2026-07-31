@@ -21,4 +21,5 @@ return [
     'dashboard' => 'Dashboard',
     'profile' => 'Profile',
     'settings' => 'Settings',
+    'how_it_works' => 'How does the platform work?',
 ];

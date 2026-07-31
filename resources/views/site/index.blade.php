@@ -39,12 +39,12 @@
 @endsection
 
 @section('about')
-@include('site.inc.about.about')
+@include('site.inc.how_its_work.how_its_work')
 @endsection
 
-@section('why-us')
+{{-- @section('why-us')
 @include('site.inc.why_us.why_us')
-@endsection
+@endsection --}}
 
 @section('skills')
 @include('site.inc.skills.skills')

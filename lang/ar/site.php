@@ -21,4 +21,5 @@ return [
     'dashboard' => 'لوحة التحكم',
     'profile' => 'الملف الشخصي',
     'settings' => 'الاعدادات',
+    'how_it_works' => 'كيف تعمل المنصة؟',
 ];
