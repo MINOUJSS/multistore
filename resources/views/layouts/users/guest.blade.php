@@ -14,6 +14,10 @@
      <!-- fonts  -->
       <link rel="stylesheet" href="{{asset('asset/v1/users/auth')}}/fonts/all.css">
       <link rel="stylesheet" href="{{asset('asset/v1/users/auth')}}/css/appfont.css">
+      <!-- google analitics -->
+      @yield('google_analitics')
+      <!-- clarity -->
+      @yield('clarity')
     <title>@yield('title')</title>
   </head>
   <body>

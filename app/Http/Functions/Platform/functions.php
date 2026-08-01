@@ -196,7 +196,9 @@ function get_plan_price_from_id_and_duration($plan_id, $duration)
 // getplatform name
 function get_platform_name()
 {
-    return 'متاجر الجزائر';
+    $platform_name = config('app.name');
+
+    return $platform_name;
 }
 
 function is_cart_has_this_product($product_id)
