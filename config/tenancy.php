@@ -20,7 +20,7 @@ return [
         '127.0.0.1',
         'localhost',
         'multistore.test',
-        // 'dzora.net',
+        'dzora.net',
         // 'https://7373-154-121-44-182.ngrok-free.app',
     ],
 
