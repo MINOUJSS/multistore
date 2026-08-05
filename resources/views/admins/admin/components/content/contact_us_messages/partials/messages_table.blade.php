@@ -8,7 +8,7 @@
         <td data-label="نص الرسالة">{{ $message->message }}</td>
         <td data-label="تاريخ الرسالة">{{ $message->created_at->format('Y-m-d') }}</td>
         <td data-label="حالة الرسالة">{{ $message->is_read }}</td>
-        <td>
+        <td data-label="الإجراءات">
             <a href="{{ route('admin.contact.message.show', $message->id) }}" class="btn btn-sm btn-info view-message">
                 <i class="fas fa-eye"></i>
             </a>

@@ -66,4 +66,84 @@ Before completing any UI or style update, run through this verification checklis
 3. [ ] **JS Targets Check**: Have functional classes used by scripts or event handlers been preserved?
 4. [ ] **Form Inputs Check**: Do form elements maintain their `name`, `type`, `value`, and `id` attributes?
 5. [ ] **Bootstrap 5 Compliance**: Are grid columns (`col-12`, `col-md-*`) wrapped properly inside a `.row` and `.container`/`.container-fluid`?
-6. [ ] **RTL Support**: Are directional utilities compatible with RTL (`ms-*` / `me-*` used appropriately)?
+5. [ ] **Responsive Table Protocol**: Have all table `<td>` elements received `data-label` attributes and `@media (max-width: 991.98px)` Pure CSS transformations?
+
+---
+
+## 5. Pure CSS Responsive Table Protocol
+
+When building or updating data tables in Blade views, standard HTML tables often break mobile viewports due to multi-column width expansion. Always implement the **Pure CSS Responsive Table Standard**:
+
+### A. HTML Data-Label Requirement
+Add a `data-label="..."` attribute to every `<td>` matching its corresponding `<th>` title:
+```html
+<table class="table" id="myDataTable">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>الحالة</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-label="#">1</td>
+            <td data-label="الاسم">محمد أحمد</td>
+            <td data-label="الحالة"><span class="badge bg-success">نشط</span></td>
+        </tr>
+    </tbody>
+</table>
+```
+
+### B. CSS Responsive Transformation Standard
+Add the scoped CSS media query (`@media (max-width: 991.98px)`):
+```css
+@media (max-width: 991.98px) {
+    #myDataTable, 
+    #myDataTable tbody, 
+    #myDataTable tr, 
+    #myDataTable td {
+        display: block;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+    
+    #myDataTable thead {
+        display: none !important;
+    }
+    
+    #myDataTable tbody tr {
+        background: #ffffff;
+        border: 1px solid #e9ecef !important;
+        border-radius: 14px;
+        margin-bottom: 1.25rem;
+        padding: 0.5rem 0.75rem;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+    }
+    
+    #myDataTable tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.65rem 0.75rem;
+        border: none !important;
+        border-bottom: 1px dashed #e9ecef !important;
+        white-space: normal !important;
+        text-align: left;
+    }
+    
+    #myDataTable tbody td:last-child {
+        border-bottom: none !important;
+    }
+    
+    #myDataTable tbody td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #495057;
+        font-size: 0.85rem;
+        margin-left: 1rem;
+        flex-shrink: 0;
+    }
+}
+```
+
