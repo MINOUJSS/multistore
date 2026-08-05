@@ -111,7 +111,7 @@ canvas {
                     <a href="{{ route('seller.products') }}" class="btn btn-warning text-dark fw-bold px-3 py-2 rounded-3 border-0 shadow-sm">
                         <i class="fa-solid fa-plus me-1"></i> إضافة منتج
                     </a>
-                    <a href="{{ route('seller.profile') }}" class="btn btn-outline-light text-white fw-bold px-3 py-2 rounded-3 border-2 shadow-sm">
+                    <a href="{{ route('seller.settings') }}" class="btn btn-outline-light text-white fw-bold px-3 py-2 rounded-3 border-2 shadow-sm">
                         <i class="fa-solid fa-gear me-1"></i> الإعدادات
                     </a>
                 </div>
