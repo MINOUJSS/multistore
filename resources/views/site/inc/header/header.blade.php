@@ -35,7 +35,7 @@
                         <i class="bi bi-arrow-left-short fs-4"></i>
                     </a>
 
-                    <a href="https://www.youtube.com/watch?v=cZRpUCWb_A4"
+                    <a href="https://youtu.be/AfA5J1Y9HCs"
                         class="glightbox btn-watch-video d-inline-flex align-items-center gap-2 text-white-50 text-decoration-none px-3 py-2">
                         <i class="bi bi-play-circle-fill fs-3 text-pink-accent"></i>
                         <span class="fw-semibold text-white">{{ __('site.watch_how_it_works') }}</span>
@@ -49,8 +49,10 @@
                         <span class="text-white-50 small fw-semibold">{{ __('site.active_stores_count') }}</span>
                     </div>
                     <div class="d-flex align-items-center gap-3 text-white-50 small">
-                        <span><i class="bi bi-shield-check text-pink-accent me-1"></i> {{ __('site.electronic_payments') }}</span>
-                        <span><i class="bi bi-truck text-pink-accent me-1"></i> {{ __('site.integrated_shipping') }}</span>
+                        <span><i class="bi bi-shield-check text-pink-accent me-1"></i>
+                            {{ __('site.electronic_payments') }}</span>
+                        <span><i class="bi bi-truck text-pink-accent me-1"></i>
+                            {{ __('site.integrated_shipping') }}</span>
                     </div>
                 </div>
 

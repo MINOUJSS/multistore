@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\UserRequestsValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class SellerController extends Controller
@@ -161,5 +162,40 @@ class SellerController extends Controller
         //     'message' => 'تم حذف توثيق البائع بنجاح',
         // ]);
         return redirect()->back()->with(['approval_status' => 'unapproved', 'success' => true, 'message' => 'تم حذف توثيق البائع بنجاح']);
+    }
+
+    // change seller password
+    public function changePassword(Request $request, $id)
+    {
+        $request->validate([
+            'password' => 'required|string|min:6',
+        ]);
+
+        $seller = Seller::findOrFail($id);
+        $user = User::where('tenant_id', $seller->tenant_id)->first();
+
+        if (!$user) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'لم يتم العثور على حساب المستخدم المرتبط'], 442);
+            }
+            return redirect()->back()->with('error', 'لم يتم العثور على حساب المستخدم المرتبط');
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تم تغيير كلمة المرور بنجاح',
+                'new_password' => $request->password,
+            ]);
+        }
+
+        return redirect()->back()->with([
+            'success' => 'تم تغيير كلمة المرور بنجاح',
+            'new_password' => $request->password,
+        ]);
     }
 }

@@ -98,6 +98,7 @@ Route::middleware([
                 Route::get('/supplier-panel/product/edit/{id}', [SupplierProductController::class, 'edit'])->name('product.edit');
                 Route::post('/supplier-panel/product/update/{id}', [SupplierProductController::class, 'update'])->name('product.update');
                 Route::delete('/supplier-panel/product/delete/{id}', [SupplierProductController::class, 'delete'])->name('product.delete');
+                Route::delete('/supplier-panel/product/bulk-delete', [SupplierProductController::class, 'bulkDelete'])->name('product.bulkDelete');
                 Route::delete('/supplier-panel/product/image/delete/{id}', [SupplierProductController::class, 'delete_product_image'])->name('product.delete_product_image');
                 Route::delete('/supplier-panel/product/video/delete/{id}', [SupplierProductController::class, 'delete_product_video'])->name('product.delete_product_video');
                 Route::delete('/supplier-panel/product/variant/delete/{id}', [SupplierProductController::class, 'delete_product_variation'])->name('product.delete_product_variation');

@@ -92,6 +92,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::get('/seller-panel/product/edit/{id}', [SellerProductController::class, 'edit'])->name('product.edit');
                     Route::post('/seller-panel/product/update/{id}', [SellerProductController::class, 'update'])->name('product.update');
                     Route::delete('/seller-panel/product/delete/{id}', [SellerProductController::class, 'delete'])->name('product.delete');
+                    Route::delete('/seller-panel/product/bulk-delete', [SellerProductController::class, 'bulkDelete'])->name('product.bulkDelete');
                     Route::delete('/seller-panel/product/image/delete/{id}', [SellerProductController::class, 'delete_product_image'])->name('product.delete_product_image');
                     Route::delete('/seller-panel/product/video/delete/{id}', [SellerProductController::class, 'delete_product_video'])->name('product.delete_product_video');
                     Route::delete('/seller-panel/product/variant/delete/{id}', [SellerProductController::class, 'delete_product_variation'])->name('product.delete_product_variation');

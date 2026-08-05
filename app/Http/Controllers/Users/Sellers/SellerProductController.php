@@ -804,6 +804,33 @@ class SellerProductController extends Controller
         ]);
     }
 
+    // bulk delete products
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:seller_products,id',
+        ]);
+
+        $sellerId = get_seller_data(auth()->user()->tenant_id)->id;
+        $products = SellerProducts::whereIn('id', $request->ids)->where('seller_id', $sellerId)->get();
+
+        foreach ($products as $product) {
+            $store_name = get_seller_store_name(get_tenant_id_from_seller($product->seller_id));
+            $folderPath = $store_name.'/products/'.$product->id;
+
+            if (Storage::disk('seller')->exists($folderPath)) {
+                Storage::disk('seller')->deleteDirectory($folderPath);
+            }
+            $product->delete();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم حذف المنتجات المحددة بنجاح',
+        ]);
+    }
+
     // function delete_product_image()
     public function delete_product_image($id)
     {

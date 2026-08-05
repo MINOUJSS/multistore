@@ -102,6 +102,13 @@
     </div>
 
     {{-- products table --}}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <button id="bulkDeleteBtn" class="btn btn-danger d-none shadow-sm fw-semibold">
+                <i class="fas fa-trash me-1"></i> حذف المنتجات المحددة (<span id="selectedCount">0</span>)
+            </button>
+        </div>
+    </div>
 
     <div class="card">
         <div class="card-body">
@@ -109,6 +116,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
+                            <th width="40"><input type="checkbox" id="selectAllProducts" class="form-check-input"></th>
                             <th>صورة</th>
                             <th>اسم المنتج</th>
                             <th>التصنيف</th>
@@ -124,6 +132,7 @@
                     <tbody id="productList">
                         @foreach ($products as $product)
                             <tr>
+                                <td><input type="checkbox" class="form-check-input product-checkbox" value="{{ $product->id }}"></td>
                                 <td><img src="{{ asset($product->image) }}" alt="Product" width="50"></td>
                                 <td>{{ $product->name }}</td>
                                 <td>{{ get_supplier_product_category($product->id) }}</td>

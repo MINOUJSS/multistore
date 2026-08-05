@@ -662,6 +662,33 @@ class SupplierProductController extends Controller
         ]);
     }
 
+    // bulk delete products
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:supplier_products,id',
+        ]);
+
+        $supplierId = get_supplier_data(auth()->user()->tenant_id)->id;
+        $products = SupplierProducts::whereIn('id', $request->ids)->where('supplier_id', $supplierId)->get();
+
+        foreach ($products as $product) {
+            $store_name = get_supplier_store_name(get_tenant_id_from_supplier($product->supplier_id));
+            $folderPath = $store_name.'/products/'.$product->id;
+
+            if (Storage::disk('supplier')->exists($folderPath)) {
+                Storage::disk('supplier')->deleteDirectory($folderPath);
+            }
+            $product->delete();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم حذف المنتجات المحددة بنجاح',
+        ]);
+    }
+
     // function delete_product_image()
     public function delete_product_image($id)
     {

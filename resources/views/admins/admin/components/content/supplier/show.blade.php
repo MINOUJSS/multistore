@@ -18,6 +18,9 @@
                                 <button class="btn btn-success" onclick="printSellerInfo()">
                                  طباعة معلومات المستخدم
                                 </button>
+                                <button class="btn btn-warning text-dark border-0 shadow-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                    <i class="fa-solid fa-key me-1"></i> تغيير كلمة المرور
+                                </button>
                     
                 </div>
             </div>
@@ -434,3 +437,163 @@
             })  
         </script>
     @endif
+
+<!-- Modal 1: تغيير كلمة المرور -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header bg-warning bg-opacity-10 border-0">
+                <h5 class="modal-title fw-bold" id="changePasswordModalLabel">
+                    <i class="fa-solid fa-key text-warning me-2"></i> تغيير كلمة المرور للمورد
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="changePasswordForm" action="{{ route('admin.supplier.changePassword', $supplier->id) }}" method="POST">
+                @csrf
+                <div class="modal-body py-4">
+                    <div class="mb-3">
+                        <label for="newPasswordInput" class="form-label fw-semibold">كلمة المرور الجديدة</label>
+                        <div class="input-group">
+                            <input type="text" name="password" id="newPasswordInput" class="form-control" placeholder="أدخل كلمة المرور الجديدة..." required minlength="6">
+                            <button type="button" class="btn btn-outline-secondary" onclick="generateRandomPassword()" title="توليد كلمة مرور عشوائية">
+                                <i class="fa-solid fa-arrows-rotate me-1"></i> توليد
+                            </button>
+                        </div>
+                        <div class="form-text text-muted">يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.</div>
+                    </div>
+                    <div id="changePasswordError" class="alert alert-danger d-none mb-0"></div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" id="savePasswordBtn" class="btn btn-warning text-dark fw-bold rounded-3">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> حفظ كلمة المرور
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: عرض كلمة المرور الجديدة لنسخها -->
+<div class="modal fade" id="passwordSuccessModal" tabindex="-1" aria-labelledby="passwordSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header bg-success text-white rounded-top-4">
+                <h5 class="modal-title fw-bold" id="passwordSuccessModalLabel">
+                    <i class="fa-solid fa-circle-check me-2"></i> تم تغيير كلمة المرور بنجاح
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <p class="text-muted mb-3">تم تسجيل كلمة المرور الجديدة بنجاح في قاعدة البيانات. يمكنك نسخها أدناه لإرسالها للمورد:</p>
+                <div class="input-group mb-3">
+                    <input type="text" id="displayNewPassword" class="form-control text-center font-monospace fs-5 fw-bold bg-light" readonly>
+                    <button class="btn btn-primary px-3" type="button" onclick="copyNewPassword()">
+                        <i class="fa-solid fa-copy me-1"></i> <span id="copyBtnText">نسخ كلمة المرور</span>
+                    </button>
+                </div>
+                <div id="copyAlertSuccess" class="alert alert-success d-none py-2 mb-0" role="alert">
+                    <i class="fa-solid fa-check me-1"></i> تم نسخ كلمة المرور إلى الحافظة بنجاح!
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary w-100 rounded-3" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function generateRandomPassword() {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    let password = "";
+    for (let i = 0; i < 10; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById('newPasswordInput').value = password;
+}
+
+function copyNewPassword() {
+    const passwordInput = document.getElementById('displayNewPassword');
+    passwordInput.select();
+    passwordInput.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(passwordInput.value).then(function() {
+        const copyBtnText = document.getElementById('copyBtnText');
+        const alertBox = document.getElementById('copyAlertSuccess');
+        copyBtnText.innerText = 'تم النسخ!';
+        alertBox.classList.remove('d-none');
+        setTimeout(() => {
+            copyBtnText.innerText = 'نسخ كلمة المرور';
+            alertBox.classList.add('d-none');
+        }, 3000);
+    }).catch(function(err) {
+        alert('تعذر النسخ تلقائياً: ' + err);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('savePasswordBtn');
+            const errorBox = document.getElementById('changePasswordError');
+            const passwordInput = document.getElementById('newPasswordInput');
+            
+            errorBox.classList.add('d-none');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جاري الحفظ...';
+
+            const formData = new FormData(changePasswordForm);
+
+            fetch(changePasswordForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(res => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk me-1"></i> حفظ كلمة المرور';
+
+                if (res.body.success) {
+                    // Hide Modal 1
+                    const modal1El = document.getElementById('changePasswordModal');
+                    const modal1 = bootstrap.Modal.getInstance(modal1El) || new bootstrap.Modal(modal1El);
+                    modal1.hide();
+
+                    // Set password in Modal 2
+                    document.getElementById('displayNewPassword').value = res.body.new_password;
+
+                    // Show Modal 2
+                    const modal2El = document.getElementById('passwordSuccessModal');
+                    const modal2 = new bootstrap.Modal(modal2El);
+                    modal2.show();
+
+                    // Clear input
+                    passwordInput.value = '';
+                } else {
+                    errorBox.innerText = res.body.message || 'حدث خطأ أثناء تغيير كلمة المرور';
+                    errorBox.classList.remove('d-none');
+                }
+            })
+            .catch(err => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk me-1"></i> حفظ كلمة المرور';
+                errorBox.innerText = 'حدث خطأ في الاتصال بالسيرفر';
+                errorBox.classList.remove('d-none');
+            });
+        });
+    }
+
+    @if(session('new_password'))
+        document.getElementById('displayNewPassword').value = "{{ session('new_password') }}";
+        const modal2El = document.getElementById('passwordSuccessModal');
+        const modal2 = new bootstrap.Modal(modal2El);
+        modal2.show();
+    @endif
+});
+</script>

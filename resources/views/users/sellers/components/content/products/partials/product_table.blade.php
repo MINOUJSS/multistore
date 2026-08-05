@@ -1,6 +1,7 @@
 @if($products->count()>=1)
 @foreach ($products as $product)
 <tr>
+    <td><input type="checkbox" class="form-check-input product-checkbox" value="{{$product->id}}"></td>
     <td><img src="{{asset($product->image)}}" alt="Product" width="50"></td>
     <td>{{$product->name}}</td>
     <td>{{get_seller_product_category($product->id)}}</td>
@@ -26,5 +27,5 @@
 </tr>
 @endforeach    
 @else
-<tr><td colspan="10" class="text-center">لم يتم العثور على أي منتج</td></tr> 
+<tr><td colspan="11" class="text-center">لم يتم العثور على أي منتج</td></tr> 
 @endif
