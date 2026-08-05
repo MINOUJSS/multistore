@@ -1,82 +1,90 @@
-        <div class="row g-3 mt-2">
-            <div class="col-sm-12 col-md-6 col-lg-3">
-                <div class="card bg-white text-white h-100 border-primary">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-2 text-primary">
-                            <i class="fa-solid fa-cart-arrow-down fa-2x me-2"></i>
-                            <h5 class="card-title mb-0"> طلبات هذا الأسبوع</h5>
-                        </div>
-                        <h2 class="card-text mb-2 text-primary">{{ $supplier->ordersThisWeek->count() }}</h2>
-                        <div class="d-flex align-items-center">
-                            @if ($isWeekAllIncrease)
-                                <i class="fa-solid fa-arrow-up text-success me-1"></i>
-                                <small class="text-success">{{ $percentageAllWeekChange }} % عن الأسبوع الماضي</small>
-                            @else
-                                <i class="fa-solid fa-arrow-down text-danger me-1"></i>
-                                <small class="text-danger">{{ $percentageAllWeekChange }} % عن الأسبوع الماضي</small>
-                            @endif
-                        </div>
-                    </div>
+<div class="row g-3 mt-2">
+    <div class="col-sm-12 col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white dashboard-stat-card">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="stat-icon-wrapper bg-indigo-subtle text-indigo">
+                        <i class="fa-solid fa-cart-arrow-down fa-lg"></i>
+                    </span>
+                    <span class="badge bg-indigo-subtle text-indigo px-2.5 py-1 rounded-pill fw-semibold small">الأسبوع</span>
                 </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
-                <div class="card bg-white text-success h-100 border-success">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa-solid fa-cart-plus fa-2x me-2"></i>
-                            <h5 class="card-title mb-0"> المؤكدة هذا الأسبوع</h5>
-                        </div>
-                        <h2 class="card-text mb-2">{{ $supplier->ordersConfirmedThisWeek->count() }}</h2>
-                        <div class="d-flex align-items-center">
-                            @if ($isWeekDeliveredIncrease)
-                                <i class="fa-solid fa-arrow-up text-success me-1"></i>
-                                <small class="text-success">{{ $percentageDeliveredWeekChange }} % عن الأسبوع الماضي</small>
-                            @else
-                                <i class="fa-solid fa-arrow-down text-danger me-1"></i>
-                                <small class="text-danger">{{ $percentageDeliveredWeekChange }} % عن الأسبوع الماضي</small>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
-                <div class="card bg-white text-danger h-100 border-danger">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa-solid fa-cart-shopping fa-2x me-2"></i>
-                            <h5 class="card-title mb-0"> الملغاة هذا الأسبوع</h5>
-                        </div>
-                        <h2 class="card-text mb-2">{{ $supplier->ordersCanceledThisWeek->count() }}</h2>
-                        <div class="d-flex align-items-center">
-                            @if ($isWeekCanceledIncrease)
-                                <i class="fa-solid fa-arrow-up text-danger me-1"></i>
-                                <small class="text-danger">{{ $PercentageCanceledWeekChange }} % عن الأسبوع الماضي</small>
-                            @else
-                                <i class="fa-solid fa-arrow-down text-success me-1"></i>
-                                <small class="text-success">{{ $PercentageCanceledWeekChange }} % عن الأسبوع الماضي</small>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
-                <div class="card bg-white text-primary h-100 border-primary">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa-solid fa-dolly fa-2x me-2"></i>
-                            <h5 class="card-title mb-0">المكتملة هذا الأسبوع</h5>
-                        </div>
-                        <h2 class="card-text mb-2">{{ $supplier->ordersdeliveredThisWeek->count() }}</h2>
-                        <div class="d-flex align-items-center">
-                            @if ($isWeekConfirmedIncrease)
-                                <i class="fa-solid fa-arrow-up text-success me-1"></i>
-                                <small class="text-success">{{ $percentageConfirmedWeekChange }} % عن الأسبوع الماضي</small>
-                            @else
-                                <i class="fa-solid fa-arrow-down text-danger me-1"></i>
-                                <small class="text-danger">{{ $percentageConfirmedWeekChange }} % عن الأسبوع الماضي</small>
-                            @endif
-                        </div>
-                    </div>
+                <h6 class="text-muted fw-semibold small mb-1">طلبات هذا الأسبوع</h6>
+                <h3 class="fw-bold mb-2 text-dark">{{ $supplier->ordersThisWeek->count() }}</h3>
+                <div class="d-flex align-items-center gap-1 small">
+                    @if ($isWeekAllIncrease)
+                        <span class="badge bg-emerald-subtle text-emerald border-0 rounded-pill"><i class="fa-solid fa-arrow-up me-1"></i>{{ $percentageAllWeekChange }}%</span>
+                    @else
+                        <span class="badge bg-rose-subtle text-rose border-0 rounded-pill"><i class="fa-solid fa-arrow-down me-1"></i>{{ $percentageAllWeekChange }}%</span>
+                    @endif
+                    <span class="text-muted small ms-1">عن الأسبوع الماضي</span>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white dashboard-stat-card">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="stat-icon-wrapper bg-emerald-subtle text-emerald">
+                        <i class="fa-solid fa-cart-plus fa-lg"></i>
+                    </span>
+                    <span class="badge bg-emerald-subtle text-emerald px-2.5 py-1 rounded-pill fw-semibold small">الأسبوع</span>
+                </div>
+                <h6 class="text-muted fw-semibold small mb-1">المؤكدة هذا الأسبوع</h6>
+                <h3 class="fw-bold mb-2 text-dark">{{ $supplier->ordersConfirmedThisWeek->count() }}</h3>
+                <div class="d-flex align-items-center gap-1 small">
+                    @if ($isWeekDeliveredIncrease)
+                        <span class="badge bg-emerald-subtle text-emerald border-0 rounded-pill"><i class="fa-solid fa-arrow-up me-1"></i>{{ $percentageDeliveredWeekChange }}%</span>
+                    @else
+                        <span class="badge bg-rose-subtle text-rose border-0 rounded-pill"><i class="fa-solid fa-arrow-down me-1"></i>{{ $percentageDeliveredWeekChange }}%</span>
+                    @endif
+                    <span class="text-muted small ms-1">عن الأسبوع الماضي</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white dashboard-stat-card">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="stat-icon-wrapper bg-rose-subtle text-rose">
+                        <i class="fa-solid fa-cart-shopping fa-lg"></i>
+                    </span>
+                    <span class="badge bg-rose-subtle text-rose px-2.5 py-1 rounded-pill fw-semibold small">الأسبوع</span>
+                </div>
+                <h6 class="text-muted fw-semibold small mb-1">الملغاة هذا الأسبوع</h6>
+                <h3 class="fw-bold mb-2 text-dark">{{ $supplier->ordersCanceledThisWeek->count() }}</h3>
+                <div class="d-flex align-items-center gap-1 small">
+                    @if ($isWeekCanceledIncrease)
+                        <span class="badge bg-rose-subtle text-rose border-0 rounded-pill"><i class="fa-solid fa-arrow-up me-1"></i>{{ $PercentageCanceledWeekChange }}%</span>
+                    @else
+                        <span class="badge bg-emerald-subtle text-emerald border-0 rounded-pill"><i class="fa-solid fa-arrow-down me-1"></i>{{ $PercentageCanceledWeekChange }}%</span>
+                    @endif
+                    <span class="text-muted small ms-1">عن الأسبوع الماضي</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white dashboard-stat-card">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="stat-icon-wrapper bg-indigo-subtle text-indigo">
+                        <i class="fa-solid fa-dolly fa-lg"></i>
+                    </span>
+                    <span class="badge bg-indigo-subtle text-indigo px-2.5 py-1 rounded-pill fw-semibold small">الأسبوع</span>
+                </div>
+                <h6 class="text-muted fw-semibold small mb-1">المكتملة هذا الأسبوع</h6>
+                <h3 class="fw-bold mb-2 text-dark">{{ $supplier->ordersdeliveredThisWeek->count() }}</h3>
+                <div class="d-flex align-items-center gap-1 small">
+                    @if ($isWeekConfirmedIncrease)
+                        <span class="badge bg-emerald-subtle text-emerald border-0 rounded-pill"><i class="fa-solid fa-arrow-up me-1"></i>{{ $percentageConfirmedWeekChange }}%</span>
+                    @else
+                        <span class="badge bg-rose-subtle text-rose border-0 rounded-pill"><i class="fa-solid fa-arrow-down me-1"></i>{{ $percentageConfirmedWeekChange }}%</span>
+                    @endif
+                    <span class="text-muted small ms-1">عن الأسبوع الماضي</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

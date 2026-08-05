@@ -1,649 +1,335 @@
 <style>
 /* ===============================
-   Dashboard General Layout
-================================ */
+   Modern Supplier Dashboard Styles
+=============================== */
 
-.container {
-    max-width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
+/* CSS Palette Variables */
+:root {
+    --indigo-primary: #4f46e5;
+    --indigo-subtle: rgba(79, 70, 229, 0.08);
+    --emerald-primary: #10b981;
+    --emerald-subtle: rgba(16, 185, 129, 0.08);
+    --rose-primary: #f43f5e;
+    --rose-subtle: rgba(244, 63, 94, 0.08);
+    --amber-primary: #f59e0b;
+    --amber-subtle: rgba(245, 158, 11, 0.08);
 }
 
-h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    text-align: right;
+.dashboard-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #334155 100%);
+    border-radius: 1.25rem;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Alerts */
-.alert {
-    font-size: 0.95rem;
+.dashboard-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
 }
 
-/* ===============================
-   Cards Styling
-================================ */
+.dashboard-stat-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
 
-.card {
+.dashboard-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.07) !important;
+}
+
+.stat-icon-wrapper {
+    width: 44px;
+    height: 44px;
     border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    border-width: 1px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
-.card-body {
-    padding: 1.25rem;
+.bg-indigo-subtle { background-color: var(--indigo-subtle) !important; }
+.text-indigo { color: var(--indigo-primary) !important; }
+
+.bg-emerald-subtle { background-color: var(--emerald-subtle) !important; }
+.text-emerald { color: var(--emerald-primary) !important; }
+
+.bg-rose-subtle { background-color: var(--rose-subtle) !important; }
+.text-rose { color: var(--rose-primary) !important; }
+
+.bg-amber-subtle { background-color: var(--amber-subtle) !important; }
+.text-amber { color: var(--amber-primary) !important; }
+
+.rank-badge {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
 }
 
-.card-title {
-    font-weight: 600;
-}
-
-/* ===============================
-   Charts Responsive
-================================ */
+.rank-1 { background-color: #fef3c7; color: #d97706; }
+.rank-2 { background-color: #f1f5f9; color: #64748b; }
+.rank-3 { background-color: #ffedd5; color: #c2410c; }
 
 canvas {
     max-width: 100% !important;
     height: auto !important;
 }
-
-/* ===============================
-   Flex Utilities Fix
-================================ */
-
-.flex {
-    display: flex;
-}
-
-.justify-between {
-    justify-content: space-between;
-}
-
-.items-center {
-    align-items: center;
-}
-
-/* ===============================
-   Products Lists
-================================ */
-
-.small .d-flex {
-    align-items: center;
-    gap: 8px;
-}
-
-.small img {
-    border-radius: 6px;
-    object-fit: cover;
-}
-
-/* ===============================
-   Select Inputs
-================================ */
-
-select {
-    font-size: 0.85rem;
-    border-radius: 8px;
-}
-
-/* ===============================
-   RTL Improvements
-================================ */
-
-[dir="rtl"] h3,
-[dir="rtl"] h6 {
-    text-align: right;
-}
-
-/* ===============================
-   Responsive Breakpoints
-================================ */
-
-/* Tablets */
-@media (max-width: 991px) {
-    h1 {
-        font-size: 1.6rem;
-        text-align: center;
-    }
-
-    .card-body {
-        padding: 1rem;
-    }
-}
-
-/* Mobile */
-@media (max-width: 767px) {
-
-    h1 {
-        font-size: 1.4rem;
-    }
-
-    .flex.justify-between {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    select {
-        width: 100%;
-    }
-
-    .card {
-        margin-bottom: 1rem;
-    }
-
-    .small .d-flex {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .small img {
-        width: 50px;
-        height: 50px;
-    }
-}
-
-/* Small Mobile */
-@media (max-width: 480px) {
-
-    h1 {
-        font-size: 1.25rem;
-    }
-
-    .alert {
-        font-size: 0.85rem;
-    }
-
-    .card-body {
-        padding: 0.85rem;
-    }
-}
-
 </style>
-<div class="container">
-        <!-- info section -->
-    {{-- info bar  --}}
-        <div class="row">
-           <div class="container">
-            <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
 
-            <div>
-            <i class="fas fa-flask me-2"></i>
-            <strong>منصة دزورة في المرحلة التجريبية</strong>
+<div class="container-fluid px-3 py-2">
+
+    <!-- Hero Welcome Banner -->
+    <div class="dashboard-hero p-4 p-md-5 mb-4 shadow-sm">
+        <div class="row align-items-center position-relative z-1">
+            <div class="col-lg-8 mb-3 mb-lg-0">
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-white bg-opacity-10 rounded-pill text-white small mb-3 border border-white border-opacity-10">
+                    <i class="fa-solid fa-truck-ramp-box text-warning"></i>
+                    <span>لوحة تحكم المورد</span>
+                    <span class="opacity-50">|</span>
+                    <span>{{ now()->locale('ar')->translatedFormat('l، j F Y') }}</span>
+                </div>
+                <h1 class="display-6 fw-bold mb-2 text-white text-start">
+                    مرحباً بك مجدداً، {{ auth()->user()->name }}! 👋
+                </h1>
+                <p class="text-white-50 mb-0 leading-relaxed">
+                    إليك نظرة شاملة ومحدثة على أداء حساب المورد، مبيعات الجملة، وحالة الطلبات.
+                </p>
             </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                    <a href="{{ route('supplier.products') }}" class="btn btn-warning text-dark fw-bold px-3 py-2 rounded-3 border-0 shadow-sm">
+                        <i class="fa-solid fa-plus me-1"></i> إضافة منتج بالجملة
+                    </a>
+                    <a href="{{ route('supplier.profile') }}" class="btn btn-outline-light text-white fw-bold px-3 py-2 rounded-3 border-2 shadow-sm">
+                        <i class="fa-solid fa-gear me-1"></i> الإعدادات
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-             <button class="btn btn-sm btn-dark"
+    <!-- Beta Support Section -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
+        <div class="card-header bg-warning bg-opacity-15 border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2 text-dark">
+                <i class="fas fa-flask text-warning fs-5"></i>
+                <strong class="fs-6">منصة Dzora في المرحلة التجريبية</strong>
+            </div>
+            <button class="btn btn-sm btn-light border-0 shadow-sm rounded-circle p-2"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#betaSupport"
                 aria-expanded="true">
-              <i class="fas fa-chevron-down"></i>
-             </button>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
 
-         </div>
+        <div class="collapse show" id="betaSupport">
+            <div class="card-body p-4">
+                <div class="alert alert-warning bg-warning bg-opacity-10 border-0 rounded-3 mb-4 p-3 text-dark">
+                    <h6 class="fw-bold mb-2">
+                        👋 مرحباً بك في النسخة التجريبية من <strong>Dzora</strong>
+                    </h6>
+                    <p class="mb-0 small leading-relaxed">
+                        شكراً لاستخدامك المنصة ومساهمتك في تطويرها. إذا واجهتك أي مشكلة أو كان لديك أي استفسار أو اقتراح، فإن فريق الدعم جاهز لمساعدتك مباشرة على مدار الساعة.
+                    </p>
+                </div>
 
-         <div class="collapse show" id="betaSupport">
-
-                <div class="card-body">
-
-            <div class="alert alert-warning mb-4">
-                <h5 class="mb-3">
-                    👋 مرحباً بك في النسخة التجريبية من <strong>Dzora</strong>
-                </h5>
-
-                <p class="mb-2">
-                    شكراً لاستخدامك المنصة ومساهمتك في تطويرها.
-                </p>
-
-                <p class="mb-2">
-                    قد تواجه بعض الأخطاء أو تحتاج إلى مساعدة أثناء استخدام المنصة،
-                    وهذا أمر طبيعي خلال المرحلة التجريبية.
-                </p>
-
-                <p class="mb-0">
-                    إذا واجهتك أي مشكلة أو كان لديك أي استفسار أو اقتراح،
-                    فإن فريق الدعم جاهز لمساعدتك.
-                </p>
-            </div>
-
-            <div class="row g-3">
-
-                <div class="col-lg-4 col-md-6">
-
-                    <div class="border rounded p-3 h-100 text-center">
-
-                        <div class="fs-2 mb-2">
-                            📞
+                <div class="row g-3">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="border border-light-subtle rounded-3 p-3 h-100 text-center bg-light bg-opacity-50">
+                            <div class="fs-3 mb-1">📞</div>
+                            <h6 class="fw-bold mb-1">الهاتف</h6>
+                            <div class="fw-bold text-dark mb-3 dir-ltr">0672816709</div>
+                            <a href="tel:672816709" class="btn btn-primary btn-sm w-100 rounded-2 fw-semibold">
+                                اتصال مباشر
+                            </a>
                         </div>
-
-                        <h6>الهاتف</h6>
-
-                        <div class="fw-bold mb-3">
-                            0672816709
-                        </div>
-
-                        <a href="tel:672816709"
-                           class="btn btn-primary w-100">
-                            اتصال مباشر
-                        </a>
-
                     </div>
 
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-
-                    <div class="border rounded p-3 h-100 text-center">
-
-                        <div class="fs-2 mb-2">
-                            💬
+                    <div class="col-lg-4 col-md-6">
+                        <div class="border border-light-subtle rounded-3 p-3 h-100 text-center bg-light bg-opacity-50">
+                            <div class="fs-3 mb-1">💬</div>
+                            <h6 class="fw-bold mb-1">واتساب</h6>
+                            <div class="fw-bold text-dark mb-3 dir-ltr">+213 672816709</div>
+                            <a href="https://wa.me/213672816709" target="_blank" class="btn btn-success btn-sm w-100 rounded-2 fw-semibold">
+                                مراسلة واتساب
+                            </a>
                         </div>
-
-                        <h6>واتساب</h6>
-
-                        <div class="fw-bold mb-3">
-                            0672816709 (213+)
-                        </div>
-
-                        <a href="https://wa.me/213672816709"
-                           target="_blank"
-                           class="btn btn-success w-100">
-                            مراسلة واتساب
-                        </a>
-
                     </div>
 
-                </div>
-
-                <div class="col-lg-4 col-md-12">
-
-                    <div class="border rounded p-3 h-100 text-center">
-
-                        <div class="fs-2 mb-2">
-                            💡
+                    <div class="col-lg-4 col-md-12">
+                        <div class="border border-light-subtle rounded-3 p-3 h-100 text-center bg-light bg-opacity-50">
+                            <div class="fs-3 mb-1">💡</div>
+                            <h6 class="fw-bold mb-1">لديك اقتراح؟</h6>
+                            <p class="small text-muted mb-2">نرحب بجميع اقتراحاتكم لتطوير المنصة.</p>
+                            <a href="{{ route('site.index') }}?#contact" class="btn btn-outline-primary btn-sm w-100 rounded-2 fw-semibold" target="_blank">
+                                إرسال اقتراح
+                            </a>
                         </div>
-
-                        <h6>لديك اقتراح؟</h6>
-
-                        <p class="small text-muted mb-3">
-                            نرحب بجميع اقتراحاتكم لتطوير المنصة.
-                        </p>
-
-                        <a href="{{ route('site.index')}}?#contact"
-                           class="btn btn-outline-primary w-100" target="_blank">
-                            إرسال اقتراح
-                        </a>
-
                     </div>
-
                 </div>
-
             </div>
+        </div>
+    </div>
 
-            <hr>
-
-            <div class="text-center text-muted small">
-
-                🚀 شكراً لمساهمتك في تطوير منصة
-                <strong>Dzora</strong>.
-                كل ملاحظة منك تساعدنا على تقديم تجربة أفضل للجميع.
-
-            </div>
-
-                </div>
-
-                </div>
-         </div>
-           </div>
-         </div>
-    <!-- end info section -->
-    <h1>لوحة التحكم</h1>
+    <!-- Alert Notifications -->
     @if (session()->has('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session()->get('success') }}
+        <div class="alert alert-success border-0 shadow-sm rounded-3 alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i> {{ session()->get('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
     @if (session()->has('error'))
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{ session()->get('error') }}
+        <div class="alert alert-warning border-0 shadow-sm rounded-3 alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i> {{ session()->get('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
-    <!---->
-    <!-- Start Dashboard Content -->
-    <div class="container-fluid mt-4">
-        <!-- Quick Actions -->
-        {{-- <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
-                        <button class="btn btn-primary">
-                            <i class="fa-solid fa-plus"></i> إضافة منتج جديد
-                        </button>
-                        <button class="btn btn-success">
-                            <i class="fa-solid fa-tag"></i> إضافة عرض خاص
-                        </button>
-                        <button class="btn btn-info text-white">
-                            <i class="fa-solid fa-bullhorn"></i> إنشاء حملة تسويقية
-                        </button>
-                        <button class="btn btn-warning text-white">
-                            <i class="fa-solid fa-cube"></i> إدارة المخزون
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
+    <!-- Start Dashboard Statistics & Charts -->
 
-        <!-- Statistics Cards -->
-        @include('users.suppliers.components.content.dashboard.inc.dayly_statistics_cards')
-        <!--------------------------->
-        <div class="row g-3 mt-2 mb-2">
-            <div class="col-md-8" dir="rtl">
-                <div class="card border-primary">
-                    <div class="card-body">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-gray-800">تحليل الطلبات</h3>
-                            <select id="timeRange" class="border border-gray-200 px-3 py-1.5 rounded-lg text-sm">
-                                <option value="daily">يومي</option>
-                                <option value="weekly">أسبوعي</option>
-                                <option value="monthly">شهري</option>
-                            </select>
-                        </div>
-                        <canvas id="ordersChart" class="w-full h-64"></canvas>
-                    </div>
-                </div>
-            </div>
+    <!-- Daily Statistics Cards -->
+    @include('users.suppliers.components.content.dashboard.inc.dayly_statistics_cards')
 
-            <div class="col-md-4 " dir="rtl">
-                <div class="card border-primary h-100">
-                    <div class="card-body">
-                        <h3 class="text-lg font-bold text-gray-800 text-center mb-4">توزيع حالة الطلبات</h3>
-                        <canvas id="statusChart" class="w-full h-64"></canvas>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!--------------------------->
-        @include('users.suppliers.components.content.dashboard.inc.weekly_statistics_cards')
-        <!---->
-        <div class="row g-3 mt-2 mb-2">
-            <div class="col-md-4 ">
-                <div class="card border-primary h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">المنتجات الأكثر طلبا</h6>
-                            <i class="fa-solid fa-crown text-primary"></i>
+    <!-- Orders Charts Row -->
+    <div class="row g-3 mt-1 mb-3">
+        <div class="col-md-8" dir="rtl">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h5 class="fw-bold text-dark mb-1">تحليل الطلبات</h5>
+                            <p class="text-muted small mb-0">مراقبة نمو طلبات الجملة حسب الفترة الزمانية</p>
                         </div>
-                        <div class="small">
-                            @if($topProducts->count() > 0)
-                            @foreach ($topProducts as $product)
-                                <div class="d-flex justify-content-between mb-2">
-                                    <img src="{{ $product->image }}" class="img-fluid" width="40" height="40"
-                                        alt="">
-                                    <span>{{ $product->name }}</span>
-                                    <span class="text-primary">{{ $product->orders_count }} وحدة</span>
-                                </div>
-                            @endforeach
-                            @else 
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-center">لا يوجد منتجات مطلوبة</span>
-                            </div>
-                            @endif
-                        </div>
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">المنتجات الأكثر مشاهدة</h6>
-                            <i class="fa-solid fa-crown text-primary"></i>
-                        </div>
-                        <div class="small">
-                            @foreach ($topViewed as $product)
-                                <div class="d-flex justify-content-between mb-2">
-                                    <img src="{{ $product->image }}" class="img-fluid" width="40" height="40"
-                                        alt="">
-                                    <span>{{ $product->name }}</span>
-                                    <span class="text-primary">{{ $product->views_count }} مشاهدة</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-8 card border-primary">
-                <div class="card-body">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold text-gray-800">تحليل الزوار</h3>
-                        <select id="visitorsTimeRange" class="border border-gray-200 px-3 py-1.5 rounded-lg text-sm">
+                        <select id="timeRange" class="form-select form-select-sm border-0 bg-light rounded-3 px-3 py-2 font-semibold" style="width: auto;">
                             <option value="daily">يومي</option>
                             <option value="weekly">أسبوعي</option>
                             <option value="monthly">شهري</option>
                         </select>
                     </div>
-                    <canvas id="visitorsChart" class="w-full h-64"></canvas>
+                    <div style="position: relative; width: 100%; min-height: 260px;">
+                        <canvas id="ordersChart" class="w-full h-64"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-        @include('users.suppliers.components.content.dashboard.inc.monthly_statistics_cards')
-        <!---->
 
-        <!-- Additional Statistics -->
-        {{-- <div class="row g-3 mt-2">
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card border-primary h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">المنتجات الأكثر مبيعاً</h6>
-                            <i class="fa-solid fa-crown text-primary"></i>
-                        </div>
-                        <div class="small">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>هاتف آيفون 13 برو</span>
-                                <span class="text-primary">85 وحدة</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>ساعة سامسونج</span>
-                                <span class="text-primary">64 وحدة</span>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span>سماعات آبل</span>
-                                <span class="text-primary">52 وحدة</span>
-                            </div>
-                        </div>
+        <div class="col-md-4" dir="rtl">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h5 class="fw-bold text-dark mb-1 text-center">توزيع حالة الطلبات</h5>
+                        <p class="text-muted small mb-0 text-center">نسب الحالات المختلفة لطلبات المورد</p>
+                    </div>
+                    <div style="position: relative; width: 100%; min-height: 260px;" class="d-flex align-items-center justify-content-center">
+                        <canvas id="statusChart" class="w-full h-64"></canvas>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card border-success h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">حالة المخزون</h6>
-                            <i class="fa-solid fa-boxes-stacked text-success"></i>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span>متوفر</span>
-                                <span class="text-success">70%</span>
-                            </div>
-                            <div class="progress" style="height: 5px;">
-                                <div class="progress-bar bg-success" style="width: 70%"></div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span>منخفض</span>
-                                <span class="text-warning">20%</span>
-                            </div>
-                            <div class="progress" style="height: 5px;">
-                                <div class="progress-bar bg-warning" style="width: 20%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="d-flex justify-content-between mb-1">
-                                <span>نفذ</span>
-                                <span class="text-danger">10%</span>
-                            </div>
-                            <div class="progress" style="height: 5px;">
-                                <div class="progress-bar bg-danger" style="width: 10%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card border-info h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">تحليل المبيعات</h6>
-                            <i class="fa-solid fa-chart-line text-info"></i>
-                        </div>
-                        <div class="small">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>معدل التحويل</span>
-                                <span class="text-info">3.5%</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>متوسط قيمة الطلب</span>
-                                <span class="text-info">2,500 د.ج</span>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span>معدل العائد</span>
-                                <span class="text-info">2.1%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card border-warning h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">حالة الطلبات</h6>
-                            <i class="fa-solid fa-truck-fast text-warning"></i>
-                        </div>
-                        <div class="small">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>قيد المعالجة</span>
-                                <span class="text-warning">25</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>قيد الشحن</span>
-                                <span class="text-warning">38</span>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span>تم التسليم</span>
-                                <span class="text-warning">22</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
-        <!-- Recent Activities -->
-        {{-- <div class="row mt-4">
-            <div class="col-12 col-lg-8 mb-4">
-                <div class="card h-100">
-                    <div class="card-header bg-white">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">النشاطات الأخيرة</h5>
-                            <div class="dropdown">
-                                <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown">
-                                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">تحديث</a></li>
-                                    <li><a class="dropdown-item" href="#">تصفية</a></li>
-                                    <li><a class="dropdown-item" href="#">تصدير</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item border-0 px-0">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <span class="avatar bg-primary text-white">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                        </span>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="mb-0">طلب جديد</h6>
-                                            <small class="text-muted">منذ 3 دقائق</small>
-                                        </div>
-                                        <p class="text-muted small mb-0">طلب رقم #12345 - هاتف آيفون 13 برو</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-group-item border-0 px-0">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <span class="avatar bg-success text-white">
-                                            <i class="fa-solid fa-box"></i>
-                                        </span>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="mb-0">تحديث مخزون</h6>
-                                            <small class="text-muted">منذ ساعة</small>
-                                        </div>
-                                        <p class="text-muted small mb-0">ماك بوك برو - تمت إضافة 5 وحدات</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-group-item border-0 px-0">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <span class="avatar bg-info text-white">
-                                            <i class="fa-solid fa-user-plus"></i>
-                                        </span>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="mb-0">مستخدم جديد</h6>
-                                            <small class="text-muted">منذ ساعتين</small>
-                                        </div>
-                                        <p class="text-muted small mb-0">انضم أحمد محمد إلى المنصة</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">التنبيهات المهمة</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
-                            <i class="fa-solid fa-triangle-exclamation me-2"></i>
-                            <div>5 منتجات وصلت لحد المخزون الأدنى</div>
-                        </div>
-                        <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
-                            <i class="fa-solid fa-circle-info me-2"></i>
-                            <div>تحديث النظام متوفر</div>
-                        </div>
-                        <div class="alert alert-success d-flex align-items-center" role="alert">
-                            <i class="fa-solid fa-circle-check me-2"></i>
-                            <div>تم اكتمال النسخ الاحتياطي اليومي</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
+        </div>
     </div>
-    <!-- End Dashboard Content -->
-    <!---->
 
+    <!-- Weekly Statistics Cards -->
+    @include('users.suppliers.components.content.dashboard.inc.weekly_statistics_cards')
+
+    <!-- Visitors & Top Products Row -->
+    <div class="row g-3 mt-1 mb-3">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                <div class="card-body p-4">
+                    <!-- Top Ordered Products -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold text-dark mb-0">المنتجات الأكثر طلباً</h6>
+                        <span class="stat-icon-wrapper bg-amber-subtle text-amber" style="width: 32px; height: 32px;">
+                            <i class="fa-solid fa-crown small"></i>
+                        </span>
+                    </div>
+
+                    <div class="mb-4">
+                        @if($topProducts->count() > 0)
+                            @foreach ($topProducts as $index => $product)
+                                <div class="d-flex align-items-center justify-content-between py-2 border-bottom border-light">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="rank-badge rank-{{ $index + 1 }}">{{ $index + 1 }}</span>
+                                        <img src="{{ asset($product->image) }}" class="rounded-3 border object-fit-cover" width="38" height="38" alt="{{ $product->name }}">
+                                        <span class="fw-semibold text-dark small text-truncate" style="max-width: 140px;">{{ $product->name }}</span>
+                                    </div>
+                                    <span class="badge bg-indigo-subtle text-indigo rounded-pill px-2 py-1 fw-bold small">{{ $product->orders_count }} طلب</span>
+                                </div>
+                            @endforeach
+                        @else 
+                            <div class="text-center text-muted py-3 small">لا توجد منتجات مطلوبة حالياً</div>
+                        @endif
+                    </div>
+
+                    <!-- Top Viewed Products -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 pt-2">
+                        <h6 class="fw-bold text-dark mb-0">المنتجات الأكثر مشاهدة</h6>
+                        <span class="stat-icon-wrapper bg-indigo-subtle text-indigo" style="width: 32px; height: 32px;">
+                            <i class="fa-solid fa-eye small"></i>
+                        </span>
+                    </div>
+
+                    <div>
+                        @if($topViewed->count() > 0)
+                            @foreach ($topViewed as $index => $product)
+                                <div class="d-flex align-items-center justify-content-between py-2 border-bottom border-light">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="rank-badge rank-{{ $index + 1 }}">{{ $index + 1 }}</span>
+                                        <img src="{{ asset($product->image) }}" class="rounded-3 border object-fit-cover" width="38" height="38" alt="{{ $product->name }}">
+                                        <span class="fw-semibold text-dark small text-truncate" style="max-width: 140px;">{{ $product->name }}</span>
+                                    </div>
+                                    <span class="badge bg-emerald-subtle text-emerald rounded-pill px-2 py-1 fw-bold small">{{ $product->views_count }} مشاهدة</span>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="text-center text-muted py-3 small">لا توجد مشاهدات حالياً</div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h5 class="fw-bold text-dark mb-1">تحليل الزوار</h5>
+                            <p class="text-muted small mb-0">متابعة إحصائيات وعدد زوار متجر المورد</p>
+                        </div>
+                        <select id="visitorsTimeRange" class="form-select form-select-sm border-0 bg-light rounded-3 px-3 py-2 font-semibold" style="width: auto;">
+                            <option value="daily">يومي</option>
+                            <option value="weekly">أسبوعي</option>
+                            <option value="monthly">شهري</option>
+                        </select>
+                    </div>
+                    <div style="position: relative; width: 100%; min-height: 260px;">
+                        <canvas id="visitorsChart" class="w-full h-64"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Statistics Cards -->
+    @include('users.suppliers.components.content.dashboard.inc.monthly_statistics_cards')
 
 </div>
-<!-- sweet alerts -->
+
+<!-- SweetAlerts Notification Redirect -->
 @if(session('redicect_subscriber'))
     <script>
         Swal.fire({
