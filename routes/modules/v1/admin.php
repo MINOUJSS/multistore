@@ -7,6 +7,7 @@ use App\Http\Controllers\Admins\Admin\ArchivesDisputesController;
 use App\Http\Controllers\Admins\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admins\Admin\BackupController;
 use App\Http\Controllers\Admins\Admin\ContactUsMessageController;
+use App\Http\Controllers\Admins\Admin\EmailCampaignController;
 use App\Http\Controllers\Admins\Admin\FinancialDashboardController;
 use App\Http\Controllers\Admins\Admin\NotificationController;
 use App\Http\Controllers\Admins\Admin\PaymentsController;
@@ -131,6 +132,13 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::post('/ah-admin/contact-us-message/{id}/reply', [ContactUsMessageController::class, 'reply'])->name('contact.message.reply');
                 // ignored replys to messages routes
                 Route::post('/ah-admin/contact-us-message/{id}/ignore', [ContactUsMessageController::class, 'ignore_reply'])->name('contact.message.ignore');
+                // email campaigns routes
+                Route::get('/ah-admin/email-campaigns', [EmailCampaignController::class, 'index'])->name('email_campaigns.index');
+                Route::get('/ah-admin/email-campaigns/create', [EmailCampaignController::class, 'create'])->name('email_campaigns.create');
+                Route::post('/ah-admin/email-campaigns', [EmailCampaignController::class, 'store'])->name('email_campaigns.store');
+                Route::get('/ah-admin/email-campaigns/{id}', [EmailCampaignController::class, 'show'])->name('email_campaigns.show');
+                Route::delete('/ah-admin/email-campaigns/{id}', [EmailCampaignController::class, 'destroy'])->name('email_campaigns.destroy');
+                Route::post('/ah-admin/email-campaigns/send-test', [EmailCampaignController::class, 'sendTestMail'])->name('email_campaigns.send_test');
             });
         });
     });

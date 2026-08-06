@@ -36,6 +36,9 @@
                 <a class="sub-item d-flex" href="{{ route('admin.contact.messages') }}"><i class="fa-solid fa-envelope"></i>
                     رسائل صفحة الهبوط
                 </a>
+                <a class="sub-item d-flex" href="{{ route('admin.email_campaigns.index') }}"><i class="fa-solid fa-paper-plane"></i>
+                    حملات البريد الإلكتروني
+                </a>
                 {{-- <a class="sub-item d-flex" href="{{ route('admin.general.chat') }}"><i class="fa-solid fa-user-plus"></i>
                    غرفة الدردشة العامة
                 </a> --}}
