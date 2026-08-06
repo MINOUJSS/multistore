@@ -157,31 +157,38 @@
 
 @section('header_js')
 <script>
+document.addEventListener('DOMContentLoaded', function () {
     // Target Audience selector change listener
     const targetAudienceSelect = document.getElementById('target_audience');
     const singleEmailBlock = document.getElementById('singleEmailBlock');
     const customEmailInput = document.getElementById('custom_email');
 
     function toggleSingleEmailBlock() {
+        if (!targetAudienceSelect || !singleEmailBlock) return;
         if (targetAudienceSelect.value === 'single_email') {
             singleEmailBlock.classList.remove('d-none');
-            customEmailInput.setAttribute('required', 'required');
+            if (customEmailInput) customEmailInput.setAttribute('required', 'required');
         } else {
             singleEmailBlock.classList.add('d-none');
-            customEmailInput.removeAttribute('required');
+            if (customEmailInput) customEmailInput.removeAttribute('required');
         }
     }
 
-    targetAudienceSelect.addEventListener('change', toggleSingleEmailBlock);
-    toggleSingleEmailBlock();
+    if (targetAudienceSelect) {
+        targetAudienceSelect.addEventListener('change', toggleSingleEmailBlock);
+        toggleSingleEmailBlock();
+    }
 
     // Helper tag inserter
     const contentArea = document.getElementById('content');
     document.querySelectorAll('.insert-tag').forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
             const tag = this.getAttribute('data-tag');
-            const startPos = contentArea.selectionStart;
-            const endPos = contentArea.selectionEnd;
+            if (!contentArea || !tag) return;
+
+            const startPos = contentArea.selectionStart ?? contentArea.value.length;
+            const endPos = contentArea.selectionEnd ?? contentArea.value.length;
             const currentValue = contentArea.value;
 
             contentArea.value = currentValue.substring(0, startPos) + tag + currentValue.substring(endPos, currentValue.length);
@@ -192,68 +199,75 @@
     });
 
     // Test email sender
-    document.getElementById('sendTestBtn').addEventListener('click', function () {
-        const testEmail = document.getElementById('test_email').value;
-        const subject = document.getElementById('subject').value;
-        const content = document.getElementById('content').value;
+    const sendTestBtn = document.getElementById('sendTestBtn');
+    if (sendTestBtn) {
+        sendTestBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const testEmailInput = document.getElementById('test_email');
+            const subjectInput = document.getElementById('subject');
 
-        if (!testEmail || !subject || !content) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'تنبيه',
-                text: 'يرجى ملء بريد الاختبار والعنوان والمحتوى أولاً.',
-                confirmButtonText: 'حسناً'
-            });
-            return;
-        }
+            const testEmail = testEmailInput ? testEmailInput.value : '';
+            const subject = subjectInput ? subjectInput.value : '';
+            const content = contentArea ? contentArea.value : '';
 
-        const btn = this;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جارٍ الإرسال...';
-
-        fetch("{{ route('admin.email_campaigns.send_test') }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-            },
-            body: JSON.stringify({
-                test_email: testEmail,
-                subject: subject,
-                content: content
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-paper-plane me-1"></i> إرسال بريد تجريبي';
-            if (data.success) {
+            if (!testEmail || !subject || !content) {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'نجاح',
-                    text: data.message,
-                    confirmButtonText: 'ممتاز'
+                    icon: 'warning',
+                    title: 'تنبيه',
+                    text: 'يرجى ملء بريد الاختبار والعنوان والمحتوى أولاً.',
+                    confirmButtonText: 'حسناً'
                 });
-            } else {
+                return;
+            }
+
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جارٍ الإرسال...';
+
+            fetch("{{ route('admin.email_campaigns.send_test') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    test_email: testEmail,
+                    subject: subject,
+                    content: content
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane me-1"></i> إرسال بريد تجريبي';
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'نجاح',
+                        text: data.message,
+                        confirmButtonText: 'ممتاز'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ',
+                        text: data.message,
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            })
+            .catch(error => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane me-1"></i> إرسال بريد تجريبي';
                 Swal.fire({
                     icon: 'error',
                     title: 'خطأ',
-                    text: data.message,
+                    text: 'حدث خطأ غير متوقع أثناء إرسال البريد التجريبي.',
                     confirmButtonText: 'حسناً'
                 });
-            }
-        })
-        .catch(error => {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-paper-plane me-1"></i> إرسال بريد تجريبي';
-            Swal.fire({
-                icon: 'error',
-                title: 'خطأ',
-                text: 'حدث خطأ غير متوقع أثناء إرسال البريد التجريبي.',
-                confirmButtonText: 'حسناً'
             });
         });
-    });
+    }
 });
 </script>
 @endsection

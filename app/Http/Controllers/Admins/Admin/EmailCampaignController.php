@@ -197,7 +197,8 @@ class EmailCampaignController extends Controller
                     $request->subject,
                     $request->content,
                     'مستخدم تجريبي',
-                    'متجر تجريبي'
+                    'متجر تجريبي',
+                    route('seller.login')
                 )
             );
 

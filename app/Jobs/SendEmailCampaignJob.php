@@ -62,14 +62,11 @@ class SendEmailCampaignJob implements ShouldQueue
             $type = $recipient['type'];
             $id = $recipient['id'];
 
-           switch($type) {
-                case 'seller':
-                    $login_url=route('seller.login');
-                    break;
-                case 'supplier':
-                    $login_url=route('supplier.login');
-                    break;
-           }
+            $login_url = match ($type) {
+                'seller' => route('seller.login'),
+                'supplier' => route('supplier.login'),
+                default => url('/'),
+            };
 
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 continue;

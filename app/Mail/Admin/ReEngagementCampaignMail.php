@@ -26,12 +26,12 @@ class ReEngagementCampaignMail extends Mailable
         $this->emailSubject = $subject;
         $this->recipientName = $recipientName;
         $this->storeName = $storeName;
-        $this->loginUrl = $loginUrl;
+        $this->loginUrl = $loginUrl ?: url('/');
 
         // Parse placeholders in body
         $parsedBody = str_replace(
             ['{name}', '{store_name}', '{login_url}'],
-            [$recipientName ?: 'عزيزنا المستخدم', $storeName ?: 'متجرك', $loginUrl?:url('/')],
+            [$recipientName ?: 'عزيزنا المستخدم', $storeName ?: 'متجرك', $this->loginUrl],
             $body
         );
 
