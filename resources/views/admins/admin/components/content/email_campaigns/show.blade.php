@@ -1,6 +1,7 @@
 <div class="container-fluid py-4">
     <!-- ===== Page Header ===== -->
-    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
+    <div
+        class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
         <div>
             <h3 class="fw-bold mb-1">
                 <i class="fa-solid fa-chart-line text-primary me-2"></i>
@@ -64,21 +65,24 @@
             <div class="row g-3">
                 <div class="col-12 col-md-6">
                     <p class="mb-2"><strong>موضوع الرسالة (Subject):</strong> {{ $campaign->subject }}</p>
-                    <p class="mb-2"><strong>الجمهور المستهدف:</strong> <span class="badge bg-primary fs-6">{{ $campaign->target_audience_label }}</span></p>
+                    <p class="mb-2"><strong>الجمهور المستهدف:</strong> <span
+                            class="badge bg-primary fs-6">{{ $campaign->target_audience_label }}</span></p>
                 </div>
                 <div class="col-12 col-md-6">
                     <p class="mb-2"><strong>الحالة الحالية:</strong>
                         @if ($campaign->status === 'completed')
                             <span class="badge bg-success"><i class="fa-solid fa-check-circle me-1"></i> مكتملة</span>
                         @elseif ($campaign->status === 'sending')
-                            <span class="badge bg-warning text-dark"><i class="fa-solid fa-spinner fa-spin me-1"></i> جارٍ الإرسال في الخلفية</span>
+                            <span class="badge bg-warning text-dark"><i class="fa-solid fa-spinner fa-spin me-1"></i>
+                                جارٍ الإرسال في الخلفية</span>
                         @elseif ($campaign->status === 'queued')
                             <span class="badge bg-info"><i class="fa-solid fa-clock me-1"></i> في الانتظار</span>
                         @else
                             <span class="badge bg-danger">فشلت</span>
                         @endif
                     </p>
-                    <p class="mb-2"><strong>تاريخ الإنشـاء:</strong> {{ $campaign->created_at->format('Y-m-d H:i') }}</p>
+                    <p class="mb-2"><strong>تاريخ الإنشـاء:</strong> {{ $campaign->created_at->format('Y-m-d H:i') }}
+                    </p>
                 </div>
             </div>
 
@@ -123,21 +127,25 @@
                                 </td>
                                 <td>
                                     @if ($log->status === 'sent')
-                                        <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i> تم الإرسال</span>
+                                        <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i> تم
+                                            الإرسال</span>
                                     @elseif ($log->status === 'failed')
                                         <span class="badge bg-danger"><i class="fa-solid fa-xmark me-1"></i> فشل</span>
                                     @else
-                                        <span class="badge bg-warning text-dark"><i class="fa-solid fa-clock me-1"></i> قيد الانتظار</span>
+                                        <span class="badge bg-warning text-dark"><i class="fa-solid fa-clock me-1"></i>
+                                            قيد الانتظار</span>
                                     @endif
                                 </td>
-                                <td class="small text-muted">{{ $log->sent_at ? $log->sent_at->format('Y-m-d H:i:s') : '—' }}</td>
+                                <td class="small text-muted">
+                                    {{ $log->sent_at ? $log->sent_at->format('Y-m-d H:i:s') : '—' }}</td>
                                 <td class="small text-danger text-truncate" style="max-width: 250px;">
                                     {{ $log->error_message ?: '—' }}
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="py-4 text-muted">لا توجد سجلات تفصيلية متاحية لهذه الحملة حتى الآن.</td>
+                                <td colspan="7" class="py-4 text-muted">لا توجد سجلات تفصيلية متاحية لهذه الحملة حتى
+                                    الآن.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -146,7 +154,7 @@
         </div>
         @if ($logs->hasPages())
             <div class="card-footer bg-white py-3">
-                {{ $logs->links() }}
+                {{ $logs->links('vendor.pagination.dashboard-pagination') }}
             </div>
         @endif
     </div>
