@@ -16,20 +16,22 @@ class ReEngagementCampaignMail extends Mailable
     public string $emailBody;
     public string $recipientName;
     public ?string $storeName;
+    public ?string $loginUrl;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(string $subject, string $body, string $recipientName = '', ?string $storeName = null)
+    public function __construct(string $subject, string $body, string $recipientName = '', ?string $storeName = null, ?string $loginUrl = null)
     {
         $this->emailSubject = $subject;
         $this->recipientName = $recipientName;
         $this->storeName = $storeName;
+        $this->loginUrl = $loginUrl;
 
         // Parse placeholders in body
         $parsedBody = str_replace(
             ['{name}', '{store_name}', '{login_url}'],
-            [$recipientName ?: 'عزيزنا المستخدم', $storeName ?: 'متجرك', url('/login')],
+            [$recipientName ?: 'عزيزنا المستخدم', $storeName ?: 'متجرك', $loginUrl?:url('/')],
             $body
         );
 
@@ -58,6 +60,7 @@ class ReEngagementCampaignMail extends Mailable
                 'emailBody' => $this->emailBody,
                 'recipientName' => $this->recipientName,
                 'storeName' => $this->storeName,
+                'loginUrl' => $this->loginUrl,
             ],
         );
     }

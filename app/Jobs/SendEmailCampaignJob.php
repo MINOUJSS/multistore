@@ -62,18 +62,33 @@ class SendEmailCampaignJob implements ShouldQueue
             $type = $recipient['type'];
             $id = $recipient['id'];
 
+           switch($type) {
+                case 'seller':
+                    $login_url=route('seller.login');
+                    break;
+                case 'supplier':
+                    $login_url=route('supplier.login');
+                    break;
+           }
+
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 continue;
             }
 
-            $log = EmailCampaignLog::create([
-                'campaign_id' => $campaign->id,
-                'recipient_email' => $email,
-                'recipient_name' => $name,
-                'recipient_type' => $type,
-                'recipient_id' => $id,
-                'status' => 'pending',
-            ]);
+            if (!empty($recipient['skip_log_creation'])) {
+                $log = EmailCampaignLog::where('campaign_id', $campaign->id)
+                    ->where('recipient_email', $email)
+                    ->first();
+            } else {
+                $log = EmailCampaignLog::create([
+                    'campaign_id' => $campaign->id,
+                    'recipient_email' => $email,
+                    'recipient_name' => $name,
+                    'recipient_type' => $type,
+                    'recipient_id' => $id,
+                    'status' => 'pending',
+                ]);
+            }
 
             try {
                 Mail::to($email)->send(
@@ -81,7 +96,8 @@ class SendEmailCampaignJob implements ShouldQueue
                         $campaign->subject,
                         $campaign->content,
                         $name,
-                        $storeName
+                        $storeName,
+                        $login_url
                     )
                 );
 
@@ -168,6 +184,20 @@ class SendEmailCampaignJob implements ShouldQueue
                         'email' => $supplier->email,
                         'store_name' => $supplier->store_name,
                         'type' => 'supplier',
+                    ];
+                }
+                break;
+
+            case 'single_email':
+                $existingLogs = EmailCampaignLog::where('campaign_id', $this->campaign->id)->get();
+                foreach ($existingLogs as $log) {
+                    $recipients[] = [
+                        'id' => $log->recipient_id,
+                        'name' => $log->recipient_name,
+                        'email' => $log->recipient_email,
+                        'store_name' => null,
+                        'type' => $log->recipient_type ?: 'custom',
+                        'skip_log_creation' => true,
                     ];
                 }
                 break;

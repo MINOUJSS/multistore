@@ -57,6 +57,7 @@ class EmailCampaign extends Model
             'all_suppliers' => 'جميع الموردين',
             'inactive_suppliers' => 'الموردين غير النشطين',
             'all' => 'جميع المستخدمين (بائعين وموردين)',
+            'single_email' => 'إرسال مباشر لإيميل محدد',
             default => 'مخصص',
         };
     }

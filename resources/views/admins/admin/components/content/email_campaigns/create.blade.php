@@ -84,10 +84,39 @@
                                 <option value="inactive_suppliers">الموردين غير النشطين ({{ $inactiveSupplierCount }} مستخدم)</option>
                                 <option value="all_suppliers">جميع الموردين ({{ $supplierCount }} مستخدم)</option>
                                 <option value="all">جميع مستخدمي المنصة ({{ $totalUserCount }} مستخدم)</option>
+                                <option value="single_email">إرسال مباشر لإيميل واحد محدد (يدوي أو من المسجلين)</option>
                             </select>
                             @error('target_audience')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <!-- Single Email Input Block -->
+                        <div id="singleEmailBlock" class="d-none border p-3 rounded bg-light mb-3">
+                            <div class="mb-3">
+                                <label for="custom_email" class="form-label fw-bold small">البريد الإلكتروني المستهدف: <span class="text-danger">*</span></label>
+                                <input type="email" name="custom_email" id="custom_email" class="form-control @error('custom_email') is-invalid @enderror" placeholder="ابحث أو أدخل البريد الإلكتروني..." list="userEmailsList" value="{{ old('custom_email') }}">
+                                <datalist id="userEmailsList">
+                                    @if(isset($registeredUsers))
+                                        @foreach($registeredUsers as $userItem)
+                                            <option value="{{ $userItem['email'] }}">{{ $userItem['name'] }} ({{ $userItem['type'] }})</option>
+                                        @endforeach
+                                    @endif
+                                </datalist>
+                                <small class="text-muted">يمكنك اختيار إيميل مسجل بالمنصة أو إدخال أي بريد آخر يدوياً.</small>
+                                @error('custom_email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="custom_name" class="form-label fw-bold small">اسم المستلم (اختياري):</label>
+                                <input type="text" name="custom_name" id="custom_name" class="form-control @error('custom_name') is-invalid @enderror" placeholder="مثال: محمد علي" value="{{ old('custom_name') }}">
+                                <small class="text-muted">يُستخدم للتعويض مكان متغير {name} بالرسالة.</small>
+                                @error('custom_name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="alert alert-info py-2 px-3 small">
@@ -128,7 +157,24 @@
 
 @section('header_js')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    // Target Audience selector change listener
+    const targetAudienceSelect = document.getElementById('target_audience');
+    const singleEmailBlock = document.getElementById('singleEmailBlock');
+    const customEmailInput = document.getElementById('custom_email');
+
+    function toggleSingleEmailBlock() {
+        if (targetAudienceSelect.value === 'single_email') {
+            singleEmailBlock.classList.remove('d-none');
+            customEmailInput.setAttribute('required', 'required');
+        } else {
+            singleEmailBlock.classList.add('d-none');
+            customEmailInput.removeAttribute('required');
+        }
+    }
+
+    targetAudienceSelect.addEventListener('change', toggleSingleEmailBlock);
+    toggleSingleEmailBlock();
+
     // Helper tag inserter
     const contentArea = document.getElementById('content');
     document.querySelectorAll('.insert-tag').forEach(button => {

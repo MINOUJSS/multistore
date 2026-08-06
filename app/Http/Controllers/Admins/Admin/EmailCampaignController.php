@@ -46,12 +46,36 @@ class EmailCampaignController extends Controller
         $inactiveSupplierCount = Supplier::where('created_at', '<=', now()->subDays(7))->count();
         $totalUserCount = $sellerCount + $supplierCount;
 
+        // Registered platform user emails for autocomplete
+        $registeredUsers = collect();
+
+        $sellers = Seller::select('id', 'email', 'full_name', 'first_name', 'last_name', 'store_name')->get();
+        foreach ($sellers as $seller) {
+            $registeredUsers->push([
+                'email' => $seller->email,
+                'name' => $seller->full_name ?: ($seller->first_name . ' ' . $seller->last_name),
+                'store' => $seller->store_name,
+                'type' => 'بائع (Seller)',
+            ]);
+        }
+
+        $suppliers = Supplier::select('id', 'email', 'full_name', 'first_name', 'last_name', 'store_name')->get();
+        foreach ($suppliers as $supplier) {
+            $registeredUsers->push([
+                'email' => $supplier->email,
+                'name' => $supplier->full_name ?: ($supplier->first_name . ' ' . $supplier->last_name),
+                'store' => $supplier->store_name,
+                'type' => 'مورد (Supplier)',
+            ]);
+        }
+
         return view('admins.admin.email_campaigns.create', compact(
             'sellerCount',
             'inactiveSellerCount',
             'supplierCount',
             'inactiveSupplierCount',
-            'totalUserCount'
+            'totalUserCount',
+            'registeredUsers'
         ));
     }
 
@@ -63,7 +87,9 @@ class EmailCampaignController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
-            'target_audience' => 'required|string|in:all,all_sellers,inactive_sellers,all_suppliers,inactive_suppliers',
+            'target_audience' => 'required|string|in:all,all_sellers,inactive_sellers,all_suppliers,inactive_suppliers,single_email',
+            'custom_email' => 'required_if:target_audience,single_email|nullable|email|max:255',
+            'custom_name' => 'nullable|string|max:255',
             'content' => 'required|string',
         ]);
 
@@ -76,6 +102,7 @@ class EmailCampaignController extends Controller
             'all_suppliers' => Supplier::count(),
             'inactive_suppliers' => Supplier::where('created_at', '<=', now()->subDays(7))->count(),
             'all' => Seller::count() + Supplier::count(),
+            'single_email' => 1,
             default => 0,
         };
 
@@ -89,10 +116,42 @@ class EmailCampaignController extends Controller
             'total_recipients' => $expectedCount,
         ]);
 
+        // If single_email target, pre-create the log entry
+        if ($request->target_audience === 'single_email') {
+            $targetEmail = trim($request->custom_email);
+            $targetName = $request->custom_name;
+
+            // Lookup if recipient is registered
+            $seller = Seller::where('email', $targetEmail)->first();
+            $supplier = Supplier::where('email', $targetEmail)->first();
+
+            $recipientType = 'custom';
+            $recipientId = null;
+
+            if ($seller) {
+                $recipientType = 'seller';
+                $recipientId = $seller->id;
+                $targetName = $targetName ?: ($seller->full_name ?: ($seller->first_name . ' ' . $seller->last_name));
+            } elseif ($supplier) {
+                $recipientType = 'supplier';
+                $recipientId = $supplier->id;
+                $targetName = $targetName ?: ($supplier->full_name ?: ($supplier->first_name . ' ' . $supplier->last_name));
+            }
+
+            EmailCampaignLog::create([
+                'campaign_id' => $campaign->id,
+                'recipient_email' => $targetEmail,
+                'recipient_name' => $targetName ?: 'مستلم مخصص',
+                'recipient_type' => $recipientType,
+                'recipient_id' => $recipientId,
+                'status' => 'pending',
+            ]);
+        }
+
         // Dispatch background queue job
         SendEmailCampaignJob::dispatch($campaign);
 
-        Alert::success('نجاح', 'تم إضافة حملة البريد الإلكتروني بنجاح وبدأ الإرسال في الخلفية.');
+        Alert::success('نجاح', 'تم إضافة رسالة البريد بنجاح وبدأ الإرسال.');
 
         return redirect()->route('admin.email_campaigns.index');
     }
