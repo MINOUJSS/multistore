@@ -1,5 +1,5 @@
 <script>
-    let baseUrl ='{{ env('APP_URL')}}';
+    let baseUrl = '{{ env('APP_URL') }}';
     let baseDomain = '{{ env('APP_DOMAIN') }}'; // سيتم استبدالها عند تحميل الصفحة
     let Seller_domain = window.location.protocol + '//' + '{{ auth()->user()->tenant_id }}.' + baseDomain;
     document.addEventListener("DOMContentLoaded", function() {
@@ -23,7 +23,7 @@
     function updateOrderUI(order) {
         // أولاً: جهّز رابط الدفع القادم من السيرفر
         let to_pay_links = "";
-        let download_link="";
+        let download_link = "";
         // تحديث معلومات العميل
         document.getElementById("order-number").textContent = `#${order.order_number}`;
         document.getElementById("customer-name").textContent = order.customer_name;
@@ -38,43 +38,59 @@
         document.getElementById("shipping-zipcode").textContent = order.wilaya_id ?? "غير متوفر";
         document.getElementById("customer-note").textContent = order.note ?? "غير متوفر";
         if (order.payment_status == 'paid') {
-            if(order.download_token != null)
-            {
-                download_link=`${baseUrl}/download/${order.download_token}`;
+            if (order.download_token != null) {
+                download_link = `${baseUrl}/download/${order.download_token}`;
             }
-            document.getElementById("payment-status").innerHTML = (order.download_token != null)? `<span class="text-success">مدفوع</span><br/><smal>قم بنسخ الرابط و إرساله إلى العميل إذا تعذر عليه تحميل المنتج الرقمي</smal><br/><span>${download_link}</span>` :'<span class="text-success">مدفوع</span><br/>';
+            document.getElementById("payment-status").innerHTML = (order.download_token != null) ?
+                `<span class="badge bg-success-subtle text-success border border-success px-3 py-1.5 rounded-pill fw-bold fs-6">مدفوع</span><div class="mt-2 p-2 bg-light rounded text-start"><small class="fw-semibold">رابط تحميل المنتج الرقمي:</small><br/><span class="small text-primary text-break dir-ltr">${download_link}</span></div>` :
+                '<span class="badge bg-success-subtle text-success border border-success px-3 py-1.5 rounded-pill fw-bold fs-6">مدفوع</span>';
         } else if (order.payment_status == 'pending') {
             chagily_pay_link = `${Seller_domain}/payments/chargily_pay/${order.id}`;
             verments_pay_link = `${Seller_domain}/payments/verments_pay/${order.id}`;
-            to_pay_links = `<div id="api-keys" style="margin:20px;max-width:600px;">
-                <small>قم بنسخ أحد الراوابط التالي و أرسلها إلى الزبون لإستكمال عملية الدفع بالطريقة التي يفضلها</small>
-  <div>
-    <strong style="min-width:150px;">رابط الدفع بواسطة شارجيلي</strong>
-    <br>
-    <span id="chargilyPayLink">
-      ${chagily_pay_link}
-    </span>
-  </div>
+            to_pay_links = `
+            <div id="api-keys" class="mt-3 p-3 bg-white rounded-3 border border-light-subtle shadow-sm text-start" style="direction: rtl; width: 100%;">
+                <div class="d-flex align-items-center gap-2 mb-2 text-dark">
+                    <i class="fa-solid fa-link text-primary"></i>
+                    <small class="fw-bold">إرسال رابط استكمال الدفع للزبون:</small>
+                </div>
 
-  <div>
-    <strong style="min-width:150px;">رابط الدفع بواسطة تحويل بنكي</strong>
-    <br>
-    <span id="vermentsPayLink">
-      ${verments_pay_link}
-    </span>
-  </div>
+                <div class="mb-2.5 p-2.5 bg-light rounded-3 border border-light-subtle">
+                    <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                        <span class="small fw-bold text-dark text-truncate d-flex align-items-center gap-1" style="min-width: 0;">
+                            <i class="fa-solid fa-credit-card text-success flex-shrink-0"></i>
+                            <span class="text-truncate">شارجيلي (CIB / الذهبية)</span>
+                        </span>
+                        <button type="button" class="btn btn-sm btn-primary py-1 px-2.5 rounded-2 copy-pay-btn fw-bold text-nowrap" style="flex-shrink: 0;" onclick="copyToClipboard('${chagily_pay_link}', this)">
+                            <i class="fa-solid fa-copy me-1"></i> نسخ الرابط
+                        </button>
+                    </div>
+                    <div class="p-2 bg-white rounded border text-muted small font-monospace dir-ltr text-nowrap overflow-hidden" style="text-overflow: ellipsis; font-size: 0.75rem; width: 100%;" title="${chagily_pay_link}">
+                        ${chagily_pay_link}
+                    </div>
+                </div>
 
-  <div id="copyToast" style="display:none;color:green;font-weight:bold;margin-top:10px;">
-    تم النسخ ✔
-  </div>
-</div>
-`
-            // to_pay_links = `<br><a href="${Seller_domain}/payments/verments_pay/${order.id}" target="_blank" class="text-primary">رابط الدفع بواسطة تجويل بنكي</a>
-            // <br><a href="${Seller_domain}/payments/chargily_pay/${order.id}" target="_blank" class="text-primary">رابط الدفع بواسطة Chargily</a>`;
-            document.getElementById("payment-status").innerHTML = '<span class="text-warning">قيد الانتظار</span>' +
+                <div class="p-2.5 bg-light rounded-3 border border-light-subtle">
+                    <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                        <span class="small fw-bold text-dark text-truncate d-flex align-items-center gap-1" style="min-width: 0;">
+                            <i class="fa-solid fa-building-columns text-info flex-shrink-0"></i>
+                            <span class="text-truncate">تحويل بنكي (BaridiMob)</span>
+                        </span>
+                        <button type="button" class="btn btn-sm btn-primary py-1 px-2.5 rounded-2 copy-pay-btn fw-bold text-nowrap" style="flex-shrink: 0;" onclick="copyToClipboard('${verments_pay_link}', this)">
+                            <i class="fa-solid fa-copy me-1"></i> نسخ الرابط
+                        </button>
+                    </div>
+                    <div class="p-2 bg-white rounded border text-muted small font-monospace dir-ltr text-nowrap overflow-hidden" style="text-overflow: ellipsis; font-size: 0.75rem; width: 100%;" title="${verments_pay_link}">
+                        ${verments_pay_link}
+                    </div>
+                </div>
+            </div>`;
+
+            document.getElementById("payment-status").innerHTML =
+                '<span class="badge bg-warning-subtle text-warning border border-warning px-3 py-1.5 rounded-pill fw-bold fs-6">قيد الانتظار</span>' +
                 to_pay_links;
         } else {
-            document.getElementById("payment-status").innerHTML = '<span class="text-danger">غير مدفوع</span>';
+            document.getElementById("payment-status").innerHTML =
+                '<span class="badge bg-danger-subtle text-danger border border-danger px-3 py-1.5 rounded-pill fw-bold fs-6">غير مدفوع</span>';
         }
         document.getElementById("payment-method").textContent = order.payment_method ?? "غير متوفر";
         if (order.payment_method == 'verments') {
@@ -367,6 +383,51 @@
         }
     }
     //-----كود نسخ و لصق الرابط----
+    function copyToClipboard(text, btnElement) {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopySuccess(btnElement);
+            }).catch(err => {
+                fallbackCopyText(text, btnElement);
+            });
+        } else {
+            fallbackCopyText(text, btnElement);
+        }
+    }
 
+    function showCopySuccess(btnElement) {
+        if (!btnElement) return;
+        const originalHtml = btnElement.innerHTML;
+        const originalStyle = btnElement.getAttribute('style') || '';
+
+        btnElement.innerHTML = '<i class="fa-solid fa-check me-1"></i> تم النسخ!';
+        btnElement.classList.remove('btn-primary', 'btn-outline-primary');
+        btnElement.classList.add('btn-success');
+        btnElement.style.cssText = originalStyle +
+            '; background-color: #10b981 !important; border-color: #10b981 !important; color: #ffffff !important;';
+
+        setTimeout(() => {
+            btnElement.innerHTML = originalHtml;
+            btnElement.classList.remove('btn-success');
+            btnElement.classList.add('btn-primary');
+            btnElement.style.cssText = originalStyle;
+        }, 2000);
+    }
+
+    function fallbackCopyText(text, btnElement) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showCopySuccess(btnElement);
+        } catch (err) {
+            console.error('Fallback copy failed', err);
+        }
+        document.body.removeChild(textArea);
+    }
     //---نهاية كود نسخ و لصق الرابط----
 </script>

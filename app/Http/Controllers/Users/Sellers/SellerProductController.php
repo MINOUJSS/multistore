@@ -34,9 +34,21 @@ class SellerProductController extends Controller
         foreach ($categories_ids as $id) {
             $categories[] = Category::find($id);
         }
-        $products = SellerProducts::orderBy('id', 'desc')->where('seller_id', get_seller_data(auth()->user()->tenant_id)->id)->paginate(10);
 
-        return view('users.sellers.products.index', compact('products', 'categories'));
+        $seller_id = get_seller_data(auth()->user()->tenant_id)->id;
+        $products = SellerProducts::orderBy('id', 'desc')->where('seller_id', $seller_id)->paginate(10);
+
+        $productStats = [
+            'total' => SellerProducts::where('seller_id', $seller_id)->count(),
+            'active' => SellerProducts::where('seller_id', $seller_id)->where('status', 'active')->count(),
+            'inactive' => SellerProducts::where('seller_id', $seller_id)->where('status', 'inactive')->count(),
+            'digital' => SellerProducts::where('seller_id', $seller_id)->where('product_type', 'digital')->count(),
+            'physical' => SellerProducts::where('seller_id', $seller_id)->where('product_type', 'physical')->count(),
+            'out_of_stock' => SellerProducts::where('seller_id', $seller_id)->where('qty', '<=', 0)->count(),
+            'categories' => count(array_filter($categories)),
+        ];
+
+        return view('users.sellers.products.index', compact('products', 'categories', 'productStats'));
     }
 
     // create

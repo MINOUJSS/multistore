@@ -15,14 +15,24 @@ class SupplierOrderAbandonedController extends Controller
 {
     public function index()
     {
-        $orders = SupplierOrderAbandoned::OrderBy('id', 'desc')->where('supplier_id', get_supplier_data(auth()->user()->tenant_id)->id)->paginate(10);
+        $supplier_id = get_supplier_data(auth()->user()->tenant_id)->id;
+        $orders = SupplierOrderAbandoned::OrderBy('id', 'desc')->where('supplier_id', $supplier_id)->paginate(10);
         // make all orders readed
         foreach ($orders as $order) {
             $order->is_readed = true;
             $order->update();
         }
 
-        return view('users.suppliers.orders_abandoned.index', compact('orders'));
+        $orderStats = [
+            'total' => SupplierOrderAbandoned::where('supplier_id', $supplier_id)->count(),
+            'today' => SupplierOrderAbandoned::where('supplier_id', $supplier_id)->whereDate('created_at', now()->today())->count(),
+            'this_week' => SupplierOrderAbandoned::where('supplier_id', $supplier_id)->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
+            'this_month' => SupplierOrderAbandoned::where('supplier_id', $supplier_id)->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count(),
+            'pending' => SupplierOrderAbandoned::where('supplier_id', $supplier_id)->where('status', 'pending')->count(),
+            'delivered' => SupplierOrderAbandoned::where('supplier_id', $supplier_id)->where('status', 'delivered')->count(),
+        ];
+
+        return view('users.suppliers.orders_abandoned.index', compact('orders', 'orderStats'));
     }
 
     public function order($id)

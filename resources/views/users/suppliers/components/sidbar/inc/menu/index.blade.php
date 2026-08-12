@@ -58,6 +58,10 @@
     </div>
     @endif
 
+    <div class="item {{ request()->routeIs('supplier.support_tickets*') ? 'active' : '' }}">
+        <a href="{{route('supplier.support_tickets.index')}}"><i class="fa-solid fa-headset"></i> <span>تذاكر الدعم الفني</span></a>
+    </div>
+
     <div class="item {{ request()->routeIs('supplier.settings') ? 'active' : '' }}">
         <a href="{{route('supplier.settings')}}"><i class="fa-solid fa-gear"></i> <span>الإعدادات</span></a>
     </div>

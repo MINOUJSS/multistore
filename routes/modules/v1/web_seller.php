@@ -33,6 +33,7 @@ use App\Http\Controllers\Users\Sellers\SellerShippingController;
 use App\Http\Controllers\Users\Sellers\SellerSliderController;
 use App\Http\Controllers\Users\Sellers\SellerSubscriptionController;
 use App\Http\Controllers\Users\Sellers\SellerWalletController;
+use App\Http\Controllers\Users\UserSupportTicketController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -55,6 +56,12 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::get('/seller-panel', [SellerController::class, 'index'])->name('index');
                     Route::get('/seller-panel/admin', [SellerController::class, 'index'])->name('admin');
                     Route::get('/seller-panel/dashboard', [SellerController::class, 'index'])->name('dashboard');
+                    // support tickets routes
+                    Route::get('/seller-panel/support-tickets', [UserSupportTicketController::class, 'index'])->name('support_tickets.index');
+                    Route::post('/seller-panel/support-tickets', [UserSupportTicketController::class, 'store'])->name('support_tickets.store');
+                    Route::get('/seller-panel/support-tickets/{id}', [UserSupportTicketController::class, 'show'])->name('support_tickets.show');
+                    Route::post('/seller-panel/support-tickets/{id}/reply', [UserSupportTicketController::class, 'reply'])->name('support_tickets.reply');
+                    Route::post('/seller-panel/support-tickets/{id}/close', [UserSupportTicketController::class, 'close'])->name('support_tickets.close');
                     // get wilaya data
                     Route::get('/seller-panel/get-wilaya-data/{id}', [SellerController::class, 'get_wilaya_data'])->name('get-wilaya-data');
                     // get dayra

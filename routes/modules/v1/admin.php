@@ -15,8 +15,7 @@ use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedController;
 use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedsArchivesController;
 use App\Http\Controllers\Admins\admin\ProofsRefusedChatController;
 use App\Http\Controllers\Admins\Admin\SellerController;
-use App\Http\Controllers\Admins\Admin\SettingController;
-use App\Http\Controllers\Admins\Admin\SupplierController;
+use App\Http\Controllers\Admins\Admin\AdminSupportTicketController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -72,6 +71,13 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::patch('/admin/payments/sellers/subscribe/approve/{id}', [PaymentsController::class, 'approve_sellers_subscribe_payment'])->name('payments.sellers.subscribe.approve');
                 // disputes routes
                 Route::get('/ah-admin/payment-proof/disputes', [AdminDisputeController::class, 'index'])->name('payment_proof.disputes');
+
+                // Support Tickets Management Routes
+                Route::get('/ah-admin/support-tickets', [AdminSupportTicketController::class, 'index'])->name('support_tickets.index');
+                Route::get('/ah-admin/support-tickets/{id}', [AdminSupportTicketController::class, 'show'])->name('support_tickets.show');
+                Route::post('/ah-admin/support-tickets/{id}/reply', [AdminSupportTicketController::class, 'reply'])->name('support_tickets.reply');
+                Route::post('/ah-admin/support-tickets/{id}/status', [AdminSupportTicketController::class, 'updateStatus'])->name('support_tickets.update_status');
+                Route::delete('/ah-admin/support-tickets/{id}', [AdminSupportTicketController::class, 'destroy'])->name('support_tickets.destroy');
                 Route::get('/ah-admin/payment-proof/dispute/{id}/show', [AdminDisputeController::class, 'show'])->name('payment_proof.dispute.show');
                 Route::put('/ah-admin/payment-proof/dispute/{id}/update', [AdminDisputeController::class, 'updateStatus'])->name('payment_proof.dispute.updateStatus');
                 Route::post('/ah-admin/payment-proof/dispute/{id}/reply', [AdminDisputeController::class, 'reply'])->name('payment_proof.dispute.reply');

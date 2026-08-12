@@ -119,63 +119,94 @@ canvas {
         </div>
     </div>
 
-    <!-- Beta Support Section -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
-        <div class="card-header bg-warning bg-opacity-15 border-0 py-3 px-4 d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-2 text-dark">
-                <i class="fas fa-flask text-warning fs-5"></i>
-                <strong class="fs-6">منصة Dzora في المرحلة التجريبية</strong>
+    <!-- Dedicated Call Center & Technical Support Hub -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #ffffff 0%, #fcf7fa 100%); border-right: 5px solid #a40c72 !important;">
+        <div class="card-header bg-white border-0 py-3.5 px-4 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon-wrapper bg-opacity-10 text-white" style="background-color: #a40c72; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-headset fs-5"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-1 text-dark">مركز الكول سنتر والدعم الفني المباشر</h5>
+                    <p class="text-muted small mb-0">نحن هنا لمساعدتك في حل أي مشكلة، زيادة مبيعاتك، وضمان نجاح تجارتك بكل أمان وموثوقية.</p>
+                </div>
             </div>
-            <button class="btn btn-sm btn-light border-0 shadow-sm rounded-circle p-2"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#betaSupport"
-                aria-expanded="true">
-                <i class="fas fa-chevron-down"></i>
-            </button>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill fw-semibold small d-none d-sm-inline-flex align-items-center gap-1">
+                    <span class="spinner-grow spinner-grow-sm me-1" role="status" style="width: 8px; height: 8px;"></span>
+                    الكول سنتر متاح الآن (24/7)
+                </span>
+                <button class="btn btn-sm btn-light border-0 shadow-sm rounded-circle p-2"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#sellerSupportPanel"
+                    aria-expanded="true">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="collapse show" id="betaSupport">
-            <div class="card-body p-4">
-                <div class="alert alert-warning bg-warning bg-opacity-10 border-0 rounded-3 mb-4 p-3 text-dark">
-                    <h6 class="fw-bold mb-2">
-                        👋 مرحباً بك في النسخة التجريبية من <strong>Dzora</strong>
-                    </h6>
-                    <p class="mb-0 small leading-relaxed">
-                        شكراً لاستخدامك المنصة ومساهمتك في تطويرها. إذا واجهتك أي مشكلة أو كان لديك أي استفسار أو اقتراح، فإن فريق الدعم جاهز لمساعدتك مباشرة على مدار الساعة.
-                    </p>
-                </div>
-
+        <div class="collapse show" id="sellerSupportPanel">
+            <div class="card-body p-4 pt-1">
                 <div class="row g-3">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="border border-light-subtle rounded-3 p-3 h-100 text-center bg-light bg-opacity-50">
-                            <div class="fs-3 mb-1">📞</div>
-                            <h6 class="fw-bold mb-1">الهاتف</h6>
-                            <div class="fw-bold text-dark mb-3 dir-ltr">0672816709</div>
-                            <a href="tel:672816709" class="btn btn-primary btn-sm w-100 rounded-2 fw-semibold">
-                                اتصال مباشر
+                    <!-- 1. Direct Call Center Line -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="border border-light-subtle rounded-3 p-3 h-100 bg-white shadow-xs text-center position-relative transition-all hover-lift">
+                            <div class="stat-icon-wrapper bg-primary bg-opacity-10 text-primary mx-auto mb-2" style="width: 46px; height: 46px; border-radius: 12px;">
+                                <i class="fa-solid fa-phone-volume fs-5"></i>
+                            </div>
+                            <h6 class="fw-bold mb-1 text-dark">خط الكول سنتر المباشر</h6>
+                            <small class="text-muted d-block mb-2">تحدث فوراً مع ممثل الدعم</small>
+                            <div class="fw-bold text-dark fs-6 mb-3 dir-ltr">0672 81 67 09</div>
+                            <a href="tel:0672816709" class="btn btn-primary btn-sm w-100 rounded-2 fw-semibold shadow-sm">
+                                <i class="fa-solid fa-phone me-1"></i> اتصال مباشر
                             </a>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="border border-light-subtle rounded-3 p-3 h-100 text-center bg-light bg-opacity-50">
-                            <div class="fs-3 mb-1">💬</div>
-                            <h6 class="fw-bold mb-1">واتساب</h6>
-                            <div class="fw-bold text-dark mb-3 dir-ltr">+213 672816709</div>
-                            <a href="https://wa.me/213672816709" target="_blank" class="btn btn-success btn-sm w-100 rounded-2 fw-semibold">
-                                مراسلة واتساب
+                    <!-- 2. WhatsApp Instant Support -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="border border-light-subtle rounded-3 p-3 h-100 bg-white shadow-xs text-center position-relative transition-all hover-lift">
+                            <div class="stat-icon-wrapper bg-success bg-opacity-10 text-success mx-auto mb-2" style="width: 46px; height: 46px; border-radius: 12px;">
+                                <i class="fa-brands fa-whatsapp fs-4"></i>
+                            </div>
+                            <h6 class="fw-bold mb-1 text-dark">محادثة الواتساب السريعة</h6>
+                            <small class="text-muted d-block mb-2">استجابة خلال دقائق معدودة</small>
+                            <div class="fw-bold text-dark fs-6 mb-3 dir-ltr">+213 672 81 67 09</div>
+                            <a href="https://wa.me/213672816709?text=مرحباً%20فريق%20الدعم،%20أنا%20تاجر%20في%20منصة%20Dzora%20وأحتاج%20إلى%20مساعدة" target="_blank" class="btn btn-success btn-sm w-100 rounded-2 fw-semibold shadow-sm">
+                                <i class="fa-brands fa-whatsapp me-1"></i> مراسلة واتساب
                             </a>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-12">
-                        <div class="border border-light-subtle rounded-3 p-3 h-100 text-center bg-light bg-opacity-50">
-                            <div class="fs-3 mb-1">💡</div>
-                            <h6 class="fw-bold mb-1">لديك اقتراح؟</h6>
-                            <p class="small text-muted mb-2">نرحب بجميع اقتراحاتكم لتطوير المنصة.</p>
-                            <a href="{{ route('site.index') }}?#contact" class="btn btn-outline-primary btn-sm w-100 rounded-2 fw-semibold" target="_blank">
-                                إرسال اقتراح
+                    <!-- 3. Telegram Group Subscription Card -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="border border-light-subtle rounded-3 p-3 h-100 bg-white shadow-xs text-center position-relative transition-all hover-lift" style="border-top: 3px solid #0088cc !important;">
+                            <div class="stat-icon-wrapper text-white mx-auto mb-2" style="background-color: #0088cc; width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-brands fa-telegram fs-4"></i>
+                            </div>
+                            <h6 class="fw-bold mb-1 text-dark">مجتمع التجار على التيليغرام</h6>
+                            <small class="text-muted d-block mb-2">انضم لمجموعتنا الخاصة بالتجار</small>
+                            <div class="small text-info fw-semibold mb-3">
+                                <i class="fa-solid fa-users me-1"></i> نصائح وتحديثات فورية
+                            </div>
+                            <a href="https://t.me/+v0gwM7QgyC0xNWU0" target="_blank" class="btn text-white btn-sm w-100 rounded-2 fw-semibold shadow-sm" style="background-color: #0088cc;">
+                                <i class="fa-brands fa-telegram me-1"></i> الانضمام للمجموعة
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 4. FAQ & Knowledge Base -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="border border-light-subtle rounded-3 p-3 h-100 bg-white shadow-xs text-center position-relative transition-all hover-lift">
+                            <div class="stat-icon-wrapper bg-warning bg-opacity-10 text-warning mx-auto mb-2" style="width: 46px; height: 46px; border-radius: 12px;">
+                                <i class="fa-solid fa-circle-question fs-5"></i>
+                            </div>
+                            <h6 class="fw-bold mb-1 text-dark">مركز المعرفة والأسئلة</h6>
+                            <small class="text-muted d-block mb-2">شروحات وحلول سريعة للتجار</small>
+                            <div class="small text-muted mb-3">إرشادات تطوير المبيعات</div>
+                            <a href="{{ route('site.index') }}#faq" target="_blank" class="btn btn-outline-dark btn-sm w-100 rounded-2 fw-semibold">
+                                <i class="fa-solid fa-book-open me-1"></i> دليل الاستخدام
                             </a>
                         </div>
                     </div>
@@ -340,3 +371,4 @@ canvas {
         });
     </script>
 @endif
+

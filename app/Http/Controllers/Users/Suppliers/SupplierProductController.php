@@ -33,9 +33,21 @@ class SupplierProductController extends Controller
         foreach ($categories_ids as $id) {
             $categories[] = Category::find($id);
         }
-        $products = SupplierProducts::orderBy('id', 'desc')->where('supplier_id', get_supplier_data(auth()->user()->tenant_id)->id)->paginate(10);
 
-        return view('users.suppliers.products.index', compact('products', 'categories'));
+        $supplier_id = get_supplier_data(auth()->user()->tenant_id)->id;
+        $products = SupplierProducts::orderBy('id', 'desc')->where('supplier_id', $supplier_id)->paginate(10);
+
+        $productStats = [
+            'total' => SupplierProducts::where('supplier_id', $supplier_id)->count(),
+            'active' => SupplierProducts::where('supplier_id', $supplier_id)->where('status', 'active')->count(),
+            'inactive' => SupplierProducts::where('supplier_id', $supplier_id)->where('status', 'inactive')->count(),
+            'free_shipping' => SupplierProducts::where('supplier_id', $supplier_id)->where('free_shipping', 'yes')->count(),
+            'min_order' => SupplierProducts::where('supplier_id', $supplier_id)->where('minimum_order_qty', '>', 1)->count(),
+            'out_of_stock' => SupplierProducts::where('supplier_id', $supplier_id)->where('qty', '<=', 0)->count(),
+            'categories' => count(array_filter($categories)),
+        ];
+
+        return view('users.suppliers.products.index', compact('products', 'categories', 'productStats'));
     }
 
     // create

@@ -15,14 +15,24 @@ class SellerOrderAbandonedController extends Controller
 {
     public function index()
     {
-        $orders = SellerOrderAbandoned::OrderBy('id', 'desc')->where('seller_id', get_seller_data(auth()->user()->tenant_id)->id)->paginate(10);
+        $seller_id = get_seller_data(auth()->user()->tenant_id)->id;
+        $orders = SellerOrderAbandoned::OrderBy('id', 'desc')->where('seller_id', $seller_id)->paginate(10);
         // make all orders readed
         foreach ($orders as $order) {
             $order->is_readed = true;
             $order->update();
         }
 
-        return view('users.sellers.orders_abandoned.index', compact('orders'));
+        $orderStats = [
+            'total' => SellerOrderAbandoned::where('seller_id', $seller_id)->count(),
+            'today' => SellerOrderAbandoned::where('seller_id', $seller_id)->whereDate('created_at', now()->today())->count(),
+            'this_week' => SellerOrderAbandoned::where('seller_id', $seller_id)->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
+            'this_month' => SellerOrderAbandoned::where('seller_id', $seller_id)->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count(),
+            'pending' => SellerOrderAbandoned::where('seller_id', $seller_id)->where('status', 'pending')->count(),
+            'delivered' => SellerOrderAbandoned::where('seller_id', $seller_id)->where('status', 'delivered')->count(),
+        ];
+
+        return view('users.sellers.orders_abandoned.index', compact('orders', 'orderStats'));
     }
 
     public function order($id)

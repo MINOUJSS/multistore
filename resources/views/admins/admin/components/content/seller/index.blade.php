@@ -1,6 +1,7 @@
 <div class="container-fluid py-4">
     <!-- ===== Page Header ===== -->
-    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
+    <div
+        class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
         <h3 class="fw-bold mb-0">
             <i class="fa-solid fa-store text-primary me-2"></i>
             إدارة البائعين
@@ -65,7 +66,7 @@
             <div class="row g-3 align-items-center">
                 <div class="col-12 col-md-6">
                     <input type="text" id="searchInput" class="form-control"
-                           placeholder="🔍 البحث بالاسم أو البريد أو الهاتف">
+                        placeholder="🔍 البحث بالاسم أو البريد أو الهاتف">
                 </div>
                 <div class="col-12 col-sm-6 col-md-3">
                     <select class="form-select">
@@ -75,7 +76,8 @@
                         <option value="blocked">محظور</option>
                     </select>
                 </div>
-                <div class="col-12 col-sm-6 col-md-3 d-flex align-items-center justify-content-start justify-content-sm-end">
+                <div
+                    class="col-12 col-sm-6 col-md-3 d-flex align-items-center justify-content-start justify-content-sm-end">
                     <span class="badge bg-secondary p-2 fs-6">
                         {{ $sellers->count() }} بائع
                     </span>
@@ -126,59 +128,59 @@
                             <td data-label="المتجر">
                                 <span class="badge bg-info">
                                     <a href="{{ seller_store_url($seller->tenant->id) }}" target="_blank"
-                                       class="text-white text-decoration-none">{{ get_seller_store_name($seller->tenant->id) }}</a>
+                                        class="text-white text-decoration-none">{{ get_seller_store_name($seller->tenant->id) }}</a>
                                 </span>
                             </td>
 
-                            <td data-label="تاريخ آخر نشاط">{{ get_user_data($seller->tenant_id)->last_seen[0]->created_at->diffForHumans() }}</td>
+                            <td data-label="تاريخ آخر نشاط">
+                                {{ get_user_data($seller->tenant_id)->last_seen[0]->created_at->diffForHumans() }}</td>
 
                             <td data-label="الحالة">{!! get_seller_status($seller->tenant->id) !!}</td>
 
-                            <td data-label="الباقة">{{ get_seller_plan_data($seller->plan_subscription->plan_id)->name }}</td>
+                            <td data-label="الباقة">
+                                {{ get_seller_plan_data($seller->plan_subscription->plan_id)->name }}</td>
 
-                            <td data-label="المنتجات"><span class="badge bg-primary">{{ $seller->products->count() }}</span></td>
+                            <td data-label="المنتجات"><span
+                                    class="badge bg-primary">{{ $seller->products->count() }}</span></td>
 
                             <td data-label="التسجيل">{{ $seller->created_at->format('d-m-Y') }}</td>
 
-                            <td data-label="الطلبات"><span class="badge bg-dark">{{ $seller->orders->count() }}</span></td>
+                            <td data-label="الطلبات"><span class="badge bg-dark">{{ $seller->orders->count() }}</span>
+                            </td>
 
                             <td data-label="الاشتراك"><span class="text-muted">
-                              @if ($seller->plan_subscription->plan_id != 1)
-                                  {{ $seller->plan_subscription->subscription_end_date }}
-                              @else
-                                  مدى الحياة
-                              @endif
-                            </span></td>
+                                    @if ($seller->plan_subscription->plan_id != 1)
+                                        {{ $seller->plan_subscription->subscription_end_date }}
+                                    @else
+                                        مدى الحياة
+                                    @endif
+                                </span></td>
 
                             <td data-label="العمليات">
-                                <div class="d-flex justify-content-center justify-content-lg-center align-items-center gap-2 action-buttons">
+                                <div
+                                    class="d-flex justify-content-center justify-content-lg-center align-items-center gap-2 action-buttons">
 
                                     <!-- View -->
                                     <a href="{{ route('admin.seller.show', $seller->id) }}"
-                                       class="btn btn-sm btn-light border action-btn view-btn"
-                                       data-bs-toggle="tooltip"
-                                       title="عرض التفاصيل">
+                                        class="btn btn-sm btn-light border action-btn view-btn" data-bs-toggle="tooltip"
+                                        title="عرض التفاصيل">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
 
                                     <!-- Activate -->
-                                    <a href="#"
-                                       class="btn btn-sm btn-light border action-btn active-btn"
-                                       data-bs-toggle="tooltip"
-                                       title="تفعيل المورد">
+                                    <a href="#" class="btn btn-sm btn-light border action-btn active-btn"
+                                        data-bs-toggle="tooltip" title="تفعيل المورد">
                                         <i class="fa-solid fa-circle-check"></i>
                                     </a>
 
                                     <!-- Delete -->
                                     <form method="POST"
-                                          action="{{ route('admin.seller.destroy', get_user_data($seller->tenant->id)->id) }}"
-                                          onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                        action="{{ route('admin.seller.destroy', get_user_data($seller->tenant->id)->id) }}"
+                                        onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
-                                                class="btn btn-sm btn-light border action-btn delete-btn"
-                                                data-bs-toggle="tooltip"
-                                                title="حذف المورد">
+                                        <button type="submit" class="btn btn-sm btn-light border action-btn delete-btn"
+                                            data-bs-toggle="tooltip" title="حذف المورد">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </form>
@@ -201,7 +203,7 @@
         <!-- ===== Pagination ===== -->
         <div class="card-footer bg-white py-3">
             <div class="d-flex justify-content-center justify-content-md-end overflow-auto">
-                {{ $sellers->links('pagination::bootstrap-5') }}
+                {{ $sellers->links('vendor.pagination.dashboard-pagination') }}
             </div>
         </div>
     </div>
@@ -209,7 +211,7 @@
 
 <!-- ===== Simple Search Script ===== -->
 <script>
-    document.getElementById('searchInput').addEventListener('keyup', function () {
+    document.getElementById('searchInput').addEventListener('keyup', function() {
         let value = this.value.toLowerCase();
         document.querySelectorAll('#sellersTable tbody tr').forEach(row => {
             row.style.display = row.innerText.toLowerCase().includes(value) ? '' : 'none';
@@ -225,102 +227,103 @@
 </script>
 
 <style>
-/* Pure CSS Responsive Table for #sellersTable */
-@media (max-width: 991.98px) {
-    #sellersTable, 
-    #sellersTable tbody, 
-    #sellersTable tr, 
-    #sellersTable td {
-        display: block;
-        width: 100% !important;
-        box-sizing: border-box;
+    /* Pure CSS Responsive Table for #sellersTable */
+    @media (max-width: 991.98px) {
+
+        #sellersTable,
+        #sellersTable tbody,
+        #sellersTable tr,
+        #sellersTable td {
+            display: block;
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+
+        #sellersTable thead {
+            display: none !important;
+        }
+
+        #sellersTable tbody tr {
+            background: #ffffff;
+            border: 1px solid #e9ecef !important;
+            border-radius: 14px;
+            margin-bottom: 1.25rem;
+            padding: 0.5rem 0.75rem;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+        }
+
+        #sellersTable tbody td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.65rem 0.75rem;
+            border: none !important;
+            border-bottom: 1px dashed #e9ecef !important;
+            white-space: normal !important;
+            text-align: left;
+        }
+
+        #sellersTable tbody td:last-child {
+            border-bottom: none !important;
+        }
+
+        #sellersTable tbody td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: #495057;
+            font-size: 0.85rem;
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
     }
-    
-    #sellersTable thead {
-        display: none !important;
-    }
-    
-    #sellersTable tbody tr {
-        background: #ffffff;
-        border: 1px solid #e9ecef !important;
-        border-radius: 14px;
-        margin-bottom: 1.25rem;
-        padding: 0.5rem 0.75rem;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
-    }
-    
-    #sellersTable tbody td {
+
+    .action-buttons .action-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 0.65rem 0.75rem;
-        border: none !important;
-        border-bottom: 1px dashed #e9ecef !important;
-        white-space: normal !important;
-        text-align: left;
+        justify-content: center;
+        transition: all .25s ease;
+        font-size: 14px;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
     }
-    
-    #sellersTable tbody td:last-child {
-        border-bottom: none !important;
+
+    .action-buttons .action-btn i {
+        transition: all .25s ease;
     }
-    
-    #sellersTable tbody td::before {
-        content: attr(data-label);
-        font-weight: 700;
-        color: #495057;
-        font-size: 0.85rem;
-        margin-left: 1rem;
-        flex-shrink: 0;
+
+    /* View */
+    .view-btn {
+        color: #0d6efd;
     }
-}
 
-.action-buttons .action-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all .25s ease;
-    font-size: 14px;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,.05);
-}
+    .view-btn:hover {
+        background: #0d6efd;
+        color: #fff;
+        transform: translateY(-2px);
+    }
 
-.action-buttons .action-btn i {
-    transition: all .25s ease;
-}
+    /* Activate */
+    .active-btn {
+        color: #198754;
+    }
 
-/* View */
-.view-btn {
-    color: #0d6efd;
-}
+    .active-btn:hover {
+        background: #198754;
+        color: #fff;
+        transform: translateY(-2px);
+    }
 
-.view-btn:hover {
-    background: #0d6efd;
-    color: #fff;
-    transform: translateY(-2px);
-}
+    /* Delete */
+    .delete-btn {
+        color: #dc3545;
+    }
 
-/* Activate */
-.active-btn {
-    color: #198754;
-}
-
-.active-btn:hover {
-    background: #198754;
-    color: #fff;
-    transform: translateY(-2px);
-}
-
-/* Delete */
-.delete-btn {
-    color: #dc3545;
-}
-
-.delete-btn:hover {
-    background: #dc3545;
-    color: #fff;
-    transform: translateY(-2px);
-}
+    .delete-btn:hover {
+        background: #dc3545;
+        color: #fff;
+        transform: translateY(-2px);
+    }
 </style>

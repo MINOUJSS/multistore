@@ -34,6 +34,7 @@ use App\Http\Controllers\Users\Suppliers\SupplierShippingController;
 use App\Http\Controllers\Users\Suppliers\SupplierSliderController;
 use App\Http\Controllers\Users\Suppliers\SupplierSubscriptionController;
 use App\Http\Controllers\Users\Suppliers\SupplierWalletController;
+use App\Http\Controllers\Users\UserSupportTicketController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -61,6 +62,12 @@ Route::middleware([
                 Route::get('/supplier-panel', [SupplierController::class, 'index'])->name('index');
                 Route::get('/supplier-panel/admin', [SupplierController::class, 'index'])->name('admin');
                 Route::get('/supplier-panel/dashboard', [SupplierController::class, 'index'])->name('dashboard');
+                // support tickets routes
+                Route::get('/supplier-panel/support-tickets', [UserSupportTicketController::class, 'index'])->name('support_tickets.index');
+                Route::post('/supplier-panel/support-tickets', [UserSupportTicketController::class, 'store'])->name('support_tickets.store');
+                Route::get('/supplier-panel/support-tickets/{id}', [UserSupportTicketController::class, 'show'])->name('support_tickets.show');
+                Route::post('/supplier-panel/support-tickets/{id}/reply', [UserSupportTicketController::class, 'reply'])->name('support_tickets.reply');
+                Route::post('/supplier-panel/support-tickets/{id}/close', [UserSupportTicketController::class, 'close'])->name('support_tickets.close');
                 // get wilaya data
                 Route::get('/supplier-panel/get-wilaya-data/{id}', [SupplierController::class, 'get_wilaya_data'])->name('get-wilaya-data');
                 // get dayra

@@ -1,12 +1,21 @@
     @php
         use App\Models\Dispute;
         use App\Models\ContactMessage;
+        use App\Models\SupportTicket;
         $newPaymentProofDisputesCount = Dispute::where('status', 'open')->count();
         $unread_message_count=Contactmessage::where('is_read',0)->count();
+        $openSupportTicketsCount = SupportTicket::where('status', 'open')->count();
         $DisputesCount = $newPaymentProofDisputesCount;
     @endphp
     <div class="menu">
         <div class="item"><a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-gauge"></i> الرئيسية</a></div>
+        <div class="item">
+            <a href="{{ route('admin.support_tickets.index') }}"><i class="fa-solid fa-headset"></i> تذاكر الدعم الفني
+                @if ($openSupportTicketsCount > 0)
+                    <span class="badge bg-primary ms-2">{{ $openSupportTicketsCount }}</span>
+                @endif
+            </a>
+        </div>
         @if (auth()->guard('admin')->user()->type == 'admin')
         <div class="item"><a href="{{ route('admin.financial.dashboard') }}"><i class="fa-solid fa-money-bill"></i> المالية</a></div>
         <div class="item">

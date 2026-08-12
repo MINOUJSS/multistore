@@ -24,7 +24,19 @@ class SellerOrderController extends Controller
     {
         // $courierdz = new CourierdzService(1, auth()->user()->type, 'YALIDINE');
         // dd($courierdz->test_yalidine('yal-V23CBN'));
-        $orders = SellerOrders::OrderBy('id', 'desc')->where('seller_id', get_seller_data(auth()->user()->tenant_id)->id)->paginate(10);
+        $sellerId = get_seller_data(auth()->user()->tenant_id)->id;
+
+        $baseQuery = SellerOrders::where('seller_id', $sellerId);
+        $orderStats = [
+            'total' => (clone $baseQuery)->count(),
+            'today' => (clone $baseQuery)->whereDate('created_at', now()->today())->count(),
+            'this_week' => (clone $baseQuery)->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
+            'this_month' => (clone $baseQuery)->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count(),
+            'pending' => (clone $baseQuery)->where('status', 'pending')->count(),
+            'delivered' => (clone $baseQuery)->where('status', 'delivered')->count(),
+        ];
+
+        $orders = SellerOrders::OrderBy('id', 'desc')->where('seller_id', $sellerId)->paginate(10);
         // make all orders readed
         foreach ($orders as $order) {
             if ($order->is_readed == false) {
@@ -35,7 +47,7 @@ class SellerOrderController extends Controller
         // get shipping companies
         $companies = ShippingCompaines::where('user_id', auth()->user()->id)->where('status', 'active')->get();
 
-        return view('users.sellers.orders.index', compact('orders', 'companies'));
+        return view('users.sellers.orders.index', compact('orders', 'companies', 'orderStats'));
     }
 
     public function order($id)
