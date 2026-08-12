@@ -204,9 +204,9 @@
 
     <!-- Filter Control Panel -->
     <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
-        <div class="card-body p-4">
-            <div class="row g-3">
-                <div class="col-md-3">
+        <div class="card-body p-3.5 p-md-4">
+            <div class="row g-2 g-md-3">
+                <div class="col-12 col-sm-6 col-md-3">
                     <label class="form-label fw-semibold text-secondary small">
                         <i class="fa-solid fa-tags me-1 text-navy"></i> التصنيف
                     </label>
@@ -219,7 +219,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-12 col-sm-6 col-md-3">
                     <label class="form-label fw-semibold text-secondary small">
                         <i class="fa-solid fa-filter me-1 text-navy"></i> الحالة
                     </label>
@@ -229,7 +229,7 @@
                         <option value="inactive">غير نشط</option>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-12 col-md-4">
                     <label class="form-label fw-semibold text-secondary small">
                         <i class="fa-solid fa-magnifying-glass me-1 text-navy"></i> البحث المباشر
                     </label>
@@ -237,7 +237,7 @@
                         class="form-control rounded-3 border-light-subtle shadow-none"
                         placeholder="ابحث باسم المنتج، الكود...">
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
+                <div class="col-12 col-md-2 d-flex align-items-end mt-2 mt-md-0">
                     <button id="searchBtn"
                         class="btn btn-supplier-primary w-100 rounded-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2 py-2">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -271,16 +271,16 @@
                         <tr>
                             <th width="40" class="ps-4"><input type="checkbox" id="selectAllProducts"
                                     class="form-check-input"></th>
-                            <th>صورة</th>
-                            <th>اسم المنتج</th>
-                            <th>التصنيف</th>
-                            <th>السعر</th>
-                            <th>التكلفة</th>
-                            <th>المخزون</th>
-                            <th>أقل كمية للطلب</th>
-                            <th>التوصيل المجاني</th>
-                            <th>الحالة</th>
-                            <th class="pe-4 text-end">الإجراءات</th>
+                            <th class="text-nowrap">صورة</th>
+                            <th class="text-nowrap">اسم المنتج</th>
+                            <th class="text-nowrap">التصنيف</th>
+                            <th class="text-nowrap">السعر</th>
+                            <th class="text-nowrap">التكلفة</th>
+                            <th class="text-nowrap">المخزون</th>
+                            <th class="text-nowrap">أقل كمية للطلب</th>
+                            <th class="text-nowrap">التوصيل المجاني</th>
+                            <th class="text-nowrap">الحالة</th>
+                            <th class="pe-4 text-end text-nowrap">الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody id="productList">
@@ -301,8 +301,7 @@
                                 </td>
                                 <td style="max-width: 220px;">
                                     <span class="fw-bold text-dark d-inline-block text-truncate align-middle"
-                                        style="max-width: 200px;"
-                                        title="{{ $product->name }}">
+                                        style="max-width: 200px;" title="{{ $product->name }}">
                                         {{ \Illuminate\Support\Str::limit($product->name, 35, '...') }}
                                     </span>
                                 </td>
@@ -325,7 +324,7 @@
                                 <td><span
                                         class="badge {{ $product->status == 'active' ? 'bg-success-subtle text-success border border-success' : 'bg-danger-subtle text-danger border border-danger' }} px-3 py-1.5 rounded-pill fw-bold">{{ $product->status == 'active' ? 'نشط' : 'غير نشط' }}</span>
                                 </td>
-                                <td class="pe-4 text-end">
+                                <td class="pe-4 text-end text-nowrap">
                                     <button value="{{ $product->id }}"
                                         class="btn btn-sm btn-outline-primary rounded-2 editproduct px-2.5 py-1 me-1"
                                         data-bs-toggle="modal" data-bs-target="#editModal">
@@ -420,8 +419,8 @@
                     {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancel_atrribute">إلغاء</button> --}}
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                         data-bs-target="#editModal">إلغاء</button>
-                    <button type="button" class="btn btn-supplier-primary" id="save_atrribute" data-bs-toggle="modal"
-                        data-bs-target="#editModal">حفظ</button>
+                    <button type="button" class="btn btn-supplier-primary" id="save_atrribute"
+                        data-bs-toggle="modal" data-bs-target="#editModal">حفظ</button>
                 </div>
             </div>
         </div>
