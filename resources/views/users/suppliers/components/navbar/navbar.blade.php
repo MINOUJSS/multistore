@@ -1,21 +1,23 @@
 @php
-$ProofsRefused= App\Models\UsersPaymentsProofsRefused::where('user_id',auth()->user()->id)->first(); 
-if ($ProofsRefused && $ProofsRefused->messages()) 
-{
-$UnradesProofsRefusedMessages=$ProofsRefused->messages()->where('is_read_by_seller',false)->count();  
-}else
-{
-    $UnradesProofsRefusedMessages=0;
-}
-$user_notifications=App\Models\UserNotification::where('user_id',auth()->user()->id)->where('is_read',false)->get();
-if($user_notifications && $user_notifications->count()>0){
-$unread_user_notificatios=App\Models\UserNotification::where('user_id',auth()->user()->id)->where('is_read',false)->count();
-}else{
-    $unread_user_notificatios=0;
-}
-$UnreadMessages=$UnradesProofsRefusedMessages+$unread_user_notificatios;
+    $ProofsRefused = App\Models\UsersPaymentsProofsRefused::where('user_id', auth()->user()->id)->first();
+    if ($ProofsRefused && $ProofsRefused->messages()) {
+        $UnradesProofsRefusedMessages = $ProofsRefused->messages()->where('is_read_by_seller', false)->count();
+    } else {
+        $UnradesProofsRefusedMessages = 0;
+    }
+    $user_notifications = App\Models\UserNotification::where('user_id', auth()->user()->id)
+        ->where('is_read', false)
+        ->get();
+    if ($user_notifications && $user_notifications->count() > 0) {
+        $unread_user_notificatios = App\Models\UserNotification::where('user_id', auth()->user()->id)
+            ->where('is_read', false)
+            ->count();
+    } else {
+        $unread_user_notificatios = 0;
+    }
+    $UnreadMessages = $UnradesProofsRefusedMessages + $unread_user_notificatios;
 @endphp
-<span id="UnradesProofsRefusedMessages" data-value="{{$UnradesProofsRefusedMessages}}"></span>
+<span id="UnradesProofsRefusedMessages" data-value="{{ $UnradesProofsRefusedMessages }}"></span>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
         <a id="3bar" class="navbar-brand d-none d-sm-block d-sm-none d-md-block" href="#"><i
@@ -45,10 +47,12 @@ $UnreadMessages=$UnradesProofsRefusedMessages+$unread_user_notificatios;
                         <div class="dz-nav-profile-info">
                             <p class="text-center">{{ Auth::user()->email }}</p>
                             <hr>
-                            @if(get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 1)
-                              <p class="text-center"><i class=""></i>متوفر <span class="text-success">({{auth()->user()->freeOrder->quantity}})</span> طلب مجاناً</p>
-                              <hr>
-                             @endif
+                            @if (get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 1)
+                                <p class="text-center"><i class=""></i>متوفر <span
+                                        class="text-success">({{ auth()->user()->freeOrder->quantity }})</span> طلب
+                                    مجاناً</p>
+                                <hr>
+                            @endif
                         </div>
                         <li><a class="dropdown-item" href="{{ route('supplier.subscription') }}"><i
                                     class="fa-solid fa-boxes-packing"></i>
@@ -69,9 +73,9 @@ $UnreadMessages=$UnradesProofsRefusedMessages+$unread_user_notificatios;
                             {{-- <a class="dropdown-item text-danger" href="#"><i
                                     class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a> --}}
                             <form action="{{ route('supplier.logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="dropdown-item text-danger">تسجيل الخروج</button>
-                            </form>    
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger">تسجيل الخروج</button>
+                            </form>
                         </li>
                     </ul>
                 </li>
@@ -100,25 +104,32 @@ $UnreadMessages=$UnradesProofsRefusedMessages+$unread_user_notificatios;
                 </li>
                 <div class="vr m-2"></div>
                 <li class="nav-item position-relative dropdown">
-                    <a class="dz-nav-icon" aria-current="page" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-envelope"></i></a>
-                    <span id="unreadMessages" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{$UnreadMessages}}
+                    <a class="dz-nav-icon" aria-current="page" href="#" id="navbarScrollingDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false"><i
+                            class="fa-solid fa-envelope"></i></a>
+                    <span id="unreadMessages"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ $UnreadMessages }}
                     </span>
                     @if ($UnreadMessages > 0)
-                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                        @if($ProofsRefused && $ProofsRefused->messages())
-                        @foreach($ProofsRefused->messages()->where('is_read_by_seller',false)->get() as $Message)
-                        <li><a class="dropdown-item" href="{{route('supplier.payments_proofs_refused.show',$Message->payment_proof_id)}}">رسالة من {{ $Message->sender_type }}</a></li>
-                        @endforeach
-                        @endif
-                        @if($user_notifications && $user_notifications->count()>0)
-                        @foreach($user_notifications as $not)
-                        <li><a class="dropdown-item" onclick="mark_notification_as_read({{$not->id}})" href="{{ $not->action_url }}">{{ $not->title }}</a></li>
-                        {{-- <li onclick="mark_notification_as_read({{$not->id}})">{{ $not->title }}</li> --}}
-                        @endforeach
-                        @endif
-                        
-                    </ul>
+                        <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                            @if ($ProofsRefused && $ProofsRefused->messages())
+                                @foreach ($ProofsRefused->messages()->where('is_read_by_seller', false)->get() as $Message)
+                                    <li><a class="dropdown-item"
+                                            href="{{ route('supplier.payments_proofs_refused.show', $Message->payment_proof_id) }}">رسالة
+                                            من {{ $Message->sender_type }}</a></li>
+                                @endforeach
+                            @endif
+                            @if ($user_notifications && $user_notifications->count() > 0)
+                                @foreach ($user_notifications as $not)
+                                    <li><a class="dropdown-item"
+                                            onclick="mark_notification_as_read({{ $not->id }})"
+                                            href="{{ $not->action_url }}">{{ $not->title }}</a></li>
+                                    {{-- <li onclick="mark_notification_as_read({{$not->id}})">{{ $not->title }}</li> --}}
+                                @endforeach
+                            @endif
+
+                        </ul>
                     @endif
                 </li>
                 <!--<li class="nav-item position-relative">
@@ -148,9 +159,11 @@ $UnreadMessages=$UnradesProofsRefusedMessages+$unread_user_notificatios;
                     <div class="dz-nav-profile-info">
                         <p class="text-center">{{ Auth::user()->email }}</p>
                         <hr>
-                        @if(get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 1)
-                              <p class="text-center"><i class=""></i>متوفر <span class="text-success">({{auth()->user()->freeOrder->quantity}})</span> طلب مجاناً</p>
-                              <hr>
+                        @if (get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 1)
+                            <p class="text-center"><i class=""></i>متوفر <span
+                                    class="text-success">({{ auth()->user()->freeOrder->quantity }})</span> طلب مجاناً
+                            </p>
+                            <hr>
                         @endif
                     </div>
                     <li class="text-center"><a class="dropdown-item" href="{{ route('supplier.subscription') }}"><i

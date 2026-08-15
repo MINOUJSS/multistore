@@ -145,6 +145,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::get('/ah-admin/email-campaigns/{id}', [EmailCampaignController::class, 'show'])->name('email_campaigns.show');
                 Route::delete('/ah-admin/email-campaigns/{id}', [EmailCampaignController::class, 'destroy'])->name('email_campaigns.destroy');
                 Route::post('/ah-admin/email-campaigns/send-test', [EmailCampaignController::class, 'sendTestMail'])->name('email_campaigns.send_test');
+                Route::post('/ah-admin/email-campaigns/{id}/resend-failed', [EmailCampaignController::class, 'resendFailed'])->name('email_campaigns.resend_failed');
             });
         });
     });

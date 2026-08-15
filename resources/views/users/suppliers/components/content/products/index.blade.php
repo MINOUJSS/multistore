@@ -251,12 +251,12 @@
     <!-- Products Table Container -->
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
         <div
-            class="card-header bg-white border-0 py-3.5 px-4 d-flex align-items-center justify-content-between border-bottom border-light">
-            <div class="d-flex align-items-center gap-2">
+            class="card-header bg-white border-0 py-3.5 px-3 px-md-4 d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom border-light">
+            <div class="d-flex flex-wrap align-items-center gap-2">
                 <i class="fa-solid fa-boxes-packing text-navy fs-5"></i>
                 <h5 class="fw-bold mb-0 text-dark fs-6">قائمة منتجات التوريد بالجملة</h5>
                 <button id="bulkDeleteBtn"
-                    class="btn btn-danger btn-sm d-none shadow-sm fw-semibold ms-3 rounded-pill px-3 py-1">
+                    class="btn btn-danger btn-sm d-none shadow-sm fw-semibold ms-2 rounded-pill px-3 py-1">
                     <i class="fas fa-trash me-1"></i> حذف المحددة (<span id="selectedCount">0</span>)
                 </button>
             </div>
@@ -265,8 +265,8 @@
             </span>
         </div>
         <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+            <div class="table-responsive custom-table-scroll">
+                <table class="table table-hover align-middle mb-0 text-nowrap" style="min-width: 950px;">
                     <thead class="bg-light-subtle text-secondary small text-uppercase fw-bold border-bottom">
                         <tr>
                             <th width="40" class="ps-4"><input type="checkbox" id="selectAllProducts"
@@ -350,6 +350,31 @@
     </div>
 
     <style>
+        .custom-table-scroll {
+            -webkit-overflow-scrolling: touch;
+            overflow-x: auto !important;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f8fafc;
+        }
+
+        .custom-table-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .custom-table-scroll::-webkit-scrollbar-track {
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+
+        .custom-table-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .custom-table-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
         .bg-navy-subtle {
             background-color: rgba(15, 23, 42, 0.1);
         }

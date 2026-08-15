@@ -138,6 +138,16 @@
                                             class="btn btn-sm btn-outline-info" title="عرض التفاصيل والسجلات">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
+                                        @if ($campaign->failed_count > 0)
+                                            <form action="{{ route('admin.email_campaigns.resend_failed', $campaign->id) }}"
+                                                method="POST" onsubmit="return confirm('هل أنت متأكد من إعادة إرسال الرسائل الفاشلة فقط (عدد: {{ $campaign->failed_count }})؟');">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-outline-warning"
+                                                    title="إعادة إرسال الرسائل الفاشلة فقط ({{ $campaign->failed_count }})">
+                                                    <i class="fa-solid fa-rotate-right"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                         <form action="{{ route('admin.email_campaigns.destroy', $campaign->id) }}"
                                             method="POST" onsubmit="return confirm('هل أنت تأكد من حذف هذه الحملة؟');">
                                             @csrf
@@ -215,14 +225,24 @@
                                 {{ $campaign->created_at->format('Y-m-d H:i') }}</span>
                             <div class="d-flex gap-2">
                                 <a href="{{ route('admin.email_campaigns.show', $campaign->id) }}"
-                                    class="btn btn-sm btn-outline-info px-3">
+                                    class="btn btn-sm btn-outline-info px-2">
                                     <i class="fa-solid fa-eye me-1"></i> عرض
                                 </a>
+                                @if ($campaign->failed_count > 0)
+                                    <form action="{{ route('admin.email_campaigns.resend_failed', $campaign->id) }}"
+                                        method="POST" onsubmit="return confirm('هل أنت متأكد من إعادة إرسال الرسائل الفاشلة فقط (عدد: {{ $campaign->failed_count }})؟');">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-outline-warning px-2"
+                                            title="إعادة إرسال الرسائل الفاشلة فقط ({{ $campaign->failed_count }})">
+                                            <i class="fa-solid fa-rotate-right me-1"></i> إعادة الفاشلة
+                                        </button>
+                                    </form>
+                                @endif
                                 <form action="{{ route('admin.email_campaigns.destroy', $campaign->id) }}"
                                     method="POST" onsubmit="return confirm('هل أنت تأكد من حذف هذه الحملة؟');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger px-3">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger px-2">
                                         <i class="fa-solid fa-trash me-1"></i> حذف
                                     </button>
                                 </form>

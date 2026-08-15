@@ -8,7 +8,16 @@
             </h3>
             <p class="text-muted mb-0 small fs-md-6">عرض تقرير الإرسال وسجلات الوصول الفردية</p>
         </div>
-        <div class="w-100 w-md-auto">
+        <div class="w-100 w-md-auto d-flex flex-wrap gap-2">
+            @if ($campaign->failed_count > 0)
+                <form action="{{ route('admin.email_campaigns.resend_failed', $campaign->id) }}" method="POST"
+                    onsubmit="return confirm('هل أنت متأكد من إعادة إرسال الرسائل الفاشلة فقط (عدد: {{ $campaign->failed_count }})؟');" class="w-100 w-md-auto">
+                    @csrf
+                    <button type="submit" class="btn btn-warning shadow-sm px-3 py-2 w-100 w-md-auto text-nowrap fw-bold">
+                        <i class="fa-solid fa-rotate-right me-1"></i> إعادة إرسال الفاشلة ({{ $campaign->failed_count }})
+                    </button>
+                </form>
+            @endif
             <a href="{{ route('admin.email_campaigns.index') }}" class="btn btn-outline-secondary shadow-sm px-4 py-2 w-100 w-md-auto text-nowrap">
                 <i class="fa-solid fa-arrow-right me-1"></i> العودة للحملات
             </a>

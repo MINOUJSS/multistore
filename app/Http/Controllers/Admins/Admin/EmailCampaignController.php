@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admins\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ResendFailedEmailCampaignJob;
 use App\Jobs\SendEmailCampaignJob;
 use App\Mail\Admin\ReEngagementCampaignMail;
 use App\Models\EmailCampaign;
@@ -212,5 +213,28 @@ class EmailCampaignController extends Controller
                 'message' => 'فشل إرسال البريد التجريبي: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Resend only failed messages for a campaign.
+     */
+    public function resendFailed($id)
+    {
+        $campaign = EmailCampaign::findOrFail($id);
+
+        $failedLogsCount = EmailCampaignLog::where('campaign_id', $campaign->id)
+            ->where('status', 'failed')
+            ->count();
+
+        if ($failedLogsCount === 0 && $campaign->failed_count === 0) {
+            Alert::info('تنبيه', 'لا توجد رسائل فاشلة لإعادة إرسالها لهذه الحملة.');
+            return redirect()->back();
+        }
+
+        ResendFailedEmailCampaignJob::dispatch($campaign);
+
+        Alert::success('نجاح', 'بدأت عملية إعادة إرسال الرسائل الفاشلة بنجاح.');
+
+        return redirect()->back();
     }
 }
