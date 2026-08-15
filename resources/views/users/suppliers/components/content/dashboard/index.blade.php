@@ -195,7 +195,8 @@
                             </div>
                             <h6 class="fw-bold mb-1 text-dark">خط الكول سنتر المباشر</h6>
                             <small class="text-muted d-block mb-2">تحدث فوراً مع مشرف الدعم</small>
-                            <div class="fw-bold text-dark fs-6 mb-3 dir-ltr">0672 81 67 09</div>
+                            <div class="fw-bold text-dark fs-6 mb-3 dir-ltr" style="direction: ltr !important;">0672 81
+                                67 09</div>
                             <a href="tel:0672816709"
                                 class="btn btn-primary btn-sm w-100 rounded-2 fw-semibold shadow-sm">
                                 <i class="fa-solid fa-phone me-1"></i> اتصال مباشر
@@ -213,7 +214,8 @@
                             </div>
                             <h6 class="fw-bold mb-1 text-dark">محادثة الواتساب السريعة</h6>
                             <small class="text-muted d-block mb-2">استجابة مخصصة للموردين</small>
-                            <div class="fw-bold text-dark fs-6 mb-3 dir-ltr">+213 672 81 67 09</div>
+                            <div class="fw-bold text-dark fs-6 mb-3 dir-ltr" style="direction: ltr !important;">+213 672
+                                81 67 09</div>
                             <a href="https://wa.me/213672816709?text=مرحباً%20فريق%20الدعم،%20أنا%20مورد%20في%20منصة%20Dzora%20وأحتاج%20إلى%20مساعدة"
                                 target="_blank" class="btn btn-success btn-sm w-100 rounded-2 fw-semibold shadow-sm">
                                 <i class="fa-brands fa-whatsapp me-1"></i> مراسلة واتساب
