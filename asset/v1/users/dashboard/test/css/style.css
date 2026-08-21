@@ -16,9 +16,10 @@ html {
                  app wrapper
  *****************************************/
 .app-wraper {
-  padding:0px;
+  padding: 0px;
   display: flex;
-  flex-direction: row-reverse; /* السايدبار يجي على اليمين */
+  flex-direction: row-reverse;
+  /* السايدبار يجي على اليمين */
   min-height: 100vh;
 }
 
@@ -86,7 +87,8 @@ html {
 /* --------------Content----------------- */
 .content-side {
   flex: 1;
-  min-height: 100vh; /* يمتد مع طول الصفحة */
+  min-height: 100vh;
+  /* يمتد مع طول الصفحة */
   display: flex;
   flex-direction: column;
 }
@@ -98,17 +100,22 @@ html {
   justify-content: center;
   padding: 15px;
 }
+
 .content-side .footer {
-  margin-top: auto; /* يخلي الفوتر يلتصق بأسفل الصفحة */
+  margin-top: auto;
+  /* يخلي الفوتر يلتصق بأسفل الصفحة */
 }
+
 /*****************************************
                   app sidebar 
  *****************************************/
 .app-sidebar {
   width: 250px;
-  min-height: 100vh; /* يغطي الشاشة كحد أدنى */
+  min-height: 100vh;
+  /* يغطي الشاشة كحد أدنى */
   transition: 0.5s all;
-  background: #fff; /* فقط لو تحب يكون عندها خلفية */
+  background: #fff;
+  /* فقط لو تحب يكون عندها خلفية */
 }
 
 .side {

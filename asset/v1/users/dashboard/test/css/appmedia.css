@@ -2,7 +2,8 @@
                   header
  *****************************************/
 /* for mobile */
-@media(max-width: 767px){
+@media(max-width: 767px) {
+
     /* صفحة شركات الشحن */
     .mobile-header-stack {
         flex-direction: column !important;
@@ -10,12 +11,14 @@
     }
 
     .mobile-header-stack h2 {
-        font-size: 20px; /* أصغر شوية */
+        font-size: 20px;
+        /* أصغر شوية */
         margin-bottom: 10px;
     }
 
     .mobile-header-stack .btn {
-        width: 100%; /* الزر يأخذ العرض الكامل */
+        width: 100%;
+        /* الزر يأخذ العرض الكامل */
         margin-bottom: 10px;
         font-size: 14px;
     }
@@ -23,51 +26,66 @@
     .mobile-header-stack .btn i {
         margin-left: 5px;
     }
-        /* صفحة الفواتير */
-        .card-body.d-flex.flex-wrap.gap-2 {
-            flex-direction: column !important;
-            gap: 10px !important;
-            align-items: stretch !important;
-        }
-    
-        .card-body.d-flex.flex-wrap.gap-2 a.btn {
-            width: 100%;
-            font-size: 15px;
-            padding: 10px 15px;
-        }
-    
-        .card-body.d-flex.flex-wrap.gap-2 a.btn i {
-            margin-left: 8px;
-        }
+
+    /* صفحة الفواتير */
+    .card-body.d-flex.flex-wrap.gap-2 {
+        flex-direction: column !important;
+        gap: 10px !important;
+        align-items: stretch !important;
+    }
+
+    .card-body.d-flex.flex-wrap.gap-2 a.btn {
+        width: 100%;
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    .card-body.d-flex.flex-wrap.gap-2 a.btn i {
+        margin-left: 8px;
+    }
 }
+
 /* for tablet  */
 
 /*****************************************
                   side bar 
  *****************************************/
 /* for mobile */
-@media(max-width: 767px){
-    .app-sidebar{display: none;}
+@media(max-width: 767px) {
+    .app-sidebar {
+        display: none;
+    }
 }
+
 /* for tablet  */
 
 /*****************************************
                   main 
  *****************************************/
- /* for mobile */
+/* for mobile */
 @media (max-width: 767px) {
     th {
-        font-size: 13px; /* حجم الخط أصغر */
-        white-space: nowrap; /* يمنع لف النص */
-        overflow: hidden; /* يخفي الزائد */
-        text-overflow: ellipsis; /* يضيف "..." لو النص طويل */
+        font-size: 13px;
+        /* حجم الخط أصغر */
+        white-space: nowrap;
+        /* يمنع لف النص */
+        overflow: hidden;
+        /* يخفي الزائد */
+        text-overflow: ellipsis;
+        /* يضيف "..." لو النص طويل */
     }
+
     td {
-        font-size: 13px; /* حجم الخط أصغر */
-        white-space: nowrap; /* يمنع لف النص */
-        overflow: hidden; /* يخفي الزائد */
-        text-overflow: ellipsis; /* يضيف "..." لو النص طويل */
+        font-size: 13px;
+        /* حجم الخط أصغر */
+        white-space: nowrap;
+        /* يمنع لف النص */
+        overflow: hidden;
+        /* يخفي الزائد */
+        text-overflow: ellipsis;
+        /* يضيف "..." لو النص طويل */
     }
+
     /* صفحة شركات الشحن */
     .integration-card {
         padding: 10px;
@@ -112,6 +130,7 @@
         font-size: 12px;
         padding: 5px 8px;
     }
+
     /* -------- */
     .card.text-center.p-4 {
         padding: 15px !important;
@@ -133,6 +152,7 @@
     .card.text-center img {
         height: 50px;
     }
+
     /* صفحة التطبيقات */
     .card.m-2.p-2 {
         width: 100% !important;
@@ -166,6 +186,7 @@
     .card.m-2.p-2 hr {
         margin: 10px 0;
     }
+
     /* صفحة الفواتير */
     .card-body {
         padding: 0.5rem !important;
@@ -198,15 +219,14 @@
         font-size: 11px;
         padding: 4px 6px;
     }
-  }
-  
+}
+
 /* for tablet  */
 
 /*****************************************
                   footer 
  *****************************************/
- /* for mobile */
- @media (max-width: 767px) {
-   
- }
+/* for mobile */
+@media (max-width: 767px) {}
+
 /* for tablet  */

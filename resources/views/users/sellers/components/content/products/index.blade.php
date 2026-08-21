@@ -45,74 +45,45 @@
         width: 100% !important;
     }
 
-    /* ================================
-   FORCE FULL WIDTH TABLE (MOBILE)
-   ================================ */
-    @media (max-width: 991.98px) {
+    /* Table Containment: Prevent Table From Stretching Card or Breaking Page Layout */
+    .card,
+    .card-body {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
 
-        .offcanvas.offcanvas-start {
-            right: unset !important;
-        }
+    .table-responsive {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        display: block;
+    }
 
-        /* 1️⃣ كسر قيود container */
-        .container {
-            width: auto;
-            /* max-width: 100% !important;
-            padding-left: 0px !important;
-            padding-right: 0rem !important;
-            margin: 0 !important;
-            align-content: center; */
-        }
+    .custom-table-scroll {
+        -webkit-overflow-scrolling: touch;
+        overflow-x: auto !important;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 #f8fafc;
+    }
 
-        .container-fluid {
-            width: auto;
-            /* max-width: 100% !important; */
-            /* padding-left: 0rem !important; */
-            /* padding-right: 0rem !important; */
-            /* margin: 0 !important; */
-            align-content: center;
-        }
+    .custom-table-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
 
-        /* 2️⃣ card بدون حواف جانبية */
-        .card {
-            border-radius: 5px !important;
-            margin-left: 0.5rem !important;
-            margin-right: 0.5rem !important;
-        }
+    .custom-table-scroll::-webkit-scrollbar-track {
+        background: #f8fafc;
+        border-radius: 4px;
+    }
 
-        .card-body {
-            padding-left: 0.5rem !important;
-            padding-right: 0.5rem !important;
-        }
+    .custom-table-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
 
-        /* 3️⃣ table-responsive يملأ الشاشة */
-        .table-responsive {
-            width: 90vw !important;
-            /* margin-left: calc(-50vw + 50%) !important; */
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow-x: auto !important;
-        }
-
-        /* 4️⃣ الجدول نفسه */
-        table.table {
-            width: 100% !important;
-            min-width: 900px;
-            /* يسمح بالتمرير */
-            margin: 0 !important;
-        }
-
-        th,
-        td {
-            white-space: nowrap;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        /* 5️⃣ منع الفراغ الوهمي */
-        body {
-            overflow-x: hidden;
-        }
+    .custom-table-scroll::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
     }
 </style>
 <div class="container-fluid py-3 px-3 px-md-4">
@@ -305,7 +276,9 @@
         <div
             class="card-header bg-white border-0 py-3.5 px-3 px-md-4 d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom border-light">
             <div class="d-flex flex-wrap align-items-center gap-2">
-                <i class="fa-solid fa-boxes-stacked text-plum fs-5"></i>
+                <span class="avatar avatar-md rounded-3 bg-plum-subtle text-plum fw-bold me-1" style="width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-boxes-stacked fs-6"></i>
+                </span>
                 <h5 class="fw-bold mb-0 text-dark fs-6">قائمة منتجات المتجر</h5>
                 <button id="bulkDeleteBtn"
                     class="btn btn-danger btn-sm d-none shadow-sm fw-semibold ms-2 rounded-pill px-3 py-1">
@@ -313,12 +286,12 @@
                 </button>
             </div>
             <span class="badge bg-light text-dark border px-3 py-1.5 rounded-pill small fw-semibold">
-                إجمالي المعروض: {{ $products->count() }} منتج
+                <i class="fa-solid fa-layer-group me-1 text-plum"></i> إجمالي المعروض: {{ $products->count() }} منتج
             </span>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive custom-table-scroll">
-                <table class="table table-hover align-middle mb-0 text-nowrap" style="min-width: 950px;">
+        <div class="card-body p-0 p-md-3">
+            <div class="table-responsive products-table-responsive custom-table-scroll">
+                <table class="table table-hover align-middle mb-0 products-table">
                     <thead class="bg-light-subtle text-secondary small text-uppercase fw-bold border-bottom">
                         <tr>
                             <th width="40" class="ps-4"><input type="checkbox" id="selectAllProducts"
@@ -338,12 +311,12 @@
                     <tbody id="productList">
                         @foreach ($products as $product)
                             <tr>
-                                <td class="ps-4"><input type="checkbox" class="form-check-input product-checkbox"
+                                <td data-label="تحديد" class="ps-md-4"><input type="checkbox" class="form-check-input product-checkbox"
                                         value="{{ $product->id }}"></td>
-                                <td>
+                                <td data-label="صورة">
                                     @if ($product->image)
                                         <img src="{{ asset($product->image) }}" alt="Product"
-                                            class="rounded-3 border" width="48" height="48"
+                                            class="rounded-3 border shadow-2xs product-thumb-img" width="48" height="48"
                                             style="object-fit: cover;">
                                     @else
                                         <div class="avatar avatar-md rounded-3 bg-light text-secondary fw-bold">
@@ -351,45 +324,45 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td style="max-width: 220px;">
-                                    <span class="fw-bold text-dark d-inline-block text-truncate align-middle"
+                                <td data-label="اسم المنتج" style="max-width: 220px;">
+                                    <span class="fw-bold text-dark d-inline-block text-truncate align-middle fs-6"
                                         style="max-width: 200px;" title="{{ $product->name }}">
                                         {{ \Illuminate\Support\Str::limit($product->name, 35, '...') }}
                                     </span>
                                 </td>
-                                <td><span
-                                        class="badge bg-light text-dark border fw-semibold px-2.5 py-1.5 rounded-2">{{ get_seller_product_category($product->id) }}</span>
+                                <td data-label="التصنيف"><span
+                                        class="badge bg-light text-dark border fw-semibold px-2.5 py-1.5 rounded-3"><i class="fa-solid fa-tag me-1 text-plum"></i>{{ get_seller_product_category($product->id) }}</span>
                                 </td>
-                                <td><span
-                                        class="fw-bold text-plum">{{ get_seller_product_price($product->id) }}</span>
+                                <td data-label="السعر"><span
+                                        class="fw-bold text-plum fs-6">{{ get_seller_product_price($product->id) }}</span>
                                 </td>
                                 @if ($product->product_type == 'physical')
-                                    <td><span class="text-secondary">{{ $product->cost }}</span></td>
-                                    <td><span
-                                            class="badge {{ $product->qty > 0 ? 'bg-info-subtle text-info border border-info' : 'bg-warning-subtle text-warning border border-warning' }} rounded-pill px-2.5 py-1">{{ $product->qty }}</span>
+                                    <td data-label="التكلفة"><span class="text-secondary fw-semibold">{{ $product->cost }}</span></td>
+                                    <td data-label="المخزون"><span
+                                            class="badge {{ $product->qty > 0 ? 'bg-info-subtle text-info border border-info' : 'bg-warning-subtle text-warning border border-warning' }} rounded-pill px-2.5 py-1 fw-bold"><i class="fa-solid fa-cubes me-1"></i>{{ $product->qty }}</span>
                                     </td>
                                 @else
-                                    <td><span class="text-muted small">غير مكلف</span></td>
-                                    <td><span
-                                            class="badge bg-secondary-subtle text-secondary rounded-pill px-2.5 py-1">غير
+                                    <td data-label="التكلفة"><span class="text-muted small">غير مكلف</span></td>
+                                    <td data-label="المخزون"><span
+                                            class="badge bg-secondary-subtle text-secondary rounded-pill px-2.5 py-1 fw-bold">غير
                                             محدود</span></td>
                                 @endif
-                                <td><span
-                                        class="badge bg-light text-secondary border px-2.5 py-1 rounded-2">{{ $product->product_type == 'physical' ? 'مادي' : 'رقمي' }}</span>
+                                <td data-label="نوع المنتج"><span
+                                        class="badge bg-light text-secondary border px-2.5 py-1 rounded-3 fw-semibold">{{ $product->product_type == 'physical' ? 'مادي' : 'رقمي' }}</span>
                                 </td>
-                                <td>{!! seller_p_has_free_shipping($product->id) == 'نعم'
-                                    ? '<span class="badge bg-success-subtle text-success border border-success px-2.5 py-1 rounded-pill">نعم</span>'
-                                    : '<span class="badge bg-light text-muted border px-2.5 py-1 rounded-pill">لا</span>' !!}</td>
-                                <td><span
-                                        class="badge {{ $product->status == 'active' ? 'bg-success-subtle text-success border border-success' : 'bg-danger-subtle text-danger border border-danger' }} px-3 py-1.5 rounded-pill fw-bold">{{ $product->status == 'active' ? 'نشط' : 'غير نشط' }}</span>
+                                <td data-label="التوصيل المجاني">{!! seller_p_has_free_shipping($product->id) == 'نعم'
+                                    ? '<span class="badge bg-success-subtle text-success border border-success px-2.5 py-1 rounded-pill fw-bold"><i class="fa-solid fa-truck-fast me-1"></i>نعم</span>'
+                                    : '<span class="badge bg-light text-muted border px-2.5 py-1 rounded-pill fw-medium">لا</span>' !!}</td>
+                                <td data-label="الحالة"><span
+                                        class="badge {{ $product->status == 'active' ? 'bg-success-subtle text-success border border-success' : 'bg-danger-subtle text-danger border border-danger' }} px-3 py-1.5 rounded-pill fw-bold"><i class="fa-solid {{ $product->status == 'active' ? 'fa-circle-check' : 'fa-circle-xmark' }} me-1"></i>{{ $product->status == 'active' ? 'نشط' : 'غير نشط' }}</span>
                                 </td>
-                                <td class="pe-4 text-end text-nowrap">
+                                <td data-label="الإجراءات" class="pe-md-4 text-end">
                                     <button value="{{ $product->id }}"
-                                        class="btn btn-sm btn-outline-primary rounded-2 editproduct px-2.5 py-1 me-1"
+                                        class="btn btn-sm btn-outline-plum rounded-3 editproduct px-2.5 py-1 me-1 shadow-2xs fw-semibold"
                                         data-bs-toggle="modal" data-bs-target="#editModal">
                                         <i class="fas fa-edit me-1"></i> تعديل
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger rounded-2 delete-product px-2.5 py-1"
+                                    <button class="btn btn-sm btn-outline-danger rounded-3 delete-product px-2.5 py-1 shadow-2xs fw-semibold"
                                         value="{{ $product->id }}" data-id="{{ $product->id }}">
                                         <i class="fas fa-trash me-1"></i> حذف
                                     </button>
@@ -409,6 +382,107 @@
     </div>
 
     <style>
+        /* ================================
+           PURE CSS RESPONSIVE TABLE PROTOCOL (SAFE-UI-STYLING SKILL)
+           Targeting screens up to 1024.98px (Tablets / iPad / 1024px displays)
+           ================================ */
+        @media (max-width: 1024.98px) {
+            .products-table-responsive table.products-table,
+            .products-table-responsive table.products-table tbody,
+            .products-table-responsive table.products-table tr,
+            .products-table-responsive table.products-table td {
+                display: block !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .products-table-responsive table.products-table thead {
+                display: none !important;
+            }
+
+            .products-table-responsive table.products-table tbody tr {
+                background: #ffffff !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 16px !important;
+                margin-bottom: 1.25rem !important;
+                padding: 0.85rem 1.15rem !important;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .products-table-responsive table.products-table tbody tr:hover {
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+            }
+
+            .products-table-responsive table.products-table tbody td {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding: 0.75rem 0.5rem !important;
+                border: none !important;
+                border-bottom: 1px dashed #e2e8f0 !important;
+                white-space: normal !important;
+                text-align: right !important;
+                font-size: 0.9rem;
+            }
+
+            .products-table-responsive table.products-table tbody td:last-child {
+                border-bottom: none !important;
+                justify-content: flex-end !important;
+                gap: 0.5rem;
+                padding-top: 1rem !important;
+            }
+
+            .products-table-responsive table.products-table tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #64748b;
+                font-size: 0.85rem;
+                margin-left: 1rem;
+                flex-shrink: 0;
+            }
+        }
+
+        /* Responsive adjustments specifically for 768px - 1024px tablet landscape screens */
+        @media (min-width: 768px) and (max-width: 1024.98px) {
+            .products-table-responsive table.products-table tbody tr {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.5rem 1.5rem !important;
+                padding: 1.25rem !important;
+            }
+
+            .products-table-responsive table.products-table tbody td {
+                border-bottom: 1px dashed #f1f5f9 !important;
+            }
+
+            .products-table-responsive table.products-table tbody td[data-label="تحديد"] {
+                grid-column: 1 / -1;
+                border-bottom: 1px solid #e2e8f0 !important;
+                padding-bottom: 0.5rem !important;
+            }
+
+            .products-table-responsive table.products-table tbody td[data-label="الإجراءات"] {
+                grid-column: 1 / -1;
+                border-bottom: none !important;
+                justify-content: flex-end !important;
+            }
+        }
+
+        /* Optimization for Desktop Screens > 1024px */
+        @media (min-width: 1025px) {
+            .products-table th {
+                font-size: 0.82rem;
+                letter-spacing: 0.3px;
+                padding: 0.9rem 0.75rem;
+            }
+
+            .products-table td {
+                padding: 0.85rem 0.75rem;
+                font-size: 0.875rem;
+            }
+        }
+
         .custom-table-scroll {
             -webkit-overflow-scrolling: touch;
             overflow-x: auto !important;
