@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admins\Admin\AdminController;
 use App\Http\Controllers\Admins\Admin\AdminDisputeController;
 use App\Http\Controllers\Admins\Admin\AdminEmployeeController;
+use App\Http\Controllers\Admins\Admin\AdminSupportTicketController;
 use App\Http\Controllers\Admins\Admin\ArchivesDisputesController;
 use App\Http\Controllers\Admins\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admins\Admin\BackupController;
@@ -15,7 +16,7 @@ use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedController;
 use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedsArchivesController;
 use App\Http\Controllers\Admins\admin\ProofsRefusedChatController;
 use App\Http\Controllers\Admins\Admin\SellerController;
-use App\Http\Controllers\Admins\Admin\AdminSupportTicketController;
+use App\Http\Controllers\Admins\Admin\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 /*
