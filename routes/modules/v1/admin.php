@@ -16,6 +16,7 @@ use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedController;
 use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedsArchivesController;
 use App\Http\Controllers\Admins\admin\ProofsRefusedChatController;
 use App\Http\Controllers\Admins\Admin\SellerController;
+use App\Http\Controllers\Admins\Admin\SettingController;
 use App\Http\Controllers\Admins\Admin\SupplierController;
 use Illuminate\Support\Facades\Route;
 

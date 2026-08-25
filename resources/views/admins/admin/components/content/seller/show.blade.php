@@ -1,415 +1,263 @@
-{{-- resources/views/admin/sellers/show.blade.php --}}
-<div class="container">
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                                <h5 class="h3 mb-0 text-gray-800">
-                <i class="fa-solid fa-user me-2"></i> عمليات على حساب البائع 
-            </h5>
+<div class="container-fluid px-3 px-md-4 py-4 overflow-hidden" style="max-width: 100%;">
+
+    <!-- Dynamic Hero Welcome Banner -->
+    <div class="dashboard-hero p-4 p-md-5 mb-4 shadow-sm" style="background: linear-gradient(135deg, #5c0649 0%, #a40c72 50%, #be0681 100%); border-radius: 1.25rem; color: #ffffff; position: relative; overflow: hidden;">
+        <div class="row align-items-center position-relative z-1">
+            <div class="col-lg-7 mb-3 mb-lg-0">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <a href="{{ route('admin.sellers') }}" class="btn btn-sm btn-light text-dark rounded-circle border-0 shadow-sm" title="العودة للقائمة">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-white bg-opacity-10 rounded-pill text-white small border border-white border-opacity-10">
+                        <i class="fa-solid fa-user-tie text-warning"></i>
+                        <span>{{ __('ملف وتفاصيل البائع') }}</span>
+                        <span class="opacity-50">|</span>
+                        <span>{{ '@'.$seller->store_name }}</span>
+                    </div>
                 </div>
-                <div class="card-body">
-                                                    {{-- حالة الموافقة --}}
-                                @if($seller->approval_status == 'approved')
-                                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#unApproveModal">حذف توثيق البائع</button>
-                                @elseif($seller->approval_status == 'pending')
-                                    <button class="btn btn-primary" onclick="approveSeller({{$seller->id}})"> توثيق البائع</button>
-                                @endif
-                                <button class="btn btn-success" onclick="printSellerInfo()">
-                                 طباعة معلومات المستخدم
-                                </button>
-                                <button class="btn btn-warning text-dark border-0 shadow-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                                    <i class="fa-solid fa-key me-1"></i> تغيير كلمة المرور
-                                </button>
-                                {{-- <button onclick="window.print()">طباعة</button> --}}
-                    
+                <h1 class="display-6 fw-bold mb-2 text-white text-start">
+                    🏪 {{ $seller->full_name }} 👋
+                </h1>
+                <div class="d-flex align-items-center gap-2 flex-wrap text-white-50">
+                    <span>البريد: <strong class="text-white dir-ltr">{{ $seller->email }}</strong></span>
+                    <span class="opacity-50">•</span>
+                    <span>تاريخ التسجيل: <strong class="text-white">{{ $seller->created_at->format('Y-m-d') }}</strong></span>
+                </div>
+            </div>
+            <div class="col-lg-5 text-lg-end">
+                <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                    {{-- حالة الموافقة --}}
+                    @if($seller->approval_status == 'approved')
+                        <button class="btn btn-danger text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0" data-bs-toggle="modal" data-bs-target="#unApproveModal">
+                            <i class="fa-solid fa-user-xmark me-1"></i> حذف توثيق البائع
+                        </button>
+                    @elseif($seller->approval_status == 'pending')
+                        <button class="btn btn-success text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0" onclick="approveSeller({{$seller->id}})">
+                            <i class="fa-solid fa-user-check me-1"></i> توثيق البائع
+                        </button>
+                    @endif
+                    <button class="btn btn-light text-dark fw-bold px-3 py-2 rounded-3 shadow-sm border-0" onclick="printSellerInfo()">
+                        <i class="fa-solid fa-print me-1"></i> طباعة المعلومات
+                    </button>
+                    <button class="btn btn-warning text-dark fw-bold px-3 py-2 rounded-3 shadow-sm border-0" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        <i class="fa-solid fa-key me-1"></i> تغيير كلمة المرور
+                    </button>
                 </div>
             </div>
         </div>
     </div>
- <div id="printableArea">   
-    {{-- معلومات البائع الرئيسية --}}
-    <div class="row mb-4 mt-4">
 
-        <div class="col-12">
-            <div class="card border-0 shadow-sm rounded-4">
-
-                <div class="card-body d-flex flex-column flex-md-row align-items-center gap-4">
-
-                    {{-- صورة البائع --}}
-                    <div class="text-center">
-
-                        <img
-                            src="{{ $seller->avatar ? asset($seller->avatar) : asset('/asset/v1/users/dashboard/img/avatars/man.png') }}"
+    <div id="printableArea">   
+        <!-- Seller Main Profile Card -->
+        <div class="card border-0 shadow-sm rounded-4 bg-white mb-4 overflow-hidden">
+            <div class="card-body p-4">
+                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-4">
+                    {{-- Avatar --}}
+                    <div class="text-center position-relative">
+                        <img src="{{ $seller->avatar ? asset($seller->avatar) : asset('/asset/v1/users/dashboard/img/avatars/man.png') }}"
                             alt="{{ $seller->full_name }}"
-                            class="rounded-circle border"
-                            width="130"
-                            height="130"
-                            style="object-fit: cover;"
-                        >
-
+                            class="rounded-circle border shadow-sm object-fit-cover"
+                            width="120" height="120">
                     </div>
 
-                    {{-- المعلومات --}}
-                    <div class="flex-grow-1">
-
-                        <div class="d-flex flex-column flex-md-row justify-content-between">
-
+                    {{-- Info Details --}}
+                    <div class="flex-grow-1 w-100">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
                             <div>
-                                <h2 class="fw-bold mb-1">
-                                    {{ $seller->full_name }}
-                                </h2>
-
-                                <p class="text-muted mb-2">
-                                    {{ '@'.$seller->store_name }}
-                                </p>
+                                <h3 class="fw-bold text-dark mb-1">{{ $seller->full_name }}</h3>
+                                <p class="text-primary mb-0 dir-ltr text-start fw-semibold">{{ '@'.$seller->store_name }}</p>
                             </div>
-
-                            <div class="mt-3 mt-md-0">
-
-                                {{-- حالة التفعيل --}}
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                {{-- Activation Status --}}
                                 @if($seller->status == 'active')
-
-                                    <span class="badge bg-success px-3 py-2">
-                                        مفعل
-                                    </span>
-
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1.5 rounded-pill fw-bold">مفعل</span>
                                 @else
-
-                                    <span class="badge bg-secondary px-3 py-2">
-                                        غير مفعل
-                                    </span>
-
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border px-3 py-1.5 rounded-pill fw-bold">غير مفعل</span>
                                 @endif
 
-                                {{-- حالة الموافقة --}}
+                                {{-- Approval Status --}}
                                 @if($seller->approval_status == 'approved')
-
-                                    <span class="badge bg-primary px-3 py-2">
-                                        تمت الموافقة
-                                    </span>
-
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-1.5 rounded-pill fw-bold">تمت الموافقة</span>
                                 @elseif($seller->approval_status == 'pending')
-
-                                    <span class="badge bg-warning text-dark px-3 py-2">
-                                        قيد المراجعة
-                                    </span>
-
+                                    <span class="badge bg-warning bg-opacity-10 text-dark border border-warning border-opacity-25 px-3 py-1.5 rounded-pill fw-bold">قيد المراجعة</span>
                                 @else
-
-                                    <span class="badge bg-danger px-3 py-2">
-                                        مرفوض
-                                    </span>
-
+                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-1.5 rounded-pill fw-bold">مرفوض</span>
                                 @endif
-
                             </div>
-
                         </div>
 
-                        <hr>
-
-                        <div class="row">
-
-                            <div class="col-md-6 mb-3">
-                                <small class="text-muted d-block">
-                                    البريد الإلكتروني
-                                </small>
-
-                                <strong>
-                                    {{ $seller->email }}
-                                </strong>
+                        <div class="row g-3 pt-3 border-top">
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="p-3 bg-light rounded-3">
+                                    <small class="text-muted fw-semibold d-block mb-1">البريد الإلكتروني:</small>
+                                    <div class="fw-bold text-dark dir-ltr text-start small">{{ $seller->email }}</div>
+                                </div>
                             </div>
-
-                            <div class="col-md-6 mb-3">
-                                <small class="text-muted d-block">
-                                    معرف التينانت
-                                </small>
-
-                                <strong>
-                                    {{ $seller->tenant_id }}
-                                </strong>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="p-3 bg-light rounded-3">
+                                    <small class="text-muted fw-semibold d-block mb-1">معرف التينانت:</small>
+                                    <div class="fw-bold text-dark dir-ltr text-start small">{{ $seller->tenant_id }}</div>
+                                </div>
                             </div>
-
-                            <div class="col-md-4 mb-3">
-                                <small class="text-muted d-block">
-                                    الإسم الأول
-                                </small>
-
-                                <strong>
-                                    {{ $seller->first_name ?? '-' }}
-                                </strong>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="p-3 bg-light rounded-3">
+                                    <small class="text-muted fw-semibold d-block mb-1">الإسم الأول واللقب:</small>
+                                    <div class="fw-bold text-dark fs-6">{{ $seller->first_name ?? '-' }} {{ $seller->last_name ?? '' }}</div>
+                                </div>
                             </div>
-
-                            <div class="col-md-4 mb-3">
-                                <small class="text-muted d-block">
-                                    اللقب
-                                </small>
-
-                                <strong>
-                                    {{ $seller->last_name ?? '-' }}
-                                </strong>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="p-3 bg-light rounded-3">
+                                    <small class="text-muted fw-semibold d-block mb-1">الجنس:</small>
+                                    <div class="fw-bold text-dark fs-6">
+                                        @if($seller->sex == 'male') ذكر @elseif($seller->sex == 'female') أنثى @else - @endif
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="col-md-4 mb-3">
-                                <small class="text-muted d-block">
-                                    الجنس
-                                </small>
-
-                                <strong>
-                                    @if($seller->sex == 'male')
-                                        ذكر
-                                    @elseif($seller->sex == 'female')
-                                        أنثى
-                                    @else
-                                        -
-                                    @endif
-                                </strong>
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="p-3 bg-light rounded-3">
+                                    <small class="text-muted fw-semibold d-block mb-1">تاريخ الميلاد:</small>
+                                    <div class="fw-bold text-dark fs-6 dir-ltr text-start">{{ $seller->birth_date ?? '-' }}</div>
+                                </div>
                             </div>
-
-                            <div class="col-md-4 mb-3">
-                                <small class="text-muted d-block">
-                                    تاريخ الميلاد
-                                </small>
-
-                                <strong>
-                                    {{ $seller->birth_date ?? '-' }}
-                                </strong>
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="p-3 bg-light rounded-3">
+                                    <small class="text-muted fw-semibold d-block mb-1">ضمن القائمة المعتمدة:</small>
+                                    <div class="fw-bold text-dark fs-6">{{ $seller->part_of_approved_list == 'yes' ? 'نعم' : 'لا' }}</div>
+                                </div>
                             </div>
-
-                            <div class="col-md-4 mb-3">
-                                <small class="text-muted d-block">
-                                    ضمن القائمة المعتمدة
-                                </small>
-
-                                <strong>
-                                    {{ $seller->part_of_approved_list == 'yes' ? 'نعم' : 'لا' }}
-                                </strong>
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="p-3 bg-light rounded-3">
+                                    <small class="text-muted fw-semibold d-block mb-1">تاريخ التسجيل:</small>
+                                    <div class="fw-bold text-dark fs-6 dir-ltr text-start">{{ $seller->created_at->format('Y-m-d H:i') }}</div>
+                                </div>
                             </div>
-
-                            <div class="col-md-4 mb-3">
-                                <small class="text-muted d-block">
-                                    تاريخ التسجيل
-                                </small>
-
-                                <strong>
-                                    {{ $seller->created_at->format('Y-m-d H:i') }}
-                                </strong>
-                            </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
         </div>
 
-    </div>
-
-    {{-- معلومات العنوان --}}
-    <div class="row mb-4">
-
-        <div class="col-lg-6 mb-4">
-
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-
-                <div class="card-header bg-white border-0 pt-4">
-                    <h5 class="fw-bold mb-0">
-                        معلومات العنوان
+        <!-- Address & ID Card Row -->
+        <div class="row g-4 mb-4">
+            <!-- Address Card -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 bg-white h-100 p-4">
+                    <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom">
+                        <i class="fa-solid fa-location-dot me-2" style="color: #a40c72;"></i> معلومات العنوان
                     </h5>
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-4">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold d-block mb-1">الولاية:</small>
+                                <div class="fw-bold text-dark fs-6">{{ $seller->wilaya ?? '-' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold d-block mb-1">الدائرة:</small>
+                                <div class="fw-bold text-dark fs-6">{{ $seller->dayra ?? '-' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold d-block mb-1">البلدية:</small>
+                                <div class="fw-bold text-dark fs-6">{{ $seller->baladia ?? '-' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold d-block mb-1">العنوان الكامل:</small>
+                                <div class="fw-bold text-dark fs-6">{{ $seller->address ?? '-' }}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="card-body">
-
-                    <div class="mb-3">
-                        <small class="text-muted d-block">
-                            الولاية
-                        </small>
-
-                        <strong>
-                            {{ $seller->wilaya ?? '-' }}
-                        </strong>
-                    </div>
-
-                    <div class="mb-3">
-                        <small class="text-muted d-block">
-                            الدائرة
-                        </small>
-
-                        <strong>
-                            {{ $seller->dayra ?? '-' }}
-                        </strong>
-                    </div>
-
-                    <div class="mb-3">
-                        <small class="text-muted d-block">
-                            البلدية
-                        </small>
-
-                        <strong>
-                            {{ $seller->baladia ?? '-' }}
-                        </strong>
-                    </div>
-
-                    <div class="mb-3">
-                        <small class="text-muted d-block">
-                            العنوان الكامل
-                        </small>
-
-                        <strong>
-                            {{ $seller->address ?? '-' }}
-                        </strong>
-                    </div>
-
-                </div>
-
             </div>
 
-        </div>
-
-        {{-- بطاقة الهوية --}}
-        <div class="col-lg-6 mb-4">
-
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-
-                <div class="card-header bg-white border-0 pt-4">
-                    <h5 class="fw-bold mb-0">
-                        صورة بطاقة الهوية
+            <!-- ID Card Image Card -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 bg-white h-100 p-4 text-center">
+                    <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom text-start">
+                        <i class="fa-solid fa-id-card me-2" style="color: #a40c72;"></i> صورة بطاقة الهوية
                     </h5>
-                </div>
-
-                <div class="card-body text-center">
-
                     @if($seller->id_card_image)
-
-                        <img
-                            src="{{ asset($seller->id_card_image) }}"
-                            alt="بطاقة الهوية"
-                            class="img-fluid rounded-4 border"
-                            style="max-height: 400px;"
-                        >
-
+                        <a href="{{ asset($seller->id_card_image) }}" target="_blank" class="d-inline-block mt-2">
+                            <img src="{{ asset($seller->id_card_image) }}" alt="بطاقة الهوية" class="img-fluid rounded-4 border shadow-sm object-fit-cover hover-lift" style="max-height: 250px;">
+                        </a>
                     @else
-
-                        <div class="py-5 text-muted">
-                            لم يتم رفع صورة بطاقة الهوية
+                        <div class="p-4 bg-light rounded-3 text-muted my-auto">
+                            <i class="fa-solid fa-id-card fs-2 mb-2 d-block opacity-50"></i>
+                            <span>لم يتم رفع صورة بطاقة الهوية بعد.</span>
                         </div>
-
                     @endif
-
                 </div>
-
             </div>
-
         </div>
 
-    </div>
-
-    {{-- معلومات حساب المستخدم --}}
-    <div class="row mb-4">
-
-        <div class="col-12 mb-4">
-
-            <div class="card border-0 shadow-sm rounded-4">
-
-                <div class="card-header bg-white border-0 pt-4">
-                    <h5 class="fw-bold mb-0">
-                        معلومات الحساب
-                    </h5>
-                </div>
-
-                <div class="card-body">
-
-                    @if($user)
-
-                        <div class="row">
-
-                            <div class="col-md-3 mb-3">
-                                <small class="text-muted d-block">
-                                    الإسم
-                                </small>
-
-                                <strong>
-                                    {{ $user->name }}
-                                </strong>
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <small class="text-muted d-block">
-                                    البريد الإلكتروني
-                                </small>
-
-                                <strong>
-                                    {{ $user->email }}
-                                </strong>
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <small class="text-muted d-block">
-                                    رقم الهاتف
-                                </small>
-
-                                <strong>
-                                    {{ $user->phone }}
-                                </strong>
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <small class="text-muted d-block">
-                                    نوع الحساب
-                                </small>
-
-                                <strong>
-                                    بائع
-                                </strong>
-                            </div>
-
+        <!-- User Account Linked Card -->
+        <div class="card border-0 shadow-sm rounded-4 bg-white mb-4 p-4">
+            <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom">
+                <i class="fa-solid fa-user-gear me-2" style="color: #a40c72;"></i> معلومات حساب المستخدم المرتبط
+            </h5>
+            @if($user)
+                <div class="row g-3">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="p-3 bg-light rounded-3">
+                            <small class="text-muted fw-semibold d-block mb-1">الإسم الكامل:</small>
+                            <div class="fw-bold text-dark fs-6">{{ $user->name }}</div>
                         </div>
-
-                    @else
-
-                        <div class="alert alert-warning rounded-4 mb-0">
-                            لا يوجد حساب مستخدم مرتبط بهذا البائع.
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="p-3 bg-light rounded-3">
+                            <small class="text-muted fw-semibold d-block mb-1">البريد الإلكتروني:</small>
+                            <div class="fw-bold text-dark dir-ltr text-start small">{{ $user->email }}</div>
                         </div>
-
-                    @endif
-
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="p-3 bg-light rounded-3">
+                            <small class="text-muted fw-semibold d-block mb-1">رقم الهاتف:</small>
+                            <div class="fw-bold text-dark dir-ltr text-start small">{{ $user->phone }}</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="p-3 bg-light rounded-3">
+                            <small class="text-muted fw-semibold d-block mb-1">نوع الحساب:</small>
+                            <div class="fw-bold text-primary fs-6">بائع (Seller)</div>
+                        </div>
+                    </div>
                 </div>
-
-            </div>
-
+            @else
+                <div class="alert alert-warning rounded-3 mb-0">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i> لا يوجد حساب مستخدم مرتبط بهذا البائع حالياً.
+                </div>
+            @endif
         </div>
-
     </div>
- </div>
 </div>
 
 {{-- :::::::::::: Modals ::::::::::::: --}}
 {{-- unpproveModal --}}
     <div class="modal fade" id="unApproveModal" tabindex="-1" aria-labelledby="unApproveModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="unApproveModalLabel">حذف توثيق البائع</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header bg-danger text-white rounded-top-4">
+                    <h5 class="modal-title fw-bold" id="unApproveModalLabel">حذف توثيق البائع</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form action="{{ route('admin.seller.unapprove', $seller->id) }}" method="POST">
-                        @csrf
+                <form action="{{ route('admin.seller.unapprove', $seller->id) }}" method="POST">
+                    @csrf
+                    <div class="modal-body py-4">
                         <input type="hidden" name="seller_id" value="{{ $seller->id }}">
                         <div class="mb-3">
-                          <label for="exampleFormControlTextarea1" class="form-label">سبب حذف التوثيق</label>
-                          <textarea name="reason" class="form-control" placeholder="سبب الحذف"></textarea>
+                          <label for="exampleFormControlTextarea1" class="form-label fw-semibold">سبب حذف التوثيق</label>
+                          <textarea name="reason" class="form-control rounded-3" placeholder="أدخل سبب إلغاء التوثيق هنا..."></textarea>
                         </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">اغلاق</button>
-                    
-                        <button type="submit" class="btn btn-danger">حذف توثيق البائع</button>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">إغلاق</button>
+                        <button type="submit" class="btn btn-danger rounded-3 fw-bold">حذف توثيق البائع</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

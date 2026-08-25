@@ -1,17 +1,32 @@
-<div class="container-fluid py-4">
-    <!-- ===== Page Header ===== -->
-    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
-        <div>
-            <h3 class="fw-bold mb-1">
-                <i class="fa-solid fa-plus-circle text-primary me-2"></i>
-                إنشاء حملة بريدية جديدة
-            </h3>
-            <p class="text-muted mb-0">قم بصياغة رسالتك وتحديد الشريحة المستهدفة من البائعين والموردين لاسترجاعهم</p>
-        </div>
-        <div>
-            <a href="{{ route('admin.email_campaigns.index') }}" class="btn btn-outline-secondary shadow-sm px-4">
-                <i class="fa-solid fa-arrow-right me-1"></i> العودة للحملات
-            </a>
+<div class="container-fluid px-3 px-md-4 py-4 overflow-hidden" style="max-width: 100%;">
+
+    <!-- Dynamic Hero Welcome Banner -->
+    <div class="dashboard-hero p-4 p-md-5 mb-4 shadow-sm" style="background: linear-gradient(135deg, #5c0649 0%, #a40c72 50%, #be0681 100%); border-radius: 1.25rem; color: #ffffff; position: relative; overflow: hidden;">
+        <div class="row align-items-center position-relative z-1">
+            <div class="col-lg-8 mb-3 mb-lg-0">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <a href="{{ route('admin.email_campaigns.index') }}" class="btn btn-sm btn-light text-dark rounded-circle border-0 shadow-sm" title="العودة للقائمة">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-white bg-opacity-10 rounded-pill text-white small border border-white border-opacity-10">
+                        <i class="fa-solid fa-plus-circle text-warning"></i>
+                        <span>{{ __('حملة جديدة') }}</span>
+                    </div>
+                </div>
+                <h1 class="display-6 fw-bold mb-2 text-white text-start">
+                    📧 إنشاء حملة بريدية جديدة 👋
+                </h1>
+                <p class="text-white-50 mb-0 leading-relaxed text-start">
+                    قم بصياغة رسالتك وتحديد الشريحة المستهدفة من البائعين والموردين لاسترجاعهم وتفعيلهم.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                    <a href="{{ route('admin.email_campaigns.index') }}" class="btn btn-outline-light text-white fw-bold px-3 py-2 rounded-3 border-2 shadow-sm">
+                        <i class="fa-solid fa-list me-1"></i> العودة للحملات
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -20,46 +35,46 @@
         <div class="row g-4">
             <!-- ===== Main Form Controls ===== -->
             <div class="col-12 col-lg-8">
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-pen me-2 text-primary"></i>بيانات الرسالة</h5>
+                <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                    <div class="card-header bg-white py-3 px-4 border-0">
+                        <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-pen me-2" style="color: #a40c72;"></i>بيانات وصياغة الرسالة</h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="mb-3">
-                            <label for="title" class="form-label fw-bold">عنوان الحملة (داخلي للأدمن): <span class="text-danger">*</span></label>
-                            <input type="text" name="title" id="title" class="form-control @error('title') is-invalid @enderror" placeholder="مثال: حملة استرجاع البائعين غير النشطين - أوت 2026" value="{{ old('title') }}" required>
+                            <label for="title" class="form-label fw-bold text-dark">عنوان الحملة (داخلي للأدمن): <span class="text-danger">*</span></label>
+                            <input type="text" name="title" id="title" class="form-control bg-light border-0 rounded-3 @error('title') is-invalid @enderror" placeholder="مثال: حملة استرجاع البائعين غير النشطين - أوت 2026" value="{{ old('title') }}" required>
                             @error('title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-3">
-                            <label for="subject" class="form-label fw-bold">عنوان الرسالة (Subject للمستلم): <span class="text-danger">*</span></label>
-                            <input type="text" name="subject" id="subject" class="form-control @error('subject') is-invalid @enderror" placeholder="مثال: ننتظرك مجدداً! اكتشف العروض والميزات الجديدة في متجرك" value="{{ old('subject') }}" required>
+                            <label for="subject" class="form-label fw-bold text-dark">عنوان الرسالة (Subject للمستلم): <span class="text-danger">*</span></label>
+                            <input type="text" name="subject" id="subject" class="form-control bg-light border-0 rounded-3 @error('subject') is-invalid @enderror" placeholder="مثال: ننتظرك مجدداً! اكتشف العروض والميزات الجديدة في متجرك" value="{{ old('subject') }}" required>
                             @error('subject')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <!-- Variable Placeholders Quick Buttons -->
-                        <div class="mb-2">
-                            <label class="form-label fw-bold text-dark d-block">إدراج متغيرات تلقائية:</label>
+                        <div class="mb-3 p-3 bg-light rounded-3">
+                            <label class="form-label fw-bold text-dark d-block mb-2">إدراج متغيرات تلقائية في نص الرسالة:</label>
                             <div class="d-flex flex-wrap gap-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill insert-tag" data-tag="{name}">
-                                    <i class="fa-solid fa-tag me-1"></i> {name} (اسم المستخدم)
+                                <button type="button" class="btn btn-sm btn-outline-secondary bg-white rounded-pill insert-tag" data-tag="{name}">
+                                    <i class="fa-solid fa-tag me-1 text-primary"></i> {name} (اسم المستخدم)
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill insert-tag" data-tag="{store_name}">
-                                    <i class="fa-solid fa-tag me-1"></i> {store_name} (اسم المتجر)
+                                <button type="button" class="btn btn-sm btn-outline-secondary bg-white rounded-pill insert-tag" data-tag="{store_name}">
+                                    <i class="fa-solid fa-tag me-1 text-primary"></i> {store_name} (اسم المتجر)
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill insert-tag" data-tag="{login_url}">
-                                    <i class="fa-solid fa-tag me-1"></i> {login_url} (رابط الدخول)
+                                <button type="button" class="btn btn-sm btn-outline-secondary bg-white rounded-pill insert-tag" data-tag="{login_url}">
+                                    <i class="fa-solid fa-tag me-1 text-primary"></i> {login_url} (رابط الدخول)
                                 </button>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="content" class="form-label fw-bold">محتوى البريد الإلكتروني: <span class="text-danger">*</span></label>
-                            <textarea name="content" id="content" rows="12" class="form-control @error('content') is-invalid @enderror" placeholder="مرحباً {name}،&#10;&#10;لاحظنا عدم زيارتك لمتجرك {store_name} مؤخراً. ننصحك بالعودة الآن للاستفادة من الأدوات والمنتجات الجديدة التي أضفناها لتطوير أعمالك!&#10;&#10;اضغط على الرابط لتسجيل الدخول مباشرة: {login_url}" required>{{ old('content') }}</textarea>
+                            <label for="content" class="form-label fw-bold text-dark">محتوى البريد الإلكتروني: <span class="text-danger">*</span></label>
+                            <textarea name="content" id="content" rows="10" class="form-control bg-light border-0 rounded-3 @error('content') is-invalid @enderror" placeholder="مرحباً {name}،&#10;&#10;لاحظنا عدم زيارتك لمتجرك {store_name} مؤخراً. ننصحك بالعودة الآن للاستفادة من الأدوات والمنتجات الجديدة التي أضفناها لتطوير أعمالك!&#10;&#10;اضغط على الرابط لتسجيل الدخول مباشرة: {login_url}" required>{{ old('content') }}</textarea>
                             @error('content')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -71,14 +86,14 @@
             <!-- ===== Target Audience Selection & Test Email Side Card ===== -->
             <div class="col-12 col-lg-4">
                 <!-- Target Audience Selection -->
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-users text-primary me-2"></i>تحديد الشريحة المستهدفة</h5>
+                <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                    <div class="card-header bg-white py-3 px-4 border-0">
+                        <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-users me-2" style="color: #a40c72;"></i>تحديد الشريحة المستهدفة</h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="mb-3">
-                            <label for="target_audience" class="form-label fw-bold">اختيار الجمهور: <span class="text-danger">*</span></label>
-                            <select name="target_audience" id="target_audience" class="form-select @error('target_audience') is-invalid @enderror" required>
+                            <label for="target_audience" class="form-label fw-bold text-dark">اختيار الجمهور: <span class="text-danger">*</span></label>
+                            <select name="target_audience" id="target_audience" class="form-select bg-light border-0 rounded-3 @error('target_audience') is-invalid @enderror" required>
                                 <option value="inactive_sellers" selected>البائعين غير النشطين (الذين سجلوا ولم يعودوا - {{ $inactiveSellerCount }} مستخدم)</option>
                                 <option value="all_sellers">جميع البائعين ({{ $sellerCount }} مستخدم)</option>
                                 <option value="inactive_suppliers">الموردين غير النشطين ({{ $inactiveSupplierCount }} مستخدم)</option>
@@ -92,10 +107,10 @@
                         </div>
 
                         <!-- Single Email Input Block -->
-                        <div id="singleEmailBlock" class="d-none border p-3 rounded bg-light mb-3">
+                        <div id="singleEmailBlock" class="d-none border p-3 rounded-3 bg-light mb-3">
                             <div class="mb-3">
-                                <label for="custom_email" class="form-label fw-bold small">البريد الإلكتروني المستهدف: <span class="text-danger">*</span></label>
-                                <input type="email" name="custom_email" id="custom_email" class="form-control @error('custom_email') is-invalid @enderror" placeholder="ابحث أو أدخل البريد الإلكتروني..." list="userEmailsList" value="{{ old('custom_email') }}">
+                                <label for="custom_email" class="form-label fw-bold small text-dark">البريد الإلكتروني المستهدف: <span class="text-danger">*</span></label>
+                                <input type="email" name="custom_email" id="custom_email" class="form-control bg-white border-0 @error('custom_email') is-invalid @enderror" placeholder="ابحث أو أدخل البريد الإلكتروني..." list="userEmailsList" value="{{ old('custom_email') }}">
                                 <datalist id="userEmailsList">
                                     @if(isset($registeredUsers))
                                         @foreach($registeredUsers as $userItem)
@@ -110,8 +125,8 @@
                             </div>
 
                             <div>
-                                <label for="custom_name" class="form-label fw-bold small">اسم المستلم (اختياري):</label>
-                                <input type="text" name="custom_name" id="custom_name" class="form-control @error('custom_name') is-invalid @enderror" placeholder="مثال: محمد علي" value="{{ old('custom_name') }}">
+                                <label for="custom_name" class="form-label fw-bold small text-dark">اسم المستلم (اختياري):</label>
+                                <input type="text" name="custom_name" id="custom_name" class="form-control bg-white border-0 @error('custom_name') is-invalid @enderror" placeholder="مثال: محمد علي" value="{{ old('custom_name') }}">
                                 <small class="text-muted">يُستخدم للتعويض مكان متغير {name} بالرسالة.</small>
                                 @error('custom_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -119,7 +134,7 @@
                             </div>
                         </div>
 
-                        <div class="alert alert-info py-2 px-3 small">
+                        <div class="alert alert-info py-2 px-3 small rounded-3 border-0">
                             <i class="fa-solid fa-circle-info me-1"></i>
                             تُنفَّذ عملية الإرسال تلقائياً في الخلفية (Background Queue) لمنع بطء النظام.
                         </div>
@@ -127,25 +142,25 @@
                 </div>
 
                 <!-- Test Email Preview Card -->
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-vial text-warning me-2"></i>إرسال تجريبي (معاينة)</h5>
+                <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                    <div class="card-header bg-white py-3 px-4 border-0">
+                        <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-vial text-warning me-2"></i>إرسال تجريبي (معاينة)</h5>
                     </div>
                     <div class="card-body p-4">
                         <p class="small text-muted mb-3">يمكنك إرسال نسخة تجريبية لبريدك للتأكد من تنسيق الرسالة ومظهرها قبل الإرسال الفعلي للجميع.</p>
                         <div class="mb-3">
-                            <input type="email" id="test_email" class="form-control" placeholder="أدخل بريدك الإلكتروني" value="{{ auth()->guard('admin')->user()->email ?? '' }}">
+                            <input type="email" id="test_email" class="form-control bg-light border-0 rounded-3" placeholder="أدخل بريدك الإلكتروني" value="{{ auth()->guard('admin')->user()->email ?? '' }}">
                         </div>
-                        <button type="button" class="btn btn-outline-warning w-100" id="sendTestBtn">
+                        <button type="button" class="btn btn-outline-warning w-100 rounded-3 fw-bold" id="sendTestBtn">
                             <i class="fa-solid fa-paper-plane me-1"></i> إرسال بريد تجريبي
                         </button>
                     </div>
                 </div>
 
                 <!-- Final Actions -->
-                <div class="card shadow-sm border-0">
+                <div class="card border-0 shadow-sm rounded-4 bg-white">
                     <div class="card-body p-4">
-                        <button type="submit" class="btn btn-primary w-100 btn-lg shadow-sm">
+                        <button type="submit" class="btn text-white w-100 btn-lg shadow-sm rounded-3 fw-bold" style="background-color: #a40c72;">
                             <i class="fa-solid fa-paper-plane me-2"></i> تأكيد وبدء الحملة
                         </button>
                     </div>
