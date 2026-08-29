@@ -230,7 +230,8 @@
         <div
             class="card-header bg-white border-0 py-3.5 px-3 px-md-4 d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom border-light">
             <div class="d-flex flex-wrap align-items-center gap-2">
-                <span class="avatar avatar-md rounded-3 bg-navy-subtle text-navy fw-bold me-1" style="width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center;">
+                <span class="avatar avatar-md rounded-3 bg-navy-subtle text-navy fw-bold me-1"
+                    style="width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center;">
                     <i class="fa-solid fa-boxes-packing fs-6"></i>
                 </span>
                 <h5 class="fw-bold mb-0 text-dark fs-6">قائمة منتجات التوريد بالجملة</h5>
@@ -265,13 +266,13 @@
                     <tbody id="productList">
                         @foreach ($products as $product)
                             <tr>
-                                <td data-label="تحديد" class="ps-md-4"><input type="checkbox" class="form-check-input product-checkbox"
-                                        value="{{ $product->id }}"></td>
+                                <td data-label="تحديد" class="ps-md-4"><input type="checkbox"
+                                        class="form-check-input product-checkbox" value="{{ $product->id }}"></td>
                                 <td data-label="صورة">
                                     @if ($product->image)
                                         <img src="{{ asset($product->image) }}" alt="Product"
-                                            class="rounded-3 border shadow-2xs product-thumb-img" width="48" height="48"
-                                            style="object-fit: cover;">
+                                            class="rounded-3 border shadow-2xs product-thumb-img" width="48"
+                                            height="48" style="object-fit: cover;">
                                     @else
                                         <div class="avatar avatar-md rounded-3 bg-light text-secondary fw-bold">
                                             <i class="fa-solid fa-box"></i>
@@ -285,14 +286,17 @@
                                     </span>
                                 </td>
                                 <td data-label="التصنيف"><span
-                                        class="badge bg-light text-dark border fw-semibold px-2.5 py-1.5 rounded-3"><i class="fa-solid fa-tag me-1 text-navy"></i>{{ get_supplier_product_category($product->id) }}</span>
+                                        class="badge bg-light text-dark border fw-semibold px-2.5 py-1.5 rounded-3"><i
+                                            class="fa-solid fa-tag me-1 text-navy"></i>{{ get_supplier_product_category($product->id) }}</span>
                                 </td>
                                 <td data-label="السعر"><span
                                         class="fw-bold text-navy fs-6">{{ get_supplier_product_price($product->id) }}</span>
                                 </td>
-                                <td data-label="التكلفة"><span class="text-secondary fw-semibold">{{ $product->cost }}</span></td>
+                                <td data-label="التكلفة"><span
+                                        class="text-secondary fw-semibold">{{ $product->cost }}</span></td>
                                 <td data-label="المخزون"><span
-                                        class="badge {{ $product->qty > 0 ? 'bg-info-subtle text-info border border-info' : 'bg-warning-subtle text-warning border border-warning' }} rounded-pill px-2.5 py-1 fw-bold"><i class="fa-solid fa-cubes me-1"></i>{{ $product->qty }}</span>
+                                        class="badge {{ $product->qty > 0 ? 'bg-info-subtle text-info border border-info' : 'bg-warning-subtle text-warning border border-warning' }} rounded-pill px-2.5 py-1 fw-bold"><i
+                                            class="fa-solid fa-cubes me-1"></i>{{ $product->qty }}</span>
                                 </td>
                                 <td data-label="أقل كمية للطلب"><span
                                         class="badge bg-secondary-subtle text-secondary border px-2.5 py-1 rounded-3 fw-semibold">{{ $product->minimum_order_qty }}
@@ -301,7 +305,8 @@
                                     ? '<span class="badge bg-success-subtle text-success border border-success px-2.5 py-1 rounded-pill fw-bold"><i class="fa-solid fa-truck-fast me-1"></i>نعم</span>'
                                     : '<span class="badge bg-light text-muted border px-2.5 py-1 rounded-pill fw-medium">لا</span>' !!}</td>
                                 <td data-label="الحالة"><span
-                                        class="badge {{ $product->status == 'active' ? 'bg-success-subtle text-success border border-success' : 'bg-danger-subtle text-danger border border-danger' }} px-3 py-1.5 rounded-pill fw-bold"><i class="fa-solid {{ $product->status == 'active' ? 'fa-circle-check' : 'fa-circle-xmark' }} me-1"></i>{{ $product->status == 'active' ? 'نشط' : 'غير نشط' }}</span>
+                                        class="badge {{ $product->status == 'active' ? 'bg-success-subtle text-success border border-success' : 'bg-danger-subtle text-danger border border-danger' }} px-3 py-1.5 rounded-pill fw-bold"><i
+                                            class="fa-solid {{ $product->status == 'active' ? 'fa-circle-check' : 'fa-circle-xmark' }} me-1"></i>{{ $product->status == 'active' ? 'نشط' : 'غير نشط' }}</span>
                                 </td>
                                 <td data-label="الإجراءات" class="pe-md-4 text-end">
                                     <button value="{{ $product->id }}"
@@ -309,7 +314,8 @@
                                         data-bs-toggle="modal" data-bs-target="#editModal">
                                         <i class="fas fa-edit me-1"></i> تعديل
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger rounded-3 delete-product px-2.5 py-1 shadow-2xs fw-semibold"
+                                    <button
+                                        class="btn btn-sm btn-outline-danger rounded-3 delete-product px-2.5 py-1 shadow-2xs fw-semibold"
                                         value="{{ $product->id }}" data-id="{{ $product->id }}">
                                         <i class="fas fa-trash me-1"></i> حذف
                                     </button>
@@ -334,6 +340,7 @@
            Targeting screens up to 1024.98px (Tablets / iPad / 1024px displays)
            ================================ */
         @media (max-width: 1024.98px) {
+
             .products-table-responsive table.products-table,
             .products-table-responsive table.products-table tbody,
             .products-table-responsive table.products-table tr,
@@ -425,7 +432,7 @@
             }
 
             .products-table td {
-                padding: 0.85rem 0.75rem;
+                /* padding: 0.85rem 0.75rem; */
                 font-size: 0.875rem;
             }
         }

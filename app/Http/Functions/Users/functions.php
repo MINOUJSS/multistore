@@ -210,7 +210,12 @@ use Illuminate\Support\Facades\Auth;
 
 function last_seen_user()
 {
-    $request = request(); // يمكنك أيضًا استخدام Illuminate\Support\Facades\Request::instance()
+    // لا يتم تسجيل النشاط إلا إذا كان المستخدم مسجلاً للدخول بالفعل
+    if (!Auth::check()) {
+        return;
+    }
+
+    $request = request();
 
     // الحصول على عنوان IP بأكثر طريقة موثوقة ممكنة
     $ipAddress = getRealIpAddress();
@@ -218,8 +223,8 @@ function last_seen_user()
     // معلومات الجهاز والمتصفح
     $userAgent = $request->header('User-Agent') ?? 'unknown';
 
-    // معرف المستخدم إذا كان مسجلاً
-    $userId = Auth::check() ? Auth::id() : null;
+    // معرف المستخدم
+    $userId = Auth::id();
 
     // التحقق من وجود زيارة مسجلة اليوم
     $existingVisit = LastSeen::where('user_id', $userId)

@@ -1,10 +1,12 @@
 <div class="container-fluid px-3 px-md-4 py-4 overflow-hidden" style="max-width: 100%;">
 
     <!-- Dynamic Hero Welcome Banner -->
-    <div class="dashboard-hero p-4 p-md-5 mb-4 shadow-sm" style="background: linear-gradient(135deg, #5c0649 0%, #a40c72 50%, #be0681 100%); border-radius: 1.25rem; color: #ffffff; position: relative; overflow: hidden;">
+    <div class="dashboard-hero p-4 p-md-5 mb-4 shadow-sm"
+        style="background: linear-gradient(135deg, #5c0649 0%, #a40c72 50%, #be0681 100%); border-radius: 1.25rem; color: #ffffff; position: relative; overflow: hidden;">
         <div class="row align-items-center position-relative z-1">
             <div class="col-lg-8 mb-3 mb-lg-0">
-                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-white bg-opacity-10 rounded-pill text-white small mb-3 border border-white border-opacity-10">
+                <div
+                    class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-white bg-opacity-10 rounded-pill text-white small mb-3 border border-white border-opacity-10">
                     <i class="fa-solid fa-store text-warning"></i>
                     <span>{{ __('إدارة التجار والمتاجر الإلكترونية') }}</span>
                     <span class="opacity-50">|</span>
@@ -19,7 +21,8 @@
             </div>
             <div class="col-lg-4 text-lg-end">
                 <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-light text-white fw-bold px-3 py-2 rounded-3 border-2 shadow-sm text-nowrap">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="btn btn-outline-light text-white fw-bold px-3 py-2 rounded-3 border-2 shadow-sm text-nowrap">
                         <i class="fa-solid fa-house me-1"></i> الرئيسية
                     </a>
                 </div>
@@ -41,7 +44,8 @@
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center rounded-3 p-3 text-white shadow-sm" style="background: linear-gradient(135deg, #5c0649 0%, #a40c72 100%); width: 54px; height: 54px;">
+                    <div class="d-flex align-items-center justify-content-center rounded-3 p-3 text-white shadow-sm"
+                        style="background: linear-gradient(135deg, #5c0649 0%, #a40c72 100%); width: 54px; height: 54px;">
                         <i class="fa-solid fa-users fs-4"></i>
                     </div>
                     <div>
@@ -55,7 +59,8 @@
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3 p-3 shadow-sm" style="width: 54px; height: 54px;">
+                    <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3 p-3 shadow-sm"
+                        style="width: 54px; height: 54px;">
                         <i class="fa-solid fa-circle-check fs-4"></i>
                     </div>
                     <div>
@@ -69,7 +74,8 @@
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-3 p-3 shadow-sm" style="width: 54px; height: 54px;">
+                    <div class="d-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-3 p-3 shadow-sm"
+                        style="width: 54px; height: 54px;">
                         <i class="fa-solid fa-box fs-4"></i>
                     </div>
                     <div>
@@ -83,7 +89,8 @@
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center bg-dark bg-opacity-10 text-dark rounded-3 p-3 shadow-sm" style="width: 54px; height: 54px;">
+                    <div class="d-flex align-items-center justify-content-center bg-dark bg-opacity-10 text-dark rounded-3 p-3 shadow-sm"
+                        style="width: 54px; height: 54px;">
                         <i class="fa-solid fa-cart-shopping fs-4"></i>
                     </div>
                     <div>
@@ -101,7 +108,8 @@
             <div class="row g-3 align-items-center">
                 <div class="col-12 col-md-6">
                     <div class="input-group">
-                        <span class="input-group-text bg-light border-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <span class="input-group-text bg-light border-0 text-muted"><i
+                                class="fa-solid fa-magnifying-glass"></i></span>
                         <input type="text" id="searchInput" class="form-control bg-light border-0"
                             placeholder="البحث بالاسم أو البريد أو الهاتف...">
                     </div>
@@ -162,18 +170,22 @@
                                     {{ $seller->full_name }}
                                 </td>
 
-                                <td data-label="البريد" class="dir-ltr text-muted small">{{ get_user_data($seller->tenant_id)->email }}</td>
-                                <td data-label="الهاتف" class="dir-ltr text-muted small">{{ get_user_data($seller->tenant_id)->phone }}</td>
+                                <td data-label="البريد" class="dir-ltr text-muted small">
+                                    {{ get_user_data($seller->tenant_id)->email }}</td>
+                                <td data-label="الهاتف" class="dir-ltr text-muted small">
+                                    {{ get_user_data($seller->tenant_id)->phone }}</td>
 
                                 <td data-label="المتجر">
-                                    <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2.5 py-1 rounded-pill">
+                                    <span
+                                        class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2.5 py-1 rounded-pill">
                                         <a href="{{ seller_store_url($seller->tenant->id) }}" target="_blank"
                                             class="text-info text-decoration-none fw-bold">{{ get_seller_store_name($seller->tenant->id) }}</a>
                                     </span>
                                 </td>
 
                                 <td data-label="تاريخ آخر نشاط" class="text-muted small">
-                                    {{ get_user_data($seller->tenant_id)->last_seen[0]->created_at->diffForHumans() }}</td>
+                                    {{ get_user_data($seller->tenant_id)->last_seen[0]->created_at->diffForHumans() }}
+                                </td>
 
                                 <td data-label="الحالة">{!! get_seller_status($seller->tenant->id) !!}</td>
 
@@ -184,12 +196,14 @@
                                 </td>
 
                                 <td data-label="المنتجات">
-                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1 rounded-pill fw-bold">
+                                    <span
+                                        class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1 rounded-pill fw-bold">
                                         {{ $seller->products->count() }}
                                     </span>
                                 </td>
 
-                                <td data-label="التسجيل" class="text-muted small">{{ $seller->created_at->format('d-m-Y') }}</td>
+                                <td data-label="التسجيل" class="text-muted small">
+                                    {{ $seller->created_at->format('d-m-Y') }}</td>
 
                                 <td data-label="الطلبات">
                                     <span class="badge bg-dark px-2.5 py-1 rounded-pill fw-bold">
@@ -206,17 +220,19 @@
                                     </span></td>
 
                                 <td data-label="العمليات">
-                                    <div class="d-flex justify-content-center align-items-center gap-1 action-buttons flex-wrap">
+                                    <div
+                                        class="d-flex justify-content-center align-items-center gap-1 action-buttons flex-wrap">
 
                                         <!-- View -->
                                         <a href="{{ route('admin.seller.show', $seller->id) }}"
-                                            class="btn btn-sm btn-light border action-btn view-btn rounded-3" data-bs-toggle="tooltip"
-                                            title="عرض التفاصيل">
+                                            class="btn btn-sm btn-light border action-btn view-btn rounded-3"
+                                            data-bs-toggle="tooltip" title="عرض التفاصيل">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
 
                                         <!-- Activate -->
-                                        <a href="#" class="btn btn-sm btn-light border action-btn active-btn rounded-3"
+                                        <a href="#"
+                                            class="btn btn-sm btn-light border action-btn active-btn rounded-3"
                                             data-bs-toggle="tooltip" title="تفعيل البائع">
                                             <i class="fa-solid fa-circle-check"></i>
                                         </a>
@@ -227,7 +243,8 @@
                                             onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-light border action-btn delete-btn rounded-3"
+                                            <button type="submit"
+                                                class="btn btn-sm btn-light border action-btn delete-btn rounded-3"
                                                 data-bs-toggle="tooltip" title="حذف البائع">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>

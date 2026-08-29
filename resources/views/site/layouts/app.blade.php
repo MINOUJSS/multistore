@@ -504,6 +504,8 @@
 
     <main id="main">
 
+        @yield('content')
+
         @yield('cliens')
 
         @yield('about')
