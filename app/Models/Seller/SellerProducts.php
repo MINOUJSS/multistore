@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use App\Models\Category;
 
 class SellerProducts extends Model implements HasMedia
 {
@@ -26,6 +27,7 @@ class SellerProducts extends Model implements HasMedia
         'condition',
         'free_shipping',
         'status',
+        'show_in_marketplace',
     ];
 
     public function offers()
@@ -67,7 +69,7 @@ class SellerProducts extends Model implements HasMedia
 
     public function ratings()
     {
-        return $this->hasMany(SellerProductRatings::class, 'product_id');
+        return $this->hasMany(SellerProductReviews::class, 'product_id');
     }
 
     public function discount()

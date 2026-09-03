@@ -635,7 +635,14 @@
                             <div class="form-check form-switch">
                                 <input class="form-check-input" name="add_status" id="add_product_status"
                                     type="checkbox" checked>
-                                <label class="form-check-label" for="status">عرض المنتج</label>
+                                <label class="form-check-label" for="add_product_status">عرض المنتج</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" name="add_show_in_marketplace" id="add_show_in_marketplace"
+                                    type="checkbox" checked>
+                                <label class="form-check-label" for="add_show_in_marketplace">العرض في الماركت بليس</label>
                             </div>
                         </div>
                         <div class="col-12 bg-supplier-header rounded p-2 text-center">الصورة و المعرض</div>
@@ -824,7 +831,14 @@
                             <div class="form-check form-switch">
                                 <input class="form-check-input" name="status" id="product_status" type="checkbox"
                                     checked>
-                                <label class="form-check-label" for="status">عرض المنتج</label>
+                                <label class="form-check-label" for="product_status">عرض المنتج</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" name="show_in_marketplace" id="edit_show_in_marketplace" type="checkbox"
+                                    checked>
+                                <label class="form-check-label" for="edit_show_in_marketplace">العرض في الماركت بليس</label>
                             </div>
                         </div>
                         <div class="col-12 bg-supplier-header rounded p-2 text-center">الصورة و المعرض</div>

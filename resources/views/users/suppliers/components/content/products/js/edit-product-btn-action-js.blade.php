@@ -54,6 +54,12 @@
                     $("#product_status").prop('checked', false);
                 }
 
+                if (response.product.show_in_marketplace == "no") {
+                    $("#edit_show_in_marketplace").prop('checked', false);
+                } else {
+                    $("#edit_show_in_marketplace").prop('checked', true);
+                }
+
                 $("#inputShortDescription").val(response.product.short_description);
                 // $("#editor").val(response.product.short_description);
                 quill.clipboard.dangerouslyPasteHTML(response.product.description);

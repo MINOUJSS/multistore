@@ -4,6 +4,8 @@ namespace App\Models\Supplier;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Category;
+
 
 class SupplierProducts extends Model
 {
@@ -24,6 +26,7 @@ class SupplierProducts extends Model
         'condition',
         'free_shipping',
         'status',
+        'show_in_marketplace',
     ];
 
     public function offers()
@@ -65,7 +68,7 @@ class SupplierProducts extends Model
       //
       public function ratings()
       {
-          return $this->hasMany(SupplierProductRatings::class, 'product_id');
+          return $this->hasMany(SupplierProductReviews::class, 'product_id');
       }
       //
       public function discount()

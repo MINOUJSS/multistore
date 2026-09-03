@@ -188,6 +188,7 @@ class SellerProductController extends Controller
                 $product->free_shipping = 'yes';
             }
             $product->status = $request->has('add_status') ? 'active' : 'inactive';
+            $product->show_in_marketplace = $request->has('add_show_in_marketplace') ? 'yes' : 'no';
             $product->save();
 
             // رفع الملف
@@ -500,6 +501,7 @@ class SellerProductController extends Controller
             $product->product_type = $request->product_type;
             // $product->free_shipping = $request->has('free_shipping') ? 'yes' : 'no';
             $product->status = $request->has('status') ? 'active' : 'inactive';
+            $product->show_in_marketplace = $request->has('show_in_marketplace') ? 'yes' : 'no';
 
             // رفع الملف
             if ($request->digital_temp_id) {

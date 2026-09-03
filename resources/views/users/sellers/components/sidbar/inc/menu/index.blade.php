@@ -40,6 +40,14 @@
         <a href="{{route('seller.apps')}}"><i class="fa-brands fa-sketch"></i> <span>التطبيقات</span></a>
     </div>
 
+    <div class="item">
+        <a class="sub-btn" href="#"><i class="fa-solid fa-shop"></i> <span>سوق المنتجات</span> <i class="fa-solid fa-angle-left dropdown ms-auto"></i></a>
+        <div class="sub-menu">
+            <a class="sub-item" href="{{ route('site.marketplace.sellers') }}" target="_blank"><i class="fa-solid fa-store me-1"></i> سوق المتاجر</a>
+            <a class="sub-item" href="{{ route('site.marketplace.suppliers') }}" target="_blank"><i class="fa-solid fa-boxes-stacked me-1"></i> سوق الجملة (الموردين)</a>
+        </div>
+    </div>
+
     <div class="item {{ request()->routeIs('seller.subscription') ? 'active' : '' }}">
         <a href="{{route('seller.subscription')}}"><i class="fa-regular fa-address-card"></i> <span>الإشتراك</span></a>
     </div>

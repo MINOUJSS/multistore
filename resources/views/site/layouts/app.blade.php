@@ -478,6 +478,12 @@
                             href="{{ config('app.url') }}?#skills">{{ __('site.features') }}</a></li>
                     <li><a class="nav-link scrollto"
                             href="{{ config('app.url') }}?#services">{{ __('site.services') }}</a></li>
+                    <li class="dropdown"><a href="#" class="{{ request()->routeIs('site.marketplace.*') ? 'active' : '' }}"><span>🛍️ {{ __('site.marketplace') }}</span> <i class="bi bi-chevron-down ms-1"></i></a>
+                        <ul>
+                            <li><a class="{{ request()->routeIs('site.marketplace.sellers') ? 'fw-bold text-pink' : '' }}" href="{{ route('site.marketplace.sellers') }}"><i class="bi bi-shop me-1"></i> {{ __('site.sellers_marketplace') }}</a></li>
+                            <li><a class="{{ request()->routeIs('site.marketplace.suppliers') ? 'fw-bold text-purple' : '' }}" href="{{ route('site.marketplace.suppliers') }}"><i class="bi bi-boxes me-1"></i> {{ __('site.suppliers_marketplace') }}</a></li>
+                        </ul>
+                    </li>
                     <li><a class="nav-link scrollto" href="{{ config('app.url') }}?#faq">{{ __('site.faq') }}</a></li>
                     <li><a class="nav-link scrollto"
                             href="{{ config('app.url') }}?#contact">{{ __('site.contact') }}</a></li>
@@ -555,10 +561,11 @@
                                     href="{{ config('app.url') }}?#hero">{{ __('site.home') }}</a>
                             </li>
                             <li><i class="bx bx-chevron-{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}"></i> <a
-                                    href="{{ config('app.url') }}?#how-it-works">{{ __('site.how_it_works') }}</a>
+                                    href="{{ route('site.marketplace.sellers') }}">{{ __('site.sellers_marketplace') }}</a>
                             </li>
                             <li><i class="bx bx-chevron-{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}"></i> <a
-                                    href="{{ config('app.url') }}?#skills">{{ __('site.features') }}</a></li>
+                                    href="{{ route('site.marketplace.suppliers') }}">{{ __('site.suppliers_marketplace') }}</a>
+                            </li>
                             <li><i class="bx bx-chevron-{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}"></i> <a
                                     href="{{ config('app.url') }}?#services">{{ __('site.services') }}</a></li>
                             <li><i class="bx bx-chevron-{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}"></i> <a

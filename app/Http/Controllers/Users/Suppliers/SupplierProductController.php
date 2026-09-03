@@ -134,6 +134,7 @@ class SupplierProductController extends Controller
             $product->condition = $request->add_product_condition;
             $product->free_shipping = $request->has('add_free_shipping') ? 'yes' : 'no';
             $product->status = $request->has('add_status') ? 'active' : 'inactive';
+            $product->show_in_marketplace = $request->has('add_show_in_marketplace') ? 'yes' : 'no';
             $product->save();
 
             // رفع الصورة الأساسية
@@ -381,6 +382,7 @@ class SupplierProductController extends Controller
             $product->condition = $request->product_condition;
             $product->free_shipping = $request->has('free_shipping') ? 'yes' : 'no';
             $product->status = $request->has('status') ? 'active' : 'inactive';
+            $product->show_in_marketplace = $request->has('show_in_marketplace') ? 'yes' : 'no';
 
             // رفع الصورة إلى نطاق المستأجر
             if ($request->hasFile('image')) {

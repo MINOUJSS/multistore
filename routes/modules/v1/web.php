@@ -3,6 +3,7 @@
 // use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ChargilyPayController;
 use App\Http\Controllers\Site\ContactMessageController;
+use App\Http\Controllers\Site\MarketplaceController;
 use App\Http\Controllers\Site\NewsletterSubscriberController;
 use App\Http\Controllers\Site\SiteController;
 use App\Http\Controllers\Site\SiteDisputeController;
@@ -63,6 +64,9 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::get('/show_sellers_plans', [SiteController::class, 'show_sellers_plans'])->name('show_sellers_plans');
                 Route::get('/show_shipers_plans', [SiteController::class, 'show_shipers_plans'])->name('show_shipers_plans');
                 Route::get('/show_affiliate_marketers_plans', [SiteController::class, 'show_affiliate_marketers_plans'])->name('show_affiliate_marketers_plans');
+                // marketplace routes
+                Route::get('/marketplace/sellers', [MarketplaceController::class, 'sellersMarketplace'])->name('marketplace.sellers');
+                Route::get('/marketplace/suppliers', [MarketplaceController::class, 'suppliersMarketplace'])->name('marketplace.suppliers');
                 // disputes routes
                 Route::get('/dispute/create', [SiteDisputeController::class, 'create'])->name('dispute.create');
                 Route::post('/dispute/store', [SiteDisputeController::class, 'store'])->name('dispute.store');
