@@ -102,7 +102,9 @@
                     class="fa-solid fa-angle-left dropdown"></i></a>
             <div class="sub-menu">
                 <a class="sub-item" href="{{ route('admin.suppliers') }}"><i class="fa-solid fa-user"></i> الموردين</a>
+                <a class="sub-item" href="{{ route('admin.supplier_plans.index') }}"><i class="fa-solid fa-layer-group"></i> خطط الموردين</a>
                 <a class="sub-item" href="{{ route('admin.sellers') }}"><i class="fa-solid fa-user"></i> تجار التجزئة</a>
+                <a class="sub-item" href="{{ route('admin.seller_plans.index') }}"><i class="fa-solid fa-layer-group"></i> خطط تجار التجزئة</a>
                 <a class="sub-item" href="#"><i class="fa-solid fa-user"></i> شركات التوصيل</a>
                 <a class="sub-item" href="#"><i class="fa-solid fa-user"></i> المسوقين</a>
             </div>

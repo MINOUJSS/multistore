@@ -14,7 +14,7 @@ class SupplierPlanSubscription extends Model
     /**
      * Get supplier information.
      */
-    public function Supplier(): BelongsTo
+    public function Supplier()
     {
         return $this->BelongsTo(Supplier::class);
     }

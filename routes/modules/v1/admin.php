@@ -16,8 +16,10 @@ use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedController;
 use App\Http\Controllers\Admins\Admin\PaymentsProofsRefusedsArchivesController;
 use App\Http\Controllers\Admins\admin\ProofsRefusedChatController;
 use App\Http\Controllers\Admins\Admin\SellerController;
+use App\Http\Controllers\Admins\Admin\SellerPlanController;
 use App\Http\Controllers\Admins\Admin\SettingController;
 use App\Http\Controllers\Admins\Admin\SupplierController;
+use App\Http\Controllers\Admins\Admin\SupplierPlanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,6 +55,27 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::post('/ah-admin/supplier/{id}/approve', [SupplierController::class, 'approve'])->name('supplier.approve');
                 Route::post('/ah-admin/supplier/unapprove', [SupplierController::class, 'unapprove'])->name('supplier.unapprove');
                 Route::post('/ah-admin/supplier/{id}/change-password', [SupplierController::class, 'changePassword'])->name('supplier.changePassword');
+
+                // supplier plans management routes
+                Route::get('/ah-admin/supplier-plans', [SupplierPlanController::class, 'index'])->name('supplier_plans.index');
+                Route::get('/ah-admin/supplier-plans/create', [SupplierPlanController::class, 'create'])->name('supplier_plans.create');
+                Route::post('/ah-admin/supplier-plans', [SupplierPlanController::class, 'store'])->name('supplier_plans.store');
+                Route::get('/ah-admin/supplier-plans/{id}', [SupplierPlanController::class, 'show'])->name('supplier_plans.show');
+                Route::get('/ah-admin/supplier-plans/{id}/edit', [SupplierPlanController::class, 'edit'])->name('supplier_plans.edit');
+                Route::put('/ah-admin/supplier-plans/{id}', [SupplierPlanController::class, 'update'])->name('supplier_plans.update');
+                Route::delete('/ah-admin/supplier-plans/{id}', [SupplierPlanController::class, 'destroy'])->name('supplier_plans.destroy');
+
+                // supplier plan prices routes
+                Route::post('/ah-admin/supplier-plans/{planId}/prices', [SupplierPlanController::class, 'storePrice'])->name('supplier_plans.prices.store');
+                Route::put('/ah-admin/supplier-plans/prices/{priceId}', [SupplierPlanController::class, 'updatePrice'])->name('supplier_plans.prices.update');
+                Route::delete('/ah-admin/supplier-plans/prices/{priceId}', [SupplierPlanController::class, 'destroyPrice'])->name('supplier_plans.prices.destroy');
+
+                // supplier plan authorizations routes
+                Route::post('/ah-admin/supplier-plans/{planId}/authorizations', [SupplierPlanController::class, 'storeAuthorization'])->name('supplier_plans.authorizations.store');
+                Route::put('/ah-admin/supplier-plans/authorizations/{authId}', [SupplierPlanController::class, 'updateAuthorization'])->name('supplier_plans.authorizations.update');
+                Route::patch('/ah-admin/supplier-plans/authorizations/{authId}/toggle', [SupplierPlanController::class, 'toggleAuthorization'])->name('supplier_plans.authorizations.toggle');
+                Route::delete('/ah-admin/supplier-plans/authorizations/{authId}', [SupplierPlanController::class, 'destroyAuthorization'])->name('supplier_plans.authorizations.destroy');
+
                 // sellers actions
                 Route::get('/ah-admin/sellers', [SellerController::class, 'index'])->name('sellers');
                 Route::delete('/ah-admin/seller/destroy/{id}', [SellerController::class, 'destroy'])->name('seller.destroy');
@@ -60,6 +83,27 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::post('/ah-admin/seller/{id}/approve', [SellerController::class, 'approve'])->name('seller.approve');
                 Route::post('/ah-admin/seller/unapprove', [SellerController::class, 'unapprove'])->name('seller.unapprove');
                 Route::post('/ah-admin/seller/{id}/change-password', [SellerController::class, 'changePassword'])->name('seller.changePassword');
+
+                // seller plans management routes
+                Route::get('/ah-admin/seller-plans', [SellerPlanController::class, 'index'])->name('seller_plans.index');
+                Route::get('/ah-admin/seller-plans/create', [SellerPlanController::class, 'create'])->name('seller_plans.create');
+                Route::post('/ah-admin/seller-plans', [SellerPlanController::class, 'store'])->name('seller_plans.store');
+                Route::get('/ah-admin/seller-plans/{id}', [SellerPlanController::class, 'show'])->name('seller_plans.show');
+                Route::get('/ah-admin/seller-plans/{id}/edit', [SellerPlanController::class, 'edit'])->name('seller_plans.edit');
+                Route::put('/ah-admin/seller-plans/{id}', [SellerPlanController::class, 'update'])->name('seller_plans.update');
+                Route::delete('/ah-admin/seller-plans/{id}', [SellerPlanController::class, 'destroy'])->name('seller_plans.destroy');
+
+                // seller plan prices routes
+                Route::post('/ah-admin/seller-plans/{planId}/prices', [SellerPlanController::class, 'storePrice'])->name('seller_plans.prices.store');
+                Route::put('/ah-admin/seller-plans/prices/{priceId}', [SellerPlanController::class, 'updatePrice'])->name('seller_plans.prices.update');
+                Route::delete('/ah-admin/seller-plans/prices/{priceId}', [SellerPlanController::class, 'destroyPrice'])->name('seller_plans.prices.destroy');
+
+                // seller plan authorizations routes
+                Route::post('/ah-admin/seller-plans/{planId}/authorizations', [SellerPlanController::class, 'storeAuthorization'])->name('seller_plans.authorizations.store');
+                Route::put('/ah-admin/seller-plans/authorizations/{authId}', [SellerPlanController::class, 'updateAuthorization'])->name('seller_plans.authorizations.update');
+                Route::patch('/ah-admin/seller-plans/authorizations/{authId}/toggle', [SellerPlanController::class, 'toggleAuthorization'])->name('seller_plans.authorizations.toggle');
+                Route::delete('/ah-admin/seller-plans/authorizations/{authId}', [SellerPlanController::class, 'destroyAuthorization'])->name('seller_plans.authorizations.destroy');
+
                 // payments Routes
                 Route::get('/ah-admin/payments/rechage-requests', [PaymentsController::class, 'recharge_requests'])->name('payments.recharge_requests');
                 Route::patch('/admin/payments/recharge-request/approve/{id}', [PaymentsController::class, 'approve_recharge'])->name('payments.recharge.approve');

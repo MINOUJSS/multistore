@@ -13,8 +13,14 @@ class SupplierPlanAuthorizations extends Model
         'plan_id',
         'permission_key',
         'permission_value',
+        'description',
         'is_enabled',
     ];
+
+    protected $casts = [
+        'is_enabled' => 'boolean',
+    ];
+
     //
     public function plan()
     {

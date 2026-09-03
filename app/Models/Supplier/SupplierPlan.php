@@ -25,4 +25,9 @@ class SupplierPlan extends Model
     {
         return $this->hasMany(SupplierPlanAuthorizations::class,'plan_id');
     }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(SupplierPlanSubscription::class, 'plan_id');
+    }
 }

@@ -14,7 +14,7 @@ class SellerPlanSubscription extends Model
     /**
      * Get seller information.
      */
-    public function Seller(): BelongsTo
+    public function Seller()
     {
         return $this->BelongsTo(Seller::class);
     }
