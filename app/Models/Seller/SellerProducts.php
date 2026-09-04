@@ -87,7 +87,7 @@ class SellerProducts extends Model implements HasMedia
 
     public function visits()
     {
-        return $this->hasMany(ProductVisits::class, 'product_id');
+        return $this->hasMany(SellerProductsVisits::class, 'product_id');
     }
 
     public function visitCount()

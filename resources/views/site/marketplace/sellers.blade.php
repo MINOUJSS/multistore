@@ -138,8 +138,20 @@
                     </select>
                 </div>
 
+                <!-- Product Type Filter -->
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label fw-bold text-dark small mb-1">
+                        <i class="bi bi-layers text-pink me-1"></i> {{ __('site.filter_product_type') }}
+                    </label>
+                    <select name="product_type" class="form-select rounded-3">
+                        <option value="">{{ __('site.filter_all_types') }}</option>
+                        <option value="physical" {{ request('product_type') == 'physical' ? 'selected' : '' }}>{{ __('site.product_type_physical') }}</option>
+                        <option value="digital" {{ request('product_type') == 'digital' ? 'selected' : '' }}>{{ __('site.product_type_digital') }}</option>
+                    </select>
+                </div>
+
                 <!-- Free Shipping Filter -->
-                <div class="col-lg-2 col-md-4 col-6">
+                <div class="col-lg-2 col-md-6 col-6">
                     <label class="form-label fw-bold text-dark small mb-1">
                         <i class="bi bi-truck text-pink me-1"></i> {{ __('site.filter_free_shipping') }}
                     </label>
@@ -164,19 +176,19 @@
                 </div>
 
                 <!-- Price Range & Action Buttons -->
-                <div class="col-lg-3 col-md-4 col-6">
+                <div class="col-lg-2 col-md-4 col-6">
                     <label class="form-label fw-bold text-dark small mb-1">{{ __('site.filter_min_price') }}</label>
                     <input type="number" name="min_price" class="form-control rounded-3" 
                            placeholder="0" value="{{ request('min_price') }}" min="0" step="50">
                 </div>
 
-                <div class="col-lg-3 col-md-4 col-6">
+                <div class="col-lg-2 col-md-4 col-6">
                     <label class="form-label fw-bold text-dark small mb-1">{{ __('site.filter_max_price') }}</label>
                     <input type="number" name="max_price" class="form-control rounded-3" 
                            placeholder="50000" value="{{ request('max_price') }}" min="0" step="50">
                 </div>
 
-                <div class="col-lg-6 col-md-4 d-flex gap-2">
+                <div class="col-lg-5 col-md-12 d-flex gap-2">
                     <button type="submit" class="btn btn-primary-pink flex-grow-1 rounded-3 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-2">
                         <i class="bi bi-funnel"></i>
                         <span>{{ __('site.apply_filters') }}</span>
@@ -197,7 +209,7 @@
                 </span>
                 <span class="text-muted small">{{ __('site.total_products_available') }} {{ $totalProductsCount }}</span>
             </div>
-            @if(request()->hasAny(['search', 'category_id', 'min_price', 'max_price', 'free_shipping', 'sort']))
+            @if(request()->hasAny(['search', 'category_id', 'product_type', 'min_price', 'max_price', 'free_shipping', 'sort']))
                 <div class="text-muted small">
                     <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill px-3 py-1">
                         <i class="bi bi-filter"></i> فلاتر مفعّلة
@@ -274,19 +286,26 @@
                             <!-- Card Body -->
                             <div class="card-body p-3.5 d-flex flex-column justify-content-between">
                                 <div>
-                                    <!-- Store Badge -->
+                                    <!-- Store Badge & Badges -->
                                     <div class="d-flex align-items-center justify-content-between mb-2">
                                         <a href="{{ $storeUrl }}" target="_blank" rel="noopener noreferrer" 
                                            class="store-badge text-decoration-none d-inline-flex align-items-center gap-1.5 small fw-semibold text-truncate"
-                                           style="max-width: 80%;">
+                                           style="max-width: 60%;">
                                             <i class="bi bi-shop text-pink"></i>
                                             <span class="text-truncate">{{ optional($product->seller)->store_name ?? 'متجر معتمد' }}</span>
                                         </a>
-                                        @if($product->condition)
-                                            <span class="badge bg-secondary-subtle text-secondary rounded-pill small px-2 py-0.5">
-                                                {{ $product->condition == 'new' ? 'جديد' : 'مستعمل' }}
-                                            </span>
-                                        @endif
+                                        <div class="d-flex align-items-center gap-1">
+                                            @if($product->product_type == 'digital')
+                                                <span class="badge bg-purple-subtle text-purple rounded-pill small px-2 py-0.5" title="{{ __('site.product_type_digital') }}">
+                                                    <i class="bi bi-cpu me-0.5"></i> {{ __('site.product_type_digital') }}
+                                                </span>
+                                            @endif
+                                            @if($product->condition)
+                                                <span class="badge bg-secondary-subtle text-secondary rounded-pill small px-2 py-0.5">
+                                                    {{ $product->condition == 'new' ? 'جديد' : 'مستعمل' }}
+                                                </span>
+                                            @endif
+                                        </div>
                                     </div>
 
                                     <!-- Product Title -->
@@ -368,6 +387,12 @@
     }
     .bg-pink-light {
         background-color: var(--color-primary-pink-light) !important;
+    }
+    .bg-purple-subtle {
+        background-color: #f3e8ff !important;
+    }
+    .text-purple {
+        color: #7e22ce !important;
     }
     .btn-primary-pink {
         background-color: var(--color-primary-pink);

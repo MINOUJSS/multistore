@@ -60,6 +60,11 @@ class MarketplaceController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
+        // Filter: Product Type (physical / digital)
+        if ($request->filled('product_type') && in_array($request->product_type, ['physical', 'digital'])) {
+            $query->where('product_type', $request->product_type);
+        }
+
         // Filter: Min Price
         if ($request->filled('min_price')) {
             $query->where('price', '>=', (float) $request->min_price);
