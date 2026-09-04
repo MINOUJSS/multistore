@@ -780,9 +780,9 @@ class ChargilyPayController extends Controller
     protected function chargilyPayInstance()
     {
         return new \Chargily\ChargilyPay\ChargilyPay(new \Chargily\ChargilyPay\Auth\Credentials([
-            'mode' => 'test',
-            'public' => 'test_pk_dQD6KsE788otDQXgFrsVVzDt9wDmfo1dFupH5oKE',
-            'secret' => 'test_sk_gpdoJktjYvibE4ydPsWQs6tf062lu6Rj5N4hQCo3',
+            'mode' => env('CHARGILY_MODE', 'test'),
+            'public' => env('CHARGILY_PUBLIC_KEY', 'test_pk_dQD6KsE788otDQXgFrsVVzDt9wDmfo1dFupH5oKE'),
+            'secret' => env('CHARGILY_SECRET_KEY', 'test_sk_gpdoJktjYvibE4ydPsWQs6tf062lu6Rj5N4hQCo3'),
         ]));
     }
 

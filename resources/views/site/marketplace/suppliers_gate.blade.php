@@ -225,13 +225,13 @@
 
                     <!-- CTA Actions -->
                     <div class="pt-3 border-top border-light-subtle">
-                        <a href="{{ route('supplier.register') }}" class="btn btn-primary-purple w-100 rounded-3 py-3 fw-bold fs-6 d-inline-flex align-items-center justify-content-center gap-2 shadow-sm mb-2">
+                        <a href="{{ (request()->getScheme() ?: 'http') . '://supplier.' . preg_replace('/^www\./', '', request()->getHttpHost()) . '/supplier-panel/register' }}" class="btn btn-primary-purple w-100 rounded-3 py-3 fw-bold fs-6 d-inline-flex align-items-center justify-content-center gap-2 shadow-sm mb-2">
                             <span>{{ __('site.create_supplier_account') }}</span>
                             <i class="bi bi-arrow-left-short fs-4"></i>
                         </a>
                         <div class="text-center mt-2">
                             <span class="text-muted small">{{ __('site.already_have_account') }}</span>
-                            <a href="{{ route('supplier.login') }}" class="text-purple fw-semibold small text-decoration-none ms-1 hover-underline">
+                            <a href="{{ (request()->getScheme() ?: 'http') . '://supplier.' . preg_replace('/^www\./', '', request()->getHttpHost()) . '/supplier-panel/login' }}" class="text-purple fw-semibold small text-decoration-none ms-1 hover-underline">
                                 {{ __('site.supplier_login') }}
                             </a>
                         </div>
