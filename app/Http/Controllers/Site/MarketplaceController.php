@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Seller\SellerProducts;
 use App\Models\Supplier\SupplierProducts;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MarketplaceController extends Controller
 {
@@ -124,6 +125,19 @@ class MarketplaceController extends Controller
             })->count();
 
         return view('site.marketplace.sellers', compact('products', 'categories', 'totalProductsCount'));
+    }
+
+    /**
+     * Display Wholesale Suppliers Marketplace Access Guide / Intro page for unregistered visitors
+     */
+    public function suppliersMarketplaceIntro()
+    {
+        // If already logged in as seller or supplier (or admin), redirect directly to suppliers marketplace
+        if (Auth::guard('admin')->check() || (Auth::check() && in_array(Auth::user()->type, ['seller', 'supplier']))) {
+            return redirect()->route('site.marketplace.suppliers');
+        }
+
+        return view('site.marketplace.suppliers_gate');
     }
 
     /**

@@ -66,7 +66,10 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::get('/show_affiliate_marketers_plans', [SiteController::class, 'show_affiliate_marketers_plans'])->name('show_affiliate_marketers_plans');
                 // marketplace routes
                 Route::get('/marketplace/sellers', [MarketplaceController::class, 'sellersMarketplace'])->name('marketplace.sellers');
-                Route::get('/marketplace/suppliers', [MarketplaceController::class, 'suppliersMarketplace'])->name('marketplace.suppliers');
+                Route::get('/marketplace/suppliers/intro', [MarketplaceController::class, 'suppliersMarketplaceIntro'])->name('marketplace.suppliers.intro');
+                Route::get('/marketplace/suppliers', [MarketplaceController::class, 'suppliersMarketplace'])
+                    ->middleware('seller_or_supplier')
+                    ->name('marketplace.suppliers');
                 // disputes routes
                 Route::get('/dispute/create', [SiteDisputeController::class, 'create'])->name('dispute.create');
                 Route::post('/dispute/store', [SiteDisputeController::class, 'store'])->name('dispute.store');
