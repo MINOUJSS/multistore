@@ -41,7 +41,7 @@ class SiteDisputeController extends Controller
         //     ], 422);
         // }
 
-        // get user id
+        // get user id      
         $user_id = get_user_data($request->seller_id)->id;
         $user_type = get_user_data($request->seller_id)->type;
 
