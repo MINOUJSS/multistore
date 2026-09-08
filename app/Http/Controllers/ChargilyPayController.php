@@ -373,7 +373,6 @@ class ChargilyPayController extends Controller
         $checkout_id = $request->input('checkout_id');
         $checkout = $this->chargilyPayInstance()->checkouts()->get($checkout_id);
         $payment = null;
-        dd($checkout);
         if ($checkout) {
             $metadata = $checkout->getMetadata();
             if ($metadata['payment_type'] == 'supplier_order' || $metadata['payment_type'] == 'seller_order') {
@@ -386,8 +385,8 @@ class ChargilyPayController extends Controller
             // // Doing payment processing in webhook for best practices
             // //
         }
-        // dd($checkout->getStatus(),$payment);
-        if ($payment !== null && $checkout->getStatus() == 'paid') {
+        //dd($checkout->getStatus(),$payment->status);
+        if ($payment !== null && $payment->status == 'paid') {
             // get user type
             if ($payment->payment_type == 'wallet_topup') {
                 $user = get_user_data_from_id($payment->payment_reference_id);
@@ -421,7 +420,6 @@ class ChargilyPayController extends Controller
             }
         // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
         } else {
-            dd($payment);
             if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription') {
                 return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
             } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription') {
@@ -445,6 +443,8 @@ class ChargilyPayController extends Controller
     public function webhook()
     {
         $webhook = $this->chargilyPayInstance()->webhook()->get();
+        /*Log::info($webhook);*/
+        Log::info('chargily webhook: ' . $webhook);
         if ($webhook) {
             $checkout = $webhook->getData();
             // check webhook data is set
