@@ -385,8 +385,8 @@ class ChargilyPayController extends Controller
             // // Doing payment processing in webhook for best practices
             // //
         }
-        // dd($checkout,$payment);
-        if ($payment !== null && $payment->status == 'paid') {
+        // dd($checkout->getStatus(),$payment);
+        if ($payment !== null && $checkout->getStatus() == 'paid') {
             // get user type
             if ($payment->payment_type == 'wallet_topup') {
                 $user = get_user_data_from_id($payment->payment_reference_id);
@@ -455,7 +455,7 @@ class ChargilyPayController extends Controller
                     } else {
                         $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
                     }
-
+                    
                     if ($payment) {
                         $status = $checkout->getStatus();
                         $payment->status = $status === 'paid' ? 'paid' : 'failed';
