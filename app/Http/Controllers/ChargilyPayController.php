@@ -373,6 +373,7 @@ class ChargilyPayController extends Controller
         $checkout_id = $request->input('checkout_id');
         $checkout = $this->chargilyPayInstance()->checkouts()->get($checkout_id);
         $payment = null;
+        dd($checkout);
         if ($checkout) {
             $metadata = $checkout->getMetadata();
             if ($metadata['payment_type'] == 'supplier_order' || $metadata['payment_type'] == 'seller_order') {
