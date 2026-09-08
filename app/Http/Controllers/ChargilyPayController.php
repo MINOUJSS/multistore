@@ -420,6 +420,7 @@ class ChargilyPayController extends Controller
             }
         // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
         } else {
+            dd($payment);
             if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription') {
                 return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
             } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription') {
@@ -455,7 +456,7 @@ class ChargilyPayController extends Controller
                     } else {
                         $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
                     }
-                    
+
                     if ($payment) {
                         $status = $checkout->getStatus();
                         $payment->status = $status === 'paid' ? 'paid' : 'failed';
