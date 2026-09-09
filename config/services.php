@@ -37,4 +37,9 @@ return [
         'key' => env('BREVO_API_KEY'),
         'dsn' => 'brevo+api://'.env('BREVO_API_KEY').'@default',
     ],
+    'chargily' => [
+        'mode' => env('CHARGILY_MODE', 'test'),
+        'public_key' => env('CHARGILY_PUBLIC_KEY', 'test_pk_dQD6KsE788otDQXgFrsVVzDt9wDmfo1dFupH5oKE'),
+        'secret_key' => env('CHARGILY_SECRET_KEY', 'test_sk_gpdoJktjYvibE4ydPsWQs6tf062lu6Rj5N4hQCo3'),
+    ],
 ];

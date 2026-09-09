@@ -371,47 +371,28 @@ class ChargilyPayController extends Controller
     {
         $user = null;
         $checkout_id = $request->input('checkout_id');
-        $checkout = null;
-
-        if ($checkout_id) {
-            try {
-                if (function_exists('tenant') && tenant('id')) {
-                    $checkout = $this->chargilyPayForTenantsInstance(tenant('id'))->checkouts()->get($checkout_id);
-                } else {
-                    $checkout = $this->chargilyPayInstance()->checkouts()->get($checkout_id);
-                }
-            } catch (\Exception $e) {
-                Log::error('Chargily back checkout fetch error: ' . $e->getMessage());
-            }
-        }
-
+        $checkout = $this->chargilyPayInstance()->checkouts()->get($checkout_id);
         $payment = null;
         if ($checkout) {
             $metadata = $checkout->getMetadata();
-            if (isset($metadata['payment_type']) && ($metadata['payment_type'] == 'supplier_order' || $metadata['payment_type'] == 'seller_order')) {
-                $payment = \App\Models\ChargilyPaymentForTenants::find($metadata['payment_id'] ?? null);
-            } elseif (isset($metadata['payment_id'])) {
+            if ($metadata['payment_type'] == 'supplier_order' || $metadata['payment_type'] == 'seller_order') {
+                $payment = \App\Models\ChargilyPaymentForTenants::find($metadata['payment_id']);
+            } else {
                 $payment = \App\Models\ChargilyPayment::find($metadata['payment_id']);
             }
+            // //
+            // // Is not recomended to process payment in back page / success or fail page
+            // // Doing payment processing in webhook for best practices
+            // //
         }
-
-        // في حال لم يتم العثور على سجل الدفع
-        if (! $payment) {
-            if (function_exists('tenant') && tenant('id')) {
-                return redirect()->route('tenant.home')->with('payment_error', 'تعذر العثور على بيانات عملية الدفع أو تم إلغاؤها.');
-            }
-            return redirect()->route('site.index')->with('error', 'تعذر العثور على بيانات عملية الدفع أو تم إلغاؤها.');
-        }
-
-        $isPaid = ($payment->status == 'paid') || ($checkout && $checkout->getStatus() == 'paid');
-
-        if ($isPaid) {
+        // dd($checkout->getStatus(),$payment->status);
+        if ($payment !== null && $payment->status == 'paid') {
             // get user type
             if ($payment->payment_type == 'wallet_topup') {
                 $user = get_user_data_from_id($payment->payment_reference_id);
-                if ($user && $user->type == 'seller') {
+                if ($user->type == 'seller') {
                     return redirect()->route('seller.wallet')->with('success', 'تمت عملية الدفع بنجاح');
-                } elseif ($user && $user->type == 'supplier') {
+                } elseif ($user->type == 'supplier') {
                     return redirect()->route('supplier.wallet')->with('success', 'تمت عملية الدفع بنجاح');
                 }
             }
@@ -419,9 +400,9 @@ class ChargilyPayController extends Controller
                 Log::info($payment->payment_reference_id);
                 $user = get_user_data_from_invoice_id($payment->payment_reference_id);
                 Log::info($user);
-                if ($user && $user->type == 'seller') {
+                if ($user->type == 'seller') {
                     return redirect()->route('seller.billing.invoice.show', $payment->payment_reference_id)->with('success', 'تمت عملية الدفع بنجاح');
-                } elseif ($user && $user->type == 'supplier') {
+                } elseif ($user->type == 'supplier') {
                     return redirect()->route('supplier.billing.invoice.show', $payment->payment_reference_id)->with('success', 'تمت عملية الدفع بنجاح');
                 }
             }
@@ -437,37 +418,33 @@ class ChargilyPayController extends Controller
                     'order_id' => $payment->payment_reference_id,
                 ]);
             }
-
-            return redirect()->route('site.index')->with('success', 'تمت عملية الدفع بنجاح');
+        // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
         } else {
-            if ($payment->payment_type == 'wallet_topup') {
-                $user = get_user_data_from_id($payment->payment_reference_id);
-                if ($user && $user->type == 'seller') {
-                    return redirect()->route('seller.wallet')->with('error', 'تم إلغاء أو فشل عملية شحن الرصيد');
-                } elseif ($user && $user->type == 'supplier') {
-                    return redirect()->route('supplier.wallet')->with('error', 'تم إلغاء أو فشل عملية شحن الرصيد');
+            // if ($payment != null) {
+                if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription') {
+                    return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
+                } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription') {
+                    return redirect()->route('seller.dashboard')->with('error', 'فشل في عملية الدفع');
+                } elseif ($payment->payment_type == 'supplier_order') {
+                    return redirect()->route('tenant.thanks')->with('payment_error', 'فشل في عملية الدفع');
+                } elseif ($payment->payment_type == 'seller_order') {
+                    return redirect()->route('tenant.repayment')->with([
+                        'payment_error' => 'فشل في عملية الدفع يرجى إعادة المحاولة',
+                        'order_id' => $payment->payment_reference_id,
+                    ]);
                 }
-            } elseif ($payment->payment_type == 'user_invoice') {
-                $user = get_user_data_from_invoice_id($payment->payment_reference_id);
-                if ($user && $user->type == 'seller') {
-                    return redirect()->route('seller.billing.invoice.show', $payment->payment_reference_id)->with('error', 'تم إلغاء أو فشل عملية دفع الفاتورة');
-                } elseif ($user && $user->type == 'supplier') {
-                    return redirect()->route('supplier.billing.invoice.show', $payment->payment_reference_id)->with('error', 'تم إلغاء أو فشل عملية دفع الفاتورة');
-                }
-            } elseif ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription') {
-                return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
-            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription') {
-                return redirect()->route('seller.dashboard')->with('error', 'فشل في عملية الدفع');
-            } elseif ($payment->payment_type == 'supplier_order') {
-                return redirect()->route('tenant.thanks')->with('payment_error', 'فشل في عملية الدفع');
-            } elseif ($payment->payment_type == 'seller_order') {
-                return redirect()->route('tenant.repayment')->with([
-                    'payment_error' => 'فشل في عملية الدفع يرجى إعادة المحاولة',
-                    'order_id' => $payment->payment_reference_id,
-                ]);
-            }
 
-            return redirect()->route('site.index')->with('error', 'فشل في عملية الدفع');
+            // } else {
+            //     // auto stope chargily service for this tenant
+
+            //     // informe admine about this error
+
+            //     // informe tenant about this error
+
+            //     // make return fand to user with chargily api
+            // }
+
+            // return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
         }
     }
 
@@ -620,7 +597,8 @@ class ChargilyPayController extends Controller
                                     $order->update();
                                 }
                                 // end supplier actions
-                                break;
+                                // start seller actions
+                                // no break
                             case 'new_seller_subscription':
                                 // get order data
                                 $order = SellerPlanOrder::where('seller_id', $payment->payment_reference_id)->where('status', 'pending')->first();
@@ -814,26 +792,20 @@ class ChargilyPayController extends Controller
     protected function chargilyPayInstance()
     {
         return new \Chargily\ChargilyPay\ChargilyPay(new \Chargily\ChargilyPay\Auth\Credentials([
-            'mode' => config('services.chargily.mode', env('CHARGILY_MODE', 'test')),
-            'public' => config('services.chargily.public_key', env('CHARGILY_PUBLIC_KEY', 'test_pk_dQD6KsE788otDQXgFrsVVzDt9wDmfo1dFupH5oKE')),
-            'secret' => config('services.chargily.secret_key', env('CHARGILY_SECRET_KEY', 'test_sk_gpdoJktjYvibE4ydPsWQs6tf062lu6Rj5N4hQCo3')),
+            'mode' => env('CHARGILY_MODE', 'test'),
+            'public' => env('CHARGILY_PUBLIC_KEY', 'test_pk_dQD6KsE788otDQXgFrsVVzDt9wDmfo1dFupH5oKE'),
+            'secret' => env('CHARGILY_SECRET_KEY', 'test_sk_gpdoJktjYvibE4ydPsWQs6tf062lu6Rj5N4hQCo3'),
         ]));
     }
 
     protected function chargilyPayForTenantsInstance($tenant_id)
     {
         $user = get_user_data($tenant_id);
-        if (! $user) {
-            throw new \Exception("المستخدم الخاص بالمتجر ({$tenant_id}) غير موجود.");
-        }
-
         $settings = $user->chargilySettings;
-        if (! $settings || empty($settings->secret_key)) {
-            throw new \Exception('لم يتم ضبط إعدادات بوابة الدفع Chargily لهذا المتجر.');
-        }
+        // dd($settings);
 
         return new \Chargily\ChargilyPay\ChargilyPay(new \Chargily\ChargilyPay\Auth\Credentials([
-            'mode' => $settings->mode ?? 'test',
+            'mode' => $settings->mode,
             'public' => $settings->public_key,
             'secret' => $settings->secret_key,
         ]));
