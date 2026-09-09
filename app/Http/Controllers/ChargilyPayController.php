@@ -385,7 +385,7 @@ class ChargilyPayController extends Controller
             // // Doing payment processing in webhook for best practices
             // //
         }
-        //dd($checkout->getStatus(),$payment->status);
+        // dd($checkout->getStatus(),$payment->status);
         if ($payment !== null && $payment->status == 'paid') {
             // get user type
             if ($payment->payment_type == 'wallet_topup') {
@@ -420,17 +420,27 @@ class ChargilyPayController extends Controller
             }
         // return redirect()->route('supplier.dashboard')->with('success', 'تمت عملية الدفع بنجاح');
         } else {
-            if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription') {
-                return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
-            } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription') {
-                return redirect()->route('seller.dashboard')->with('error', 'فشل في عملية الدفع');
-            } elseif ($payment->payment_type == 'supplier_order') {
-                return redirect()->route('tenant.thanks')->with('payment_error', 'فشل في عملية الدفع');
-            } elseif ($payment->payment_type == 'seller_order') {
-                return redirect()->route('tenant.repayment')->with([
-                    'payment_error' => 'فشل في عملية الدفع يرجى إعادة المحاولة',
-                    'order_id' => $payment->payment_reference_id,
-                ]);
+            if ($payment != null) {
+                if ($payment->payment_type == 'new_supplier_subscription' || $payment->payment_type == 'supplier_subscription') {
+                    return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
+                } elseif ($payment->payment_type == 'new_seller_subscription' || $payment->payment_type == 'seller_subscription') {
+                    return redirect()->route('seller.dashboard')->with('error', 'فشل في عملية الدفع');
+                } elseif ($payment->payment_type == 'supplier_order') {
+                    return redirect()->route('tenant.thanks')->with('payment_error', 'فشل في عملية الدفع');
+                } elseif ($payment->payment_type == 'seller_order') {
+                    return redirect()->route('tenant.repayment')->with([
+                        'payment_error' => 'فشل في عملية الدفع يرجى إعادة المحاولة',
+                        'order_id' => $payment->payment_reference_id,
+                    ]);
+                }
+            } else {
+                // auto stope chargily service for this tenant
+
+                // informe admine about this error
+
+                // informe tenant about this error
+
+                // make return fand to user with chargily api
             }
 
             // return redirect()->route('supplier.dashboard')->with('error', 'فشل في عملية الدفع');
@@ -443,7 +453,7 @@ class ChargilyPayController extends Controller
     public function webhook()
     {
         $webhook = $this->chargilyPayInstance()->webhook()->get();
-        Log::info('chargily webhook payload:', ['webhook' => $webhook]);
+        Log::info('chargily webhook payload:', ['webhook' => $this]);
         if ($webhook) {
             $checkout = $webhook->getData();
             // check webhook data is set
