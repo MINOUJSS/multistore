@@ -453,7 +453,7 @@ class ChargilyPayController extends Controller
     public function webhook()
     {
         $webhook = $this->chargilyPayInstance()->webhook()->get();
-        Log::info('chargily webhook payload:', ['webhook' => $this]);
+        Log::info('chargily webhook payload:', ['webhook' => $this->chargilyPayInstance()]);
         if ($webhook) {
             $checkout = $webhook->getData();
             // check webhook data is set
