@@ -2084,19 +2084,10 @@ class TenantsController extends Controller
             $product_type = 'physical';
             $product_id = null;
             if ($order) {
-                $firstItem = $order->items()->first();
-                $product_id = $firstItem ? $firstItem->product_id : null;
-                if ($firstItem && $order->items()->count() == 1 && $firstItem->product_type == 'digital') {
+                $product_id = $order->items()->first()->product_id;
+                if ($order->items()->count() == 1 && $order->items()->first()->product_type == 'digital') {
                     $product_type = 'digital';
-                    if (empty($order->download_token)) {
-                        $order->download_token = \Illuminate\Support\Str::uuid();
-                        $order->max_downloads = $order->max_downloads ?: 3;
-                        $order->download_expires_at = $order->download_expires_at ?: now()->addHours(24);
-                        $order->save();
-                    }
-                    if (!empty($order->download_token)) {
-                        $download_link = route('site.download.entry', ['token' => $order->download_token]);
-                    }
+                    $download_link = route('site.download.entry', ['token' => $order->download_token]);
                 }
             }
             if ($product_id != null) {

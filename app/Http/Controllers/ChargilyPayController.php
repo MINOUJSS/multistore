@@ -156,6 +156,7 @@ class ChargilyPayController extends Controller
                         'payment_id' => $payment->id,
                         'payment_type' => $type,
                         'reference_id' => $referenceId,
+                        'tenant_id' => $request->tenant_id,
                     ],
                     'locale' => 'ar',
                     'amount' => $payment->amount,
@@ -163,7 +164,7 @@ class ChargilyPayController extends Controller
                     'description' => "دفع من نوع {$type} رقم {$referenceId}",
                     'success_url' => route('tenant.chargilypay.back'),
                     'failure_url' => route('tenant.chargilypay.back'),
-                    'webhook_endpoint' => route('chargilypay.webhook_endpoint'),
+                    'webhook_endpoint' => route('chargilypay.webhook_endpoint', ['tenant_id' => $request->tenant_id]),
                 ]);
                 if ($checkout) {
                     // update checkout url
@@ -296,6 +297,7 @@ class ChargilyPayController extends Controller
                         'payment_id' => $payment->id,
                         'payment_type' => $type,
                         'reference_id' => $referenceId,
+                        'tenant_id' => $request->tenant_id,
                     ],
                     'locale' => 'ar',
                     'amount' => $payment->amount,
@@ -303,7 +305,7 @@ class ChargilyPayController extends Controller
                     'description' => "دفع من نوع {$type} رقم {$referenceId}",
                     'success_url' => route('tenant.chargilypay.back'),
                     'failure_url' => route('tenant.chargilypay.back'),
-                    'webhook_endpoint' => route('chargilypay.webhook_endpoint'),
+                    'webhook_endpoint' => route('chargilypay.webhook_endpoint', ['tenant_id' => $request->tenant_id]),
                 ]);
                 if ($checkout) {
                     // update checkout url
@@ -474,9 +476,47 @@ class ChargilyPayController extends Controller
     /**
      * This action will be processed in the background.
      */
-    public function webhook()
+    public function webhook(Request $request)
     {
-        $webhook = $this->chargilyPayInstance()->webhook()->get();
+        $webhook = null;
+        $tenant_id = $request->query('tenant_id');
+
+        // إذا لم يكن tenant_id في الرابط، نحاول استخراجه من الـ Payload
+        if (! $tenant_id) {
+            $rawPayload = $request->getContent();
+            if ($rawPayload) {
+                $payloadData = json_decode($rawPayload, true);
+                $metadata = $payloadData['data']['metadata'] ?? [];
+                $tenant_id = $metadata['tenant_id'] ?? null;
+
+                // إذا كان نوع الدفع خاص بالمتاجر ولم يكن tenant_id في metadata، نبحث في جدول ChargilyPaymentForTenants
+                if (! $tenant_id && isset($metadata['payment_id']) && isset($metadata['payment_type']) && in_array($metadata['payment_type'], ['supplier_order', 'seller_order'])) {
+                    $tenantPayment = \App\Models\ChargilyPaymentForTenants::find($metadata['payment_id']);
+                    if ($tenantPayment && $tenantPayment->user) {
+                        $tenant_id = $tenantPayment->user->tenant_id;
+                    }
+                }
+            }
+        }
+
+        // محاولة التحقق عبر الـ Tenant إذا توفر معرف المتجر
+        if ($tenant_id) {
+            try {
+                $webhook = $this->chargilyPayForTenantsInstance($tenant_id)->webhook()->get();
+            } catch (\Exception $e) {
+                Log::warning("Chargily webhook verification failed for tenant [{$tenant_id}]: " . $e->getMessage());
+            }
+        }
+
+        // إذا لم يكن خاصاً بمتجر أو فشل التحقق كـ Tenant، نجرب مفاتيح المنصة الرئيسية (Central)
+        if (! $webhook) {
+            try {
+                $webhook = $this->chargilyPayInstance()->webhook()->get();
+            } catch (\Exception $e) {
+                Log::error('Chargily central webhook verification error: ' . $e->getMessage());
+            }
+        }
+
         Log::info('chargily webhook payload:', ['webhook' => $webhook]);
         if ($webhook) {
             $checkout = $webhook->getData();
