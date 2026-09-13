@@ -184,7 +184,7 @@
                                 </td>
 
                                 <td data-label="تاريخ آخر نشاط" class="text-muted small">
-                                    {{ get_user_data($seller->tenant_id)->last_seen[0]->created_at->diffForHumans() }}
+                                    {{ get_user_data($seller->tenant_id)?->last_seen?->first()?->created_at?->diffForHumans() ?? 'لا يوجد نشاط' }}
                                 </td>
 
                                 <td data-label="الحالة">{!! get_seller_status($seller->tenant->id) !!}</td>
