@@ -68,7 +68,7 @@ class SupplierProducts extends Model
       //
       public function ratings()
       {
-          return $this->hasMany(SupplierProductReviews::class, 'product_id');
+          return $this->hasMany(SupplierProductsReviews::class, 'product_id');
       }
       //
       public function discount()
