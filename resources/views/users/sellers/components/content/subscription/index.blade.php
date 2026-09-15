@@ -36,8 +36,9 @@
                 </p>
             </div>
             <div class="col-lg-4 text-lg-end">
-                @if($currentPlan)
-                    <div class="d-inline-flex flex-column align-items-lg-end bg-white bg-opacity-10 p-3 rounded-4 border border-white border-opacity-15 backdrop-blur">
+                @if ($currentPlan)
+                    <div
+                        class="d-inline-flex flex-column align-items-lg-end bg-white bg-opacity-10 p-3 rounded-4 border border-white border-opacity-15 backdrop-blur">
                         <span class="text-white-50 small mb-1">الخطة الحالية لمتجرك</span>
                         <div class="d-flex align-items-center gap-2">
                             <span class="badge bg-warning text-dark fw-bold px-3 py-1.5 fs-6 rounded-pill">
@@ -62,15 +63,19 @@
         <!-- Pending Plan Order Alert Card -->
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
             <div class="card-body p-4 text-center">
-                <div class="d-inline-flex align-items-center justify-content-center avatar avatar-xl rounded-circle bg-success-subtle text-success mb-3" style="width: 64px; height: 64px;">
+                <div class="d-inline-flex align-items-center justify-content-center avatar avatar-xl rounded-circle bg-success-subtle text-success mb-3"
+                    style="width: 64px; height: 64px;">
                     <i class="fa-solid fa-clock-rotate-left fs-2"></i>
                 </div>
                 <h4 class="fw-bold text-dark mb-2">طلب الاشتراك قيد المعالجة</h4>
-                <div class="alert alert-success border-0 bg-success-subtle text-success-emphasis rounded-3 p-3 mb-0 d-inline-block text-start" style="max-width: 650px;">
+                <div class="alert alert-success border-0 bg-success-subtle text-success-emphasis rounded-3 p-3 mb-0 d-inline-block text-start"
+                    style="max-width: 650px;">
                     <div class="d-flex align-items-center gap-2">
                         <i class="fa-solid fa-circle-check fs-5 flex-shrink-0"></i>
                         <span class="fw-semibold">
-                            تم إستلام طلب إشتراككم في الخطة <b>{{ get_seller_plan_data(get_seller_data(auth()->user()->tenant_id)->orderPlan[0]->plan_id)->name }}</b>. سيتم تفعيل إشتراككم في أقرب وقت ممكن . شكراً لكم.
+                            تم إستلام طلب إشتراككم في الخطة
+                            <b>{{ get_seller_plan_data(get_seller_data(auth()->user()->tenant_id)->orderPlan[0]->plan_id)->name }}</b>.
+                            سيتم تفعيل إشتراككم في أقرب وقت ممكن . شكراً لكم.
                         </span>
                     </div>
                 </div>
@@ -92,17 +97,22 @@
             <div class="row g-4">
                 @foreach ($plans as $plan)
                     @php
-                        $isActive =
-                            $plan->id ==
-                            get_seller_subscription_data(get_seller_data(auth()->user()->tenant_id)->id)->plan_id;
+                        $currentSubscription = get_seller_subscription_data(get_seller_data(auth()->user()->tenant_id)->id);
+                        $currentPlanId = $currentSubscription->plan_id ?? null;
+                        $currentPlan = get_seller_plan_data($currentPlanId);
+                        $isActive = ($plan->id == $currentPlanId);
+                        $isCurrentOrLower = ($currentPlanId && ($plan->id <= $currentPlanId || (float)$plan->price <= (float)($currentPlan->price ?? 0)));
+                        $canUpgrade = !$isCurrentOrLower;
                         $authorizations = $plan->Authorizations;
                         $pricing = $plan->pricing;
                     @endphp
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden bg-white hover-lift transition-all position-relative {{ $isActive ? 'border border-2 border-plum' : '' }}">
-                            @if($isActive)
+                        <div
+                            class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden bg-white hover-lift transition-all position-relative {{ $isActive ? 'border border-2 border-plum' : '' }}">
+                            @if ($isActive)
                                 <div class="position-absolute top-0 end-0 m-3 z-2">
-                                    <span class="badge bg-plum-subtle text-plum border border-plum-subtle rounded-pill px-3 py-1.5 fw-bold">
+                                    <span
+                                        class="badge bg-plum-subtle text-plum border border-plum-subtle rounded-pill px-3 py-1.5 fw-bold">
                                         <i class="fa-solid fa-circle-check me-1"></i> الخطة الحالية
                                     </span>
                                 </div>
@@ -111,11 +121,13 @@
                             <div class="card-header bg-white border-0 pt-4 px-4 pb-3 text-center">
                                 <span class="avatar avatar-lg rounded-4 bg-plum-subtle text-plum mb-3"
                                     style="width: 54px; height: 54px; display: inline-flex; align-items: center; justify-content: center;">
-                                    <i class="fa-solid {{ $plan->id == 1 ? 'fa-rocket' : ($plan->id == 2 ? 'fa-bolt' : 'fa-crown') }} fs-3"></i>
+                                    <i
+                                        class="fa-solid {{ $plan->id == 1 ? 'fa-rocket' : ($plan->id == 2 ? 'fa-bolt' : 'fa-crown') }} fs-3"></i>
                                 </span>
                                 <h4 class="fw-bold text-dark mb-2">الخطة {{ $plan->name }}</h4>
-                                
-                                <form action="{{ route('seller.subscription.order.plan', $plan->id) }}" method="POST" class="text-center">
+
+                                <form action="{{ route('seller.subscription.order.plan', $plan->id) }}" method="POST"
+                                    class="text-center">
                                     @csrf
                                     <div class="d-flex align-items-baseline justify-content-center gap-1 mb-3">
                                         <span class="display-6 fw-bold text-dark">{{ $plan->price }}</span>
@@ -123,24 +135,36 @@
                                         <span class="text-muted small">/ الشهر</span>
                                     </div>
 
-                                    @if ($pricing->count() > 0)
-                                        <div class="p-3 bg-light rounded-3 text-start mb-3" style="{{ $plan->id == get_seller_data(auth()->user()->tenant_id)->plan_subscription->plan_id || get_seller_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 3 ? 'display:none;' : '' }}">
-                                            <h6 class="fw-bold text-dark mb-2 small"><i class="fa-solid fa-tags me-1 text-plum"></i> عروض ومدد الاشتراك:</h6>
+                                    @if ($pricing->count() > 0 && $canUpgrade)
+                                        <div class="p-3 bg-light rounded-3 text-start mb-3">
+                                            <h6 class="fw-bold text-dark mb-2 small"><i
+                                                    class="fa-solid fa-tags me-1 text-plum"></i> عروض ومدد الاشتراك:
+                                            </h6>
                                             <div class="d-flex flex-column gap-2">
-                                                <label class="p-2 bg-white rounded-3 border d-flex align-items-center justify-content-between cursor-pointer mb-0">
+                                                <label
+                                                    class="p-2 bg-white rounded-3 border d-flex align-items-center justify-content-between cursor-pointer mb-0">
                                                     <div class="d-flex align-items-center gap-2">
-                                                        <input type="radio" name="sub_plan_id" value="0" checked class="form-check-input shadow-none">
+                                                        <input type="radio" name="sub_plan_id" value="0" checked
+                                                            class="form-check-input shadow-none">
                                                         <span class="fw-semibold small text-dark">30 يوم</span>
                                                     </div>
-                                                    <span class="badge bg-light text-dark fw-bold">{{ $plan->price }} د.ج</span>
+                                                    <span class="badge bg-light text-dark fw-bold">{{ $plan->price }}
+                                                        د.ج</span>
                                                 </label>
                                                 @foreach ($pricing as $price)
-                                                    <label class="p-2 bg-white rounded-3 border d-flex align-items-center justify-content-between cursor-pointer mb-0">
+                                                    <label
+                                                        class="p-2 bg-white rounded-3 border d-flex align-items-center justify-content-between cursor-pointer mb-0">
                                                         <div class="d-flex align-items-center gap-2">
-                                                            <input type="radio" name="sub_plan_id" value="{{ $price->id }}" class="form-check-input shadow-none">
-                                                            <span class="fw-semibold small text-dark">{{ $price->duration }} يوم</span>
+                                                            <input type="radio" name="sub_plan_id"
+                                                                value="{{ $price->id }}"
+                                                                class="form-check-input shadow-none">
+                                                            <span
+                                                                class="fw-semibold small text-dark">{{ $price->duration }}
+                                                                يوم</span>
                                                         </div>
-                                                        <span class="badge bg-plum-subtle text-plum fw-bold">{{ $price->price }} د.ج</span>
+                                                        <span
+                                                            class="badge bg-plum-subtle text-plum fw-bold">{{ $price->price }}
+                                                            د.ج</span>
                                                     </label>
                                                 @endforeach
                                             </div>
@@ -155,25 +179,30 @@
                                         @foreach ($authorizations as $authorization)
                                             <li class="d-flex align-items-start gap-2.5 small">
                                                 @if ($authorization['is_enabled'])
-                                                    <i class="fa-solid fa-circle-check text-success fs-6 mt-0.5 flex-shrink-0"></i>
-                                                    <span class="text-dark fw-medium">{{ $authorization['description'] }}</span>
+                                                    <i
+                                                        class="fa-solid fa-circle-check text-success fs-6 mt-0.5 flex-shrink-0"></i>
+                                                    <span
+                                                        class="text-dark fw-medium">{{ $authorization['description'] }}</span>
                                                 @else
-                                                    <i class="fa-solid fa-circle-xmark text-danger opacity-50 fs-6 mt-0.5 flex-shrink-0"></i>
-                                                    <span class="text-muted text-decoration-line-through">{{ $authorization['description'] }}</span>
-                                                    <span class="badge bg-light text-muted ms-auto small">(غير متاح)</span>
+                                                    <i
+                                                        class="fa-solid fa-circle-xmark text-danger opacity-50 fs-6 mt-0.5 flex-shrink-0"></i>
+                                                    <span
+                                                        class="text-muted text-decoration-line-through">{{ $authorization['description'] }}</span>
+                                                    <span class="badge bg-light text-muted ms-auto small">(غير
+                                                        متاح)</span>
                                                 @endif
                                             </li>
                                         @endforeach
                                     </ul>
                                 </div>
 
-                                <button type="submit"
-                                    class="btn btn-seller-primary w-100 rounded-3 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-2 mt-3"
-                                    {{ $isActive ? 'disabled' : '' }}
-                                    {{ $plan->id == 1 || $plan->id == get_seller_data(auth()->user()->tenant_id)->plan_subscription->plan_id || get_seller_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 3 ? 'hidden' : '' }}>
-                                    <i class="fa-solid fa-bolt"></i>
-                                    <span>قم بالترقية الآن</span>
-                                </button>
+                                @if ($canUpgrade)
+                                    <button type="submit"
+                                        class="btn btn-seller-primary w-100 rounded-3 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-2 mt-3">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        <span>قم بالترقية الآن</span>
+                                    </button>
+                                @endif
                                 </form>
                             </div>
                         </div>

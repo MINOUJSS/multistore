@@ -92,9 +92,12 @@
             <div class="row g-4">
                 @foreach ($plans as $plan)
                     @php
-                        $isActive =
-                            $plan->id ==
-                            get_supplier_subscription_data(get_supplier_data(auth()->user()->tenant_id)->id)->plan_id;
+                        $currentSubscription = get_supplier_subscription_data(get_supplier_data(auth()->user()->tenant_id)->id);
+                        $currentPlanId = $currentSubscription->plan_id ?? null;
+                        $currentPlan = get_supplier_plan_data($currentPlanId);
+                        $isActive = ($plan->id == $currentPlanId);
+                        $isCurrentOrLower = ($currentPlanId && ($plan->id <= $currentPlanId || (float)$plan->price <= (float)($currentPlan->price ?? 0)));
+                        $canUpgrade = !$isCurrentOrLower;
                         $authorizations = $plan->Authorizations;
                         $pricing = $plan->pricing;
                     @endphp
@@ -123,8 +126,8 @@
                                         <span class="text-muted small">/ الشهر</span>
                                     </div>
 
-                                    @if ($pricing->count() > 0)
-                                        <div class="p-3 bg-light rounded-3 text-start mb-3" style="{{ $plan->id == get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id || get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 3 ? 'display:none;' : '' }}">
+                                    @if ($pricing->count() > 0 && $canUpgrade)
+                                        <div class="p-3 bg-light rounded-3 text-start mb-3">
                                             <h6 class="fw-bold text-dark mb-2 small"><i class="fa-solid fa-tags me-1 text-navy"></i> عروض ومدد الاشتراك:</h6>
                                             <div class="d-flex flex-column gap-2">
                                                 <label class="p-2 bg-white rounded-3 border d-flex align-items-center justify-content-between cursor-pointer mb-0">
@@ -167,13 +170,13 @@
                                     </ul>
                                 </div>
 
-                                <button type="submit"
-                                    class="btn btn-supplier-primary w-100 rounded-3 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-2 mt-3"
-                                    {{ $isActive ? 'disabled' : '' }}
-                                    {{ $plan->id == 1 || $plan->id == get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id || get_supplier_data(auth()->user()->tenant_id)->plan_subscription->plan_id == 3 ? 'hidden' : '' }}>
-                                    <i class="fa-solid fa-bolt"></i>
-                                    <span>قم بالترقية الآن</span>
-                                </button>
+                                @if ($canUpgrade)
+                                    <button type="submit"
+                                        class="btn btn-supplier-primary w-100 rounded-3 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-2 mt-3">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        <span>قم بالترقية الآن</span>
+                                    </button>
+                                @endif
                                 </form>
                             </div>
                         </div>
