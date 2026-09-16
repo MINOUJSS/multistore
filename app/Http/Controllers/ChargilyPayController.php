@@ -652,7 +652,7 @@ class ChargilyPayController extends Controller
                                 // update order status
                                 if ($order) {
                                     $order->payment_status = $status === 'paid' ? 'paid' : 'failed';
-                                    $order->payment_method = $checkout->getPaymentMethod();
+                                    $order->payment_method = $checkout->getPaymentMethod() ?? $order->payment_method ?? 'chargily';
                                     $order->confirmation_status = $status === 'paid' ? 'confirmed' : 'pending';
                                     $order->confirmed_by_user_id = $status === 'paid' ? get_user_data(get_supplier_data_from_id($order->supplier_id)->tenant_id)->id : null;
                                     $order->confirmed_at = $status === 'paid' ? now() : null;
@@ -677,7 +677,7 @@ class ChargilyPayController extends Controller
                                     $subscription->duration = $order->duration;
                                     $subscription->price = $checkout->getAmount();
                                     $subscription->discount = 0;
-                                    $subscription->payment_method = $checkout->getPaymentMethod();
+                                    $subscription->payment_method = $checkout->getPaymentMethod() ?? $subscription->payment_method ?? 'chargily';
                                     $subscription->payment_status = $status;
                                     $subscription->subscription_start_date = now();
                                     $subscription->subscription_end_date = now()->addDays($order->duration);
@@ -715,7 +715,7 @@ class ChargilyPayController extends Controller
                                     $subscription->duration = $order->duration;
                                     $subscription->price = $checkout->getAmount();
                                     $subscription->discount = 0;
-                                    $subscription->payment_method = $checkout->getPaymentMethod();
+                                    $subscription->payment_method = $checkout->getPaymentMethod() ?? $subscription->payment_method ?? 'chargily';
                                     $subscription->payment_status = $status;
                                     $subscription->subscription_start_date = now();
                                     $subscription->subscription_end_date = now()->addDays($order->duration);
@@ -743,13 +743,14 @@ class ChargilyPayController extends Controller
                                 // update order status
                                 if ($order) {
                                     $order->payment_status = $status === 'paid' ? 'paid' : 'failed';
-                                    $order->payment_method = $checkout->getPaymentMethod();
+                                    $order->payment_method = $checkout->getPaymentMethod() ?? $order->payment_method ?? 'chargily';
                                     $order->confirmation_status = $status === 'paid' ? 'confirmed' : 'pending';
                                     $order->confirmed_by_user_id = $status === 'paid' ? get_user_data(get_seller_data_from_id($order->seller_id)->tenant_id)->id : null;
                                     $order->confirmed_at = $status === 'paid' ? now() : null;
                                     // check if order items has only one and the type of this item is digital product
-                                    if (count($order->items) == 1 && $order->items->first()->product_type == 'digital') {
-                                        // $order->status = $status === 'paid' ? 'delivered' : 'processing';
+                                    if ($status === 'paid' && count($order->items) == 1 && $order->items->first()->product_type == 'digital') {
+                                        $order->status = 'delivered';
+                                        $order->confirmation_status = 'confirmed';
                                         // start test
                                         // إنشاء token
                                         $download_token = Str::uuid();
@@ -768,6 +769,10 @@ class ChargilyPayController extends Controller
                                         $order->download_expires_at = now()->addHours(24);
                                         // $order->save();
                                         // end test
+                                    }else
+                                    {
+                                        $order->status = 'canceled';
+                                        $order->confirmation_status = 'confirmed';
                                     }
                                     $order->update();
                                 }

@@ -1,4 +1,14 @@
 <div class="container-fluid px-3 px-md-4 py-4 overflow-hidden" style="max-width: 100%;">
+    @php
+        $telegramApp = $user?->telegrame_chat_id?->first();
+        $telegramChatId = null;
+        $telegramStatus = null;
+        if ($telegramApp && !empty($telegramApp->data)) {
+            $decodedData = json_decode($telegramApp->data);
+            $telegramChatId = $decodedData->chat_id ?? null;
+            $telegramStatus = $telegramApp->status ?? 'active';
+        }
+    @endphp
 
     <!-- Dynamic Hero Welcome Banner -->
     <div class="dashboard-hero p-4 p-md-5 mb-4 shadow-sm" style="background: linear-gradient(135deg, #5c0649 0%, #a40c72 50%, #be0681 100%); border-radius: 1.25rem; color: #ffffff; position: relative; overflow: hidden;">
@@ -22,6 +32,21 @@
                     <span>البريد: <strong class="text-white dir-ltr">{{ $supplier->email }}</strong></span>
                     <span class="opacity-50">•</span>
                     <span>تاريخ التسجيل: <strong class="text-white">{{ $supplier->created_at->format('Y-m-d') }}</strong></span>
+                    @if($telegramChatId)
+                        <span class="opacity-50">•</span>
+                        <span>تليغرام: 
+                            <strong class="text-white dir-ltr">
+                                <i class="fab fa-telegram text-info me-1"></i>
+                                @if(str_starts_with($telegramChatId, '@'))
+                                    <a href="https://t.me/{{ ltrim($telegramChatId, '@') }}" target="_blank" class="text-white text-decoration-underline" title="فتح المحادثة في تليغرام">
+                                        {{ $telegramChatId }}
+                                    </a>
+                                @else
+                                    {{ $telegramChatId }}
+                                @endif
+                            </strong>
+                        </span>
+                    @endif
                 </div>
             </div>
             <div class="col-lg-5 text-lg-end">
@@ -201,28 +226,53 @@
             </h5>
             @if($user)
                 <div class="row g-3">
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="p-3 bg-light rounded-3">
+                    <div class="col-12 col-sm-6 col-lg">
+                        <div class="p-3 bg-light rounded-3 h-100">
                             <small class="text-muted fw-semibold d-block mb-1">الإسم الكامل:</small>
                             <div class="fw-bold text-dark fs-6">{{ $user->name }}</div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="p-3 bg-light rounded-3">
+                    <div class="col-12 col-sm-6 col-lg">
+                        <div class="p-3 bg-light rounded-3 h-100">
                             <small class="text-muted fw-semibold d-block mb-1">البريد الإلكتروني:</small>
                             <div class="fw-bold text-dark dir-ltr text-start small">{{ $user->email }}</div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="p-3 bg-light rounded-3">
+                    <div class="col-12 col-sm-6 col-lg">
+                        <div class="p-3 bg-light rounded-3 h-100">
                             <small class="text-muted fw-semibold d-block mb-1">رقم الهاتف:</small>
                             <div class="fw-bold text-dark dir-ltr text-start small">{{ $user->phone }}</div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="p-3 bg-light rounded-3">
+                    <div class="col-12 col-sm-6 col-lg">
+                        <div class="p-3 bg-light rounded-3 h-100">
                             <small class="text-muted fw-semibold d-block mb-1">نوع الحساب:</small>
                             <div class="fw-bold text-primary fs-6">مورد (Supplier)</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg">
+                        <div class="p-3 bg-light rounded-3 h-100">
+                            <small class="text-muted fw-semibold d-block mb-1">
+                                <i class="fab fa-telegram text-info me-1"></i> تليجرام (Chat ID):
+                            </small>
+                            @if($telegramChatId)
+                                <div class="d-flex align-items-center justify-content-between gap-1 flex-wrap">
+                                    <div class="fw-bold text-dark dir-ltr font-monospace small">
+                                        @if(str_starts_with($telegramChatId, '@'))
+                                            <a href="https://t.me/{{ ltrim($telegramChatId, '@') }}" target="_blank" class="text-primary text-decoration-none" title="فتح المحادثة في تليغرام">
+                                                {{ $telegramChatId }} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i>
+                                            </a>
+                                        @else
+                                            {{ $telegramChatId }}
+                                        @endif
+                                    </div>
+                                    <span class="badge {{ $telegramStatus === 'active' ? 'bg-success' : 'bg-secondary' }} bg-opacity-10 {{ $telegramStatus === 'active' ? 'text-success' : 'text-secondary' }} border px-2 py-0.5 rounded-pill" style="font-size: 10px;">
+                                        {{ $telegramStatus === 'active' ? 'نشط' : 'معطل' }}
+                                    </span>
+                                </div>
+                            @else
+                                <div class="text-muted small">غير متاح / غير مرتبط</div>
+                            @endif
                         </div>
                     </div>
                 </div>
