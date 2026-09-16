@@ -5,6 +5,7 @@ namespace App\Services\Users\Sellers;
 use App\Models\Seller\Seller;
 use App\Models\Seller\SellerOrderItems;
 use App\Models\Seller\SellerOrders;
+use Illuminate\Support\Facades\Log;
 
 class Seller_OrderNotificationService
 {
@@ -30,6 +31,14 @@ class Seller_OrderNotificationService
 
         // بناء رسالة الطلب
         $message = $this->buildOrderMessage($order);
+
+        // insert data to log in laravel log
+        Log::info('Order Telegram Notification To Seller', [
+            'order_id' => $order->id,
+            'seller_id' => $seller->id,
+            'chat_id' => $chat_id,
+            'message' => $message,
+        ]);
 
         // إرسال الرسالة عبر تيليغرام
         return $this->telegramService->sendMessage(
