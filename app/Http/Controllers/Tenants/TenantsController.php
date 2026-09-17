@@ -65,30 +65,31 @@ class TenantsController extends Controller
     public function index()
     {
         // check user type
-        if (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'supplier') {
+        $user = get_user_data(tenant('id'));
+        if ($user != null && $user->type == 'supplier') {
             // get user data
-            $store_settings = UserStoreSetting::where('user_id', get_user_data(tenant('id'))->id)->get();
-            $benefit_section = UserBenefitSection::where('user_id', get_user_data(tenant('id'))->id)->first();
-            $benefit_elements = BenefitSectionElements::where('benefit_section_id', $benefit_section->id)->orderBy('order', 'asc')->get();
-            $sliders = UserSlider::where('user_id', get_user_data(tenant('id'))->id)->orderBy('order', 'asc')->get();
-            $slider_status = UserStoreSetting::where('user_id', get_user_data(tenant('id'))->id)->where('key', 'store_section_slider_visibility')->first();
-            $faqs_status = UserStoreSetting::where('user_id', get_user_data(tenant('id'))->id)->where('key', 'store_section_faqs_visibility')->first();
-            $categories_status = UserStoreSetting::where('user_id', get_user_data(tenant('id'))->id)->where('key', 'store_section_categories_visibility')->first();
-            $categories = UserStoreCategory::where('user_id', get_user_data(tenant('id'))->id)->get();
+            $store_settings = UserStoreSetting::where('user_id', $user->id)->get();
+            $benefit_section = UserBenefitSection::where('user_id', $user->id)->first();
+            $benefit_elements = $benefit_section ? BenefitSectionElements::where('benefit_section_id', $benefit_section->id)->orderBy('order', 'asc')->get() : collect();
+            $sliders = UserSlider::where('user_id', $user->id)->orderBy('order', 'asc')->get();
+            $slider_status = UserStoreSetting::where('user_id', $user->id)->where('key', 'store_section_slider_visibility')->first();
+            $faqs_status = UserStoreSetting::where('user_id', $user->id)->where('key', 'store_section_faqs_visibility')->first();
+            $categories_status = UserStoreSetting::where('user_id', $user->id)->where('key', 'store_section_categories_visibility')->first();
+            $categories = UserStoreCategory::where('user_id', $user->id)->get();
             $products = SupplierProducts::where('supplier_id', get_supplier_data(tenant('id'))->id)->get();
             $faqs = SupplierFqa::where('supplier_id', get_supplier_data(tenant('id'))->id)->get();
 
             // return idex view with user data
             return view('stores.suppliers.index', compact('sliders', 'slider_status', 'categories', 'categories_status', 'products', 'faqs', 'faqs_status', 'store_settings', 'benefit_section', 'benefit_elements'));
-        } elseif (get_user_data(tenant('id')) != null && get_user_data(tenant('id'))->type == 'seller') {
-            $store_settings = UserStoreSetting::where('user_id', get_user_data(tenant('id'))->id)->get();
-            $benefit_section = UserBenefitSection::where('user_id', get_user_data(tenant('id'))->id)->first();
-            $benefit_elements = BenefitSectionElements::where('benefit_section_id', $benefit_section->id)->orderBy('order', 'asc')->get();
-            $sliders = UserSlider::where('user_id', get_user_data(tenant('id'))->id)->orderBy('order', 'asc')->get();
-            $slider_status = UserStoreSetting::where('user_id', get_user_data(tenant('id'))->id)->where('key', 'store_section_slider_visibility')->first();
-            $faqs_status = UserStoreSetting::where('user_id', get_user_data(tenant('id'))->id)->where('key', 'store_section_faqs_visibility')->first();
-            $categories_status = UserStoreSetting::where('user_id', get_user_data(tenant('id'))->id)->where('key', 'store_section_categories_visibility')->first();
-            $categories = UserStoreCategory::where('user_id', get_user_data(tenant('id'))->id)->get();
+        } elseif ($user != null && $user->type == 'seller') {
+            $store_settings = UserStoreSetting::where('user_id', $user->id)->get();
+            $benefit_section = UserBenefitSection::where('user_id', $user->id)->first();
+            $benefit_elements = $benefit_section ? BenefitSectionElements::where('benefit_section_id', $benefit_section->id)->orderBy('order', 'asc')->get() : collect();
+            $sliders = UserSlider::where('user_id', $user->id)->orderBy('order', 'asc')->get();
+            $slider_status = UserStoreSetting::where('user_id', $user->id)->where('key', 'store_section_slider_visibility')->first();
+            $faqs_status = UserStoreSetting::where('user_id', $user->id)->where('key', 'store_section_faqs_visibility')->first();
+            $categories_status = UserStoreSetting::where('user_id', $user->id)->where('key', 'store_section_categories_visibility')->first();
+            $categories = UserStoreCategory::where('user_id', $user->id)->get();
             $products = SellerProducts::where('seller_id', get_seller_data(tenant('id'))->id)->get();
             $faqs = SellerFqa::where('seller_id', get_seller_data(tenant('id'))->id)->get();
 

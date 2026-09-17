@@ -51,7 +51,7 @@
             }
         }
     </style>
-    @if (!empty($sliders) && $slider_status->value == 'true')
+    @if (!empty($sliders) && optional($slider_status)->value == 'true')
         <section class="hero-slider-section">
             <div class="container-fluid px-0">
                 <div id="mainHeroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -287,7 +287,7 @@
             border-radius: 20px;
         }
     </style>
-    @if ($benefit_section->status == 'active')
+    @if ($benefit_section && $benefit_section->status == 'active')
         <section class="benefits-section py-5 glass-effect">
             <div class="container">
                 <h2 class="text-center fw-bold fade-in title">{{ $benefit_section->title }}</h2>
