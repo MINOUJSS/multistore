@@ -115,7 +115,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-3">
-                    <select class="form-select bg-light border-0">
+                    <select class="form-select bg-light border-0" id="statusFilter">
                         <option value="">كل الحالات</option>
                         <option value="active">نشط</option>
                         <option value="inactive">غير نشط</option>
@@ -163,6 +163,11 @@
 
                     <tbody class="text-center">
                         @forelse ($sellers as $index => $seller)
+                            @php
+                                $userData = get_user_data($seller->tenant_id);
+                                $planData = $seller->plan_subscription ? get_seller_plan_data($seller->plan_subscription->plan_id) : null;
+                                $tenantId = $seller->tenant?->id ?? $seller->tenant_id;
+                            @endphp
                             <tr>
                                 <td data-label="#" class="fw-bold text-secondary">{{ $index + 1 }}</td>
 
@@ -170,50 +175,52 @@
                                     {{ $seller->full_name }}
                                 </td>
 
-                                <td data-label="البريد" class="dir-ltr text-muted small">
-                                    {{ get_user_data($seller->tenant_id)->email }}</td>
-                                <td data-label="الهاتف" class="dir-ltr text-muted small">
-                                    {{ get_user_data($seller->tenant_id)->phone }}</td>
+                                <td data-label="البريد">
+                                    <span class="text-muted small dir-ltr d-inline-block">{{ $userData?->email ?? '—' }}</span>
+                                </td>
+                                <td data-label="الهاتف">
+                                    <span class="text-muted small dir-ltr d-inline-block">{{ $userData?->phone ?? '—' }}</span>
+                                </td>
 
                                 <td data-label="المتجر">
                                     <span
                                         class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2.5 py-1 rounded-pill">
-                                        <a href="{{ seller_store_url($seller->tenant->id) }}" target="_blank"
-                                            class="text-info text-decoration-none fw-bold">{{ get_seller_store_name($seller->tenant->id) }}</a>
+                                        <a href="{{ seller_store_url($tenantId) }}" target="_blank"
+                                            class="text-info text-decoration-none fw-bold">{{ get_seller_store_name($tenantId) }}</a>
                                     </span>
                                 </td>
 
                                 <td data-label="تاريخ آخر نشاط" class="text-muted small">
-                                    {{ get_user_data($seller->tenant_id)?->last_seen?->first()?->created_at?->diffForHumans() ?? 'لا يوجد نشاط' }}
+                                    {{ $userData?->last_seen?->first()?->created_at?->diffForHumans() ?? 'لا يوجد نشاط' }}
                                 </td>
 
-                                <td data-label="الحالة">{!! get_seller_status($seller->tenant->id) !!}</td>
+                                <td data-label="الحالة">{!! get_seller_status($tenantId) !!}</td>
 
                                 <td data-label="الباقة">
                                     <span class="badge bg-light text-dark border px-2.5 py-1 rounded-3">
-                                        {{ get_seller_plan_data($seller->plan_subscription->plan_id)->name }}
+                                        {{ $planData?->name ?? '—' }}
                                     </span>
                                 </td>
 
                                 <td data-label="المنتجات">
                                     <span
                                         class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1 rounded-pill fw-bold">
-                                        {{ $seller->products->count() }}
+                                        {{ $seller->products?->count() ?? 0 }}
                                     </span>
                                 </td>
 
                                 <td data-label="التسجيل" class="text-muted small">
-                                    {{ $seller->created_at->format('d-m-Y') }}</td>
+                                    {{ $seller->created_at?->format('d-m-Y') ?? '—' }}</td>
 
                                 <td data-label="الطلبات">
                                     <span class="badge bg-dark px-2.5 py-1 rounded-pill fw-bold">
-                                        {{ $seller->orders->count() }}
+                                        {{ $seller->orders?->count() ?? 0 }}
                                     </span>
                                 </td>
 
                                 <td data-label="الاشتراك"><span class="text-muted small">
-                                        @if ($seller->plan_subscription->plan_id != 1)
-                                            {{ $seller->plan_subscription->subscription_end_date }}
+                                        @if (($seller->plan_subscription?->plan_id ?? 1) != 1)
+                                            {{ $seller->plan_subscription?->subscription_end_date ?? '—' }}
                                         @else
                                             مدى الحياة
                                         @endif
@@ -239,7 +246,7 @@
 
                                         <!-- Delete -->
                                         <form method="POST"
-                                            action="{{ route('admin.seller.destroy', get_user_data($seller->tenant->id)->id) }}"
+                                            action="{{ route('admin.seller.destroy', $userData?->id ?? $seller->id) }}"
                                             onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                             @csrf
                                             @method('DELETE')
@@ -255,7 +262,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="13" class="py-5 text-muted">
+                                <td colspan="13" class="py-5 text-muted empty-cell text-center">
                                     <i class="fa-solid fa-store fs-2 mb-2 d-block opacity-50"></i>
                                     <span>لا يوجد بائعين حالياً.</span>
                                 </td>
@@ -275,14 +282,27 @@
     </div>
 </div>
 
-<!-- ===== Simple Search Script ===== -->
+<!-- ===== Search & Filter Script ===== -->
 <script>
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        let value = this.value.toLowerCase();
+    function filterSellersTable() {
+        const searchValue = document.getElementById('searchInput')?.value.toLowerCase().trim() ?? '';
+        const statusValue = document.getElementById('statusFilter')?.value.toLowerCase().trim() ?? '';
+
         document.querySelectorAll('#sellersTable tbody tr').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(value) ? '' : 'none';
+            if (row.querySelector('td[colspan]')) return;
+
+            const text = row.innerText.toLowerCase();
+            const matchesSearch = !searchValue || text.includes(searchValue);
+
+            const statusCell = row.querySelector('td[data-label="الحالة"]')?.innerText.toLowerCase() ?? '';
+            const matchesStatus = !statusValue || statusCell.includes(statusValue);
+
+            row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
         });
-    });
+    }
+
+    document.getElementById('searchInput')?.addEventListener('keyup', filterSellersTable);
+    document.getElementById('statusFilter')?.addEventListener('change', filterSellersTable);
 </script>
 
 <script>
@@ -293,7 +313,16 @@
 </script>
 
 <style>
-    /* Pure CSS Responsive Table for #sellersTable */
+    /* Table general styles for desktop */
+    @media (min-width: 992px) {
+        #sellersTable th,
+        #sellersTable td {
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+    }
+
+    /* Pure CSS Responsive Table for #sellersTable on Tablets and Mobile */
     @media (max-width: 991.98px) {
 
         #sellersTable,
@@ -316,6 +345,11 @@
             margin-bottom: 1.25rem;
             padding: 0.5rem 0.75rem;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #sellersTable tbody tr:hover {
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
         }
 
         #sellersTable tbody td {
@@ -340,6 +374,21 @@
             font-size: 0.85rem;
             margin-left: 1rem;
             flex-shrink: 0;
+            text-align: right;
+        }
+
+        /* Empty state row on mobile */
+        #sellersTable tbody td.empty-cell,
+        #sellersTable tbody td[colspan] {
+            display: block !important;
+            text-align: center !important;
+            border: none !important;
+            padding: 2.5rem 1rem !important;
+        }
+
+        #sellersTable tbody td.empty-cell::before,
+        #sellersTable tbody td[colspan]::before {
+            display: none !important;
         }
     }
 
