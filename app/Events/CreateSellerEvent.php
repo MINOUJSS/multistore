@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\Seller\Seller;
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -15,13 +16,15 @@ class CreateSellerEvent
     use SerializesModels;
 
     public $seller;
+    public $user;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Seller $seller)
+    public function __construct(Seller $seller, ?User $user = null)
     {
         $this->seller = $seller;
+        $this->user = $user;
     }
 
     /**

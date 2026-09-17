@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\Supplier\Supplier;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -16,12 +17,15 @@ class CreateSupplierEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $supplier;
+    public $user;
+
     /**
      * Create a new event instance.
      */
-    public function __construct(Supplier $supplier)
+    public function __construct(Supplier $supplier, ?User $user = null)
     {
         $this->supplier = $supplier;
+        $this->user = $user;
     }
 
     /**

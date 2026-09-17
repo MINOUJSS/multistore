@@ -8,6 +8,7 @@ use App\Models\Seller\SellerFqa;
 use App\Models\Seller\SellerPage;
 use App\Models\Seller\SellerProducts;
 use App\Models\ShippingPrice;
+use App\Models\User;
 use App\Models\UserBenefitSection;
 use App\Models\UserSlider;
 use App\Models\UserStoreCategory;
@@ -28,12 +29,13 @@ class CreateDefaultContentForSellerListener
     {
         // create default slider
         $seller = $event->seller;
-        $user_id = auth()->user()->id;
+        $user = $event->user ?? User::where('tenant_id', $seller->tenant_id)->first() ?? auth()->user();
+        $user_id = $user ? $user->id : null;
 
         $defaultSliders = [
-            ['user_id' => auth()->user()->id, 'title' => 'مرحبًا بكم في متجرك', 'description' => 'اكتشف...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider1.png'), 'status' => 'active', 'order' => 1],
-            ['user_id' => auth()->user()->id, 'title' => 'أضف منتجاتك بسهولة', 'description' => 'ابدأ...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider2.png'), 'status' => 'active', 'order' => 2],
-            ['user_id' => auth()->user()->id, 'title' => 'روّج لمنتجاتك الآن', 'description' => 'استخدم...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider3.png'), 'status' => 'active', 'order' => 3],
+            ['user_id' => $user_id, 'title' => 'مرحبًا بكم في متجرك', 'description' => 'اكتشف...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider1.png'), 'status' => 'active', 'order' => 1],
+            ['user_id' => $user_id, 'title' => 'أضف منتجاتك بسهولة', 'description' => 'ابدأ...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider2.png'), 'status' => 'active', 'order' => 2],
+            ['user_id' => $user_id, 'title' => 'روّج لمنتجاتك الآن', 'description' => 'استخدم...', 'image' => asset('asset/v1/users/store/img/slider/pc-slider3.png'), 'status' => 'active', 'order' => 3],
         ];
 
         foreach ($defaultSliders as $slider) {

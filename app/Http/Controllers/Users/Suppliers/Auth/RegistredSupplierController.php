@@ -81,22 +81,22 @@ class RegistredSupplierController extends Controller
         // --------START--------------
         // verify if supplier exists
         if (!supplier_exists($store_name)) {
-            return redirect()->back();
+            return redirect()->back()->withErrors(['store_name' => 'اسم متجر المورد محجوز مسبقاً، يرجى اختيار اسم آخر.']);
         } else {
             try {
                 // Start a transaction for atomicity
                 \DB::beginTransaction();
-                // check if supplier exists
-                // $path = 'supplier/'.$store_name;
-                // if (!Storage::disk('public')->exists($path)) {
-                //     Storage::disk('public')->makeDirectory($path);
-                // }
+                // check if supplier folder exists
+                $path = 'supplier/'.$store_name;
+                if (!Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->makeDirectory($path);
+                }
                 // insert data into supplier table and tenant table and domain table
                 $tenant = Tenant::create([
                     'id' => $store_name.'.supplier',
                     'type' => 'supplier',
                 ]);
-                $tenant->domains()->create(['domain' => $store_name.'.'.request()->host()]);
+                $tenant->domains()->create(['domain' => $store_name.'.'.request()->getHost()]);
                 // inserte supplier data to database
                 $supplier = Supplier::create([
                     'tenant_id' => $store_name.'.supplier',
@@ -122,7 +122,10 @@ class RegistredSupplierController extends Controller
                 create_supplier_store_settings($user, $request);
 
                 // get selected plan data
-                $plan = SupplierPlan::Where('name', $request->plan)->first();
+                $plan = SupplierPlan::where('name', $request->plan)->first();
+                if (!$plan) {
+                    $plan = SupplierPlan::first();
+                }
                 // get duration and price
                 if ($request->sub_plan_id) {
                     $sub_plan_data = SupplierPlanPrices::findOrFail($request->sub_plan_id);
@@ -136,31 +139,24 @@ class RegistredSupplierController extends Controller
                 $supplier_plan_subscription = SupplierPlanSubscription::create([
                     'supplier_id' => $supplier->id,
                     'plan_id' => $plan->id,
-                    'duration' => $duration, // '30',
-                    'price' => $price, // $plan->price,
-                    'subscription_start_date' => now(), // date('Y-m-d H:i:s'),
-                    'subscription_end_date' => now()->addDays($duration), // Carbon::parse(date('Y-m-d H:i:s'))->addDays(30)->format('Y-m-d H:i:s'),
-                    'status' => 'pending',
+                    'duration' => $duration,
+                    'price' => $price,
+                    'subscription_start_date' => now(),
+                    'subscription_end_date' => now()->addDays($duration),
+                    'status' => $plan->price == 0 ? 'free' : 'pending',
                 ]);
-                // check plan subscription
-                if ($plan->price == 0) {
-                    $s_p_subscription = SupplierPlanSubscription::find($supplier_plan_subscription->id);
-                    $s_p_subscription->status = 'free';
-                    $s_p_subscription->update();
-                    // //add free order fore this supplier
-                    // $freeorders=UserFreeOrder::create([
-                    //     'user_id'=>$user->id,
-                    //     'quantity'=>'50',
-                    // ]);
-                }
 
-                // add free order fore this supplier
+                // add free order for this supplier
                 $freeorders = UserFreeOrder::create([
                     'user_id' => $user->id,
                     'quantity' => '50',
                 ]);
 
-                // Commit the transaction
+                // Create all default content (sliders, benefits, categories, products, shipping, faqs, pages)
+                // Executed inside transaction to guarantee full atomicity (All or Nothing)
+                event(new CreateSupplierEvent($supplier, $user));
+
+                // Commit the entire transaction atomically
                 \DB::commit();
 
                 // send verification email
@@ -170,14 +166,7 @@ class RegistredSupplierController extends Controller
                 // seed last seen table
                 event(new UserLogedInEvent(auth()->user()));
 
-                event(new CreateSupplierEvent($supplier));
-
-                // inform admins about new supplier
-                // $admins = Admin::all();
-                // foreach ($admins as $admin) {
-                //     $admin->notify(new NewUserNotification($user));
-                // }
-                // with telegram
+                // inform admins about new supplier via telegram
                 $data = [
                     'full_name' => $request->full_name,
                     'store_name' => $store_name,
@@ -186,32 +175,29 @@ class RegistredSupplierController extends Controller
                 ];
                 SendTelegramInfoAboutNewSupplier::dispatch($data);
 
-                // redirect to dashboard of confirme plan page
+                // redirect to dashboard or confirm plan page
                 if ($plan->price == 0) {
                     return redirect(route('supplier.dashboard'));
                 } else {
                     return redirect(route('supplier.subscription.confirmation'));
                 }
             } catch (\Exception $e) {
-                // delete the folder containing
-                // check if supplier exists
-                // $path = $store_name;
-                // if (Storage::disk('public')->exists($path)) {
-                //     Storage::disk('public')->deleteDirectory($path);
-                // }
                 // Rollback the transaction
                 \DB::rollBack();
+
+                // Clean up created directory on failure
+                $path = 'supplier/'.$store_name;
+                if (Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->deleteDirectory($path);
+                }
+
                 // Log the error for debugging
                 Log::error('Supplier Registration Error:', [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ]);
 
-                // Return a user-friendly response
-                // return response()->json([
-                //     'message' => 'An error occurred while registering the supplier. Please try again later.',
-                // ], 500);
-                return redirect()->back()->with('message', 'An error occurred while registering the supplier. Please try again later.');
+                return redirect()->back()->with('message', 'حدث خطأ أثناء تسجيل حساب المورد، يرجى المحاولة مرة أخرى لاحقاً.');
             }
         }
         // -----END--------------

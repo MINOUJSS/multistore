@@ -8,6 +8,7 @@ use App\Models\ShippingPrice;
 use App\Models\Supplier\SupplierFqa;
 use App\Models\Supplier\SupplierPage;
 use App\Models\Supplier\SupplierProducts;
+use App\Models\User;
 use App\Models\UserBenefitSection;
 use App\Models\UserSlider;
 use App\Models\UserStoreCategory;
@@ -28,12 +29,13 @@ class CteateDefaultContentForSupplierListener
     {
         // create default slider
         $supplier = $event->supplier;
-        $user_id = auth()->user()->id;
+        $user = $event->user ?? User::where('tenant_id', $supplier->tenant_id)->first() ?? auth()->user();
+        $user_id = $user ? $user->id : null;
 
         $defaultSliders = [
-            ['user_id' => auth()->user()->id, 'title' => 'مرحبًا بكم في متجرك', 'description' => 'اكتشف...', 'image' => config('app.url').'/asset/v1/users/store/img/slider/pc-slider1.png', 'status' => 'active', 'order' => 1],
-            ['user_id' => auth()->user()->id, 'title' => 'أضف منتجاتك بسهولة', 'description' => 'ابدأ...', 'image' => config('app.url').'/asset/v1/users/store/img/slider/pc-slider2.png', 'status' => 'active', 'order' => 2],
-            ['user_id' => auth()->user()->id, 'title' => 'روّج لمنتجاتك الآن', 'description' => 'استخدم...', 'image' => config('app.url').'/asset/v1/users/store/img/slider/pc-slider3.png', 'status' => 'active', 'order' => 3],
+            ['user_id' => $user_id, 'title' => 'مرحبًا بكم في متجرك', 'description' => 'اكتشف...', 'image' => config('app.url').'/asset/v1/users/store/img/slider/pc-slider1.png', 'status' => 'active', 'order' => 1],
+            ['user_id' => $user_id, 'title' => 'أضف منتجاتك بسهولة', 'description' => 'ابدأ...', 'image' => config('app.url').'/asset/v1/users/store/img/slider/pc-slider2.png', 'status' => 'active', 'order' => 2],
+            ['user_id' => $user_id, 'title' => 'روّج لمنتجاتك الآن', 'description' => 'استخدم...', 'image' => config('app.url').'/asset/v1/users/store/img/slider/pc-slider3.png', 'status' => 'active', 'order' => 3],
         ];
 
         foreach ($defaultSliders as $slider) {
