@@ -130,8 +130,12 @@
                     </label>
                     <select name="category_id" class="form-select rounded-3">
                         <option value="">{{ __('site.filter_all_categories') }}</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                        @php
+                            $requestedCategory = request('category_id') ? \App\Models\Category::find(request('category_id')) : null;
+                            $requestedCategoryName = $requestedCategory ? trim(mb_strtolower($requestedCategory->name)) : null;
+                        @endphp
+                        @foreach($categories->unique(fn($cat) => trim(mb_strtolower($cat->name))) as $category)
+                            <option value="{{ $category->id }}" {{ (request('category_id') == $category->id || ($requestedCategoryName && trim(mb_strtolower($category->name)) === $requestedCategoryName)) ? 'selected' : '' }}>
                                 {{ $category->name }}
                             </option>
                         @endforeach
