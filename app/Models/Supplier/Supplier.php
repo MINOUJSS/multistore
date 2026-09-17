@@ -4,6 +4,7 @@ namespace App\Models\Supplier;
 
 use App\Models\FinancialLedger;
 use App\Models\Tenant;
+use App\Models\User;
 use App\Notifications\Users\Suppliers\SupplierResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -43,6 +44,14 @@ class Supplier extends Authenticatable implements CanResetPasswordContract
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    /**
+     * Get associated user account.
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class, 'tenant_id', 'tenant_id');
     }
 
     /**

@@ -98,28 +98,41 @@
     <!-- Filters Card -->
     <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
         <div class="card-body p-3.5">
-            <div class="row g-3 align-items-center">
-                <div class="col-12 col-md-6">
+            <form action="{{ route('admin.suppliers') }}" method="GET" class="row g-3 align-items-center">
+                <div class="col-12 col-md-5">
                     <div class="input-group">
                         <span class="input-group-text bg-light border-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        <input type="text" id="searchInput" class="form-control bg-light border-0"
-                            placeholder="البحث بالاسم أو البريد أو الهاتف...">
+                        <input type="text" name="search" id="searchInput" class="form-control bg-light border-0"
+                            value="{{ request('search') }}"
+                            placeholder="البحث بالاسم، الهاتف، اسم المتجر، أو البريد...">
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-3">
-                    <select class="form-select bg-light border-0">
+                    <select class="form-select bg-light border-0" name="status" id="statusFilter">
                         <option value="">كل الحالات</option>
-                        <option value="active">نشط</option>
-                        <option value="inactive">غير نشط</option>
-                        <option value="blocked">محظور</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>نشط</option>
+                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>غير نشط</option>
+                        <option value="blocked" {{ request('status') == 'blocked' ? 'selected' : '' }}>محظور</option>
                     </select>
                 </div>
-                <div class="col-12 col-sm-6 col-md-3 text-sm-end">
+                <div class="col-12 col-sm-6 col-md-4 d-flex align-items-center justify-content-between justify-content-md-end gap-2 flex-wrap">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn text-white fw-bold px-3 py-2 rounded-3 shadow-sm"
+                            style="background: linear-gradient(135deg, #a40c72 0%, #be0681 100%);">
+                            <i class="fa-solid fa-magnifying-glass me-1"></i> بحث
+                        </button>
+                        @if(request()->filled('search') || request()->filled('status'))
+                            <a href="{{ route('admin.suppliers') }}" class="btn btn-light border px-3 py-2 rounded-3 shadow-sm text-muted"
+                                title="إلغاء الفلترة وإعادة التعيين">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </a>
+                        @endif
+                    </div>
                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-semibold">
-                        إجمالي القائمة: {{ $suppliers->count() }} مورد
+                        النتائج: {{ $suppliers->total() }} مورد
                     </span>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -155,6 +168,11 @@
 
                     <tbody class="text-center">
                         @forelse ($suppliers as $index => $supplier)
+                            @php
+                                $userData = $supplier->user ?? get_user_data($supplier->tenant_id);
+                                $planData = $supplier->plan_subscription ? get_supplier_plan_data($supplier->plan_subscription->plan_id) : null;
+                                $tenantId = $supplier->tenant?->id ?? $supplier->tenant_id;
+                            @endphp
                             <tr>
                                 <td data-label="#" class="fw-bold text-secondary">{{ $index + 1 }}</td>
 
@@ -162,45 +180,49 @@
                                     {{ $supplier->full_name }}
                                 </td>
 
-                                <td data-label="البريد" class="dir-ltr text-muted small">{{ get_user_data($supplier->tenant_id)->email }}</td>
-                                <td data-label="الهاتف" class="dir-ltr text-muted small">{{ get_user_data($supplier->tenant_id)->phone }}</td>
+                                <td data-label="البريد">
+                                    <span class="text-muted small dir-ltr d-inline-block">{{ $userData?->email ?? '—' }}</span>
+                                </td>
+                                <td data-label="الهاتف">
+                                    <span class="text-muted small dir-ltr d-inline-block">{{ $userData?->phone ?? '—' }}</span>
+                                </td>
 
                                 <td data-label="المتجر">
                                     <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2.5 py-1 rounded-pill">
-                                        <a href="{{ supplier_store_url($supplier->tenant->id) }}" target="_blank"
-                                            class="text-info text-decoration-none fw-bold">{{ get_supplier_store_name($supplier->tenant->id) }}</a>
+                                        <a href="{{ supplier_store_url($tenantId) }}" target="_blank"
+                                            class="text-info text-decoration-none fw-bold">{{ get_supplier_store_name($tenantId) }}</a>
                                     </span>
                                 </td>
 
                                 <td data-label="تاريخ آخر نشاط" class="text-muted small">
-                                    {{ get_user_data($supplier->tenant_id)?->last_seen?->first()?->created_at?->diffForHumans() ?? 'لا يوجد نشاط' }}
+                                    {{ $userData?->last_seen?->first()?->created_at?->diffForHumans() ?? 'لا يوجد نشاط' }}
                                 </td>
 
-                                <td data-label="الحالة">{!! get_supplier_status($supplier->tenant->id) !!}</td>
+                                <td data-label="الحالة">{!! get_supplier_status($tenantId) !!}</td>
 
                                 <td data-label="الباقة">
                                     <span class="badge bg-light text-dark border px-2.5 py-1 rounded-3">
-                                        {{ get_supplier_plan_data($supplier->plan_subscription->plan_id)->name }}
+                                        {{ $planData?->name ?? '—' }}
                                     </span>
                                 </td>
 
                                 <td data-label="المنتجات">
                                     <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1 rounded-pill fw-bold">
-                                        {{ $supplier->products->count() }}
+                                        {{ $supplier->products?->count() ?? 0 }}
                                     </span>
                                 </td>
 
-                                <td data-label="التسجيل" class="text-muted small">{{ $supplier->created_at->format('d-m-Y') }}</td>
+                                <td data-label="التسجيل" class="text-muted small">{{ $supplier->created_at?->format('d-m-Y') ?? '—' }}</td>
 
                                 <td data-label="الطلبات">
                                     <span class="badge bg-dark px-2.5 py-1 rounded-pill fw-bold">
-                                        {{ $supplier->orders->count() }}
+                                        {{ $supplier->orders?->count() ?? 0 }}
                                     </span>
                                 </td>
 
                                 <td data-label="الاشتراك"><span class="text-muted small">
-                                        @if ($supplier->plan_subscription->plan_id != 1)
-                                            {{ $supplier->plan_subscription->subscription_end_date }}
+                                        @if (($supplier->plan_subscription?->plan_id ?? 1) != 1)
+                                            {{ $supplier->plan_subscription?->subscription_end_date ?? '—' }}
                                         @else
                                             مدى الحياة
                                         @endif
@@ -224,7 +246,7 @@
 
                                         <!-- Delete -->
                                         <form method="POST"
-                                            action="{{ route('admin.supplier.destroy', get_user_data($supplier->tenant->id)->id) }}"
+                                            action="{{ route('admin.supplier.destroy', $userData?->id ?? $supplier->id) }}"
                                             onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                             @csrf
                                             @method('DELETE')
@@ -259,15 +281,6 @@
     </div>
 </div>
 
-<!-- ===== Simple Search Script ===== -->
-<script>
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        let value = this.value.toLowerCase();
-        document.querySelectorAll('#suppliersTable tbody tr').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(value) ? '' : 'none';
-        });
-    });
-</script>
 
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
