@@ -188,7 +188,13 @@ class MarketplaceController extends Controller
 
         // Filter: Category
         if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+            $selectedCategory = Category::find($request->category_id);
+            if ($selectedCategory) {
+                $matchingCategoryIds = Category::where('name', $selectedCategory->name)->pluck('id');
+                $query->whereIn('category_id', $matchingCategoryIds);
+            } else {
+                $query->where('category_id', $request->category_id);
+            }
         }
 
         // Filter: Min Price / Cost
@@ -243,7 +249,12 @@ class MarketplaceController extends Controller
             })
             ->pluck('category_id')
             ->unique();
-        $categories = Category::whereIn('id', $categoryIds)->get();
+        $categories = Category::whereIn('id', $categoryIds)
+            ->get()
+            ->unique(function ($cat) {
+                return trim(mb_strtolower($cat->name));
+            })
+            ->values();
 
         $totalProductsCount = SupplierProducts::where('status', 'active')
             ->where('show_in_marketplace', 'yes')
