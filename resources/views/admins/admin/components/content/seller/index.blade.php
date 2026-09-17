@@ -105,29 +105,42 @@
     <!-- Filters Card -->
     <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
         <div class="card-body p-3.5">
-            <div class="row g-3 align-items-center">
-                <div class="col-12 col-md-6">
+            <form action="{{ route('admin.sellers') }}" method="GET" class="row g-3 align-items-center">
+                <div class="col-12 col-md-5">
                     <div class="input-group">
                         <span class="input-group-text bg-light border-0 text-muted"><i
                                 class="fa-solid fa-magnifying-glass"></i></span>
-                        <input type="text" id="searchInput" class="form-control bg-light border-0"
-                            placeholder="البحث بالاسم أو البريد أو الهاتف...">
+                        <input type="text" name="search" id="searchInput" class="form-control bg-light border-0"
+                            value="{{ request('search') }}"
+                            placeholder="البحث بالاسم، الهاتف، اسم المتجر، أو البريد...">
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-3">
-                    <select class="form-select bg-light border-0" id="statusFilter">
+                    <select class="form-select bg-light border-0" name="status" id="statusFilter">
                         <option value="">كل الحالات</option>
-                        <option value="active">نشط</option>
-                        <option value="inactive">غير نشط</option>
-                        <option value="blocked">محظور</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>نشط</option>
+                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>غير نشط</option>
+                        <option value="blocked" {{ request('status') == 'blocked' ? 'selected' : '' }}>محظور</option>
                     </select>
                 </div>
-                <div class="col-12 col-sm-6 col-md-3 text-sm-end">
+                <div class="col-12 col-sm-6 col-md-4 d-flex align-items-center justify-content-between justify-content-md-end gap-2 flex-wrap">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn text-white fw-bold px-3 py-2 rounded-3 shadow-sm"
+                            style="background: linear-gradient(135deg, #a40c72 0%, #be0681 100%);">
+                            <i class="fa-solid fa-magnifying-glass me-1"></i> بحث
+                        </button>
+                        @if(request()->filled('search') || request()->filled('status'))
+                            <a href="{{ route('admin.sellers') }}" class="btn btn-light border px-3 py-2 rounded-3 shadow-sm text-muted"
+                                title="إلغاء الفلترة وإعادة التعيين">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </a>
+                        @endif
+                    </div>
                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-semibold">
-                        إجمالي القائمة: {{ $sellers->count() }} بائع
+                        النتائج: {{ $sellers->total() }} بائع
                     </span>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -164,7 +177,7 @@
                     <tbody class="text-center">
                         @forelse ($sellers as $index => $seller)
                             @php
-                                $userData = get_user_data($seller->tenant_id);
+                                $userData = $seller->user ?? get_user_data($seller->tenant_id);
                                 $planData = $seller->plan_subscription ? get_seller_plan_data($seller->plan_subscription->plan_id) : null;
                                 $tenantId = $seller->tenant?->id ?? $seller->tenant_id;
                             @endphp
@@ -282,28 +295,6 @@
     </div>
 </div>
 
-<!-- ===== Search & Filter Script ===== -->
-<script>
-    function filterSellersTable() {
-        const searchValue = document.getElementById('searchInput')?.value.toLowerCase().trim() ?? '';
-        const statusValue = document.getElementById('statusFilter')?.value.toLowerCase().trim() ?? '';
-
-        document.querySelectorAll('#sellersTable tbody tr').forEach(row => {
-            if (row.querySelector('td[colspan]')) return;
-
-            const text = row.innerText.toLowerCase();
-            const matchesSearch = !searchValue || text.includes(searchValue);
-
-            const statusCell = row.querySelector('td[data-label="الحالة"]')?.innerText.toLowerCase() ?? '';
-            const matchesStatus = !statusValue || statusCell.includes(statusValue);
-
-            row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
-        });
-    }
-
-    document.getElementById('searchInput')?.addEventListener('keyup', filterSellersTable);
-    document.getElementById('statusFilter')?.addEventListener('change', filterSellersTable);
-</script>
 
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');

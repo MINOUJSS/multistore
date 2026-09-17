@@ -15,10 +15,34 @@ use Illuminate\Support\Facades\Storage;
 class SellerController extends Controller
 {
     // index
-    public function index()
+    public function index(Request $request)
     {
-        // $sellers = User::where('type', 'seller')->orderBy('id', 'desc')->get();
-        $sellers = Seller::orderBy('id', 'desc')->paginate(10);
+        $query = Seller::with(['user', 'tenant.domains', 'plan_subscription']);
+
+        // Full-table search: name, phone, store name, email
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function ($q) use ($search) {
+                $q->where('full_name', 'like', "%{$search}%")
+                  ->orWhere('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('store_name', 'like', "%{$search}%")
+                  ->orWhere('tenant_id', 'like', "%{$search}%")
+                  ->orWhereHas('user', function ($u) use ($search) {
+                      $u->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Status Filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $sellers = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
         return view('admins.admin.seller.index', compact('sellers'));
     }
