@@ -73,87 +73,118 @@
         <!-- end main -->
 
         <!-- start footer -->
+        @php
+            $tenantModel = get_tenant_data(tenant('id'));
+            $tenantDomain = optional($tenantModel?->domains?->first())->domain ?? request()->getHost();
+            $tenantBaseUrl = url(request()->server('REQUEST_SCHEME') . '://' . $tenantDomain);
+
+            $tenantPagesData = get_tenant_data_by_type(tenant('id'));
+            $pages = $tenantPagesData?->pages ?? collect();
+
+            $pageAbout = $pages->firstWhere('slug', 'about') ?? $pages->get(0);
+            $pageShipping = $pages->firstWhere('slug', 'shipping-policy') ?? $pages->get(1);
+            $pagePayment = $pages->firstWhere('slug', 'payment-policy') ?? $pages->get(2);
+            $pageTerms = $pages->firstWhere('slug', 'terms-of-use') ?? $pages->get(3);
+            $pageExchange = $pages->firstWhere('slug', 'exchange-policy') ?? $pages->get(4);
+            $pagePrivacy = $pages->firstWhere('slug', 'privacy-policy') ?? $pages->get(5);
+            $pageContact = $pages->firstWhere('slug', 'contact-us') ?? $pages->get(6);
+            $pageFaq = $pages->firstWhere('slug', 'faq') ?? $pages->get(7);
+
+            $userData = get_user_data(tenant('id'));
+            $storeSettings = $userData ? get_store_settings($userData->id) : collect();
+            $storeAddressSetting = $storeSettings->firstWhere('key', 'store_address') ?? $storeSettings->get(3);
+            $storeEmailSetting = $storeSettings->firstWhere('key', 'store_email') ?? $storeSettings->get(2);
+
+            $storeFacebook = get_user_store_settings(tenant('id'), 'store_facebook');
+            $storeInstagram = get_user_store_settings(tenant('id'), 'store_instagram');
+            $storeTelegram = get_user_store_settings(tenant('id'), 'store_telegram');
+            $storeTiktok = get_user_store_settings(tenant('id'), 'store_tiktok');
+            $storeTwitter = get_user_store_settings(tenant('id'), 'store_twitter');
+            $storeYoutube = get_user_store_settings(tenant('id'), 'store_youtube');
+
+            $storeCopyright = $userData?->storeCopyright?->first()?->value ?? ($userData?->name ?? 'dzora');
+
+            $paymentMethods = get_store_payment_methods(tenant('id'));
+            $sellerData = is_seller(tenant('id')) ? get_seller_data(tenant('id')) : null;
+            $supplierData = is_supplier(tenant('id')) ? get_supplier_data(tenant('id')) : null;
+        @endphp
         <section class="footer">
             <div class="container">
                 <div class="footer-brand text-center">
-                    <a
-                        href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}"><img
+                    <a href="{{ $tenantBaseUrl }}"><img
                             src="{{ asset(get_store_logo(tenant('id'))) }}" width="50px" height="50px"
                             alt="logo"></a>
                 </div>
                 <hr>
                 <div class="row footer-body">
-                    <div class="col-md-3 footer-card" @if(get_tenant_data_by_type(tenant('id'))->pages[0]->status !== 'published' && get_tenant_data_by_type(tenant('id'))->pages[1]->status !== 'published' && get_tenant_data_by_type(tenant('id'))->pages[2]->status !== 'published') style="display: none;" @endif>
+                    <div class="col-md-3 footer-card" @if(($pageAbout?->status !== 'published') && ($pageShipping?->status !== 'published') && ($pagePayment?->status !== 'published')) style="display: none;" @endif>
                         <h5 class="footer-title">عن المتجر</h5>
                         <hr class="title-underline">
                         <ul class="footer-ul">
-                            @if (get_tenant_data_by_type(tenant('id'))->pages[0]->status === 'published')
+                            @if ($pageAbout?->status === 'published')
                                 <li class="footer-li"><a
-                                        href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/about">عن
+                                        href="{{ $tenantBaseUrl }}/about">عن
                                         المتجر</a></li>
                             @endif
-                            @if (get_tenant_data_by_type(tenant('id'))->pages[1]->status === 'published')
+                            @if ($pageShipping?->status === 'published')
                                 <li class="footer-li"><a
-                                        href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/shipping-policy">الشحن
+                                        href="{{ $tenantBaseUrl }}/shipping-policy">الشحن
                                         و التسليم</a></li>
                             @endif
-                            @if (get_tenant_data_by_type(tenant('id'))->pages[2]->status === 'published')
+                            @if ($pagePayment?->status === 'published')
                                 <li class="footer-li"><a
-                                        href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/payment-policy">طرق
+                                        href="{{ $tenantBaseUrl }}/payment-policy">طرق
                                         الدفع</a></li>
                             @endif
                         </ul>
                         <ul class="footer-ul d-flex">
-                            {{-- {{dd(get_supplier_data(tenant('id'))->plan_subscription->id);}} --}}
                             {{-- if is seller --}}
                             @if(is_seller(tenant('id')))
-
-                                @if (get_seller_data(tenant('id'))->plan_subscription->id !== 1)
-                                @if (get_store_payment_methods(tenant('id'))->Chargily_Pay->status === 'active')
-                                    <li class="footer-li p-1"><img
-                                            src="{{ asset('asset/v1/users/store') }}/img/payments/eldhahabia.png"
-                                            alt="" width="30px"></li>
-                                    <li class="footer-li p-1"><img
-                                            src="{{ asset('asset/v1/users/store') }}/img/payments/cib.png"
-                                            alt="" width="30px"></li>
+                                @if (($sellerData?->plan_subscription?->id ?? 1) !== 1)
+                                    @if (($paymentMethods?->Chargily_Pay?->status ?? '') === 'active')
+                                        <li class="footer-li p-1"><img
+                                                src="{{ asset('asset/v1/users/store') }}/img/payments/eldhahabia.png"
+                                                alt="" width="30px"></li>
+                                        <li class="footer-li p-1"><img
+                                                src="{{ asset('asset/v1/users/store') }}/img/payments/cib.png"
+                                                alt="" width="30px"></li>
+                                    @endif
+                                    @if (($paymentMethods?->BaridiMob?->status ?? '') === 'active')
+                                        <li class="footer-li p-1"><img
+                                                src="{{ asset('asset/v1/users/store') }}/img/payments/baridimaobe.png"
+                                                alt="" width="30px"></li>
+                                    @endif
+                                    @if (($paymentMethods?->Ccp?->status ?? '') === 'active')
+                                        <li class="footer-li p-1"><img
+                                                src="{{ asset('asset/v1/users/store') }}/img/payments/algerie post.png"
+                                                alt="" width="30px"></li>
+                                    @endif
                                 @endif
-                                @if (get_store_payment_methods(tenant('id'))->BaridiMob->status === 'active')
-                                    <li class="footer-li p-1"><img
-                                            src="{{ asset('asset/v1/users/store') }}/img/payments/baridimaobe.png"
-                                            alt="" width="30px"></li>
-                                @endif
-                                @if (get_store_payment_methods(tenant('id'))->Ccp->status === 'active')
-                                    <li class="footer-li p-1"><img
-                                            src="{{ asset('asset/v1/users/store') }}/img/payments/algerie post.png"
-                                            alt="" width="30px"></li>
-                                @endif
-                            @endif
-
                             @elseif(is_supplier(tenant('id')))
                                 {{-- else if is supplier --}}
-                            @if (get_supplier_data(tenant('id'))->plan_subscription->id !== 1)
-                                @if (get_store_payment_methods(tenant('id'))->Chargily_Pay->status === 'active')
-                                    <li class="footer-li p-1"><img
-                                            src="{{ asset('asset/v1/users/store') }}/img/payments/eldhahabia.png"
-                                            alt="" width="30px"></li>
-                                    <li class="footer-li p-1"><img
-                                            src="{{ asset('asset/v1/users/store') }}/img/payments/cib.png"
-                                            alt="" width="30px"></li>
-                                @endif
-                                @if (get_store_payment_methods(tenant('id'))->BaridiMob->status === 'active')
-                                    <li class="footer-li p-1"><img
-                                            src="{{ asset('asset/v1/users/store') }}/img/payments/baridimaobe.png"
-                                            alt="" width="30px"></li>
-                                @endif
-                                @if (get_store_payment_methods(tenant('id'))->Ccp->status === 'active')
-                                    <li class="footer-li p-1"><img
-                                            src="{{ asset('asset/v1/users/store') }}/img/payments/algerie post.png"
-                                            alt="" width="30px"></li>
+                                @if (($supplierData?->plan_subscription?->id ?? 1) !== 1)
+                                    @if (($paymentMethods?->Chargily_Pay?->status ?? '') === 'active')
+                                        <li class="footer-li p-1"><img
+                                                src="{{ asset('asset/v1/users/store') }}/img/payments/eldhahabia.png"
+                                                alt="" width="30px"></li>
+                                        <li class="footer-li p-1"><img
+                                                src="{{ asset('asset/v1/users/store') }}/img/payments/cib.png"
+                                                alt="" width="30px"></li>
+                                    @endif
+                                    @if (($paymentMethods?->BaridiMob?->status ?? '') === 'active')
+                                        <li class="footer-li p-1"><img
+                                                src="{{ asset('asset/v1/users/store') }}/img/payments/baridimaobe.png"
+                                                alt="" width="30px"></li>
+                                    @endif
+                                    @if (($paymentMethods?->Ccp?->status ?? '') === 'active')
+                                        <li class="footer-li p-1"><img
+                                                src="{{ asset('asset/v1/users/store') }}/img/payments/algerie post.png"
+                                                alt="" width="30px"></li>
+                                    @endif
                                 @endif
                             @endif
-                            @endif
-                            
-                            @if (get_store_payment_methods(tenant('id'))->Cash->status === 'active')
+
+                            @if (($paymentMethods?->Cash?->status ?? '') === 'active')
                                 <li class="footer-li p-1"><img
                                         src="{{ asset('asset/v1/users/store') }}/img/payments/cod.png" alt=""
                                         width="30px"></li>
@@ -161,40 +192,40 @@
                         </ul>
                     </div>
 
-                    <div class="col-md-3 footer-card" @if(get_tenant_data_by_type(tenant('id'))->pages[3]->status !== 'published' && get_tenant_data_by_type(tenant('id'))->pages[4]->status !== 'published' && get_tenant_data_by_type(tenant('id'))->pages[5]->status !== 'published') style="display: none;" @endif>
+                    <div class="col-md-3 footer-card" @if(($pageTerms?->status !== 'published') && ($pageExchange?->status !== 'published') && ($pagePrivacy?->status !== 'published')) style="display: none;" @endif>
                         <h5 class="footer-title">الشروط والسياسات</h5>
                         <hr class="title-underline">
                         <ul class="footer-ul">
-                            @if (get_tenant_data_by_type(tenant('id'))->pages[3]->status === 'published')
+                            @if ($pageTerms?->status === 'published')
                             <li class="footer-li"><a
-                                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/terms-of-use">شروط
+                                    href="{{ $tenantBaseUrl }}/terms-of-use">شروط
                                     الإستخدام</a></li>
                             @endif
-                            @if (get_tenant_data_by_type(tenant('id'))->pages[4]->status === 'published')
+                            @if ($pageExchange?->status === 'published')
                             <li class="footer-li"><a
-                                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/exchange-policy">سياسة
+                                    href="{{ $tenantBaseUrl }}/exchange-policy">سياسة
                                     الإستبدال و الإسترجاع</a></li>
-                                    @endif
-                                    @if (get_tenant_data_by_type(tenant('id'))->pages[5]->status === 'published')
+                            @endif
+                            @if ($pagePrivacy?->status === 'published')
                             <li class="footer-li"><a
-                                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/privacy-policy">السياسة
+                                    href="{{ $tenantBaseUrl }}/privacy-policy">السياسة
                                     الخصوصية</a></li>
-                                    @endif
+                            @endif
                         </ul>
                     </div>
 
-                    <div class="col-md-3 footer-card" @if(get_tenant_data_by_type(tenant('id'))->pages[6]->status !== 'published' && get_tenant_data_by_type(tenant('id'))->pages[7]->status !== 'published') style="display: none;" @endif>
+                    <div class="col-md-3 footer-card" @if(($pageContact?->status !== 'published') && ($pageFaq?->status !== 'published')) style="display: none;" @endif>
                         <h5 class="footer-title">اتصل بنا</h5>
                         <hr class="title-underline">
                         <ul class="footer-ul">
-                            @if (get_tenant_data_by_type(tenant('id'))->pages[6]->status === 'published')
+                            @if ($pageContact?->status === 'published')
                             <li class="footer-li"><a
-                                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/contact-us">اتصل
+                                    href="{{ $tenantBaseUrl }}/contact-us">اتصل
                                     بنا</a></li>
                             @endif
-                            @if (get_tenant_data_by_type(tenant('id'))->pages[7]->status === 'published')
+                            @if ($pageFaq?->status === 'published')
                             <li class="footer-li"><a
-                                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/faq">الأسئلة
+                                    href="{{ $tenantBaseUrl }}/faq">الأسئلة
                                     الشائعة</a></li>
                             @endif
                         </ul>
@@ -204,48 +235,46 @@
                         <h5 class="footer-title">تواصل معنا</h5>
                         <hr class="title-underline">
                         <ul class="footer-ul d-inline">
-                            <li class="footer-li"><i class="fa-solid fa-location-dot"></i>
-                                {{ get_store_settings(get_user_data(tenant('id'))->id)[3]->description }}:
-                                {{ get_store_settings(get_user_data(tenant('id'))->id)[3]->value }}</li>
-                            <li class="footer-li"><i class="fa-solid fa-envelope"></i>
-                                {{ get_store_settings(get_user_data(tenant('id'))->id)[2]->description }}:
-                                {{ get_store_settings(get_user_data(tenant('id'))->id)[2]->value }}</li>
+                            @if ($storeAddressSetting && $storeAddressSetting->value)
+                                <li class="footer-li"><i class="fa-solid fa-location-dot"></i>
+                                    {{ $storeAddressSetting->description ?? 'عنوان المتجر' }}:
+                                    {{ $storeAddressSetting->value }}</li>
+                            @endif
+                            @if ($storeEmailSetting && $storeEmailSetting->value)
+                                <li class="footer-li"><i class="fa-solid fa-envelope"></i>
+                                    {{ $storeEmailSetting->description ?? 'البريد الإلكتروني' }}:
+                                    {{ $storeEmailSetting->value }}</li>
+                            @endif
                         </ul>
                         <ul class="footer-ul d-flex">
-                            @if (get_user_store_settings(tenant('id'), 'store_facebook')->value !== null &&
-                                    get_user_store_settings(tenant('id'), 'store_facebook')->status == 'active')
+                            @if ($storeFacebook?->value && $storeFacebook?->status == 'active')
                                 <li class="footer-li p-2"><a
-                                        href="{{ get_user_store_settings(tenant('id'), 'store_facebook')->value }}"><i
+                                        href="{{ $storeFacebook->value }}"><i
                                             class="fa-brands fa-facebook"></i></a></li>
                             @endif
-                            @if (get_user_store_settings(tenant('id'), 'store_instagram')->value !== null &&
-                                    get_user_store_settings(tenant('id'), 'store_instagram')->status == 'active')
+                            @if ($storeInstagram?->value && $storeInstagram?->status == 'active')
                                 <li class="footer-li p-2"><a
-                                        href="{{ get_user_store_settings(tenant('id'), 'store_instagram')->value }}"><i
+                                        href="{{ $storeInstagram->value }}"><i
                                             class="fa-brands fa-square-instagram"></i></a></li>
                             @endif
-                            @if (get_user_store_settings(tenant('id'), 'store_telegram')->value !== null &&
-                                    get_user_store_settings(tenant('id'), 'store_telegram')->status == 'active')
+                            @if ($storeTelegram?->value && $storeTelegram?->status == 'active')
                                 <li class="footer-li p-2"><a
-                                        href="{{ get_user_store_settings(tenant('id'), 'store_telegram')->value }}"><i
+                                        href="{{ $storeTelegram->value }}"><i
                                             class="fa-brands fa-telegram"></i></a></li>
                             @endif
-                            @if (get_user_store_settings(tenant('id'), 'store_tiktok')->value !== null &&
-                                    get_user_store_settings(tenant('id'), 'store_tiktok')->status == 'active')
+                            @if ($storeTiktok?->value && $storeTiktok?->status == 'active')
                                 <li class="footer-li p-2"><a
-                                        href="{{ get_user_store_settings(tenant('id'), 'store_tiktok')->value }}"><i
+                                        href="{{ $storeTiktok->value }}"><i
                                             class="fa-brands fa-tiktok"></i></a></li>
                             @endif
-                            @if (get_user_store_settings(tenant('id'), 'store_twitter')->value !== null &&
-                                    get_user_store_settings(tenant('id'), 'store_twitter')->status == 'active')
+                            @if ($storeTwitter?->value && $storeTwitter?->status == 'active')
                                 <li class="footer-li p-2"><a
-                                        href="{{ get_user_store_settings(tenant('id'), 'store_twitter')->value }}"><i
+                                        href="{{ $storeTwitter->value }}"><i
                                             class="fa-brands fa-twitter"></i></a></li>
                             @endif
-                            @if (get_user_store_settings(tenant('id'), 'store_youtube')->value !== null &&
-                                    get_user_store_settings(tenant('id'), 'store_youtube')->status == 'active')
+                            @if ($storeYoutube?->value && $storeYoutube?->status == 'active')
                                 <li class="footer-li p-2"><a
-                                        href="{{ get_user_store_settings(tenant('id'), 'store_youtube')->value }}"><i
+                                        href="{{ $storeYoutube->value }}"><i
                                             class="fa-brands fa-youtube"></i></a></li>
                             @endif
                         </ul>
@@ -254,12 +283,12 @@
                 <div class="row footer-footer">
                     <hr style="width:50%;margin-right: 25%;">
                     <div class="col-12 text-center">
-                        @if (get_user_data(tenant('id'))->type == 'supplier' && get_supplier_data(tenant('id'))->plan_subscription->plan_id == 1)
+                        @if ($userData?->type == 'supplier' && (get_supplier_data(tenant('id'))?->plan_subscription?->plan_id ?? null) == 1)
                             جميع الحقوق محفوظة @ لـ: <a href="{{ route('site.index') }}"
-                                target="_blank">{!! get_platform_data('platform_name')->value !!}</a>
+                                target="_blank">{!! get_platform_data('platform_name')?->value !!}</a>
                         @else
                             جميع الحقوق محفوظة @ <a
-                                href="{{ request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain }}">{!! get_user_data(tenant('id'))->storeCopyright[0]->value !!}</a>
+                                href="{{ $tenantBaseUrl }}">{!! $storeCopyright !!}</a>
                         @endif
 
                         {{-- <small>جميع الحقوق محفوظة  {!! get_user_data(tenant('id'))->storeCopyright[0]->value !!} @ <script>document.write(new Date().getFullYear())</script></small> --}}

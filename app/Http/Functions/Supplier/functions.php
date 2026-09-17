@@ -312,7 +312,7 @@ function create_supplier_store_settings($user, $request)
 // get store settings
 function get_store_settings($user_id)
 {
-    $settings = APP\Models\UserStoreSetting::where('user_id', $user_id)->get();
+    $settings = App\Models\UserStoreSetting::where('user_id', $user_id)->get();
 
     return $settings;
 }

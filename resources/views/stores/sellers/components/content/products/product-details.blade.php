@@ -220,10 +220,13 @@
             </h3>
             <p class="">{{ $product->short_description }}</p>
              @php
-             $cash_status=json_decode($store_settings[17]['value'])->Cash->status;
-             $chargily_status=json_decode($store_settings[17]['value'])->Chargily_Pay->status;
-             $ccp_status=json_decode($store_settings[17]['value'])->Ccp->status;
-             $baridimob_status= json_decode($store_settings[17]['value'])->BaridiMob->status; 
+             $pmSetting = (is_array($store_settings) ? collect($store_settings) : $store_settings)->firstWhere('key', 'store_payment_methods') ?? ($store_settings[17] ?? null);
+             $pmVal = is_array($pmSetting) ? ($pmSetting['value'] ?? null) : ($pmSetting?->value ?? null);
+             $pmObj = $pmVal ? json_decode($pmVal) : null;
+             $cash_status = $pmObj?->Cash?->status ?? 'inactive';
+             $chargily_status = $pmObj?->Chargily_Pay?->status ?? 'inactive';
+             $ccp_status = $pmObj?->Ccp?->status ?? 'inactive';
+             $baridimob_status = $pmObj?->BaridiMob?->status ?? 'inactive'; 
             @endphp
             {{-- order form  --}}
             @if($product->product_type === 'digital')

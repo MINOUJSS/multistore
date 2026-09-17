@@ -3,8 +3,8 @@
     <section>
         <div class="container">
             <div class="row welcome-container mt-5">
-                <h2 class="text-center title">{{ $store_settings[18]->value }}</h2>
-                <p class="text-center">{{ $store_settings[1]->value }}</p>
+                <h2 class="text-center title">{{ $store_settings->firstWhere('key', 'store_welcome_title')?->value ?? $store_settings->get(18)?->value ?? '' }}</h2>
+                <p class="text-center">{{ $store_settings->firstWhere('key', 'store_description')?->value ?? $store_settings->get(1)?->value ?? '' }}</p>
             </div>
         </div>
     </section>
