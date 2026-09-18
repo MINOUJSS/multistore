@@ -236,11 +236,11 @@
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0"><i class="fas fa-map-marker-alt text-muted"></i></span>
                                         <select id="inputWilaya" name="wilaya" class="form-select border-start-0 @error('wilaya') is-invalid @enderror">
-                                            <option value="null" selected>إختر الولاية...</option>
+                                            <option value="null">إختر الولاية...</option>
                                             @foreach ($wilayas as $wilaya)
                                                 <option value="{{ $wilaya->id }}"
-                                                    {{ old('wilaya') == $wilaya->id || $seller->wilaya == $wilaya->id ? 'selected' : '' }}>
-                                                    {{ get_wilaya_data($wilaya->id)->ar_name }}
+                                                    {{ old('wilaya', $seller->wilaya) == $wilaya->id ? 'selected' : '' }}>
+                                                    {{ $wilaya->ar_name ?? $wilaya->name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -254,12 +254,15 @@
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0"><i class="fas fa-map-marked-alt text-muted"></i></span>
                                         <select id="inputDayra" name="dayra" class="form-select border-start-0 @error('dayra') is-invalid @enderror">
-                                            <option value="null" selected>إختر البلدية...</option>
-                                            @if ($seller->dayra !== null)
-                                                <option value="{{ $seller->dayra }}" selected>
-                                                    {{ get_dayra_data($seller->dayra)->ar_name }}</option>
-                                            @else
-                                                <option value="null">...</option>
+                                            <option value="null">إختر الدائرة...</option>
+                                            @php
+                                                $sellerDayra = (!empty($seller->dayra) && $seller->dayra !== 'null' && is_numeric($seller->dayra))
+                                                    ? \App\Models\Dayra::find($seller->dayra)
+                                                    : null;
+                                            @endphp
+                                            @if ($sellerDayra)
+                                                <option value="{{ $sellerDayra->id }}" selected>
+                                                    {{ $sellerDayra->ar_name }}</option>
                                             @endif
                                         </select>
                                         @error('dayra')
@@ -273,13 +276,15 @@
                                         <span class="input-group-text bg-light border-end-0"><i class="fas fa-map-pin text-muted"></i></span>
                                         <select id="inputBaladia" class="form-select border-start-0" name="baladia">
                                             <option value="null">غير محددة</option>
-                                            @if ($seller->baladia !== null)
-                                                <option value="{{ $seller->baladia }}" selected>
-                                                    {{ get_baladia_data($seller->baladia)->ar_name }}</option>
-                                            @else
-                                                <option value="null">...</option>
+                                            @php
+                                                $sellerBaladia = (!empty($seller->baladia) && $seller->baladia !== 'null' && is_numeric($seller->baladia))
+                                                    ? \App\Models\Baladia::find($seller->baladia)
+                                                    : null;
+                                            @endphp
+                                            @if ($sellerBaladia)
+                                                <option value="{{ $sellerBaladia->id }}" selected>
+                                                    {{ $sellerBaladia->ar_name }}</option>
                                             @endif
-                                            <option value="null">...</option>
                                         </select>
                                     </div>
                                 </div>

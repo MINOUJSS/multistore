@@ -79,17 +79,9 @@ class SellerProfileController extends Controller
             $seller->part_of_approved_list = 'no';
         }
 
-        if ($request->wilaya !== 'null') {
-            $seller->wilaya = $request->wilaya;
-        }
-
-        if ($request->dayra !== 'null') {
-            $seller->dayra = $request->dayra;
-        }
-
-        if ($request->baladia !== 'null') {
-            $seller->baladia = $request->baladia;
-        }
+        $seller->wilaya = (!empty($request->wilaya) && $request->wilaya !== 'null') ? $request->wilaya : null;
+        $seller->dayra = (!empty($request->dayra) && $request->dayra !== 'null') ? $request->dayra : null;
+        $seller->baladia = (!empty($request->baladia) && $request->baladia !== 'null') ? $request->baladia : null;
 
         $seller->address = $request->address;
         $seller->update();

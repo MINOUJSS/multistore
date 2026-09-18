@@ -82,17 +82,9 @@ class SupplierProfileController extends Controller
             $supplier->part_of_approved_list = 'no';
         }
 
-        if ($request->wilaya !== 'null') {
-            $supplier->wilaya = $request->wilaya;
-        }
-
-        if ($request->dayra !== 'null') {
-            $supplier->dayra = $request->dayra;
-        }
-
-        if ($request->baladia !== 'null') {
-            $supplier->baladia = $request->baladia;
-        }
+        $supplier->wilaya = (!empty($request->wilaya) && $request->wilaya !== 'null') ? $request->wilaya : null;
+        $supplier->dayra = (!empty($request->dayra) && $request->dayra !== 'null') ? $request->dayra : null;
+        $supplier->baladia = (!empty($request->baladia) && $request->baladia !== 'null') ? $request->baladia : null;
 
         $supplier->address = $request->address;
         $supplier->update();
