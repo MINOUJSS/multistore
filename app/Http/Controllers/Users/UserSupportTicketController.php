@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Admins\Admin\SendTelegramInfoAboutNewSupportTicket;
 use App\Models\SupportTicket;
 use App\Models\SupportTicketReply;
 use Illuminate\Http\Request;
@@ -97,6 +98,9 @@ class UserSupportTicketController extends Controller
             'is_read_by_user' => true,
             'is_read_by_admin' => false,
         ]);
+
+        // إشعار الأدمن صاحب المشروع فقط بتذكرة الدعم الفني عبر التليغرام في الـ Queue
+        SendTelegramInfoAboutNewSupportTicket::dispatch($ticket);
 
         Alert::success('تم إنشاء التذكرة', 'تم تقديم تذكرة الدعم الفني بنجاح برقم: ' . $ticketNumber);
 
