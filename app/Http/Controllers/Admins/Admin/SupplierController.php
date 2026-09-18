@@ -49,10 +49,41 @@ class SupplierController extends Controller
     // show
     public function show($id)
     {
-        $supplier = Supplier::find($id);
+        $supplier = Supplier::findOrFail($id);
         $user = get_user_data($supplier->tenant_id);
 
-        return view('admins.admin.supplier.show', compact('supplier', 'user'));
+        // Financial & Payment Accounts
+        $bankAccount = $user?->bank_settings;
+        $chargilySetting = $user?->chargilySettings;
+
+        // Orders Statistics
+        $ordersCount = $supplier->orders()->count();
+        $deliveredOrdersCount = $supplier->orders()->where('status', 'delivered')->count();
+        $pendingOrdersCount = $supplier->orders()->whereIn('status', ['pending', 'processing'])->count();
+        $ordersWithProofCount = $supplier->orders()
+            ->whereNotNull('payment_proof')
+            ->where('payment_proof', '!=', '')
+            ->count();
+
+        // Orders with payment proofs for auditing
+        $ordersWithProofs = $supplier->orders()
+            ->whereNotNull('payment_proof')
+            ->where('payment_proof', '!=', '')
+            ->orderBy('id', 'desc')
+            ->take(20)
+            ->get();
+
+        return view('admins.admin.supplier.show', compact(
+            'supplier',
+            'user',
+            'bankAccount',
+            'chargilySetting',
+            'ordersCount',
+            'deliveredOrdersCount',
+            'pendingOrdersCount',
+            'ordersWithProofCount',
+            'ordersWithProofs'
+        ));
     }
 
     // destroy

@@ -50,10 +50,41 @@ class SellerController extends Controller
     // show seller
     public function show($id)
     {
-        $seller = Seller::find($id);
+        $seller = Seller::findOrFail($id);
         $user = get_user_data($seller->tenant_id);
 
-        return view('admins.admin.seller.show', compact('seller', 'user'));
+        // Financial & Payment Accounts
+        $bankAccount = $user?->bank_settings;
+        $chargilySetting = $user?->chargilySettings;
+
+        // Orders Statistics
+        $ordersCount = $seller->orders()->count();
+        $deliveredOrdersCount = $seller->orders()->where('status', 'delivered')->count();
+        $pendingOrdersCount = $seller->orders()->whereIn('status', ['pending', 'processing'])->count();
+        $ordersWithProofCount = $seller->orders()
+            ->whereNotNull('payment_proof')
+            ->where('payment_proof', '!=', '')
+            ->count();
+
+        // Orders with payment proofs for auditing
+        $ordersWithProofs = $seller->orders()
+            ->whereNotNull('payment_proof')
+            ->where('payment_proof', '!=', '')
+            ->orderBy('id', 'desc')
+            ->take(20)
+            ->get();
+
+        return view('admins.admin.seller.show', compact(
+            'seller',
+            'user',
+            'bankAccount',
+            'chargilySetting',
+            'ordersCount',
+            'deliveredOrdersCount',
+            'pendingOrdersCount',
+            'ordersWithProofCount',
+            'ordersWithProofs'
+        ));
     }
 
     // destroy
