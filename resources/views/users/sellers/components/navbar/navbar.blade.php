@@ -123,7 +123,7 @@
                             @if ($user_notifications && $user_notifications->count() > 0)
                                 @foreach ($user_notifications as $not)
                                     <li><a class="dropdown-item"
-                                            onclick="mark_notification_as_read({{ $not->id }})"
+                                            onclick="mark_seller_notification_as_read({{ $not->id }})"
                                             href="{{ $not->action_url }}">{{ $not->title }}</a></li>
                                     {{-- <li onclick="mark_notification_as_read({{$not->id}})">{{ $not->title }}</li> --}}
                                 @endforeach
