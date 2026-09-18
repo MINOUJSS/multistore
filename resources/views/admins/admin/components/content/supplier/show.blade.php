@@ -67,6 +67,9 @@
                     <button class="btn btn-warning text-dark fw-bold px-3 py-2 rounded-3 shadow-sm border-0" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
                         <i class="fa-solid fa-key me-1"></i> تغيير كلمة المرور
                     </button>
+                    <button class="btn btn-outline-light text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-2" data-bs-toggle="modal" data-bs-target="#resetStoreModal" title="إعادة ضبط مظهر وإعدادات المتجر إلى الوضع الافتراضي">
+                        <i class="fa-solid fa-arrows-rotate me-1"></i> إعادة ضبط المتجر
+                    </button>
                 </div>
             </div>
         </div>
@@ -788,7 +791,130 @@
     </div>
 </div>
 
+<!-- Modal: تأكيد إعادة ضبط متجر المورد للوضع الافتراضي -->
+<div class="modal fade" id="resetStoreModal" tabindex="-1" aria-labelledby="resetStoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-danger text-white px-4 py-3 border-0">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                    <h5 class="modal-title fw-bold fs-6 mb-0" id="resetStoreModalLabel">
+                        تحذير: تأكيد إعادة ضبط متجر المورد
+                    </h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-3">
+                    <div class="d-inline-flex p-3 rounded-circle bg-danger bg-opacity-10 text-danger mb-3">
+                        <i class="fa-solid fa-arrows-rotate fa-3x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">هل أنت متأكد من رغبتك في إعادة ضبط هذا المتجر؟</h5>
+                    <p class="text-muted small mb-0">متجر المورد: <strong class="text-primary">{{ $supplier->store_name }}</strong> ({{ $supplier->tenant_id }})</p>
+                </div>
+
+                <div class="alert alert-warning border-0 rounded-3 p-3 mb-3">
+                    <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-circle-exclamation text-warning me-1"></i> الإجراءات التي ستتم للواجهة:</h6>
+                    <ul class="text-secondary small mb-0 ps-3">
+                        <li>إعادة ضبط السلايدر والبنرات الترويجية للمتجر إلى الوضع الافتراضي.</li>
+                        <li>إعادة ضبط قسم "لماذا تختارنا" والأسئلة الشائعة والصفحات التعريفية.</li>
+                        <li>إعادة تسعيرات الشحن لجميع الولايات للأسعار الافتراضية الأولية.</li>
+                        <li>إعادة تعيين ألوان وهوية مظهر المتجر الافتراضية.</li>
+                    </ul>
+                </div>
+
+                <div class="alert alert-success border-0 rounded-3 p-3 mb-0">
+                    <h6 class="fw-bold text-success mb-2"><i class="fa-solid fa-shield-check me-1"></i> أمان المنتجات والبيانات (مضمونة 100%):</h6>
+                    <p class="text-muted small mb-0">
+                        <strong>لن يتم حذف أو تغيير أي منتج</strong> أضافه المورد إطلاقاً، وستبقى جميع سجلات طلبات الزبائن، والبيانات البنكية، والمحفظة المالية، وبيانات تسجيل الدخول كما هي تماماً.
+                    </p>
+                </div>
+
+                <div id="resetStoreErrorAlert" class="alert alert-danger d-none mt-3 mb-0 py-2 small"></div>
+            </div>
+            <div class="modal-footer bg-light border-0 px-4 py-3 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary rounded-3 px-4 fw-semibold" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" id="confirmResetStoreBtn" class="btn btn-danger rounded-3 px-4 fw-bold shadow-sm" onclick="executeResetStore({{ $supplier->id }})">
+                    <i class="fa-solid fa-arrows-rotate me-1"></i> تأكيد إعادة الضبط الآن
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+function executeResetStore(supplierId) {
+    const btn = document.getElementById('confirmResetStoreBtn');
+    const errorAlert = document.getElementById('resetStoreErrorAlert');
+    
+    if (errorAlert) {
+        errorAlert.classList.add('d-none');
+        errorAlert.innerText = '';
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جاري إعادة الضبط...';
+
+    fetch('{{ route('admin.supplier.reset_store', $supplier->id) }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json().then(data => ({ status: response.status, body: data })))
+    .then(res => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-arrows-rotate me-1"></i> تأكيد إعادة الضبط الآن';
+
+        if (res.body.success) {
+            const modalEl = document.getElementById('resetStoreModal');
+            const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.hide();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'تمت إعادة الضبط بنجاح',
+                text: res.body.message || 'تمت إعادة ضبط المتجر إلى الوضعية الافتراضية بنجاح.',
+                confirmButtonColor: '#701a75',
+                confirmButtonText: 'حسناً'
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            if (errorAlert) {
+                errorAlert.innerText = res.body.message || 'حدث خطأ أثناء إعادة ضبط المتجر.';
+                errorAlert.classList.remove('d-none');
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: res.body.message || 'حدث خطأ أثناء إعادة ضبط المتجر.',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-arrows-rotate me-1"></i> تأكيد إعادة الضبط الآن';
+        if (errorAlert) {
+            errorAlert.innerText = 'حدث خطأ في الاتصال بالخادم، يرجى إعادة المحاولة.';
+            errorAlert.classList.remove('d-none');
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ في الاتصال',
+                text: 'حدث خطأ في الاتصال بالخادم، يرجى إعادة المحاولة.',
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'حسناً'
+            });
+        }
+    });
+}
 function inspectPaymentProof(imageUrl, orderNumber, customerName, total, orderDate) {
     document.getElementById('modalProofImage').src = imageUrl;
     document.getElementById('modalOrderNumber').innerText = orderNumber;

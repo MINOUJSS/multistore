@@ -8,6 +8,7 @@ use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\UserRequestsValidation;
+use App\Services\Admins\Admin\SellerStoreResetService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -252,5 +253,57 @@ class SellerController extends Controller
             'success' => 'تم تغيير كلمة المرور بنجاح',
             'new_password' => $request->password,
         ]);
+    }
+
+    /**
+     * Reset seller store to initial default settings and layout,
+     * strictly preserving seller's products, orders, and financial accounts.
+     *
+     * @param Request $request
+     * @param int|string $id
+     * @param SellerStoreResetService $resetService
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    public function resetStore(Request $request, $id, SellerStoreResetService $resetService)
+    {
+        $seller = Seller::findOrFail($id);
+        $user = User::where('tenant_id', $seller->tenant_id)->first() ?? get_user_data($seller->tenant_id);
+
+        if (!$user) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لم يتم العثور على حساب المستخدم المرتبط بهذا البائع.',
+                ], 404);
+            }
+            return redirect()->back()->with('error', 'لم يتم العثور على حساب المستخدم المرتبط بهذا البائع.');
+        }
+
+        try {
+            $resetService->reset($seller, $user);
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تمت إعادة ضبط متجر البائع إلى الوضعية الافتراضية بنجاح مع الحفاظ على جميع المنتجات والطلبات.',
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'تمت إعادة ضبط متجر البائع إلى الوضعية الافتراضية بنجاح.');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Seller Store Reset Failed: ' . $e->getMessage(), [
+                'seller_id' => $seller->id,
+                'exception' => $e,
+            ]);
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'حدث خطأ أثناء إعادة ضبط المتجر: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'حدث خطأ أثناء إعادة ضبط المتجر: ' . $e->getMessage());
+        }
     }
 }

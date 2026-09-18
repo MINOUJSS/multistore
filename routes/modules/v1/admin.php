@@ -55,6 +55,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::post('/ah-admin/supplier/{id}/approve', [SupplierController::class, 'approve'])->name('supplier.approve');
                 Route::post('/ah-admin/supplier/unapprove', [SupplierController::class, 'unapprove'])->name('supplier.unapprove');
                 Route::post('/ah-admin/supplier/{id}/change-password', [SupplierController::class, 'changePassword'])->name('supplier.changePassword');
+                Route::post('/ah-admin/supplier/{id}/reset-store', [SupplierController::class, 'resetStore'])->name('supplier.reset_store');
 
                 // supplier plans management routes
                 Route::get('/ah-admin/supplier-plans', [SupplierPlanController::class, 'index'])->name('supplier_plans.index');
@@ -83,6 +84,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::post('/ah-admin/seller/{id}/approve', [SellerController::class, 'approve'])->name('seller.approve');
                 Route::post('/ah-admin/seller/unapprove', [SellerController::class, 'unapprove'])->name('seller.unapprove');
                 Route::post('/ah-admin/seller/{id}/change-password', [SellerController::class, 'changePassword'])->name('seller.changePassword');
+                Route::post('/ah-admin/seller/{id}/reset-store', [SellerController::class, 'resetStore'])->name('seller.reset_store');
 
                 // seller plans management routes
                 Route::get('/ah-admin/seller-plans', [SellerPlanController::class, 'index'])->name('seller_plans.index');
