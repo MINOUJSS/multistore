@@ -215,32 +215,36 @@ function last_seen_user()
         return;
     }
 
-    $request = request();
+    try {
+        $request = request();
 
-    // الحصول على عنوان IP بأكثر طريقة موثوقة ممكنة
-    $ipAddress = getRealIpAddress();
+        // الحصول على عنوان IP بأكثر طريقة موثوقة ممكنة
+        $ipAddress = getRealIpAddress();
 
-    // معلومات الجهاز والمتصفح
-    $userAgent = $request->header('User-Agent') ?? 'unknown';
+        // معلومات الجهاز والمتصفح
+        $userAgent = $request->header('User-Agent') ?? 'unknown';
 
-    // معرف المستخدم
-    $userId = Auth::id();
+        // معرف المستخدم
+        $userId = Auth::id();
 
-    // التحقق من وجود زيارة مسجلة اليوم
-    $existingVisit = LastSeen::where('user_id', $userId)
-        ->where('ip_address', $ipAddress)
-        ->whereDate('last_seen_at', now()->toDateString())
-        ->first();
+        // التحقق من وجود زيارة مسجلة اليوم
+        $existingVisit = LastSeen::where('user_id', $userId)
+            ->where('ip_address', $ipAddress)
+            ->whereDate('last_seen_at', now()->toDateString())
+            ->first();
 
-    // إذا لم توجد زيارة، سجل واحدة جديدة
-    if (!$existingVisit) {
-        LastSeen::create([
-            'user_id' => $userId,
-            'ip_address' => $ipAddress,
-            'device' => $userAgent,
-            'browser' => $userAgent,
-            'last_seen_at' => now(),
-        ]);
+        // إذا لم توجد زيارة، سجل واحدة جديدة
+        if (!$existingVisit) {
+            LastSeen::create([
+                'user_id' => $userId,
+                'ip_address' => $ipAddress,
+                'device' => $userAgent,
+                'browser' => $userAgent,
+                'last_seen_at' => now(),
+            ]);
+        }
+    } catch (\Throwable $e) {
+        \Illuminate\Support\Facades\Log::warning('Failed to record last seen user: ' . $e->getMessage());
     }
 }
 function getRealIpAddress()

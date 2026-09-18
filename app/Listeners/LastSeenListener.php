@@ -23,14 +23,18 @@ class LastSeenListener
      */
     public function handle(UserLogedInEvent $event): void
     {
-        $ip_address = request()->server('REMOTE_ADDR');
-        //
-        LastSeen::create([
-            'user_id' => $event->user->id,
-            'ip_address' => $ip_address,
-            'device' => Request::header('User-Agent'),
-            'browser' => Request::header('User-Agent'),
-            'last_seen_at' => now(),
-        ]);
+        try {
+            $ip_address = request()->server('REMOTE_ADDR');
+            //
+            LastSeen::create([
+                'user_id' => $event->user->id,
+                'ip_address' => $ip_address,
+                'device' => Request::header('User-Agent'),
+                'browser' => Request::header('User-Agent'),
+                'last_seen_at' => now(),
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Failed in LastSeenListener: ' . $e->getMessage());
+        }
     }
 }

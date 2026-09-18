@@ -14,6 +14,7 @@ class LastSeen extends Model
         'ip_address',
         'device',
         'browser',
+        'last_seen_at',
         'logged_in_at',
     ];
 
