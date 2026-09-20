@@ -217,6 +217,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::delete('/seller-panel/apps/clarity/delete/{id}', [SellerAppsController::class, 'delete_clarity'])->name('app.delete-clarity');
                     // seller billing routes
                     Route::get('/seller-panel/billing', [SellerBillingController::class, 'index'])->name('billing');
+                    Route::get('/seller-panel/billing/invoices', [SellerBillingController::class, 'index'])->name('billing.invoices');
                     Route::get('/seller-panel/billing/invoice/create', [SellerBillingController::class, 'create'])->name('billing.invoice.create');
                     Route::get('/seller-panel/billing/invoice/{id}', [SellerBillingController::class, 'show'])->name('billing.invoice.show');
                     Route::get('/seller-panel/billing/invoice/view/{id}', [SellerBillingController::class, 'view'])->name('billing.invoice.view');

@@ -28,8 +28,8 @@
                             <i class="fa-solid fa-file-invoice"></i>
                             <span>إرسال إثبات جديد</span>
                         </a>
-                    @elseif(Route::has('seller.billing.invoices'))
-                        <a href="{{ route('seller.billing.invoices') }}" class="btn btn-outline-light text-white fw-bold px-3 py-2.5 rounded-3 border-2 shadow-sm d-inline-flex align-items-center gap-2">
+                    @elseif(Route::has('seller.billing'))
+                        <a href="{{ route('seller.billing') }}" class="btn btn-outline-light text-white fw-bold px-3 py-2.5 rounded-3 border-2 shadow-sm d-inline-flex align-items-center gap-2">
                             <i class="fa-solid fa-file-invoice"></i>
                             <span>الفواتير</span>
                         </a>

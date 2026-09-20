@@ -19,7 +19,7 @@
                 </p>
             </div>
             <div class="col-lg-4 text-lg-end">
-                <a href="{{ route('seller.billing.invoices') }}"
+                <a href="{{ route('seller.billing') }}"
                     class="btn btn-light text-dark fw-bold px-3.5 py-2.5 rounded-3 border-0 shadow-sm d-inline-flex align-items-center gap-2">
                     <i class="fas fa-arrow-right"></i>
                     <span>الرجوع للفواتير</span>

@@ -214,6 +214,7 @@ Route::middleware([
                 Route::delete('/supplier-panel/apps/clarity/delete/{id}', [SupplierAppsController::class, 'delete_clarity'])->name('app.delete-clarity');
                 // supplier billing routes
                 Route::get('/supplier-panel/billing', [SupplierBillingController::class, 'index'])->name('billing');
+                Route::get('/supplier-panel/billing/invoices', [SupplierBillingController::class, 'index'])->name('billing.invoices');
                 Route::get('/supplier-panel/billing/invoice/create', [SupplierBillingController::class, 'create'])->name('billing.invoice.create');
                 Route::get('/supplier-panel/billing/invoice/{id}', [SupplierBillingController::class, 'show'])->name('billing.invoice.show');
                 Route::get('/supplier-panel/billing/invoice/view/{id}', [SupplierBillingController::class, 'view'])->name('billing.invoice.view');
