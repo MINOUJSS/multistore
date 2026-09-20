@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Seller\Seller;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\BalanceTransaction;
+use App\Models\UserBalance;
 use App\Models\UserNotification;
 use App\Models\UserRequestsValidation;
 use App\Services\Admins\Admin\SellerStoreResetService;
@@ -304,6 +306,102 @@ class SellerController extends Controller
             }
 
             return redirect()->back()->with('error', 'حدث خطأ أثناء إعادة ضبط المتجر: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Reset seller balance to 0.00 with mandatory reason,
+     * logging the action in BalanceTransaction and notifying the seller.
+     *
+     * @param Request $request
+     * @param int|string $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    public function resetBalance(Request $request, $id)
+    {
+        $request->validate([
+            'reason' => 'required|string|max:1000',
+        ], [
+            'reason.required' => 'يرجى كتابة سبب تصفير الرصيد.',
+            'reason.max' => 'يجب ألا يتجاوز السبب 1000 حرف.',
+        ]);
+
+        $seller = Seller::findOrFail($id);
+        $user = User::where('tenant_id', $seller->tenant_id)->first() ?? get_user_data($seller->tenant_id);
+
+        if (!$user) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لم يتم العثور على حساب المستخدم المرتبط بهذا البائع.',
+                ], 404);
+            }
+            return redirect()->back()->with('error', 'لم يتم العثور على حساب المستخدم المرتبط بهذا البائع.');
+        }
+
+        try {
+            \DB::beginTransaction();
+
+            $userBalance = UserBalance::firstOrCreate(
+                ['user_id' => $user->id],
+                ['balance' => 0, 'outstanding_amount' => 0]
+            );
+
+            $previousBalance = (float) $userBalance->balance;
+
+            // Reset balance to zero
+            $userBalance->balance = 0;
+            $userBalance->save();
+
+            // Record transaction in BalanceTransaction
+            BalanceTransaction::create([
+                'user_id' => $user->id,
+                'transaction_type' => 'admin_adjustment',
+                'amount' => $previousBalance,
+                'description' => 'تصفير الرصيد بواسطة إدارة المنصة. السبب: ' . $request->reason,
+                'status' => 'completed',
+            ]);
+
+            // Notify seller via UserNotification
+            UserNotification::create([
+                'user_id' => $user->id,
+                'sender_id' => auth('admin')->id(),
+                'type' => 'system',
+                'title' => 'تصفير رصيد المحفظة',
+                'body' => 'تم تصفير رصيد محفظتك من قبل إدارة المنصة. السبب: ' . $request->reason,
+                'icon' => 'fas fa-wallet',
+                'color' => 'danger',
+                'action_url' => route('seller.wallet'),
+                'is_read' => false,
+            ]);
+
+            \DB::commit();
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم تصفير رصيد البائع بنجاح وتسجيل السبب.',
+                    'previous_balance' => $previousBalance,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'تم تصفير رصيد البائع بنجاح وتسجيل السبب.');
+        } catch (\Throwable $e) {
+            \DB::rollBack();
+
+            \Illuminate\Support\Facades\Log::error('Seller Balance Reset Failed: ' . $e->getMessage(), [
+                'seller_id' => $seller->id,
+                'exception' => $e,
+            ]);
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'حدث خطأ أثناء تصفير الرصيد: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تصفير الرصيد: ' . $e->getMessage());
         }
     }
 }

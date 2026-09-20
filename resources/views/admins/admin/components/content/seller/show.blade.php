@@ -70,6 +70,9 @@
                     <button class="btn btn-outline-light text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-2" data-bs-toggle="modal" data-bs-target="#resetStoreModal" title="إعادة ضبط مظهر وإعدادات المتجر إلى الوضع الافتراضي">
                         <i class="fa-solid fa-arrows-rotate me-1"></i> إعادة ضبط المتجر
                     </button>
+                    <button class="btn btn-danger text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0" data-bs-toggle="modal" data-bs-target="#resetBalanceModal" title="تصفير رصيد البائع مع التحذير وتسجيل السبب">
+                        <i class="fa-solid fa-wallet me-1"></i> تصفير الرصيد
+                    </button>
                 </div>
             </div>
         </div>
@@ -842,7 +845,200 @@
     </div>
 </div>
 
+<!-- Modal: تصفير رصيد البائع -->
+<div class="modal fade" id="resetBalanceModal" tabindex="-1" aria-labelledby="resetBalanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-danger text-white border-0 py-3 px-4">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                    <h5 class="modal-title fw-bold fs-6 mb-0" id="resetBalanceModalLabel">
+                        تحذير: تصفير رصيد محفظة البائع
+                    </h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-3">
+                    <div class="d-inline-flex p-3 rounded-circle bg-danger bg-opacity-10 text-danger mb-2">
+                        <i class="fa-solid fa-wallet fa-3x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">هل أنت متأكد من رغبتك في تصفير رصيد هذا البائع؟</h5>
+                    <p class="text-muted small mb-0">البائع: <strong class="text-primary">{{ $seller->full_name }}</strong> ({{ '@'.$seller->store_name }})</p>
+                </div>
+
+                {{-- Balance Info Box --}}
+                <div class="card border-0 bg-light rounded-3 p-3 mb-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="text-muted fw-semibold small">الرصيد الحالي في المحفظة:</span>
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1.5 rounded-pill fw-bold fs-6">
+                            <span class="dir-ltr d-inline-block">{{ number_format($user?->balance?->balance ?? 0, 2) }}</span> د.ج
+                        </span>
+                    </div>
+                    @if(($user?->balance?->outstanding_amount ?? 0) > 0)
+                        <div class="d-flex align-items-center justify-content-between mt-2 pt-2 border-top">
+                            <span class="text-muted fw-semibold small">مستحقات المنصة على البائع:</span>
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-1.5 rounded-pill fw-bold">
+                                <span class="dir-ltr d-inline-block">{{ number_format($user?->balance?->outstanding_amount ?? 0, 2) }}</span> د.ج
+                            </span>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Warning Alert --}}
+                <div class="alert alert-danger border-0 rounded-3 p-3 mb-3">
+                    <div class="d-flex gap-2">
+                        <i class="fa-solid fa-circle-exclamation fs-5 flex-shrink-0 mt-0.5"></i>
+                        <div>
+                            <strong class="d-block mb-1">تنبيه أمني وإداري صارم:</strong>
+                            <span class="small">سيؤدي هذا الإجراء فوراً إلى جعل رصيد محفظة البائع <strong>0.00 د.ج</strong>، وتسجيل حركة مالية رسمية في السجل المالي، وإرسال إشعار مباشر إلى لوحة تحكم البائع بالسبب المكتوب أدناه.</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Reason Input --}}
+                <div class="mb-3">
+                    <label for="resetBalanceReason" class="form-label fw-bold text-dark">
+                        سبب تصفير الرصيد <span class="text-danger">*</span>
+                    </label>
+                    <textarea name="reason" id="resetBalanceReason" class="form-control rounded-3" rows="3" required placeholder="أدخل سبب تصفير الرصيد بالتفصيل هنا (إلزامي للتوثيق ولإشعار البائع)..."></textarea>
+                    <div class="form-text text-muted small">هذا الحقل إلزامي لضمان الشفافية وأرشفة سبب العملية.</div>
+                </div>
+
+                {{-- Confirmation Checkbox --}}
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="confirmResetBalanceCheck">
+                    <label class="form-check-label text-dark small fw-semibold" for="confirmResetBalanceCheck">
+                        أؤكد مسؤوليتي الإدارية الكاملة عن تصفير رصيد هذا البائع وتوثيق السبب أعلاه.
+                    </label>
+                </div>
+
+                <div id="resetBalanceErrorAlert" class="alert alert-danger d-none mt-2 mb-0 py-2 small"></div>
+            </div>
+            <div class="modal-footer bg-light border-0 px-4 py-3 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary rounded-3 px-4 fw-semibold" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" id="confirmResetBalanceBtn" class="btn btn-danger rounded-3 px-4 fw-bold shadow-sm" onclick="executeResetBalance({{ $seller->id }})">
+                    <i class="fa-solid fa-wallet me-1"></i> تأكيد تصفير الرصيد الآن
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+function executeResetBalance(sellerId) {
+    const btn = document.getElementById('confirmResetBalanceBtn');
+    const reasonInput = document.getElementById('resetBalanceReason');
+    const confirmCheck = document.getElementById('confirmResetBalanceCheck');
+    const errorAlert = document.getElementById('resetBalanceErrorAlert');
+
+    if (errorAlert) {
+        errorAlert.classList.add('d-none');
+        errorAlert.innerText = '';
+    }
+
+    const reason = reasonInput ? reasonInput.value.trim() : '';
+
+    if (!reason) {
+        if (errorAlert) {
+            errorAlert.innerText = 'يرجى كتابة سبب تصفير الرصيد بشكل واضح قبل المتابعة.';
+            errorAlert.classList.remove('d-none');
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'حقل إلزامي',
+                text: 'يرجى كتابة سبب تصفير الرصيد قبل المتابعة.',
+                confirmButtonColor: '#be0681',
+                confirmButtonText: 'حسناً'
+            });
+        }
+        if (reasonInput) reasonInput.focus();
+        return;
+    }
+
+    if (!confirmCheck || !confirmCheck.checked) {
+        if (errorAlert) {
+            errorAlert.innerText = 'يرجى تأكيد مسؤوليتك الإدارية بوضع علامة الصح على مربع التأكيد.';
+            errorAlert.classList.remove('d-none');
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'تأكيد مطلوب',
+                text: 'يرجى تأكيد الإقرار بالمسؤولية قبل تصفير الرصيد.',
+                confirmButtonColor: '#be0681',
+                confirmButtonText: 'حسناً'
+            });
+        }
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جاري التصفير...';
+
+    fetch('{{ route('admin.seller.reset_balance', $seller->id) }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            reason: reason
+        })
+    })
+    .then(response => response.json().then(data => ({ status: response.status, body: data })))
+    .then(res => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-wallet me-1"></i> تأكيد تصفير الرصيد الآن';
+
+        if (res.body.success) {
+            const modalEl = document.getElementById('resetBalanceModal');
+            const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.hide();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'تم التصفير بنجاح',
+                text: res.body.message || 'تم تصفير رصيد محفظة البائع بنجاح.',
+                confirmButtonColor: '#701a75',
+                confirmButtonText: 'حسناً'
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            if (errorAlert) {
+                errorAlert.innerText = res.body.message || 'حدث خطأ أثناء تصفير الرصيد.';
+                errorAlert.classList.remove('d-none');
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: res.body.message || 'حدث خطأ أثناء تصفير الرصيد.',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-wallet me-1"></i> تأكيد تصفير الرصيد الآن';
+        if (errorAlert) {
+            errorAlert.innerText = 'حدث خطأ في الاتصال بالخادم، يرجى إعادة المحاولة.';
+            errorAlert.classList.remove('d-none');
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ في الاتصال',
+                text: 'حدث خطأ في الاتصال بالخادم، يرجى إعادة المحاولة.',
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'حسناً'
+            });
+        }
+    });
+}
+
 function executeResetStore(sellerId) {
     const btn = document.getElementById('confirmResetStoreBtn');
     const errorAlert = document.getElementById('resetStoreErrorAlert');
