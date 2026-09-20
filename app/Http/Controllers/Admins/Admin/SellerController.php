@@ -18,7 +18,7 @@ class SellerController extends Controller
     // index
     public function index(Request $request)
     {
-        $query = Seller::with(['user', 'tenant.domains', 'plan_subscription']);
+        $query = Seller::with(['user.balance', 'tenant.domains', 'plan_subscription']);
 
         // Full-table search: name, phone, store name, email
         if ($request->filled('search')) {

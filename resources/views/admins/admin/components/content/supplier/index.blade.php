@@ -162,6 +162,7 @@
                             <th class="py-3">التسجيل</th>
                             <th class="py-3">الطلبات</th>
                             <th class="py-3">الاشتراك</th>
+                            <th class="py-3">الرصيد / المستحقات</th>
                             <th class="py-3">العمليات</th>
                         </tr>
                     </thead>
@@ -228,6 +229,26 @@
                                         @endif
                                     </span></td>
 
+                                <td data-label="الرصيد / المستحقات">
+                                    <div class="d-flex flex-column gap-1 text-center">
+                                        <!-- رصيد المورد -->
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill"
+                                            title="رصيد المورد">
+                                            <i class="fa-solid fa-wallet me-1"></i>
+                                            <span class="dir-ltr d-inline-block fw-bold">{{ number_format($userData?->balance?->balance ?? 0, 2) }}</span> د.ج
+                                        </span>
+                                        <!-- مستحقات المنصة -->
+                                        @php
+                                            $outstanding = (float) ($userData?->balance?->outstanding_amount ?? 0);
+                                        @endphp
+                                        <span class="badge {{ $outstanding > 0 ? 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25' : 'bg-light text-muted border' }} px-2 py-1 rounded-pill"
+                                            title="مستحقات المنصة">
+                                            <i class="fa-solid fa-file-invoice-dollar me-1"></i>
+                                            <span class="dir-ltr d-inline-block fw-bold">{{ number_format($outstanding, 2) }}</span> د.ج
+                                        </span>
+                                    </div>
+                                </td>
+
                                 <td data-label="العمليات">
                                     <div class="d-flex justify-content-center align-items-center gap-1 action-buttons flex-wrap">
 
@@ -261,7 +282,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="13" class="py-5 text-muted">
+                                <td colspan="14" class="py-5 text-muted empty-cell text-center">
                                     <i class="fa-solid fa-store fs-2 mb-2 d-block opacity-50"></i>
                                     <span>لا يوجد موردين حالياً.</span>
                                 </td>
@@ -290,6 +311,36 @@
 </script>
 
 <style>
+    /* Table-responsive containment */
+    .card-body .table-responsive {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Pagination wrap for all screen sizes */
+    .pagination {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        margin-bottom: 0 !important;
+        gap: 4px;
+    }
+    .pagination .page-item .page-link {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px !important;
+    }
+
+    /* Table general styles for desktop (>= 992px) */
+    @media (min-width: 992px) {
+        #suppliersTable th,
+        #suppliersTable td {
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+    }
+
     /* Pure CSS Responsive Table for #suppliersTable */
     @media (max-width: 991.98px) {
 
@@ -337,6 +388,21 @@
             font-size: 0.85rem;
             margin-left: 1rem;
             flex-shrink: 0;
+            text-align: right;
+        }
+
+        /* Empty state row on mobile */
+        #suppliersTable tbody td.empty-cell,
+        #suppliersTable tbody td[colspan] {
+            display: block !important;
+            text-align: center !important;
+            border: none !important;
+            padding: 2.5rem 1rem !important;
+        }
+
+        #suppliersTable tbody td.empty-cell::before,
+        #suppliersTable tbody td[colspan]::before {
+            display: none !important;
         }
     }
 

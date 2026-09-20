@@ -170,6 +170,7 @@
                             <th class="py-3">التسجيل</th>
                             <th class="py-3">الطلبات</th>
                             <th class="py-3">الاشتراك</th>
+                            <th class="py-3">الرصيد / المستحقات</th>
                             <th class="py-3">العمليات</th>
                         </tr>
                     </thead>
@@ -239,6 +240,26 @@
                                         @endif
                                     </span></td>
 
+                                <td data-label="الرصيد / المستحقات">
+                                    <div class="d-flex flex-column gap-1 text-center">
+                                        <!-- رصيد البائع -->
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill"
+                                            title="رصيد البائع">
+                                            <i class="fa-solid fa-wallet me-1"></i>
+                                            <span class="dir-ltr d-inline-block fw-bold">{{ number_format($userData?->balance?->balance ?? 0, 2) }}</span> د.ج
+                                        </span>
+                                        <!-- مستحقات المنصة -->
+                                        @php
+                                            $outstanding = (float) ($userData?->balance?->outstanding_amount ?? 0);
+                                        @endphp
+                                        <span class="badge {{ $outstanding > 0 ? 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25' : 'bg-light text-muted border' }} px-2 py-1 rounded-pill"
+                                            title="مستحقات المنصة">
+                                            <i class="fa-solid fa-file-invoice-dollar me-1"></i>
+                                            <span class="dir-ltr d-inline-block fw-bold">{{ number_format($outstanding, 2) }}</span> د.ج
+                                        </span>
+                                    </div>
+                                </td>
+
                                 <td data-label="العمليات">
                                     <div
                                         class="d-flex justify-content-center align-items-center gap-1 action-buttons flex-wrap">
@@ -275,7 +296,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="13" class="py-5 text-muted empty-cell text-center">
+                                <td colspan="14" class="py-5 text-muted empty-cell text-center">
                                     <i class="fa-solid fa-store fs-2 mb-2 d-block opacity-50"></i>
                                     <span>لا يوجد بائعين حالياً.</span>
                                 </td>

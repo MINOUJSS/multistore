@@ -17,7 +17,7 @@ class SupplierController extends Controller
     // index
     public function index(Request $request)
     {
-        $query = Supplier::with(['user', 'tenant.domains', 'plan_subscription']);
+        $query = Supplier::with(['user.balance', 'tenant.domains', 'plan_subscription']);
 
         // Full-table search: name, phone, store name, email
         if ($request->filled('search')) {

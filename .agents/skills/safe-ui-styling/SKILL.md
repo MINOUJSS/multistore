@@ -147,3 +147,39 @@ Add the scoped CSS media query (`@media (max-width: 991.98px)`):
 }
 ```
 
+---
+
+## 6. Flexbox Layout Containment & Anti-Overflow Protocol
+
+When tables are placed inside Flexbox containers (`.app-wraper { display: flex; }` and `.content-side { flex: 1; }`), flex items default to `min-width: auto`. This prevents the container from shrinking below the width of a wide table or pagination bar, causing the entire page/window to scroll horizontally.
+
+### A. Containment Rules for Parent Layouts
+Always ensure parent flex containers have explicit containment:
+```css
+.app-wraper {
+    overflow-x: hidden !important;
+}
+
+.content-side {
+    min-width: 0 !important;
+    max-width: 100% !important;
+}
+```
+
+### B. Table Wrapper & Pagination Wrapping
+- Restrict `.table-responsive` inside cards:
+  ```css
+  .card-body .table-responsive {
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+  }
+  ```
+- Always wrap pagination elements with many pages:
+  ```css
+  .pagination {
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+  }
+  ```
