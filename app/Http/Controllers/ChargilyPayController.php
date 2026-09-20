@@ -534,7 +534,7 @@ class ChargilyPayController extends Controller
                     if ($payment) {
                         $wasAlreadyPaid = ($payment->status === 'paid');
                         $status = $checkout->getStatus();
-                        $payment->status = $status === 'paid' ? 'paid' : ($status === 'canceled' ? 'canceled' : 'failed');
+                        $payment->status = $status === 'paid' ? 'paid' : 'failed';
                         $payment->update();
 
                         // معالجة حسب نوع الدفع
