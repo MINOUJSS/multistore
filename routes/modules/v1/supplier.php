@@ -217,6 +217,7 @@ Route::middleware([
                 Route::get('/supplier-panel/billing/invoices', [SupplierBillingController::class, 'index'])->name('billing.invoices');
                 Route::get('/supplier-panel/billing/invoice/create', [SupplierBillingController::class, 'create'])->name('billing.invoice.create');
                 Route::get('/supplier-panel/billing/invoice/{id}', [SupplierBillingController::class, 'show'])->name('billing.invoice.show');
+                Route::get('/supplier-panel/billing/invoice/data/{id}', [SupplierBillingController::class, 'data'])->name('billing.invoice.data');
                 Route::get('/supplier-panel/billing/invoice/view/{id}', [SupplierBillingController::class, 'view'])->name('billing.invoice.view');
                 Route::post('/supplier-panel/billing/pay/invoice/{id}/redirect', [SupplierBillingController::class, 'invoice_redirect'])->name('billing.invoice.redirect');
                 Route::post('/supplier-panel/billing/pay/invoice', [SupplierBillingController::class, 'pay_invoice'])->name('billing.invoice.pay');
