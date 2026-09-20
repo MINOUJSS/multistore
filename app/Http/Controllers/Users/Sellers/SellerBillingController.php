@@ -103,7 +103,7 @@ class SellerBillingController extends Controller
         //     }),
         // ]);
 
-        return view('users.sellers.billing.show', compact('$invoice'));
+        return view('users.sellers.billing.show', compact('invoice'));
     }
 
     public function view($id)
