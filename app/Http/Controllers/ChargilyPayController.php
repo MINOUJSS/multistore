@@ -532,8 +532,9 @@ class ChargilyPayController extends Controller
                     }
 
                     if ($payment) {
+                        $wasAlreadyPaid = ($payment->status === 'paid');
                         $status = $checkout->getStatus();
-                        $payment->status = $status === 'paid' ? 'paid' : 'failed';
+                        $payment->status = $status === 'paid' ? 'paid' : ($status === 'canceled' ? 'canceled' : 'failed');
                         $payment->update();
 
                         // معالجة حسب نوع الدفع
@@ -779,32 +780,45 @@ class ChargilyPayController extends Controller
                                 // end seller actions
                                 break;
                             case 'wallet_topup':
-                                // update balance
-                                $user = get_user_data_from_id($payment->payment_reference_id);
-                                $balance = \App\Models\UserBalance::where('user_id', $user->id)->first();
-                                $balance->balance = $balance->balance + $checkout->getAmount();
-                                $balance->update();
-                                // insert new balance transaction
-                                \App\Models\BalanceTransaction::create([
-                                    'user_id' => $user->id,
-                                    'transaction_type' => 'addition',
-                                    'amount' => $checkout->getAmount(),
-                                    'description' => 'شحن الرصيد بواسطة '.$checkout->getPaymentMethod().' رابط العملية: <a href="'.$checkout->getUrl().'" target="_blank">إضغط هنا</a>',
-                                ]);
-                                // insert this income in financilLedger table
-                                \App\Models\FinancialLedger::create([
-                                    'owner_type' => \App\Models\Admin::class,
-                                    'owner_id' => 1, // أدمن المنصة
+                                // يتم شحن الرصيد حصراً عند نجاح الدفع (paid) ولأول مرة فقط منعاً للتكرار
+                                if ($status === 'paid' && !$wasAlreadyPaid) {
+                                    $user = get_user_data_from_id($payment->payment_reference_id);
+                                    if ($user) {
+                                        \DB::transaction(function () use ($user, $checkout, $payment) {
+                                            $balance = \App\Models\UserBalance::firstOrCreate(
+                                                ['user_id' => $user->id],
+                                                ['balance' => 0, 'outstanding_amount' => 0]
+                                            );
+                                            $balance->balance = $balance->balance + $checkout->getAmount();
+                                            $balance->save();
 
-                                    'source_type' => \App\Models\UserBalance::class,
-                                    'source_id' => $balance->id,
+                                            // إدراج حركة الرصيد الناجحة في جدول balance_transactions
+                                            \App\Models\BalanceTransaction::create([
+                                                'user_id' => $user->id,
+                                                'transaction_type' => 'addition',
+                                                'amount' => $checkout->getAmount(),
+                                                'description' => 'شحن الرصيد بواسطة ' . ($checkout->getPaymentMethod() ?? 'Chargily Pay') . ' - معرف العملية #' . $payment->id . ' رابط العملية: <a href="' . $checkout->getUrl() . '" target="_blank">إضغط هنا</a>',
+                                                'status' => 'completed',
+                                            ]);
 
-                                    'amount' => $checkout->getAmount(),
-                                    'type' => 'income',
-                                    'category' => 'wallet_topup',
-                                    'note' => 'تم شحن الرصيد',
-                                ]);
+                                            // تسجيل الإيراد في السجل المالي للمنصة
+                                            \App\Models\FinancialLedger::create([
+                                                'owner_type' => \App\Models\Admin::class,
+                                                'owner_id' => 1, // أدمن المنصة
+                                                'source_type' => \App\Models\UserBalance::class,
+                                                'source_id' => $balance->id,
+                                                'amount' => $checkout->getAmount(),
+                                                'type' => 'income',
+                                                'category' => 'wallet_topup',
+                                                'note' => 'تم شحن رصيد المحفظة عبر شارجيلي بنجاح',
+                                            ]);
+                                        });
 
+                                        Log::info("Chargily wallet topup successful for user [{$user->id}], amount: {$checkout->getAmount()}");
+                                    }
+                                } else {
+                                    Log::warning("Chargily wallet topup ignored or not paid. Status: [{$status}], Payment ID: [{$payment->id}], WasAlreadyPaid: [" . ($wasAlreadyPaid ? 'yes' : 'no') . "]");
+                                }
                                 break;
 
                             case 'other':
