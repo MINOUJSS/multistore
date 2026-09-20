@@ -154,7 +154,7 @@
         </div>
 
         <div class="card-body p-0">
-            <div class="table-responsive p-0 custom-table-scroll">
+            <div class="table-responsive p-0">
                 <table class="table table-hover align-middle text-center mb-0" id="sellersTable">
                     <thead class="bg-light text-muted small">
                         <tr>
@@ -304,68 +304,25 @@
 </script>
 
 <style>
-    /* =========================================================
-       PURE CSS RESPONSIVE TABLE PROTOCOL (SAFE-UI-STYLING SKILL)
-       #sellersTable Responsive Styling Across All Screen Sizes
-       ========================================================= */
-
-    /* Custom Horizontal Scrollbar for Desktop / Overflow */
-    .custom-table-scroll {
-        -webkit-overflow-scrolling: touch;
-        overflow-x: auto !important;
-        scrollbar-width: thin;
-        scrollbar-color: #cbd5e1 #f8fafc;
-    }
-
-    .custom-table-scroll::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .custom-table-scroll::-webkit-scrollbar-track {
-        background: #f8fafc;
-        border-radius: 4px;
-    }
-
-    .custom-table-scroll::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-    }
-
-    .custom-table-scroll::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-    }
-
-    /* Desktop View (Screens > 1024px) */
-    @media (min-width: 1025px) {
-        #sellersTable {
-            min-width: 1150px;
-        }
-
-        #sellersTable th {
-            font-size: 0.85rem;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-            vertical-align: middle;
-            font-weight: 700;
-        }
-
+    /* Table general styles for desktop (>= 992px) */
+    @media (min-width: 992px) {
+        #sellersTable th,
         #sellersTable td {
             white-space: nowrap;
             vertical-align: middle;
-            font-size: 0.875rem;
         }
     }
 
-    /* Pure CSS Responsive Table for #sellersTable on Tablets & Mobile (Up to 1024.98px) */
-    @media (max-width: 1024.98px) {
+    /* Pure CSS Responsive Table for #sellersTable (< 992px) */
+    @media (max-width: 991.98px) {
 
         #sellersTable,
         #sellersTable tbody,
         #sellersTable tr,
         #sellersTable td {
-            display: block !important;
+            display: block;
             width: 100% !important;
-            box-sizing: border-box !important;
+            box-sizing: border-box;
         }
 
         #sellersTable thead {
@@ -373,29 +330,28 @@
         }
 
         #sellersTable tbody tr {
-            background: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 16px !important;
-            margin-bottom: 1.25rem !important;
-            padding: 0.85rem 1.15rem !important;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+            background: #ffffff;
+            border: 1px solid #e9ecef !important;
+            border-radius: 14px;
+            margin-bottom: 1.25rem;
+            padding: 0.5rem 0.75rem;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         #sellersTable tbody tr:hover {
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
         }
 
         #sellersTable tbody td {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            padding: 0.75rem 0.5rem !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.65rem 0.75rem;
             border: none !important;
-            border-bottom: 1px dashed #e2e8f0 !important;
+            border-bottom: 1px dashed #e9ecef !important;
             white-space: normal !important;
-            text-align: start !important;
-            font-size: 0.9rem;
+            text-align: left;
         }
 
         #sellersTable tbody td:last-child {
@@ -405,17 +361,11 @@
         #sellersTable tbody td::before {
             content: attr(data-label);
             font-weight: 700;
-            color: #64748b;
+            color: #495057;
             font-size: 0.85rem;
             margin-left: 1rem;
             flex-shrink: 0;
             text-align: right;
-        }
-
-        #sellersTable tbody td[data-label="العمليات"] {
-            border-bottom: none !important;
-            justify-content: space-between !important;
-            padding-top: 1rem !important;
         }
 
         /* Empty state row on mobile */
@@ -433,53 +383,6 @@
         }
     }
 
-    /* Tablet 2-Column Grid Layout (768px - 1024.98px) */
-    @media (min-width: 768px) and (max-width: 1024.98px) {
-        #sellersTable tbody tr {
-            display: grid !important;
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 0.5rem 1.25rem !important;
-            padding: 1.25rem !important;
-        }
-
-        #sellersTable tbody td {
-            border-bottom: 1px dashed #f1f5f9 !important;
-        }
-
-        #sellersTable tbody td[data-label="الاسم"] {
-            grid-column: 1 / -1;
-            border-bottom: 1px solid #e2e8f0 !important;
-            padding-bottom: 0.75rem !important;
-            font-size: 1.05rem !important;
-        }
-
-        #sellersTable tbody td[data-label="العمليات"] {
-            grid-column: 1 / -1;
-            border-top: 1px solid #e2e8f0 !important;
-            border-bottom: none !important;
-            padding-top: 1rem !important;
-            justify-content: space-between !important;
-        }
-    }
-
-    /* Mobile Layout (< 767.98px) */
-    @media (max-width: 767.98px) {
-        #sellersTable tbody tr {
-            padding: 0.75rem 0.85rem !important;
-        }
-
-        #sellersTable tbody td {
-            padding: 0.65rem 0.4rem !important;
-        }
-
-        #sellersTable tbody td[data-label="العمليات"] {
-            border-top: 1px dashed #e2e8f0 !important;
-            margin-top: 0.25rem;
-            padding-top: 0.75rem !important;
-        }
-    }
-
-    /* Action Buttons */
     .action-buttons .action-btn {
         width: 36px;
         height: 36px;
