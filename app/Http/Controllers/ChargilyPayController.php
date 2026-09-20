@@ -663,78 +663,104 @@ class ChargilyPayController extends Controller
                                 // end supplier actions
                                 break;
                             case 'new_seller_subscription':
-                                // get order data
-                                $order = SellerPlanOrder::where('seller_id', $payment->payment_reference_id)->where('status', 'pending')->first();
-                                // update order status
-                                if ($order) {
-                                    $order->status = 'approved';
-                                    $order->payment_status = 'paid';
-                                    $order->update();
-                                }
-                                // update subscription status
-                                $subscription = SellerPlanSubscription::find($payment->payment_reference_id);
-                                if ($subscription) {
-                                    $subscription->plan_id = $order->plan_id;
-                                    $subscription->duration = $order->duration;
-                                    $subscription->price = $checkout->getAmount();
-                                    $subscription->discount = 0;
-                                    $subscription->payment_method = $checkout->getPaymentMethod() ?? $subscription->payment_method ?? 'chargily';
-                                    $subscription->payment_status = $status;
-                                    $subscription->subscription_start_date = now();
-                                    $subscription->subscription_end_date = now()->addDays($order->duration);
-                                    $subscription->status = $status === 'paid' ? 'paid' : 'free';
-                                    $subscription->update();
-                                    // insert this income in financilLedger table
-                                    \App\Models\FinancialLedger::create([
-                                        'owner_type' => \App\Models\Admin::class,
-                                        'owner_id' => 1, // أدمن المنصة
+                                // get pending order data
+                                $order = SellerPlanOrder::where('seller_id', $payment->payment_reference_id)->where('status', 'pending')->latest()->first();
 
-                                        'source_type' => SellerPlanSubscription::class,
-                                        'source_id' => $subscription->id,
+                                if ($status === 'paid' && !$wasAlreadyPaid) {
+                                    \DB::transaction(function () use ($order, $payment, $checkout, $status) {
+                                        // update order status
+                                        if ($order) {
+                                            $order->status = 'approved';
+                                            $order->payment_status = 'paid';
+                                            $order->payment_method = $checkout->getPaymentMethod() ?? $order->payment_method ?? 'chargily';
+                                            $order->update();
+                                        }
+                                        // update subscription status
+                                        $subscription = SellerPlanSubscription::find($payment->payment_reference_id);
+                                        if ($subscription) {
+                                            $subscription->plan_id = $order ? $order->plan_id : $subscription->plan_id;
+                                            $subscription->duration = $order ? $order->duration : $subscription->duration;
+                                            $subscription->price = $checkout->getAmount();
+                                            $subscription->discount = 0;
+                                            $subscription->payment_method = $checkout->getPaymentMethod() ?? $subscription->payment_method ?? 'chargily';
+                                            $subscription->payment_status = 'paid';
+                                            $subscription->subscription_start_date = now();
+                                            $subscription->subscription_end_date = now()->addDays($order ? $order->duration : 30);
+                                            $subscription->status = 'paid';
+                                            $subscription->update();
 
-                                        'amount' => $checkout->getAmount(),
-                                        'type' => 'income',
-                                        'category' => 'seller_subscription',
-                                        'note' => 'تم دفع اشتراك بائع',
-                                    ]);
+                                            // insert this income in financialLedger table
+                                            \App\Models\FinancialLedger::create([
+                                                'owner_type' => \App\Models\Admin::class,
+                                                'owner_id' => 1, // أدمن المنصة
+
+                                                'source_type' => SellerPlanSubscription::class,
+                                                'source_id' => $subscription->id,
+
+                                                'amount' => $checkout->getAmount(),
+                                                'type' => 'income',
+                                                'category' => 'seller_subscription',
+                                                'note' => 'تم دفع اشتراك بائع جديد',
+                                            ]);
+                                        }
+                                    });
+                                } elseif (in_array($status, ['canceled', 'failed', 'expired'])) {
+                                    if ($order) {
+                                        $order->status = 'cancelled';
+                                        $order->payment_status = 'failed';
+                                        $order->update();
+                                    }
                                 }
                                 break;
 
                             case 'seller_subscription':
-                                // get order data
-                                $order = SellerPlanOrder::where('seller_id', $payment->payment_reference_id)->where('status', 'pending')->first();
-                                // update order status
-                                if ($order) {
-                                    $order->status = 'approved';
-                                    $order->payment_status = 'paid';
-                                    $order->update();
-                                }
-                                // update subscription status
-                                $subscription = SellerPlanSubscription::find($payment->payment_reference_id);
-                                if ($subscription) {
-                                    $subscription->plan_id = $order->plan_id;
-                                    $subscription->duration = $order->duration;
-                                    $subscription->price = $checkout->getAmount();
-                                    $subscription->discount = 0;
-                                    $subscription->payment_method = $checkout->getPaymentMethod() ?? $subscription->payment_method ?? 'chargily';
-                                    $subscription->payment_status = $status;
-                                    $subscription->subscription_start_date = now();
-                                    $subscription->subscription_end_date = now()->addDays($order->duration);
-                                    $subscription->status = $status === 'paid' ? 'paid' : 'free';
-                                    $subscription->update();
-                                    // insert this income in financilLedger table
-                                    \App\Models\FinancialLedger::create([
-                                        'owner_type' => \App\Models\Admin::class,
-                                        'owner_id' => 1, // أدمن المنصة
+                                // get pending order data
+                                $order = SellerPlanOrder::where('seller_id', $payment->payment_reference_id)->where('status', 'pending')->latest()->first();
 
-                                        'source_type' => SellerPlanSubscription::class,
-                                        'source_id' => $subscription->id,
+                                if ($status === 'paid' && !$wasAlreadyPaid) {
+                                    \DB::transaction(function () use ($order, $payment, $checkout, $status) {
+                                        // update order status
+                                        if ($order) {
+                                            $order->status = 'approved';
+                                            $order->payment_status = 'paid';
+                                            $order->payment_method = $checkout->getPaymentMethod() ?? $order->payment_method ?? 'chargily';
+                                            $order->update();
+                                        }
+                                        // update subscription status
+                                        $subscription = SellerPlanSubscription::find($payment->payment_reference_id);
+                                        if ($subscription) {
+                                            $subscription->plan_id = $order ? $order->plan_id : $subscription->plan_id;
+                                            $subscription->duration = $order ? $order->duration : $subscription->duration;
+                                            $subscription->price = $checkout->getAmount();
+                                            $subscription->discount = 0;
+                                            $subscription->payment_method = $checkout->getPaymentMethod() ?? $subscription->payment_method ?? 'chargily';
+                                            $subscription->payment_status = 'paid';
+                                            $subscription->subscription_start_date = now();
+                                            $subscription->subscription_end_date = now()->addDays($order ? $order->duration : 30);
+                                            $subscription->status = 'paid';
+                                            $subscription->update();
 
-                                        'amount' => $checkout->getAmount(),
-                                        'type' => 'income',
-                                        'category' => 'seller_subscription',
-                                        'note' => 'تم دفع اشتراك بائع',
-                                    ]);
+                                            // insert this income in financialLedger table
+                                            \App\Models\FinancialLedger::create([
+                                                'owner_type' => \App\Models\Admin::class,
+                                                'owner_id' => 1, // أدمن المنصة
+
+                                                'source_type' => SellerPlanSubscription::class,
+                                                'source_id' => $subscription->id,
+
+                                                'amount' => $checkout->getAmount(),
+                                                'type' => 'income',
+                                                'category' => 'seller_subscription',
+                                                'note' => 'تم دفع اشتراك بائع',
+                                            ]);
+                                        }
+                                    });
+                                } elseif (in_array($status, ['canceled', 'failed', 'expired'])) {
+                                    if ($order) {
+                                        $order->status = 'cancelled';
+                                        $order->payment_status = 'failed';
+                                        $order->update();
+                                    }
                                 }
                                 break;
                             case 'seller_order':
