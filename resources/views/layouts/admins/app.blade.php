@@ -39,11 +39,7 @@
         <div class="content-side">
             @yield('navbar')
 
-            <!-- Start Content-->
-            <div class="content">
-                @yield('content')
-            </div>
-            <!-- End Content-->
+            @yield('content')
 
             <!-- Footer -->
             <div class="footer">
