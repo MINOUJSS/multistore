@@ -88,22 +88,22 @@ class SellerBillingController extends Controller
     {
         $invoice = UserInvoice::with('details')->findOrFail($id);
 
-        return response()->json([
-            'invoice_number' => $invoice->invoice_number,
-            'invoice_date' => $invoice->created_at->format('Y-m-d'),
-            'total_amount' => $invoice->amount,
-            'status' => $invoice->status,
-            'payment_method' => $invoice->payment_method,
-            'details' => $invoice->details->map(function ($detail) {
-                return [
-                    'item_name' => $detail->item_name,
-                    'quantity' => $detail->quantity,
-                    'unit_price' => $detail->unit_price,
-                ];
-            }),
-        ]);
+        // return response()->json([
+        //     'invoice_number' => $invoice->invoice_number,
+        //     'invoice_date' => $invoice->created_at->format('Y-m-d'),
+        //     'total_amount' => $invoice->amount,
+        //     'status' => $invoice->status,
+        //     'payment_method' => $invoice->payment_method,
+        //     'details' => $invoice->details->map(function ($detail) {
+        //         return [
+        //             'item_name' => $detail->item_name,
+        //             'quantity' => $detail->quantity,
+        //             'unit_price' => $detail->unit_price,
+        //         ];
+        //     }),
+        // ]);
 
-        // return view('users.sellers.billing.show', compact('data'));
+        return view('users.sellers.billing.show', compact('$invoice'));
     }
 
     public function view($id)
