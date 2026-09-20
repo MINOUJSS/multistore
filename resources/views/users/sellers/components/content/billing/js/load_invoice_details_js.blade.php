@@ -4,7 +4,7 @@
         const container = document.getElementById('invoice-details-content');
         container.innerHTML = `<div class="text-center">جاري التحميل...</div>`;
 
-        fetch(`/seller-panel/billing/invoice/${invoiceId}`)
+        fetch(`/seller-panel/billing/invoice/data/${invoiceId}`)
             .then(response => response.json())
             .then(data => {
                 let statusBadge = data.status === 'paid' ? 'bg-success' : 'bg-warning';
