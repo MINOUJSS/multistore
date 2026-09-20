@@ -304,6 +304,27 @@
 </script>
 
 <style>
+    /* Table-responsive containment */
+    .card-body .table-responsive {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Pagination wrap for all screen sizes */
+    .pagination {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        margin-bottom: 0 !important;
+        gap: 4px;
+    }
+    .pagination .page-item .page-link {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px !important;
+    }
+
     /* Table general styles for desktop (>= 992px) */
     @media (min-width: 992px) {
         #sellersTable th,

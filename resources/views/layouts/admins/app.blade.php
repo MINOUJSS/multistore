@@ -31,6 +31,15 @@
     <title>@yield('title')</title>
     <!--page style-->
     @yield('style')
+    <style>
+        .app-wraper {
+            overflow-x: hidden !important;
+        }
+        .content-side {
+            min-width: 0 !important;
+            max-width: 100% !important;
+        }
+    </style>
 </head>
 
 <body>
