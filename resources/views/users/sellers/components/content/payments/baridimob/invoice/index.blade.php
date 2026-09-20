@@ -85,6 +85,9 @@
                         <i class="fa-solid fa-circle-check me-1"></i> تم تسديد هذه الفاتورة وتأكيدها بنجاح.
                     </div>
                 @else
+                    <!-- بطاقة حساب بريدي موب المعتمد -->
+                    @include('users.sellers.components.content.payments.inc.admin_account_card', ['type' => 'baridimob'])
+
                     <form action="{{ route('seller.billing.invoice.pay') }}" method="POST" enctype="multipart/form-data" class="text-start">
                         @csrf
                         <input type="hidden" name="payment_method" value="baridi-mob">

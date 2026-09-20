@@ -84,6 +84,9 @@
                     </div>
                 </div>
 
+                <!-- بطاقة الحساب البريدي المعتمد للأدمن -->
+                @include('users.sellers.components.content.payments.inc.admin_account_card', ['type' => 'ccp'])
+
                 <!-- نموذج الدفع ورفع الإثبات -->
                 <form action="{{ route('seller.new.subscription.payment.ccp') }}" method="POST" enctype="multipart/form-data" class="text-start">
                     @csrf

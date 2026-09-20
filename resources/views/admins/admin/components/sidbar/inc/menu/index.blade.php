@@ -16,7 +16,7 @@
                 @endif
             </a>
         </div>
-        @if (auth()->guard('admin')->user()->type == 'admin')
+        @if (auth()->guard('admin')->check() && auth()->guard('admin')->user()->type == 'admin')
         <div class="item"><a href="{{ route('admin.financial.dashboard') }}"><i class="fa-solid fa-money-bill"></i> المالية</a></div>
         <div class="item">
             <a class="sub-btn" href="#"><i class="fa-solid fa-users-gear"></i>إدارة الموظفين
@@ -85,16 +85,23 @@
 
             </div>
         </div>
-        <div class="item">
-            <a class="sub-btn" href="#"><i class="fa-solid fa-money-bill-wave"></i> المدفوعات <i
-                    class="fa-solid fa-angle-left dropdown"></i></a>
-            <div class="sub-menu">
+        <div class="item {{ request()->routeIs('admin.bank_accounts.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.bank_accounts.index') }}">
+                <i class="fa-solid fa-building-columns"></i> الحسابات البنكية
+            </a>
+        </div>
+        <div class="item {{ request()->routeIs('admin.payments.*') || request()->routeIs('admin.bank_accounts.*') ? 'active' : '' }}">
+            <a class="sub-btn {{ request()->routeIs('admin.payments.*') || request()->routeIs('admin.bank_accounts.*') ? 'active' : '' }}" href="#"><i class="fa-solid fa-money-bill-wave"></i> المدفوعات <i
+                    class="fa-solid fa-angle-left dropdown {{ request()->routeIs('admin.bank_accounts.*') ? 'rotate' : '' }}"></i></a>
+            <div class="sub-menu" style="{{ request()->routeIs('admin.bank_accounts.*') ? 'display: block;' : '' }}">
                 <a class="sub-item" href="{{ route('admin.payments.recharge_requests') }}"><i
                         class="fa-solid fa-wallet"></i> طلبات شحن الرصيد</a>
                 <a class="sub-item" href="{{ route('admin.payments.invoices_payments') }}"><i
                         class="fa-solid fa-file-invoice-dollar"></i>تسديد الفواتير</a>
                 <a class="sub-item" href="{{ route('admin.payments.subscribes_payments') }}"><i
                         class="fa-solid fa-calendar-check"></i> تسديد الإشتراكات</a>
+                <a class="sub-item {{ request()->routeIs('admin.bank_accounts.*') ? 'text-white fw-bold bg-white bg-opacity-25' : '' }}" href="{{ route('admin.bank_accounts.index') }}"><i
+                        class="fa-solid fa-building-columns"></i> الحسابات البنكية للمنصة</a>
             </div>
         </div>
         <div class="item">

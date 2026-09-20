@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admins\Admin\AdminBankAccountController;
 use App\Http\Controllers\Admins\Admin\AdminController;
 use App\Http\Controllers\Admins\Admin\AdminDisputeController;
 use App\Http\Controllers\Admins\Admin\AdminEmployeeController;
@@ -117,6 +118,16 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::patch('/admin/payments/suppliers/subscribe/approve/{id}', [PaymentsController::class, 'approve_suppliers_subscribe_payment'])->name('payments.suppliers.subscribe.approve');
                 Route::get('/ah-admin/payments/sellers/subscribes-payments', [PaymentsController::class, 'sellers_subscribes_payments'])->name('payments.sellers.subscribes_payments');
                 Route::patch('/admin/payments/sellers/subscribe/approve/{id}', [PaymentsController::class, 'approve_sellers_subscribe_payment'])->name('payments.sellers.subscribe.approve');
+
+                // Admin Platform Bank Accounts (CCP, BaridiMob, Algerian Banks)
+                Route::prefix('/ah-admin/bank-accounts')->name('bank_accounts.')->group(function () {
+                    Route::get('/', [AdminBankAccountController::class, 'index'])->name('index');
+                    Route::post('/', [AdminBankAccountController::class, 'store'])->name('store');
+                    Route::get('/{id}/edit', [AdminBankAccountController::class, 'edit'])->name('edit');
+                    Route::put('/{id}', [AdminBankAccountController::class, 'update'])->name('update');
+                    Route::delete('/{id}', [AdminBankAccountController::class, 'destroy'])->name('destroy');
+                    Route::patch('/{id}/toggle-status', [AdminBankAccountController::class, 'toggleStatus'])->name('toggle_status');
+                });
                 // disputes routes
                 Route::get('/ah-admin/payment-proof/disputes', [AdminDisputeController::class, 'index'])->name('payment_proof.disputes');
 

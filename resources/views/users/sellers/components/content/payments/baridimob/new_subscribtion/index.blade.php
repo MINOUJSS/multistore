@@ -84,6 +84,9 @@
                     </div>
                 </div>
 
+                <!-- بطاقة حساب بريدي موب المعتمد -->
+                @include('users.sellers.components.content.payments.inc.admin_account_card', ['type' => 'baridimob'])
+
                 <!-- نموذج الدفع ورفع الإثبات -->
                 <form action="{{ route('seller.new.subscription.payment.baridimob') }}" method="POST" enctype="multipart/form-data" class="text-start">
                     @csrf

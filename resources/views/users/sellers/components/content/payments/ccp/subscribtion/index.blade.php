@@ -49,15 +49,10 @@
                     يرجى إرسال الحوالة البريدية عبر أقرب مكتب بريد أو تطبيق BaridiMob إلى البيانات التالية:
                 </p>
 
+                <!-- بطاقة الحساب البريدي المعتمد للأدمن -->
+                @include('users.sellers.components.content.payments.inc.admin_account_card', ['type' => 'ccp'])
+
                 <div class="text-start bg-light-subtle rounded-3 p-3.5 border">
-                    <div class="d-flex justify-content-between align-items-center mb-2.5 pb-2 border-bottom">
-                        <span class="text-muted small">رقم الحساب البريدي:</span>
-                        <span class="fw-bold text-dark font-monospace fs-6">12345.67.89</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2.5 pb-2 border-bottom">
-                        <span class="text-muted small">اسم الحساب:</span>
-                        <span class="fw-bold text-dark">الشركة الرقمية</span>
-                    </div>
                     <div class="d-flex justify-content-between align-items-center mb-2.5 pb-2 border-bottom">
                         <span class="text-muted small">المبلغ الواجب دفعه:</span>
                         <span class="fw-bold text-success fs-6">

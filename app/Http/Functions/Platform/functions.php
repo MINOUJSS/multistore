@@ -235,11 +235,43 @@ function getYoutubeVideoId($url)
 
     return $matches[1] ?? null;
 }
-// vimeo
 function get_vimeo_id(string $url): ?string
 {
     // Match both "vimeo.com/123456789" and "player.vimeo.com/video/123456789"
     preg_match('/(?:vimeo\.com\/(?:video\/)?)([0-9]+)/', $url, $matches);
 
     return $matches[1] ?? null;
+}
+
+/**
+ * Get active admin bank accounts
+ *
+ * @param string|null $type (baridimob, ccp, bank, or null for all)
+ * @return \Illuminate\Database\Eloquent\Collection
+ */
+function get_admin_bank_accounts($type = null)
+{
+    $query = \App\Models\AdminBankAccount::active()
+        ->orderBy('is_default', 'desc')
+        ->orderBy('id', 'asc');
+
+    if ($type) {
+        $query->where('account_type', $type);
+    }
+
+    return $query->get();
+}
+
+/**
+ * Get default or first active admin bank account for a specific type
+ *
+ * @param string $type (baridimob, ccp, bank)
+ * @return \App\Models\AdminBankAccount|null
+ */
+function get_default_admin_bank_account($type)
+{
+    return \App\Models\AdminBankAccount::active()
+        ->where('account_type', $type)
+        ->orderBy('is_default', 'desc')
+        ->first();
 }

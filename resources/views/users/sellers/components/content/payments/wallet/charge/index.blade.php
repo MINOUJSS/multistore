@@ -264,7 +264,22 @@
                     <i class="fa-solid fa-chevron-left text-muted"></i>
                 </button>
 
-                <!-- طريقة 4: PayPal -->
+                @php
+                    $activeCommercialBanks = get_admin_bank_accounts('bank');
+                @endphp
+                @if($activeCommercialBanks->isNotEmpty())
+                <!-- طريقة 4: الحسابات البنكية الوطنية -->
+                <button class="btn btn-outline-primary w-100 py-3 mb-3 rounded-3 fw-bold d-flex align-items-center justify-content-between px-3"
+                    data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#bankTransferModal">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-landmark fs-5 text-primary"></i>
+                        <span>الدفع عبر البنوك الوطنية ({{ $activeCommercialBanks->pluck('bank_name')->take(2)->join(', ') }})</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-left text-muted"></i>
+                </button>
+                @endif
+
+                <!-- طريقة 5: PayPal -->
                 <button class="btn btn-outline-secondary w-100 py-3 mb-0 rounded-3 fw-bold d-flex align-items-center justify-content-between px-3 opacity-50 cursor-not-allowed" disabled>
                     <div class="d-flex align-items-center gap-2">
                         <i class="fab fa-paypal fs-5"></i>
@@ -335,6 +350,9 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
             </div>
             <div class="modal-body p-4 bg-white text-start">
+                <!-- بطاقة الحساب البنكي المعتمد للأدمن -->
+                @include('users.sellers.components.content.payments.inc.admin_account_card', ['type' => 'baridimob'])
+
                 <form action="{{ route('seller.wallet.recharge.baridimob') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3.5">
@@ -379,6 +397,9 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
             </div>
             <div class="modal-body p-4 bg-white text-start">
+                <!-- بطاقة الحساب البريدي المعتمد للأدمن -->
+                @include('users.sellers.components.content.payments.inc.admin_account_card', ['type' => 'ccp'])
+
                 <form action="{{ route('seller.wallet.recharge.ccp') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3.5">
@@ -400,6 +421,64 @@
                         class="btn btn-warning text-dark w-100 rounded-3 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-2">
                         <i class="fa-solid fa-paper-plane"></i>
                         <span>إرسال طلب الشحن</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: شحن الرصيد عبر التحويل البنكي الوطني -->
+<div class="modal fade" id="bankTransferModal" tabindex="-1" aria-labelledby="bankTransferModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header text-white py-3.5 px-4"
+                style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="avatar avatar-sm rounded-3 bg-white bg-opacity-20 text-white"
+                        style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-landmark"></i>
+                    </span>
+                    <h5 class="modal-title fw-bold mb-0 fs-6 text-white" id="bankTransferModalLabel">شحن الرصيد عبر التحويل البنكي (البنوك الوطنية)</h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+            </div>
+            <div class="modal-body p-4 bg-white text-start">
+                <p class="text-muted small mb-3">يرجى تحويل المبلغ المطلوب إلى أحد حساباتنا البنكية التالية ثم رفع إشعار التحويل البنكي أدناه:</p>
+
+                <!-- قائمة الحسابات البنكية المعتمدة للأدمن -->
+                @php
+                    $commercialBanksList = get_admin_bank_accounts('bank');
+                @endphp
+                @forelse($commercialBanksList as $bankAcc)
+                    @include('users.sellers.components.content.payments.inc.admin_account_card', ['account' => $bankAcc])
+                @empty
+                    @include('users.sellers.components.content.payments.inc.admin_account_card', ['type' => 'bank'])
+                @endforelse
+
+                <form action="{{ route('seller.wallet.recharge.ccp') }}" method="POST" enctype="multipart/form-data" class="mt-3 pt-3 border-top">
+                    @csrf
+                    <input type="hidden" name="description" value="شحن عبر التحويل البنكي الوطني">
+
+                    <div class="mb-3.5">
+                        <label for="amount_bank" class="form-label fw-bold text-dark small">المبلغ المطلوب شحنه (د.ج) <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted"><i class="fa-solid fa-coins"></i></span>
+                            <input type="number" name="amount" id="amount_bank" class="form-control rounded-end-3 shadow-none border-start-0 text-center fw-bold fs-5"
+                                min="50" step="10" placeholder="مثال: 5000" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="proof_bank" class="form-label fw-bold text-dark small">إرفاق وصل / إشعار التحويل البنكي <span class="text-danger">*</span></label>
+                        <input type="file" name="payment_proof" id="proof_bank" class="form-control rounded-3 shadow-none" accept="image/*,application/pdf" required>
+                        <small class="text-muted d-block mt-1 fs-7">الصيغ المقبولة: صورة (JPG, PNG) أو ملف PDF</small>
+                    </div>
+
+                    <button type="submit"
+                        class="btn btn-primary w-100 rounded-3 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>إرسال طلب الشحن البنكي</span>
                     </button>
                 </form>
             </div>

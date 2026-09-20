@@ -45,9 +45,12 @@
                         class="img-fluid" style="max-height: 90px; object-fit: contain;">
                 </div>
                 <h5 class="fw-bold text-dark mb-2">تعليمات الدفع عبر بريدي موب</h5>
-                <p class="text-muted small mb-4">
-                    يرجى الدفع عبر تطبيق BaridiMob ورفع صورة الإيصال أو ملف PDF أدناه لتثبيت الترقية.
+                <p class="text-muted small mb-3">
+                    يرجى تحويل المبلغ إلى الحساب الموضح أدناه ثم رفع إيصال التحويل لتأكيد الترقية:
                 </p>
+
+                <!-- بطاقة حساب بريدي موب المعتمد -->
+                @include('users.sellers.components.content.payments.inc.admin_account_card', ['type' => 'baridimob'])
 
                 <div class="text-start bg-light-subtle rounded-3 p-3.5 border">
                     <h6 class="fw-bold text-plum mb-3 border-bottom pb-2">
