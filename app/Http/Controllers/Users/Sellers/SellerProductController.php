@@ -371,6 +371,48 @@ class SellerProductController extends Controller
     public function edit($product_id)
     {
         $product = SellerProducts::find($product_id);
+        if (!$product) {
+            return response()->json(['status' => '404', 'message' => 'Product not found'], 404);
+        }
+
+        $digital_file_info = null;
+        if ($product->product_type === 'digital') {
+            $has_file = false;
+            $file_name = null;
+            $file_size = null;
+            $file_ext = null;
+            $file_exists = false;
+            $download_url = null;
+
+            if (!empty($product->file)) {
+                $has_file = true;
+                $file_name = basename($product->file);
+                $file_ext = strtolower(pathinfo($product->file, PATHINFO_EXTENSION));
+                $disk = Storage::disk('seller');
+                if ($disk->exists($product->file)) {
+                    $file_exists = true;
+                    $bytes = $disk->size($product->file);
+                    if ($bytes >= 1048576) {
+                        $file_size = number_format($bytes / 1048576, 2) . ' MB';
+                    } elseif ($bytes >= 1024) {
+                        $file_size = number_format($bytes / 1024, 2) . ' KB';
+                    } else {
+                        $file_size = $bytes . ' Bytes';
+                    }
+                    $download_url = route('seller.product.download_test', $product->id);
+                }
+            }
+
+            $digital_file_info = [
+                'has_file' => $has_file,
+                'file_exists' => $file_exists,
+                'file_name' => $file_name,
+                'file_size' => $file_size,
+                'file_ext' => $file_ext,
+                'download_url' => $download_url,
+            ];
+        }
+
         $product_images = SellerProductImages::where('product_id', $product_id)->get();
         $product_variations = SellerProductVariations::where('product_id', $product_id)->get();
         $product_discount = SellerProductDiscounts::where('product_id', $product_id)->first();
@@ -381,6 +423,7 @@ class SellerProductController extends Controller
         return response()->json([
             'status' => '200',
             'product' => $product,
+            'digital_file_info' => $digital_file_info,
             'product_images' => $product_images,
             'product_variations' => $product_variations,
             'product_discount' => $product_discount,
@@ -389,6 +432,24 @@ class SellerProductController extends Controller
             'product_review' => $product_review,
             'product_videos' => $product->videos,
         ]);
+    }
+
+    // download test file for seller
+    public function downloadTestFile($id)
+    {
+        $seller_id = get_seller_data(auth()->user()->tenant_id)->id;
+        $product = SellerProducts::where('id', $id)->where('seller_id', $seller_id)->firstOrFail();
+
+        if (!$product->file) {
+            abort(404, 'لا يوجد ملف رقمي مرفق بهذا المنتج');
+        }
+
+        $disk = Storage::disk('seller');
+        if (!$disk->exists($product->file)) {
+            abort(404, 'الملف غير موجود في خادم التخزين، يرجى إعادة رفع الملف');
+        }
+
+        return $disk->download($product->file, basename($product->file));
     }
 
     public function update(Request $request, $product_id)

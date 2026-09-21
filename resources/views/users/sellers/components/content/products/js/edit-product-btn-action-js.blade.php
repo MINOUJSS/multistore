@@ -96,6 +96,59 @@
                 );
                 //------------------------------------------------
 
+                // معالجة بيانات وحالة الملف الرقمي الحالي للمنتج
+                if (product_type === 'digital') {
+                    let fileInfo = response.digital_file_info;
+                    if (fileInfo && fileInfo.has_file && fileInfo.file_exists) {
+                        $('#edit_digital_file_info_box').show();
+                        $('#edit_digital_file_missing_box').hide();
+                        $('#edit_digital_status_badge')
+                            .removeClass('bg-danger-subtle text-danger border-danger-subtle')
+                            .addClass('bg-success-subtle text-success border-success-subtle')
+                            .html('<i class="fa-solid fa-check-circle me-1"></i> متوفر على الخادم');
+
+                        $('#edit_digital_file_name').text(fileInfo.file_name || 'ملف رقمي').attr('title', fileInfo.file_name || '');
+                        $('#edit_digital_file_size').text(fileInfo.file_size || 'حجم غير معروف');
+                        $('#edit_digital_file_type').text((fileInfo.file_ext || 'ملف').toUpperCase());
+
+                        // تخصيص الأيقونة واللون المناسب لنوع الملف
+                        let ext = (fileInfo.file_ext || '').toLowerCase();
+                        let iconClass = 'fa-solid fa-file fa-2x text-secondary';
+                        if (['pdf'].includes(ext)) {
+                            iconClass = 'fa-solid fa-file-pdf fa-2x text-danger';
+                        } else if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) {
+                            iconClass = 'fa-solid fa-file-zipper fa-2x text-warning';
+                        } else if (['doc', 'docx'].includes(ext)) {
+                            iconClass = 'fa-solid fa-file-word fa-2x text-primary';
+                        } else if (['xls', 'xlsx', 'csv'].includes(ext)) {
+                            iconClass = 'fa-solid fa-file-excel fa-2x text-success';
+                        } else if (['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(ext)) {
+                            iconClass = 'fa-solid fa-file-video fa-2x text-info';
+                        } else if (['mp3', 'wav', 'ogg', 'm4a'].includes(ext)) {
+                            iconClass = 'fa-solid fa-file-audio fa-2x text-primary';
+                        } else if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext)) {
+                            iconClass = 'fa-solid fa-file-image fa-2x text-success';
+                        } else if (['ppt', 'pptx'].includes(ext)) {
+                            iconClass = 'fa-solid fa-file-powerpoint fa-2x text-warning';
+                        }
+
+                        $('#edit_digital_file_icon').attr('class', iconClass);
+                        $('#edit_digital_file_download_btn')
+                            .attr('href', fileInfo.download_url || '#')
+                            .removeClass('disabled opacity-50');
+                    } else {
+                        $('#edit_digital_file_info_box').hide();
+                        $('#edit_digital_file_missing_box').show();
+                        $('#edit_digital_status_badge')
+                            .removeClass('bg-success-subtle text-success border-success-subtle')
+                            .addClass('bg-danger-subtle text-danger border-danger-subtle')
+                            .html('<i class="fa-solid fa-circle-xmark me-1"></i> غير متوفر');
+                        $('#edit_digital_file_download_btn')
+                            .attr('href', '#')
+                            .addClass('disabled opacity-50');
+                    }
+                }
+
                 //product variation variables
                 var product_variation = document.getElementById("product_variation");
                 //end product variation variables

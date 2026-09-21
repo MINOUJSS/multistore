@@ -1002,31 +1002,103 @@
                             </div>
                         </div>
                         <section id="edit_digital_file_section" style="display: none;">
-                            <div class="col-12 bg-seller-header rounded p-2 text-center">الملف الرقمي</div>
-                            <div class="row">
+                            <div class="col-12 bg-seller-header rounded p-2 text-center mb-3">الملف الرقمي</div>
+                            <div class="row g-3">
+                                <!-- بطاقة معلومات الملف الرقمي الحالي واختبار التحميل -->
                                 <div class="col-md-6">
-                                    <ul class="p-3" style="float:right;">
-                                        <li>الملف الرئيسي</li>
-                                        <li>الصيغ المسموحة: ZIP, PDF, MP4</li>
-                                        <li>الحجم الأقصى: 50MB</li>
-                                    </ul>
+                                    <div class="card h-100 border shadow-sm rounded-3 overflow-hidden bg-white" id="edit_digital_file_card_container">
+                                        <div class="card-header bg-light py-2 px-3 d-flex align-items-center justify-content-between border-bottom">
+                                            <span class="fw-bold text-dark small d-flex align-items-center gap-2">
+                                                <i class="fa-solid fa-file-shield text-primary"></i>
+                                                <span>الملف الرقمي الحالي للمنتج</span>
+                                            </span>
+                                            <span id="edit_digital_status_badge" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 small">
+                                                <i class="fa-solid fa-check-circle me-1"></i> متوفر
+                                            </span>
+                                        </div>
 
-                                    <div id="edit_digital_dropzone1" onclick="edit_browsDigitalFile()"
-                                        onchange="edit_previewDigitalFile(event)">
-                                        {{-- <i class="fa fa-cloud-upload"></i> --}}
-                                        <input type="file" name="digital_file" class="form-control"
-                                            id="editDigitalFile" accept=".zip,.pdf,.mp4" style="display: none;">
-                                        <input type="hidden" name="digital_temp_id" id="edit_digital_temp_id">
+                                        <div class="card-body p-3 text-start">
+                                            <!-- حالة توفر الملف -->
+                                            <div id="edit_digital_file_info_box">
+                                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3 border mb-3">
+                                                    <div id="edit_digital_file_icon_wrapper" class="d-flex align-items-center justify-content-center rounded-3 bg-white shadow-sm p-2 border" style="width: 55px; height: 55px; min-width: 55px;">
+                                                        <i id="edit_digital_file_icon" class="fa-solid fa-file-zipper fa-2x text-warning"></i>
+                                                    </div>
+                                                    <div class="overflow-hidden flex-grow-1">
+                                                        <h6 id="edit_digital_file_name" class="fw-bold text-dark mb-1 text-truncate" title="اسم الملف">
+                                                            -
+                                                        </h6>
+                                                        <div class="d-flex align-items-center gap-2 text-muted small">
+                                                            <span id="edit_digital_file_size" class="fw-semibold">-</span>
+                                                            <span>•</span>
+                                                            <span id="edit_digital_file_type" class="badge bg-secondary-subtle text-secondary px-2 py-0.5 rounded-pill text-uppercase">-</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- زر اختبار التحميل -->
+                                                <div class="mb-3">
+                                                    <a href="#" id="edit_digital_file_download_btn" target="_blank" class="btn btn-outline-success fw-bold w-100 py-2 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                                        <i class="fa-solid fa-cloud-arrow-down fs-5"></i>
+                                                        <span>اختبار تحميل الملف الرقمي</span>
+                                                    </a>
+                                                </div>
+
+                                                <!-- توجيهات مهمة للبائع -->
+                                                <div class="alert alert-warning border-0 shadow-none p-2.5 mb-0 rounded-3 d-flex align-items-start gap-2 small">
+                                                    <i class="fa-solid fa-triangle-exclamation text-warning fs-6 mt-0.5 flex-shrink-0"></i>
+                                                    <div class="text-dark leading-normal" style="font-size: 0.82rem;">
+                                                        <strong>توجيه مهم جداً للبائع:</strong> يرجى الضغط على زر <span class="fw-bold text-success">"اختبار تحميل الملف الرقمي"</span> للتأكد من أن الملف سليم وقابل للتنزيل من خادم التخزين. 
+                                                        <span class="text-danger fw-bold d-block mt-1">تنبيه: إذا لم تتمكن من تحميل الملف بنفسك، فلن يتمكن زبائنك من تحميله بعد الشراء وسيتعطل طلبهم!</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- حالة عدم وجود ملف (حماية) -->
+                                            <div id="edit_digital_file_missing_box" style="display: none;">
+                                                <div class="alert alert-danger border-0 shadow-sm rounded-3 p-3 mb-0 text-center">
+                                                    <div class="mb-2">
+                                                        <i class="fa-solid fa-file-circle-xmark fa-3x text-danger"></i>
+                                                    </div>
+                                                    <h6 class="fw-bold text-danger mb-1">لا يوجد ملف رقمي مرفق حالياً!</h6>
+                                                    <p class="small text-muted mb-2">
+                                                        هذا المنتج من نوع "رقمي" ولكنه لا يحتوي على ملف صالح في خادم التخزين.
+                                                    </p>
+                                                    <div class="bg-white p-2 rounded-2 border border-danger-subtle text-danger small fw-semibold">
+                                                        <i class="fa-solid fa-circle-exclamation me-1"></i>
+                                                        يجب عليك رفع ملف رقمي من المربع المقابل لتمكين الزبائن من استلامه فور الدفع.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                {{-- <div class="col-md-6">
-                            <div id="edit_digitalPreview" class="preview"
-                                style="display:flex; align-items:center; justify-content:center; height:150px; border:1px dashed #ccc;">
-                                <span>لم يتم اختيار ملف</span>
-                            </div>
-                            <span class="text-danger error-edit_digital_file error-validation"></span>
-                        </div> --}}
+                                <!-- منطقة رفع أو استبدال الملف الرقمي الجديد -->
+                                <div class="col-md-6">
+                                    <div class="card h-100 border shadow-sm rounded-3 overflow-hidden bg-white p-3">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <span class="fw-bold text-dark small d-flex align-items-center gap-2">
+                                                <i class="fa-solid fa-cloud-arrow-up text-primary"></i>
+                                                <span>رفع / استبدال الملف الرقمي</span>
+                                            </span>
+                                            <span class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1 small">اختياري عند التعديل</span>
+                                        </div>
+
+                                        <ul class="p-2 mb-2 bg-light rounded-2 small text-muted list-unstyled" style="font-size: 0.82rem;">
+                                            <li class="mb-1"><i class="fa-solid fa-circle-info text-primary me-1"></i> ارفع ملفاً جديداً فقط إذا كنت ترغب في استبدال الملف الحالي</li>
+                                            <li class="mb-1"><i class="fa-solid fa-check text-success me-1"></i> الصيغ المسموحة: <strong>ZIP, PDF, MP4, RAR</strong></li>
+                                            <li><i class="fa-solid fa-weight-scale text-warning me-1"></i> الحجم الأقصى المسموح به: <strong>50MB</strong></li>
+                                        </ul>
+
+                                        <div id="edit_digital_dropzone1" onclick="edit_browsDigitalFile()"
+                                            onchange="edit_previewDigitalFile(event)" class="mt-auto">
+                                            <input type="file" name="digital_file" class="form-control"
+                                                id="editDigitalFile" accept=".zip,.pdf,.mp4,.rar" style="display: none;">
+                                            <input type="hidden" name="digital_temp_id" id="edit_digital_temp_id">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </section>
                         <div class="col-12 bg-seller-header rounded p-2 text-center">فيديوهات المنتج</div>
