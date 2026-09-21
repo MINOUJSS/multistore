@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admins\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Supplier\Supplier;
+use App\Models\Supplier\SupplierOrders;
+use App\Models\Supplier\SupplierProducts;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserRequestsValidation;
@@ -44,7 +46,62 @@ class SupplierController extends Controller
 
         $suppliers = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
-        return view('admins.admin.supplier.index', compact('suppliers'));
+        // 1. Supplier Accounts Stats
+        $totalSuppliers = Supplier::count();
+        $approvedSuppliers = Supplier::where('approval_status', 'approved')->count();
+        $pendingSuppliers = Supplier::where('approval_status', 'pending')->count();
+        $inactiveSuppliers = Supplier::where('status', 'inactive')->count();
+
+        // 2. Activity Stats via last_seens (last 30 days)
+        $activeDays = 30;
+        $activeThreshold = now()->subDays($activeDays);
+        $activeSuppliersCount = Supplier::whereHas('user.last_seen', function ($q) use ($activeThreshold) {
+            $q->where('last_seen_at', '>=', $activeThreshold);
+        })->count();
+        $activityPercentage = $totalSuppliers > 0 ? round(($activeSuppliersCount / $totalSuppliers) * 100, 1) : 0;
+        $inactiveActivityCount = max(0, $totalSuppliers - $activeSuppliersCount);
+
+        // 3. Products Stats (Excluding default/dummy demo products)
+        $excludedDummyProducts = [
+            'منتج 1', 'منتج 2', 'منتج 3', 'منتج 4',
+            'منتج1', 'منتج2', 'منتج3', 'منتج4',
+            'Product 1', 'Product 2', 'Product 3', 'Product 4',
+            'product 1', 'product 2', 'product 3', 'product 4',
+        ];
+        $realProductsQuery = SupplierProducts::whereNotIn('name', $excludedDummyProducts)
+            ->where('name', 'not like', 'منتج 1%')
+            ->where('name', 'not like', 'منتج 2%')
+            ->where('name', 'not like', 'منتج 3%')
+            ->where('name', 'not like', 'منتج 4%');
+        $totalProducts = (clone $realProductsQuery)->count();
+        $activeProducts = (clone $realProductsQuery)->where('status', 'active')->count();
+        $avgProductsPerSupplier = $totalSuppliers > 0 ? round($totalProducts / $totalSuppliers, 1) : 0;
+
+        // 4. Orders Stats
+        $totalOrders = SupplierOrders::count();
+        $deliveredOrders = SupplierOrders::where('status', 'delivered')->count();
+        $pendingOrders = SupplierOrders::whereIn('status', ['pending', 'processing'])->count();
+        $deliveryRate = $totalOrders > 0 ? round(($deliveredOrders / $totalOrders) * 100, 1) : 0;
+
+        $supplierStats = [
+            'total' => $totalSuppliers,
+            'approved' => $approvedSuppliers,
+            'pending' => $pendingSuppliers,
+            'inactive' => $inactiveSuppliers,
+            'active' => $activeSuppliersCount,
+            'activity_percentage' => $activityPercentage,
+            'inactive_activity' => $inactiveActivityCount,
+            'period_days' => $activeDays,
+            'total_products' => $totalProducts,
+            'active_products' => $activeProducts,
+            'avg_products' => $avgProductsPerSupplier,
+            'total_orders' => $totalOrders,
+            'delivered_orders' => $deliveredOrders,
+            'pending_orders' => $pendingOrders,
+            'delivery_rate' => $deliveryRate,
+        ];
+
+        return view('admins.admin.supplier.index', compact('suppliers', 'supplierStats'));
     }
 
     // show

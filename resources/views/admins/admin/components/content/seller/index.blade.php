@@ -41,62 +41,128 @@
 
     <!-- Stats Cards Row -->
     <div class="row mb-4 g-3">
+        <!-- 1. Total & Account Status -->
         <div class="col-12 col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center rounded-3 p-3 text-white shadow-sm"
-                        style="background: linear-gradient(135deg, #5c0649 0%, #a40c72 100%); width: 54px; height: 54px;">
-                        <i class="fa-solid fa-users fs-4"></i>
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 position-relative overflow-hidden">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-2.5">
+                        <div class="d-flex align-items-center justify-content-center rounded-3 text-white shadow-sm"
+                            style="background: linear-gradient(135deg, #5c0649 0%, #a40c72 100%); width: 46px; height: 46px;">
+                            <i class="fa-solid fa-users fs-5"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted fw-semibold d-block">إجمالي البائعين</small>
+                            <h4 class="fw-bold mb-0 text-dark">{{ $sellerStats['total'] ?? $sellers->total() }}</h4>
+                        </div>
                     </div>
-                    <div>
-                        <small class="text-muted fw-semibold d-block mb-1">إجمالي البائعين</small>
-                        <h4 class="fw-bold mb-0 text-dark">{{ $sellers->count() }}</h4>
+                </div>
+                <div class="d-flex flex-wrap gap-1.5 pt-2 border-top border-light-subtle">
+                    <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill fw-semibold" style="font-size: 0.72rem;">
+                        <i class="fa-solid fa-circle-check me-1"></i>{{ $sellerStats['approved'] ?? 0 }} معتمد
+                    </span>
+                    <span class="badge bg-warning-subtle text-dark px-2 py-1 rounded-pill fw-semibold" style="font-size: 0.72rem;">
+                        <i class="fa-solid fa-clock me-1"></i>{{ $sellerStats['pending'] ?? 0 }} مراجعة
+                    </span>
+                    @if (($sellerStats['inactive'] ?? 0) > 0)
+                        <span class="badge bg-danger-subtle text-danger px-2 py-1 rounded-pill fw-semibold" style="font-size: 0.72rem;">
+                            <i class="fa-solid fa-ban me-1"></i>{{ $sellerStats['inactive'] }} معطل
+                        </span>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Active Sellers via last_seens -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 position-relative overflow-hidden">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-2.5">
+                        <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3 shadow-sm"
+                            style="width: 46px; height: 46px;">
+                            <i class="fa-solid fa-user-check fs-5"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted fw-semibold d-block">بائعون نشطون</small>
+                            <div class="d-flex align-items-baseline gap-1">
+                                <h4 class="fw-bold mb-0 text-dark">{{ $sellerStats['active'] ?? 0 }}</h4>
+                                <small class="text-muted fw-normal" style="font-size: 0.8rem;">/ {{ $sellerStats['total'] ?? 0 }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="badge {{ ($sellerStats['activity_percentage'] ?? 0) >= 70 ? 'bg-success' : (($sellerStats['activity_percentage'] ?? 0) >= 40 ? 'bg-warning text-dark' : 'bg-secondary') }} px-2 py-1 rounded-pill fw-bold" style="font-size: 0.75rem;">
+                        {{ $sellerStats['activity_percentage'] ?? 0 }}%
+                    </span>
+                </div>
+                <div class="pt-2 border-top border-light-subtle">
+                    <div class="progress rounded-pill mb-1.5" style="height: 5px; background-color: rgba(16, 185, 129, 0.1);">
+                        <div class="progress-bar bg-success rounded-pill" role="progressbar"
+                            style="width: {{ $sellerStats['activity_percentage'] ?? 0 }}%;"
+                            aria-valuenow="{{ $sellerStats['activity_percentage'] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem;">
+                        <span><i class="fa-regular fa-clock me-1"></i>آخر {{ $sellerStats['period_days'] ?? 30 }} يوم</span>
+                        <span>خامل: <strong>{{ $sellerStats['inactive_activity'] ?? 0 }}</strong></span>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- 3. Real Products (Excluding Dummy) -->
         <div class="col-12 col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3 p-3 shadow-sm"
-                        style="width: 54px; height: 54px;">
-                        <i class="fa-solid fa-circle-check fs-4"></i>
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 position-relative overflow-hidden">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-2.5">
+                        <div class="d-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-3 shadow-sm"
+                            style="width: 46px; height: 46px;">
+                            <i class="fa-solid fa-box-open fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="d-flex align-items-center gap-1.5">
+                                <small class="text-muted fw-semibold">المنتجات الفعلية</small>
+                                <span class="badge bg-light text-muted border px-1.5 py-0.5 rounded" style="font-size: 0.62rem;" title="بدون المنتجات الافتراضية التجريبية">حقيقية</span>
+                            </div>
+                            <h4 class="fw-bold mb-0 text-dark">{{ $sellerStats['total_products'] ?? 0 }}</h4>
+                        </div>
                     </div>
-                    <div>
-                        <small class="text-muted fw-semibold d-block mb-1">بائعون نشطون</small>
-                        <h4 class="fw-bold mb-0 text-dark">—</h4>
-                    </div>
+                </div>
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1.5 pt-2 border-top border-light-subtle">
+                    <span class="badge bg-info-subtle text-info px-2 py-1 rounded-pill fw-semibold" style="font-size: 0.72rem;">
+                        <i class="fa-solid fa-circle-dot me-1"></i>{{ $sellerStats['active_products'] ?? 0 }} نشطة
+                    </span>
+                    <span class="badge bg-light text-dark border px-2 py-1 rounded-pill fw-semibold" style="font-size: 0.72rem;">
+                        معدل: {{ $sellerStats['avg_products'] ?? 0 }} / بائع
+                    </span>
                 </div>
             </div>
         </div>
 
+        <!-- 4. Orders Performance -->
         <div class="col-12 col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-3 p-3 shadow-sm"
-                        style="width: 54px; height: 54px;">
-                        <i class="fa-solid fa-box fs-4"></i>
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 position-relative overflow-hidden">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-2.5">
+                        <div class="d-flex align-items-center justify-content-center bg-dark bg-opacity-10 text-dark rounded-3 shadow-sm"
+                            style="width: 46px; height: 46px;">
+                            <i class="fa-solid fa-cart-shopping fs-5"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted fw-semibold d-block">طلبات البائعين</small>
+                            <h4 class="fw-bold mb-0 text-dark">{{ $sellerStats['total_orders'] ?? 0 }}</h4>
+                        </div>
                     </div>
-                    <div>
-                        <small class="text-muted fw-semibold d-block mb-1">المنتجات المسجلة</small>
-                        <h4 class="fw-bold mb-0 text-dark">—</h4>
-                    </div>
+                    @if (($sellerStats['total_orders'] ?? 0) > 0)
+                        <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill fw-bold" style="font-size: 0.75rem;">
+                            {{ $sellerStats['delivery_rate'] ?? 0 }}% تسليم
+                        </span>
+                    @endif
                 </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center bg-dark bg-opacity-10 text-dark rounded-3 p-3 shadow-sm"
-                        style="width: 54px; height: 54px;">
-                        <i class="fa-solid fa-cart-shopping fs-4"></i>
-                    </div>
-                    <div>
-                        <small class="text-muted fw-semibold d-block mb-1">طلبات البائعين</small>
-                        <h4 class="fw-bold mb-0 text-dark">—</h4>
-                    </div>
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1.5 pt-2 border-top border-light-subtle">
+                    <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill fw-semibold" style="font-size: 0.72rem;">
+                        <i class="fa-solid fa-truck-fast me-1"></i>{{ $sellerStats['delivered_orders'] ?? 0 }} مسلّم
+                    </span>
+                    <span class="badge bg-warning-subtle text-dark px-2 py-1 rounded-pill fw-semibold" style="font-size: 0.72rem;">
+                        <i class="fa-solid fa-hourglass-half me-1"></i>{{ $sellerStats['pending_orders'] ?? 0 }} قيد التنفيذ
+                    </span>
                 </div>
             </div>
         </div>

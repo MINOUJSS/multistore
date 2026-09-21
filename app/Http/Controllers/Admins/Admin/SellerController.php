@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admins\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Seller\Seller;
+use App\Models\Seller\SellerOrders;
+use App\Models\Seller\SellerProducts;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\BalanceTransaction;
@@ -47,7 +49,62 @@ class SellerController extends Controller
 
         $sellers = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
-        return view('admins.admin.seller.index', compact('sellers'));
+        // 1. Seller Accounts Stats
+        $totalSellers = Seller::count();
+        $approvedSellers = Seller::where('approval_status', 'approved')->count();
+        $pendingSellers = Seller::where('approval_status', 'pending')->count();
+        $inactiveSellers = Seller::where('status', 'inactive')->count();
+
+        // 2. Activity Stats via last_seens (last 30 days)
+        $activeDays = 30;
+        $activeThreshold = now()->subDays($activeDays);
+        $activeSellersCount = Seller::whereHas('user.last_seen', function ($q) use ($activeThreshold) {
+            $q->where('last_seen_at', '>=', $activeThreshold);
+        })->count();
+        $activityPercentage = $totalSellers > 0 ? round(($activeSellersCount / $totalSellers) * 100, 1) : 0;
+        $inactiveActivityCount = max(0, $totalSellers - $activeSellersCount);
+
+        // 3. Products Stats (Excluding default/dummy demo products)
+        $excludedDummyProducts = [
+            'منتج 1', 'منتج 2', 'منتج 3', 'منتج 4',
+            'منتج1', 'منتج2', 'منتج3', 'منتج4',
+            'Product 1', 'Product 2', 'Product 3', 'Product 4',
+            'product 1', 'product 2', 'product 3', 'product 4',
+        ];
+        $realProductsQuery = SellerProducts::whereNotIn('name', $excludedDummyProducts)
+            ->where('name', 'not like', 'منتج 1%')
+            ->where('name', 'not like', 'منتج 2%')
+            ->where('name', 'not like', 'منتج 3%')
+            ->where('name', 'not like', 'منتج 4%');
+        $totalProducts = (clone $realProductsQuery)->count();
+        $activeProducts = (clone $realProductsQuery)->where('status', 'active')->count();
+        $avgProductsPerSeller = $totalSellers > 0 ? round($totalProducts / $totalSellers, 1) : 0;
+
+        // 4. Orders Stats
+        $totalOrders = SellerOrders::count();
+        $deliveredOrders = SellerOrders::where('status', 'delivered')->count();
+        $pendingOrders = SellerOrders::whereIn('status', ['pending', 'processing'])->count();
+        $deliveryRate = $totalOrders > 0 ? round(($deliveredOrders / $totalOrders) * 100, 1) : 0;
+
+        $sellerStats = [
+            'total' => $totalSellers,
+            'approved' => $approvedSellers,
+            'pending' => $pendingSellers,
+            'inactive' => $inactiveSellers,
+            'active' => $activeSellersCount,
+            'activity_percentage' => $activityPercentage,
+            'inactive_activity' => $inactiveActivityCount,
+            'period_days' => $activeDays,
+            'total_products' => $totalProducts,
+            'active_products' => $activeProducts,
+            'avg_products' => $avgProductsPerSeller,
+            'total_orders' => $totalOrders,
+            'delivered_orders' => $deliveredOrders,
+            'pending_orders' => $pendingOrders,
+            'delivery_rate' => $deliveryRate,
+        ];
+
+        return view('admins.admin.seller.index', compact('sellers', 'sellerStats'));
     }
 
     // show seller
