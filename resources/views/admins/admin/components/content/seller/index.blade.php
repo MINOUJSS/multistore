@@ -262,7 +262,7 @@
 
                                 <td data-label="العمليات">
                                     <div
-                                        class="d-flex justify-content-center align-items-center gap-1 action-buttons flex-wrap">
+                                        class="d-flex justify-content-center align-items-center gap-1 action-buttons">
 
                                         <!-- View -->
                                         <a href="{{ route('admin.seller.show', $seller->id) }}"

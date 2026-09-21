@@ -40,4 +40,22 @@
         </div>
         @include('admins.admin.components.content.dashboard.inc.users_statistics.users')
     </div>
+
+    <!-- Active Subscribers Statistics Section -->
+    <div class="mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+            <div>
+                <h5 class="fw-bold mb-0 text-dark">
+                    <i class="fa-solid fa-chart-line me-2" style="color: #10b981;"></i> معدل المشتركين النشطين في المنصة
+                </h5>
+                <span class="text-muted small">تقييم النشاط اعتماداً على جدول آخر ظهور (آخر {{ $activityStats['period_days'] ?? 30 }} يوماً)</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1.5 rounded-pill fw-semibold small">
+                    <i class="fa-solid fa-circle-dot me-1 text-success"></i> نشاط متجدد
+                </span>
+            </div>
+        </div>
+        @include('admins.admin.components.content.dashboard.inc.users_statistics.active_users')
+    </div>
 </div>
