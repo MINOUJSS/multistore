@@ -212,10 +212,21 @@
 
     <!-- Table Card -->
     <div class="card border-0 shadow-sm rounded-4 bg-white w-100 overflow-hidden mb-4" style="max-width: 100%;">
-        <div class="card-header bg-white border-0 fw-bold py-3 px-4 d-flex align-items-center justify-content-between">
+        <div class="card-header bg-white border-0 fw-bold py-3 px-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
                 <i class="fa-solid fa-table" style="color: #a40c72;"></i>
                 <span>قائمة البائعين المسجلين</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-outline-danger btn-sm fw-bold px-3 py-1.5 rounded-3 shadow-sm d-flex align-items-center gap-2"
+                    data-bs-toggle="modal" data-bs-target="#cleanOfflineTempModal"
+                    title="حذف الملفات المؤقتة للبائعين غير المتصلين (منذ أكثر من ساعة)">
+                    <i class="fa-solid fa-broom text-danger"></i>
+                    <span>تنظيف مؤقتات الغائبين (> ساعة)</span>
+                    <span class="badge {{ ($offlineTempStats['total_files'] ?? 0) > 0 ? 'bg-danger text-white' : 'bg-secondary bg-opacity-25 text-muted' }} rounded-pill px-2 py-0.5 fw-bold ms-1" style="font-size: 0.72rem;">
+                        <i class="fa-solid fa-file-circle-xmark me-1"></i>{{ $offlineTempStats['total_files'] ?? 0 }} ملف ({{ $offlineTempStats['formatted_size'] ?? '0 B' }})
+                    </span>
+                </button>
             </div>
         </div>
 
@@ -344,6 +355,24 @@
                                             <i class="fa-solid fa-circle-check"></i>
                                         </a>
 
+                                        <!-- Clean Temp (if offline > 1 hour) -->
+                                        @php
+                                            $lastSeenRec = $userData?->last_seen?->first();
+                                            $isSellerOffline = !$lastSeenRec || $lastSeenRec->last_seen_at < now()->subHour();
+                                        @endphp
+                                        @if($isSellerOffline)
+                                            <form method="POST"
+                                                action="{{ route('admin.seller.clean_temp', $seller->id) }}"
+                                                onsubmit="return confirm('تأكيد تنظيف مجلد الملفات المؤقتة (temp) لمتجر {{ $seller->store_name }}؟ (البائع غير متصل)')">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="btn btn-sm btn-light border text-warning action-btn clean-temp-btn rounded-3"
+                                                    data-bs-toggle="tooltip" title="تنظيف مجلد temp (البائع غير متصل)">
+                                                    <i class="fa-solid fa-broom"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+
                                         <!-- Delete -->
                                         <form method="POST"
                                             action="{{ route('admin.seller.destroy', $userData?->id ?? $seller->id) }}"
@@ -377,6 +406,74 @@
                 <div class="d-flex justify-content-center justify-content-md-end overflow-auto">
                     {{ $sellers->links('vendor.pagination.dashboard-pagination') }}
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clean Offline Temp Modal -->
+    <div class="modal fade" id="cleanOfflineTempModal" tabindex="-1" aria-labelledby="cleanOfflineTempModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2" id="cleanOfflineTempModalLabel">
+                        <span class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle" style="width: 38px; height: 38px;">
+                            <i class="fa-solid fa-broom"></i>
+                        </span>
+                        <span>تنظيف الملفات المؤقتة للبائعين غير المتصلين</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('admin.sellers.clean_offline_temp') }}" method="POST">
+                    @csrf
+                    <div class="modal-body py-3">
+                        <div class="alert alert-warning border-0 rounded-3 mb-3 small d-flex align-items-start gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-warning fs-5 mt-0.5"></i>
+                            <div>
+                                <strong>معيار التنظيف:</strong> سيتم فحص مجلدات <code>/temp</code> لكافة البائعين الذين لم يسجلوا أي نشاط منذ <strong>أكثر من ساعة</strong> وحذف محتوياتها المؤقتة وتفريغ المساحة بأمان.
+                            </div>
+                        </div>
+
+                        <!-- Statistics Box for Offline Temp Files -->
+                        <div class="row g-2 mb-3 text-center">
+                            <div class="col-4">
+                                <div class="p-2 rounded-3 border bg-light">
+                                    <div class="text-muted small mb-1" style="font-size: 0.75rem;">الملفات القابلة للحذف</div>
+                                    <div class="fw-bold fs-6 text-danger">
+                                        <i class="fa-solid fa-file-excel me-1"></i>{{ $offlineTempStats['total_files'] ?? 0 }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 rounded-3 border bg-light">
+                                    <div class="text-muted small mb-1" style="font-size: 0.75rem;">المساحة المسترجعة</div>
+                                    <div class="fw-bold fs-6 text-success">
+                                        <i class="fa-solid fa-hard-drive me-1"></i>{{ $offlineTempStats['formatted_size'] ?? '0 B' }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 rounded-3 border bg-light">
+                                    <div class="text-muted small mb-1" style="font-size: 0.75rem;">المتاجر المعنية</div>
+                                    <div class="fw-bold fs-6 text-primary">
+                                        <i class="fa-solid fa-store me-1"></i>{{ $offlineTempStats['offline_sellers_with_temp_count'] ?? 0 }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="text-muted small ps-3 mb-0">
+                            <li>يستهدف هذا الإجراء فقط الملفات غير المكتملة داخل مجلدات <code>storage/app/public/seller/*/temp</code>.</li>
+                            <li>لا يؤثر إطلاقاً على المنتجات المنشورة أو الصور الأساسية أو إثباتات الدفع.</li>
+                            <li>يتم استثناء أي بائع متصل أو كان نشطاً خلال الساعة الأخيرة لحماية عملياته الجارية.</li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-light rounded-3 px-3 fw-semibold" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-danger rounded-3 px-4 fw-bold shadow-sm">
+                            <i class="fa-solid fa-trash-can me-1"></i> تأكيد تنظيف الملفات المؤقتة
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -527,6 +624,18 @@
     .active-btn:hover {
         background: #198754;
         color: #fff;
+        transform: translateY(-2px);
+    }
+
+    /* Clean Temp */
+    .clean-temp-btn {
+        color: #ffc107;
+    }
+
+    .clean-temp-btn:hover {
+        background: #dc3545;
+        color: #fff !important;
+        border-color: #dc3545 !important;
         transform: translateY(-2px);
     }
 

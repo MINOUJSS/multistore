@@ -13,6 +13,7 @@ use App\Models\UserBalance;
 use App\Models\UserNotification;
 use App\Models\UserRequestsValidation;
 use App\Services\Admins\Admin\SellerStoreResetService;
+use App\Services\Admins\Admin\SellerTempCleanupService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -104,7 +105,10 @@ class SellerController extends Controller
             'delivery_rate' => $deliveryRate,
         ];
 
-        return view('admins.admin.seller.index', compact('sellers', 'sellerStats'));
+        // 5. Offline Temp Files Stats (> 1 hour)
+        $offlineTempStats = app(SellerTempCleanupService::class)->getOfflineTempStats(1);
+
+        return view('admins.admin.seller.index', compact('sellers', 'sellerStats', 'offlineTempStats'));
     }
 
     // show seller
@@ -459,6 +463,55 @@ class SellerController extends Controller
             }
 
             return redirect()->back()->with('error', 'حدث خطأ أثناء تصفير الرصيد: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Clean temp files for all offline sellers (inactivity > 1 hour).
+     */
+    public function cleanOfflineTemp(Request $request, SellerTempCleanupService $cleanupService)
+    {
+        try {
+            $result = $cleanupService->cleanAllOfflineSellers(1);
+
+            if ($result['deleted_files'] > 0) {
+                return redirect()->back()->with(
+                    'success',
+                    "تم تنظيف الملفات المؤقتة بنجاح! تم حذف {$result['deleted_files']} ملف مؤقت لـ {$result['cleaned_sellers_count']} متجر غير متصل وتحرير {$result['freed_formatted']} من المساحة."
+                );
+            }
+
+            return redirect()->back()->with('info', 'تم الفحص: لا توجد ملفات مؤقتة متراكمة للبائعين غير المتصلين حالياً (الذين لم ينشطوا منذ أكثر من ساعة).');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Clean Offline Temp Failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تنظيف الملفات المؤقتة: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Clean temp files for a single seller if offline (inactivity > 1 hour).
+     */
+    public function cleanSingleSellerTemp($id, SellerTempCleanupService $cleanupService)
+    {
+        try {
+            $seller = Seller::findOrFail($id);
+            $result = $cleanupService->cleanForSeller($seller, 1);
+
+            if (!$result['is_offline']) {
+                return redirect()->back()->with('warning', "لا يمكن تنظيف الملفات؛ البائع ({$seller->store_name}) متصل حالياً أو كان نشطاً خلال الساعة الأخيرة.");
+            }
+
+            if ($result['deleted_files'] > 0) {
+                return redirect()->back()->with(
+                    'success',
+                    "تم بنجاح حذف {$result['deleted_files']} ملف مؤقت لمتجر {$seller->store_name} وتحرير {$result['freed_formatted']} من المساحة."
+                );
+            }
+
+            return redirect()->back()->with('info', "مجلد الملفات المؤقتة (temp) لمتجر {$seller->store_name} فارغ بالفعل ولا توجد ملفات متراكمة.");
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Clean Single Seller Temp Failed for ID {$id}: " . $e->getMessage());
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تنظيف الملفات المؤقتة: ' . $e->getMessage());
         }
     }
 }
