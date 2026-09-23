@@ -219,6 +219,18 @@ class Kernel extends ConsoleKernel
         })->daily();
         // telegram response
         // $schedule->command('telegram:fetch-updates')->everyMinute();
+
+        /*:::::::::::::::::::::::::::::::::::::::::::::::::::::
+        // تقارير زوار المتاجر عبر تيليغرام (يومي، أسبوعي، شهري)
+        :::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        // 1- التقرير اليومي: مقارنة زوار اليوم مع الأمس وإبراز المنتجات الأكثر زيارة وتوجيهات التحويل
+        $schedule->command('store:send-visitors-report daily')->dailyAt('21:30');
+
+        // 2- التقرير الأسبوعي: يرسل مساء كل سبت لمراجعة أداء الأسبوع مقارنة بالأسبوع السابق
+        $schedule->command('store:send-visitors-report weekly')->weeklyOn(6, '21:30');
+
+        // 3- التقرير الشهري: يرسل صباح أول يوم من كل شهر لمراجعة أداء الشهر كاملاً
+        $schedule->command('store:send-visitors-report monthly')->monthlyOn(1, '09:00');
     }
 
     /**
@@ -227,6 +239,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\MakeServiceCommand::class,
         Commands\FetchTelegramUpdates::class,
+        Commands\SendStoreVisitorsReport::class,
     ];
 
     protected function commands(): void
