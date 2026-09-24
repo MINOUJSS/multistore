@@ -408,7 +408,7 @@ class StoreVisitorsReportService
             $msg .= "• {$tip}\n\n";
         }
 
-        $msg .= "✨ <i>منصة Multi-Store تتمنى لك مبيعات وفيرة وتوفيقاً مستمراً!</i>";
+        $msg .= "✨ <i>منصة Dzora تتمنى لك مبيعات وفيرة وتوفيقاً مستمراً!</i>";
 
         return trim($msg);
     }
