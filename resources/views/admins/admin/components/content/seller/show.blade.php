@@ -62,6 +62,10 @@
                             data-bs-toggle="modal" data-bs-target="#unApproveModal">
                             <i class="fa-solid fa-user-xmark me-1"></i> رفض توثيق البائع
                         </button>
+                        <button class="btn btn-success text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
+                            onclick="approveSeller({{ $seller->id }})">
+                            <i class="fa-solid fa-user-check me-1"></i> توثيق البائع
+                        </button>
                     @elseif($seller->approval_status == 'pending')
                         <button class="btn btn-success text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
                             onclick="approveSeller({{ $seller->id }})">
