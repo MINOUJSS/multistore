@@ -57,10 +57,10 @@
             <div class="col-lg-5 text-lg-end">
                 <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
                     {{-- حالة الموافقة --}}
-                    @if ($seller->approval_status == 'approved')
+                    @if ($seller->approval_status == 'approved' || $seller->approval_status == 'pending')
                         <button class="btn btn-danger text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
                             data-bs-toggle="modal" data-bs-target="#unApproveModal">
-                            <i class="fa-solid fa-user-xmark me-1"></i> حذف توثيق البائع
+                            <i class="fa-solid fa-user-xmark me-1"></i> رفض توثيق البائع
                         </button>
                     @elseif($seller->approval_status == 'pending')
                         <button class="btn btn-success text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
