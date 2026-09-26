@@ -49,6 +49,11 @@ class AdminProductController extends Controller
 
         $product = $this->analyticsService->getProductDetails($type, $id);
 
+        if (!$product) {
+            return redirect()->route('admin.products.index')
+                ->with('warning', 'المنتج المطلوب من المنتجات الافتراضية التجريبية المستبعدة من نظام استخبارات وتحليل المنتجات.');
+        }
+
         return view('admins.admin.products.show', [
             'product' => $product,
             'type' => $type,

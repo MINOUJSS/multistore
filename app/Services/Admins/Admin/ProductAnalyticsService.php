@@ -75,7 +75,64 @@ class ProductAnalyticsService
     }
 
     /**
-     * Query Seller Products with aggregations.
+     * Default demo / dummy products excluded from platform analytics.
+     */
+    public const EXCLUDED_DUMMY_PRODUCTS = [
+        'منتج 1', 'منتج 2', 'منتج 3', 'منتج 4',
+        'منتج1', 'منتج2', 'منتج3', 'منتج4',
+        'Product 1', 'Product 2', 'Product 3', 'Product 4',
+        'product 1', 'product 2', 'product 3', 'product 4',
+    ];
+
+    /**
+     * Apply default dummy products exclusion conditions to the query.
+     */
+    public function applyDummyExclusion($query)
+    {
+        return $query->whereNotIn('name', self::EXCLUDED_DUMMY_PRODUCTS)
+            ->where('name', 'not like', 'منتج 1%')
+            ->where('name', 'not like', 'منتج 2%')
+            ->where('name', 'not like', 'منتج 3%')
+            ->where('name', 'not like', 'منتج 4%')
+            ->where('slug', 'not like', '%-product-1')
+            ->where('slug', 'not like', '%-product-2')
+            ->where('slug', 'not like', '%-product-3')
+            ->where('slug', 'not like', '%-product-4');
+    }
+
+    /**
+     * Check if a product is an excluded dummy / demo product.
+     */
+    public function isDummyProduct($product): bool
+    {
+        if (!$product) {
+            return false;
+        }
+
+        $name = trim($product->name ?? '');
+        $slug = trim($product->slug ?? '');
+
+        if (in_array($name, self::EXCLUDED_DUMMY_PRODUCTS, true)) {
+            return true;
+        }
+
+        foreach (['منتج 1', 'منتج 2', 'منتج 3', 'منتج 4', 'منتج1', 'منتج2', 'منتج3', 'منتج4', 'Product 1', 'Product 2', 'Product 3', 'Product 4'] as $prefix) {
+            if (stripos($name, $prefix) === 0) {
+                return true;
+            }
+        }
+
+        foreach (['-product-1', '-product-2', '-product-3', '-product-4'] as $suffix) {
+            if (str_ends_with($slug, $suffix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Query Seller Products with aggregations (excluding dummy products).
      */
     protected function querySellerProducts(string $search, ?string $categoryId, ?string $status): Collection
     {
@@ -85,6 +142,9 @@ class ProductAnalyticsService
             ->withSum('orderItems', 'total_price')
             ->withCount('visits')
             ->withAvg('reviews', 'rating');
+
+        // Exclude default/dummy products
+        $this->applyDummyExclusion($query);
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
@@ -115,7 +175,7 @@ class ProductAnalyticsService
     }
 
     /**
-     * Query Supplier Products with aggregations.
+     * Query Supplier Products with aggregations (excluding dummy products).
      */
     protected function querySupplierProducts(string $search, ?string $categoryId, ?string $status): Collection
     {
@@ -125,6 +185,9 @@ class ProductAnalyticsService
             ->withSum('orderItems', 'total_price')
             ->withCount('visits')
             ->withAvg('reviews', 'rating');
+
+        // Exclude default/dummy products
+        $this->applyDummyExclusion($query);
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
@@ -330,6 +393,10 @@ class ProductAnalyticsService
             $product->subscriber_name = $product->supplier->full_name ?? ($product->supplier->store_name ?? 'مورد');
             $product->store_name = $product->supplier->store_name ?? 'متجر المورد';
             $product->owner_id = $product->supplier_id;
+        }
+
+        if ($this->isDummyProduct($product)) {
+            return null;
         }
 
         return $this->enrichProductMetrics($product);
