@@ -100,6 +100,11 @@ class SellerProducts extends Model implements HasMedia
         return $this->hasMany(SellerProductReviews::class, 'product_id');
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(SellerOrderItems::class, 'product_id');
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('cover')->singleFile();

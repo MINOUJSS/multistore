@@ -86,7 +86,7 @@ class SupplierProducts extends Model
       //
       public function visits()
       {
-          return $this->hasMany(ProductVisits::class, 'product_id');
+          return $this->hasMany(SupplierProductsVisits::class, 'product_id');
       }
   
       public function visitCount()
@@ -97,5 +97,10 @@ class SupplierProducts extends Model
     public function reviews()
     {
         return $this->hasMany(SupplierProductsReviews::class, 'product_id');
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(SupplierOrderItems::class, 'product_id');
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admins\Admin\AdminBankAccountController;
 use App\Http\Controllers\Admins\Admin\AdminController;
 use App\Http\Controllers\Admins\Admin\AdminDisputeController;
 use App\Http\Controllers\Admins\Admin\AdminEmployeeController;
+use App\Http\Controllers\Admins\Admin\AdminProductController;
 use App\Http\Controllers\Admins\Admin\AdminSupportTicketController;
 use App\Http\Controllers\Admins\Admin\ArchivesDisputesController;
 use App\Http\Controllers\Admins\Admin\Auth\AuthenticatedSessionController;
@@ -208,6 +209,10 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::delete('/ah-admin/email-campaigns/{id}', [EmailCampaignController::class, 'destroy'])->name('email_campaigns.destroy');
                 Route::post('/ah-admin/email-campaigns/send-test', [EmailCampaignController::class, 'sendTestMail'])->name('email_campaigns.send_test');
                 Route::post('/ah-admin/email-campaigns/{id}/resend-failed', [EmailCampaignController::class, 'resendFailed'])->name('email_campaigns.resend_failed');
+
+                // Subscriber Products & Winning Products Analytics
+                Route::get('/ah-admin/products', [AdminProductController::class, 'index'])->name('products.index');
+                Route::get('/ah-admin/products/{type}/{id}', [AdminProductController::class, 'show'])->name('products.show');
             });
         });
     });

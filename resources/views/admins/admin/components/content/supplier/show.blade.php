@@ -57,16 +57,16 @@
             <div class="col-lg-5 text-lg-end">
                 <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
                     {{-- حالة الموافقة --}}
-                    @if ($supplier->approval_status == 'approved' || $supplier->approval_status == 'pending')
+                    @if ($supplier->approval_status == 'approved')
                         <button class="btn btn-danger text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
                             data-bs-toggle="modal" data-bs-target="#unApproveModal">
                             <i class="fa-solid fa-user-xmark me-1"></i> رفض توثيق المورد
                         </button>
-                        <button class="btn btn-success text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
-                            onclick="approveSupplier({{ $supplier->id }})">
-                            <i class="fa-solid fa-user-check me-1"></i> توثيق المورد
-                        </button>
                     @elseif($supplier->approval_status == 'pending')
+                        <button class="btn btn-danger text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
+                            data-bs-toggle="modal" data-bs-target="#unApproveModal">
+                            <i class="fa-solid fa-user-xmark me-1"></i> رفض توثيق المورد
+                        </button>
                         <button class="btn btn-success text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
                             onclick="approveSupplier({{ $supplier->id }})">
                             <i class="fa-solid fa-user-check me-1"></i> توثيق المورد

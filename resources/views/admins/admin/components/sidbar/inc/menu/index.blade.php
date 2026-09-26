@@ -116,6 +116,6 @@
                 <a class="sub-item" href="#"><i class="fa-solid fa-user"></i> المسوقين</a>
             </div>
         </div>
-        <div class="item"><a href="#"><i class="fa-solid fa-box-open"></i> المنتجات</a></div>
+        <div class="item {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"><a href="{{ route('admin.products.index') }}"><i class="fa-solid fa-box-open"></i> المنتجات</a></div>
         <div class="item"><a href="{{ route('admin.settings') }}"><i class="fa-solid fa-gear"></i> الإعدادت</a></div>
     </div>
