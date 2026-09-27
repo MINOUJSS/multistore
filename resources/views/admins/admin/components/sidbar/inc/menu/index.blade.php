@@ -117,5 +117,6 @@
             </div>
         </div>
         <div class="item {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"><a href="{{ route('admin.products.index') }}"><i class="fa-solid fa-box-open"></i> المنتجات</a></div>
+        <div class="item {{ request()->routeIs('admin.apps.*') ? 'active' : '' }}"><a href="{{ route('admin.apps.index') }}"><i class="fa-solid fa-shapes"></i> التطبيقات</a></div>
         <div class="item"><a href="{{ route('admin.settings') }}"><i class="fa-solid fa-gear"></i> الإعدادت</a></div>
     </div>

@@ -146,6 +146,12 @@ class User extends Authenticatable
                     ->where('app_name', '=', 'clarity');
     }
 
+    // all user apps
+    public function userApps()
+    {
+        return $this->hasMany(UserApps::class, 'user_id');
+    }
+
     // store copyright name
     public function storeCopyright()
     {

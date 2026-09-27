@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admins\Admin\AdminAppsController;
 use App\Http\Controllers\Admins\Admin\AdminBankAccountController;
 use App\Http\Controllers\Admins\Admin\AdminController;
 use App\Http\Controllers\Admins\Admin\AdminDisputeController;
@@ -213,6 +214,9 @@ foreach (config('tenancy.central_domains') as $domain) {
                 // Subscriber Products & Winning Products Analytics
                 Route::get('/ah-admin/products', [AdminProductController::class, 'index'])->name('products.index');
                 Route::get('/ah-admin/products/{type}/{id}', [AdminProductController::class, 'show'])->name('products.show');
+
+                // User Applications Statistics
+                Route::get('/ah-admin/apps', [AdminAppsController::class, 'index'])->name('apps.index');
             });
         });
     });
