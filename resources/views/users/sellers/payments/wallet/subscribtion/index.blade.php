@@ -37,7 +37,7 @@
 @endsection
 
 @section('title')
-    شحن الرصيد
+    الدفع الإشتراك عن طريق رصيدي في المنصة
 @endsection
 
 @section('sidbar')

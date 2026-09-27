@@ -36,8 +36,8 @@
 @endsection
 
 @section('title')
-    الدفع عن طريق البطاقة الذهبية أو CIB
-@endsection
+ الدفع عن طريق بريدي موب
+ @endsection
 
 @section('sidbar')
     @include('users.sellers.components.sidbar.sidbar')

@@ -36,7 +36,7 @@
 @endsection
 
 @section('title')
-    الدفع عن طريق البطاقة الذهبية أو CIB
+    الدفع عن طريق ccp
 @endsection
 
 @section('sidbar')

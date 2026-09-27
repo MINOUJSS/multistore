@@ -36,7 +36,7 @@
 @endsection
 
 @section('title')
-    الدفع عن طريق CCP
+   الدفع عن طريق ccp
 @endsection
 
 @section('sidbar')

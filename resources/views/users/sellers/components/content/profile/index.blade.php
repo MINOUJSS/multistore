@@ -387,6 +387,39 @@
 
                         <!-- Chargily Tab -->
                         <div class="tab-pane fade" id="chargily" role="tabpanel">
+                            <!-- Chargily Webhook Info Alert -->
+                            <div class="alert alert-warning border-0 shadow-sm rounded-3 p-3 mb-4 position-relative" style="background-color: #fff9eb; border-right: 4px solid #f59e0b !important;">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                         style="width: 40px; height: 40px; background: rgba(245, 158, 11, 0.15); color: #d97706;">
+                                        <i class="fas fa-link fs-5"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                            <h6 class="fw-bold text-dark mb-0">تنبيه هام لإتمام ربط بوابة Chargily Pay بنجاح</h6>
+                                            <span class="badge bg-warning text-dark px-2 py-0.5 rounded-pill small fw-bold">مطلوب</span>
+                                        </div>
+                                        <p class="text-muted small mb-2 lh-base">
+                                            لاستقبال تأكيدات الدفع التلقائية وتحديث حالات طلبات متجرك فورياً، يرجى نسخ رابط الـ <strong>Webhook</strong> الموضح أدناه ولصقه في الخانة المخصصة له داخل حسابك على منصة <strong>Chargily</strong> (من خلال: <code>لوحة التحكم &gt; Developers &gt; Webhooks</code>):
+                                        </p>
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" 
+                                                   class="form-control font-monospace bg-white border-warning-subtle text-dark small text-start" 
+                                                   id="chargilyWebhookInput" 
+                                                   value="{{ route('chargilypay.webhook_endpoint') }}" 
+                                                   readonly 
+                                                   dir="ltr">
+                                            <button class="btn btn-warning text-dark fw-bold px-3 d-flex align-items-center gap-1 shadow-none" 
+                                                    type="button" 
+                                                    onclick="const inp = document.getElementById('chargilyWebhookInput'); if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(inp.value); } else { inp.select(); document.execCommand('copy'); } const lbl = this.querySelector('.btn-copy-label'); const orig = lbl.innerText; lbl.innerText = 'تم النسخ!'; setTimeout(() => lbl.innerText = orig, 2000);">
+                                                <i class="fas fa-copy"></i>
+                                                <span class="btn-copy-label">نسخ الرابط</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <form action="{{ route('seller.profile.chargily-settings.update') }}" method="POST" class="row g-4">
                                 @csrf
                                 <div class="col-12 col-md-6">

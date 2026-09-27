@@ -36,7 +36,7 @@
 @endsection
 
 @section('title')
-    الدفع عن طريق baridimob
+    الدفع عن طريق بريدي موب
 @endsection
 
 @section('sidbar')
