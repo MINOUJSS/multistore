@@ -32,22 +32,6 @@
 @endsection
 
 @section('style')
-    <style>
-      #logoPreview
-      {
-        height: 100px;
-        width:100px;
-      }
-      #dropzone {
-        height: 100px;
-        width:100px;
-        cursor: pointer;
-        border: 2px dashed #706c6cfd;
-        border-radius: 5px;
-        align-content: center;
-        text-align: center;
-      }
-    </style>
 @endsection
 
 @section('navbar')

@@ -114,10 +114,11 @@
 
                                 <div class="col-12 col-md-4 col-lg-4 text-center">
                                     <div id="dropzone" onclick="browsdialog()" onchange="previewLogo(event)"
-                                        class="p-4 border border-2 border-dashed rounded-4 bg-white cursor-pointer transition-all hover-shadow text-center">
-                                        <i class="fa-solid fa-cloud-arrow-up display-5 text-navy mb-2"></i>
-                                        <span class="d-block fw-bold text-dark small">اضغط هنا لاختيار الشعار</span>
-                                        <span class="text-muted fs-7">أو اسحب وأفلت الملف</span>
+                                        class="p-3 border border-2 border-dashed rounded-4 bg-white cursor-pointer transition-all hover-shadow text-center d-flex flex-column align-items-center justify-content-center mx-auto"
+                                        style="width: 100% !important; max-width: 220px; min-height: 150px !important; height: auto !important;">
+                                        <i class="fa-solid fa-cloud-arrow-up fs-2 text-navy mb-2"></i>
+                                        <span class="d-block fw-bold text-dark small lh-sm mb-1">اضغط هنا لاختيار الشعار</span>
+                                        <span class="text-muted fs-7 lh-sm">أو اسحب وأفلت الملف</span>
                                         <input type="file" name="image" class="form-control" id="storeLogo" accept="image/*" style="display: none;">
                                     </div>
                                 </div>

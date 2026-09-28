@@ -79,8 +79,8 @@ class SellerFqsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $sellerFqa = SellerFqa::findOrfail($id);
-        if ($SellerFqa->Seller_id != get_Seller_data(auth()->user()->tenant_id)->id) {
+        $sellerFqa = SellerFqa::findOrFail($id);
+        if ($sellerFqa->seller_id != get_seller_data(auth()->user()->tenant_id)->id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -99,7 +99,7 @@ class SellerFqsController extends Controller
         }
 
         try {
-            $SellerFqa->update([
+            $sellerFqa->update([
                 'question' => $request->question,
                 'answer' => $request->answer,
                 'order' => $request->order ?? 0,
@@ -120,7 +120,7 @@ class SellerFqsController extends Controller
 
     public function destroy($id)
     {
-        $SellerFqa = SellerFqa::findOrfail($id);
+        $sellerFqa = SellerFqa::findOrFail($id);
         if ($sellerFqa->seller_id != get_seller_data(auth()->user()->tenant_id)->id) {
             abort(403, 'Unauthorized action.');
         }

@@ -17,7 +17,7 @@ $(document).ready(function() {
         const faqId = $(this).data('id');
   
         $.ajax({
-            url: `/supplier-panel/page/faqs/${faqId}/edit`,
+            url: `/supplier-panel/page/section/faqs/${faqId}/edit`,
             type: 'GET',
             success: function(response) {
                 $('#edit_faq_id').val(response.id);
@@ -45,13 +45,13 @@ $(document).ready(function() {
     // Handle form submissions
     $('#addFaqForm').submit(function(e) {
         e.preventDefault();
-        submitForm($(this), 'POST', '/supplier-panel/page/faqs');
+        submitForm($(this), 'POST', '/supplier-panel/page/section/faqs');
     });
 
     $('#editFaqForm').submit(function(e) {
         e.preventDefault();
         const faqId = $('#edit_faq_id').val();
-        submitForm($(this), 'PUT', `/supplier-panel/page/faqs/${faqId}/update`);
+        submitForm($(this), 'PUT', `/supplier-panel/page/section/faqs/${faqId}/update`);
     });
 
     // Handle delete button click
@@ -70,7 +70,7 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `/supplier-panel/page/faqs/${faqId}/delete`,
+                    url: `/supplier-panel/page/section/faqs/${faqId}/delete`,
                     type: 'POST',
                     data: {
                         '_method': 'DELETE',
