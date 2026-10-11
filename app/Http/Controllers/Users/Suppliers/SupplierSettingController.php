@@ -28,28 +28,24 @@ class SupplierSettingController extends Controller
         // filter data
         // if has file then update logo
         if ($image = $request->file('image')) {
-            $extension = explode('.', $image->getClientOriginalName())[1];
-            $name = explode('.', $image->getClientOriginalName())[0];
-            $image_name = $name.'-'.time().'.'.$extension;
+            $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
             $store_name = get_supplier_data(auth()->user()->tenant_id)->store_name;
-            $path = $store_name.'/images/logo';
-            if (!Storage::disk('supplier')->exists($path)) {
-                Storage::disk('supplier')->makeDirectory($path);
-            } else {
-                Storage::disk('supplier')->deleteDirectory($path);
-                Storage::disk('supplier')->makeDirectory($path);
-            }
-            $image->storeAs($path, $image_name, 'supplier');
             $supplier_logo = UserStoreSetting::where('user_id', $user_id)->where('key', 'store_logo')->first();
+            if ($supplier_logo && $supplier_logo->value) {
+                $mediaService->deleteFile($supplier_logo->value);
+            }
+
+            $upload = $mediaService->storeFile($image, "{$store_name}/images/logo");
             if ($supplier_logo == null) {
                 $supplier_logo = new UserStoreSetting();
                 $supplier_logo->user_id = $user_id;
                 $supplier_logo->key = 'store_logo';
-                $supplier_logo->value = '/storage/tenantsupplier/'.$path.'/'.$image_name;
+                $supplier_logo->value = $upload['url'];
                 $supplier_logo->save();
+            } else {
+                $supplier_logo->value = $upload['url'];
+                $supplier_logo->update();
             }
-            $supplier_logo->value = '/storage/tenantsupplier/'.$path.'/'.$image_name;
-            $supplier_logo->update();
         }
         $supplier_theme = UserStoreSetting::where('user_id', $user_id)->where('key', 'store_theme')->first();
         if ($supplier_theme == null) {

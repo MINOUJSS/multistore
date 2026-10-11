@@ -152,12 +152,11 @@ class SupplierController extends Controller
             \DB::beginTransaction();
             // select user
             $user = User::find($id);
-            // Define the folder path
-            // $folderPath = get_supplier_store_name('supplier/'.$user->tenant_id);
+            // Define the folder path and delete from R2 and local disks
             $folderPath = get_supplier_store_name($user->tenant_id);
-            // Delete the folder from storage
-            if (Storage::disk('supplier')->exists($folderPath)) {
-                Storage::disk('supplier')->deleteDirectory($folderPath);
+            if (!empty($folderPath)) {
+                $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+                $mediaService->deleteDirectory($folderPath);
             }
             // get supplier
             $supplier = Tenant::find($user->tenant_id);

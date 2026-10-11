@@ -108,14 +108,19 @@ class SiteController extends Controller
         $order->increment('downloads_count');
 
         $product = SellerProducts::where('id', $id)->first();
-        // $file = $product->file;
-        // // تقسيم الرابط
-        // $parts = explode('/storage/app/public/seller/', $file);
-        // // المسار داخل storage
-        // $filePath = $parts[1];
-        $filePath = $product->file;
+        if (!$product || empty($product->file)) {
+            abort(404, 'الملف غير موجود');
+        }
 
-        return Storage::disk('seller')->download($filePath);
-        // return response()->download($file);
+        $file = $product->file;
+        $filePath = str_contains($file, '/storage/app/public/seller/')
+            ? explode('/storage/app/public/seller/', $file)[1]
+            : ltrim($file, '/');
+
+        if ($product->file_disk === 'r2' || Storage::disk('r2')->exists($filePath)) {
+            return Storage::disk('r2')->download($filePath, basename($filePath));
+        }
+
+        return Storage::disk('seller')->download($filePath, basename($filePath));
     }
 }

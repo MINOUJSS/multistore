@@ -159,12 +159,11 @@ class SellerController extends Controller
             \DB::beginTransaction();
             // select user
             $user = User::find($id);
-            // Define the folder path
-            // $folderPath = get_seller_store_name('seller/'.$user->tenant_id);
+            // Define the folder path and delete from R2 and local disks
             $folderPath = get_seller_store_name($user->tenant_id);
-            // Delete the folder from storage
-            if (Storage::disk('seller')->exists($folderPath)) {
-                Storage::disk('seller')->deleteDirectory($folderPath);
+            if (!empty($folderPath)) {
+                $mediaService = app(\App\Services\Seller\SellerMediaService::class);
+                $mediaService->deleteDirectory($folderPath);
             }
             // get seller
             $seller = Tenant::find($user->tenant_id);

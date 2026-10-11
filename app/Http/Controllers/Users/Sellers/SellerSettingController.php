@@ -28,28 +28,24 @@ class SellerSettingController extends Controller
         // filter data
         // if has file then update logo
         if ($image = $request->file('image')) {
-            $extension = explode('.', $image->getClientOriginalName())[1];
-            $name = explode('.', $image->getClientOriginalName())[0];
-            $image_name = $name.'-'.time().'.'.$extension;
+            $mediaService = app(\App\Services\Seller\SellerMediaService::class);
             $store_name = get_seller_data(auth()->user()->tenant_id)->store_name;
-            $path = $store_name.'/images/logo';
-            if (!Storage::disk('seller')->exists($path)) {
-                Storage::disk('seller')->makeDirectory($path);
-            } else {
-                Storage::disk('seller')->deleteDirectory($path);
-                Storage::disk('seller')->makeDirectory($path);
-            }
-            $image->storeAs($path, $image_name, 'seller');
             $seller_logo = UserStoreSetting::where('user_id', $user_id)->where('key', 'store_logo')->first();
+            if ($seller_logo && $seller_logo->value) {
+                $mediaService->deleteFile($seller_logo->value);
+            }
+
+            $upload = $mediaService->storeFile($image, "{$store_name}/images/logo");
             if ($seller_logo == null) {
                 $seller_logo = new UserStoreSetting();
                 $seller_logo->user_id = $user_id;
                 $seller_logo->key = 'store_logo';
-                $seller_logo->value = '/storage/app/public/seller/'.$path.'/'.$image_name;
+                $seller_logo->value = $upload['url'];
                 $seller_logo->save();
+            } else {
+                $seller_logo->value = $upload['url'];
+                $seller_logo->update();
             }
-            $seller_logo->value = '/storage/app/public/seller/'.$path.'/'.$image_name;
-            $seller_logo->update();
         }
         $seller_theme = UserStoreSetting::where('user_id', $user_id)->where('key', 'store_theme')->first();
         if ($seller_theme == null) {

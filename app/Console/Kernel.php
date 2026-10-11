@@ -240,6 +240,8 @@ class Kernel extends ConsoleKernel
         Commands\MakeServiceCommand::class,
         Commands\FetchTelegramUpdates::class,
         Commands\SendStoreVisitorsReport::class,
+        Commands\MigrateSellerMediaToR2::class,
+        Commands\MigrateSupplierMediaToR2::class,
     ];
 
     protected function commands(): void

@@ -45,15 +45,15 @@ class SupplierProfileController extends Controller
         $old_phone = $user->phone;
         // check if uploded image
         if ($request->hasFile('id_card_image')) {
-            // delete old image if exist form storege
-            if (Storage::disk('supplier')->exists(get_supplier_store_name(auth()->user()->tenant_id).'/images/profile/id_card_image')) {
-                Storage::disk('supplier')->deleteDirectory(get_supplier_store_name(auth()->user()->tenant_id).'/images/profile/id_card_image');
+            $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+            if ($supplier->id_card_image) {
+                $mediaService->deleteFile($supplier->id_card_image);
             }
-            $path = $request->file('id_card_image')->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/profile/id_card_image', 'public');
-            $url = Storage::disk('public')->url('tenantsupplier/app/public/'.$path);
-            $supplier->id_card_image = $url;
-            // chenge approval_status
-            $supplier->approval_status == 'pending';
+            $storeName = get_supplier_store_name(auth()->user()->tenant_id);
+            $upload = $mediaService->storeFile($request->file('id_card_image'), "{$storeName}/images/profile/id_card_image");
+            $supplier->id_card_image = $upload['url'];
+            // change approval_status
+            $supplier->approval_status = 'pending';
         }
         $supplier->full_name = $request->full_name;
         $user->name = $request->full_name;
@@ -239,15 +239,15 @@ class SupplierProfileController extends Controller
         // uplode the avatar
         $supplier = get_supplier_data(auth()->user()->tenant_id);
         if ($request->hasFile('avatar_Image')) {
-            // delete old image if exist form storege
-            if (Storage::disk('supplier')->exists(get_supplier_store_name(auth()->user()->tenant_id).'/images/profile/avatar')) {
-                Storage::disk('supplier')->deleteDirectory(get_supplier_store_name(auth()->user()->tenant_id).'/images/profile/avatar');
+            $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+            if ($supplier->avatar) {
+                $mediaService->deleteFile($supplier->avatar);
             }
-            $path = $request->file('avatar_Image')->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/profile/avatar', 'public');
-            $url = Storage::disk('public')->url('tenantsupplier/app/public/'.$path);
-            $supplier->avatar = $url;
-            // chenge approval_status
-            $supplier->approval_status == 'pending';
+            $storeName = get_supplier_store_name(auth()->user()->tenant_id);
+            $upload = $mediaService->storeFile($request->file('avatar_Image'), "{$storeName}/images/profile/avatar");
+            $supplier->avatar = $upload['url'];
+            // change approval_status
+            $supplier->approval_status = 'pending';
         }
         $supplier->save();
 

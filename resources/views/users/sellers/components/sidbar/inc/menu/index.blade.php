@@ -40,6 +40,14 @@
         <a href="{{route('seller.apps')}}"><i class="fa-brands fa-sketch"></i> <span>التطبيقات</span></a>
     </div>
 
+    <div class="item {{ request()->routeIs('seller.services*') ? 'active' : '' }}">
+        <a href="{{ route('seller.services.index') }}" class="d-flex align-items-center">
+            <i class="fa-solid fa-wand-magic-sparkles text-warning"></i> 
+            <span>خدمات المنصة</span>
+            <span class="badge bg-warning text-dark ms-auto font-monospace" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px;">جديد</span>
+        </a>
+    </div>
+
     <div class="item">
         <a class="sub-btn" href="#"><i class="fa-solid fa-shop"></i> <span>سوق المنتجات</span> <i class="fa-solid fa-angle-left dropdown ms-auto"></i></a>
         <div class="sub-menu">

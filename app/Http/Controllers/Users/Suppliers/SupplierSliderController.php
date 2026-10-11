@@ -48,12 +48,10 @@ class SupplierSliderController extends Controller
             // Handle image upload
             $imagePath = null;
             if ($request->hasFile('image')) {
-                $path = $request->file('image')->store(
-                    get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders',
-                    'supplier'
-                );
-                $url = Storage::disk('supplier')->url('tenantsupplier/'.$path);
-                $imagePath = $url;
+                $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+                $storeName = get_supplier_store_name(auth()->user()->tenant_id);
+                $upload = $mediaService->storeFile($request->file('image'), "{$storeName}/images/sliders");
+                $imagePath = $upload['url'];
             }
             $link = null;
             $request->link == '' ? $link = null : $link = $request->link;
@@ -120,22 +118,16 @@ class SupplierSliderController extends Controller
 
             // Handle image update if new image is provided
             if ($request->hasFile('image')) {
-                // get old image name in storage
-                $oldImageName = explode(get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders/', $slider->image)[1];
-                // Delete old image if exists from storage
-                if ($slider->image && Storage::disk('supplier')->exists(get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders/'.$oldImageName)) {
-                    Storage::disk('supplier')->delete(get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders/'.$oldImageName);
+                $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+                // Delete old image if exists
+                if ($slider->image) {
+                    $mediaService->deleteFile($slider->image);
                 }
 
                 // Store new image
-                $path = $request->file('image')->store(
-                    get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders',
-                    'supplier'
-                );
-
-                // Generate full URL
-                $url = Storage::disk('supplier')->url('tenantsupplier/'.$path);
-                $data['image'] = $url;
+                $storeName = get_supplier_store_name(auth()->user()->tenant_id);
+                $upload = $mediaService->storeFile($request->file('image'), "{$storeName}/images/sliders");
+                $data['image'] = $upload['url'];
             }
 
             $slider->update($data);
@@ -159,11 +151,8 @@ class SupplierSliderController extends Controller
         try {
             // Delete associated image
             if ($slider->image) {
-                $fullPath = get_supplier_store_name(auth()->user()->tenant_id).'/images/sliders/'.basename($slider->image);
-
-                if (Storage::disk('supplier')->exists($fullPath)) {
-                    Storage::disk('supplier')->delete($fullPath);
-                }
+                $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+                $mediaService->deleteFile($slider->image);
             }
 
             $slider->delete();

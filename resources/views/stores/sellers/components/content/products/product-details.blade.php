@@ -35,16 +35,18 @@
             /* Disable sticky on mobile if desired */
             margin-bottom: 20px;
         }
-            /* Make the entire left column sticky */
+
+        /* Make the entire left column sticky */
         .col-md-6:first-child {
             position: relative !important;
             top: 0px;
         }
+
         /*bay-now-btn*/
 
-            .bay-now-btn {
-            margin-top: 20px; 
-            }
+        .bay-now-btn {
+            margin-top: 20px;
+        }
     }
 
     /* Make the entire left column sticky */
@@ -54,82 +56,102 @@
         align-self: flex-start;
         height: fit-content;
     }
+
     /* test  */
-        .floating-buy-bar{
+    .floating-buy-bar {
 
-        position:fixed;
+        position: fixed;
 
-        bottom:0;
+        bottom: 0;
 
-        right:0;
+        right: 0;
 
-        left:0;
+        left: 0;
 
-        background:#fff;
+        background: #fff;
 
-        padding:12px;
+        padding: 12px;
 
-        box-shadow:0 -5px 20px rgba(0,0,0,.15);
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, .15);
 
-        display:none;
+        display: none;
 
-        z-index:9999;
+        z-index: 9999;
 
     }
 
-    @media(min-width:992px){
+    @media(min-width:992px) {
 
-        .floating-buy-bar{
+        .floating-buy-bar {
 
-            width:420px;
+            width: 420px;
 
-            left:auto;
+            left: auto;
 
-            right:25px;
+            right: 25px;
 
-            border-radius:12px;
+            border-radius: 12px;
 
         }
 
     }
+
     /* animate buy btn  */
     /* 1 */
-            @keyframes swingButton {
-            0%   { transform: rotate(0deg); }
-            20%  { transform: rotate(-3deg); }
-            40%  { transform: rotate(3deg); }
-            60%  { transform: rotate(-2deg); }
-            80%  { transform: rotate(2deg); }
-            100% { transform: rotate(0deg); }
+    @keyframes swingButton {
+        0% {
+            transform: rotate(0deg);
         }
 
-        .buy-btn-attention{
-            animation: swingButton 8s infinite;
-            transform-origin: center;
-        }
-        /* 3  */
-        @keyframes pulse{
-
-        0%{
-        transform:scale(1);
+        20% {
+            transform: rotate(-3deg);
         }
 
-        50%{
-        transform:scale(1.04);
+        40% {
+            transform: rotate(3deg);
         }
 
-        100%{
-        transform:scale(1);
+        60% {
+            transform: rotate(-2deg);
         }
 
+        80% {
+            transform: rotate(2deg);
         }
 
-        .buy-btn{
-
-        animation:pulse 2.5s infinite;
-
+        100% {
+            transform: rotate(0deg);
         }
-       
+    }
+
+    .buy-btn-attention {
+        animation: swingButton 8s infinite;
+        transform-origin: center;
+    }
+
+    /* 3  */
+    @keyframes pulse {
+
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.04);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+
+    }
+
+    .buy-btn {
+
+        animation: pulse 2.5s infinite;
+
+    }
+
     /* endtest  */
 </style>
 <div class="container">
@@ -155,7 +177,8 @@
                     @if (count($product_images) > 0)
                         @foreach ($product_images as $product_image)
                             <div class="carousel-item carousel-image-wrapper">
-                                <img src="{{ $product_image->image_path }}" class="d-block w-100 product-carousel-img" alt="...">
+                                <img src="{{ $product_image->image_path }}" class="d-block w-100 product-carousel-img"
+                                    alt="...">
                             </div>
                         @endforeach
                     @endif
@@ -219,73 +242,79 @@
                 @endif
             </h3>
             <p class="">{{ $product->short_description }}</p>
-             @php
-             $pmSetting = (is_array($store_settings) ? collect($store_settings) : $store_settings)->firstWhere('key', 'store_payment_methods') ?? ($store_settings[17] ?? null);
-             $pmVal = is_array($pmSetting) ? ($pmSetting['value'] ?? null) : ($pmSetting?->value ?? null);
-             $pmObj = $pmVal ? json_decode($pmVal) : null;
-             $cash_status = $pmObj?->Cash?->status ?? 'inactive';
-             $chargily_status = $pmObj?->Chargily_Pay?->status ?? 'inactive';
-             $ccp_status = $pmObj?->Ccp?->status ?? 'inactive';
-             $baridimob_status = $pmObj?->BaridiMob?->status ?? 'inactive'; 
+            @php
+                $pmSetting =
+                    (is_array($store_settings) ? collect($store_settings) : $store_settings)->firstWhere(
+                        'key',
+                        'store_payment_methods',
+                    ) ??
+                    ($store_settings[17] ?? null);
+                $pmVal = is_array($pmSetting) ? $pmSetting['value'] ?? null : $pmSetting?->value ?? null;
+                $pmObj = $pmVal ? json_decode($pmVal) : null;
+                $cash_status = $pmObj?->Cash?->status ?? 'inactive';
+                $chargily_status = $pmObj?->Chargily_Pay?->status ?? 'inactive';
+                $ccp_status = $pmObj?->Ccp?->status ?? 'inactive';
+                $baridimob_status = $pmObj?->BaridiMob?->status ?? 'inactive';
             @endphp
             {{-- order form  --}}
-            @if($product->product_type === 'digital')
-            <form id="orderForm" action="/order" class="row g-3 border p-3 rounded mt-3 mb-3 order-form" method="POST">
-                @csrf
-                <input type="hidden" name="device_fingerprint" id="device_fingerprint">
-                <div class="col-12 text-center">
-                    <p>{{ $order_form->form_title }}</p>
-                </div>
-                <input type="hidden" name="product_id" value="{{ $product->id }}" />
-                <div class="col-md-6">
-                    <label for="name" class="form-label">{{ $order_form->lable_customer_name }} <sup
-                            class="text-danger">
-                            @if ($order_form->customer_name_required === 'true')
-                                *
-                            @endif
-                        </sup></label>
-                    <input type="name" name="name" class="form-control @error('name') is-invalid @enderror"
-                        id="name" value="{{ old('name') }}"
-                        placeholder="{{ $order_form->input_placeholder_customer_name }}"
-                        @if ($order_form->customer_name_required === 'true') required @endif>
-                    @error('name')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="col-md-6">
-                    <label for="phone" class="form-label">{{ $order_form->lable_customer_phone }} <sup
-                            class="text-danger">
-                            @if ($order_form->customer_phone_required === 'true')
-                                *
-                            @endif
-                        </sup></label>
-                    <input type="phone" name="phone" class="form-control @error('phone') is-invalid @enderror"
-                        id="phone" value="{{ old('phone') }}" onchange="create_abandoned_order();"
-                        placeholder="{{ $order_form->input_placeholder_customer_phone }}" required>
-                    @error('phone')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="col-md-6">
-                    <label for="email" class="form-label">{{ $order_form->lable_customer_email }} <sup
-                            class="text-danger">
-                            @if ($order_form->customer_email_required === 'true')
-                                *
-                            @endif
-                        </sup></label>
-                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                        id="email" value="{{ old('email') }}"
-                        placeholder="{{ $order_form->input_placeholder_customer_email }}" required>
-                    @error('email')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="row mb-4 mt-4">
-                    <div class="col-md-12">
-                        <h5 class="mb-3 fw-bold text-dark sub-title">طريقة الدفع</h5>
-                        <div class="d-flex flex-wrap gap-3">
+            @if ($product->product_type === 'digital')
+                <form id="orderForm" action="/order" class="row g-3 border p-3 rounded mt-3 mb-3 order-form"
+                    method="POST">
+                    @csrf
+                    <input type="hidden" name="device_fingerprint" id="device_fingerprint">
+                    <div class="col-12 text-center">
+                        <p>{{ $order_form->form_title }}</p>
+                    </div>
+                    <input type="hidden" name="product_id" value="{{ $product->id }}" />
+                    <div class="col-md-6">
+                        <label for="name" class="form-label">{{ $order_form->lable_customer_name }} <sup
+                                class="text-danger">
+                                @if ($order_form->customer_name_required === 'true')
+                                    *
+                                @endif
+                            </sup></label>
+                        <input type="name" name="name" class="form-control @error('name') is-invalid @enderror"
+                            id="name" value="{{ old('name') }}"
+                            placeholder="{{ $order_form->input_placeholder_customer_name }}"
+                            @if ($order_form->customer_name_required === 'true') required @endif>
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label">{{ $order_form->lable_customer_phone }} <sup
+                                class="text-danger">
+                                @if ($order_form->customer_phone_required === 'true')
+                                    *
+                                @endif
+                            </sup></label>
+                        <input type="phone" name="phone" class="form-control @error('phone') is-invalid @enderror"
+                            id="phone" value="{{ old('phone') }}" onchange="create_abandoned_order();"
+                            placeholder="{{ $order_form->input_placeholder_customer_phone }}" required>
+                        @error('phone')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">{{ $order_form->lable_customer_email }} <sup
+                                class="text-danger">
+                                @if ($order_form->customer_email_required === 'true')
+                                    *
+                                @endif
+                            </sup></label>
+                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                            id="email" value="{{ old('email') }}"
+                            placeholder="{{ $order_form->input_placeholder_customer_email }}" required>
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="row mb-4 mt-4">
+                        <div class="col-md-12">
+                            <h5 class="mb-3 fw-bold text-dark sub-title">طريقة الدفع</h5>
+                            <div class="d-flex flex-wrap gap-3">
 
-                            {{-- <!-- الدفع عند الاستلام -->
+                                {{-- <!-- الدفع عند الاستلام -->
                             <div class="payment-option">
                                 <input type="radio" name="payment_method" id="cod" value="cod"
                                     class="payment-radio" checked>
@@ -296,319 +325,334 @@
                                     </div>
                                 </label>
                             </div> --}}
-                            
-                            @if (is_seller_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')) && $chargily_status=='active')
-                                <!-- Chargily -->
-                                <div class="payment-option">
-                                    <input type="radio" name="payment_method" id="chargily" value="chargily"
-                                        class="payment-radio" checked>
-                                    <label for="chargily" class="payment-label">
-                                        <div class="payment-content">
-                                            <i class="fas fa-credit-card payment-icon"></i>
-                                            <span class="payment-text">Chargily</span>
-                                        </div>
-                                    </label>
-                                </div>
-                            @endif
-                            @if (is_seller_aproved(tenant('id')) && is_seller_bank_account_exists(tenant('id')) && ($ccp_status =='active' || $baridimob_status == 'active'))
-                                <!-- التحويل البنكي -->
-                                <div class="payment-option">
-                                    <input type="radio" name="payment_method" id="bank_transfer" value="verments"
-                                        class="payment-radio" checked>
-                                    <label for="bank_transfer" class="payment-label">
-                                        <div class="payment-content">
-                                            <i class="fas fa-university payment-icon"></i>
-                                            <span class="payment-text">تحويل بنكي</span>
-                                        </div>
-                                    </label>
-                                </div>
-                            @endif
 
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 text-center">
-                    <button id="buyNowButton" type="submit" class="form-control btn btn-primary bay-now-btn buy-btn-attention buy-btn"><i
-                            class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
-                </div>
-            </form>
-            @else 
-            <form id="orderForm" action="/order" class="row g-3 border p-3 rounded mt-3 mb-3 order-form" method="POST">
-                @csrf
-                <input type="hidden" name="device_fingerprint" id="device_fingerprint">
-                <div class="col-12 text-center">
-                    <p>{{ $order_form->form_title }}</p>
-                </div>
-                <div class="col-md-6">
-                    <label for="name" class="form-label">{{ $order_form->lable_customer_name }} <sup
-                            class="text-danger">
-                            @if ($order_form->customer_name_required === 'true')
-                                *
-                            @endif
-                        </sup></label>
-                    <input type="name" name="name" class="form-control @error('name') is-invalid @enderror"
-                        id="name" value="{{ old('name') }}"
-                        placeholder="{{ $order_form->input_placeholder_customer_name }}"
-                        @if ($order_form->customer_name_required === 'true') required @endif>
-                    @error('name')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="col-md-6">
-                    <label for="phone" class="form-label">{{ $order_form->lable_customer_phone }} <sup
-                            class="text-danger">
-                            @if ($order_form->customer_phone_required === 'true')
-                                *
-                            @endif
-                        </sup></label>
-                    <input type="phone" name="phone" class="form-control @error('phone') is-invalid @enderror"
-                        id="phone" value="{{ old('phone') }}" onchange="create_abandoned_order();"
-                        placeholder="{{ $order_form->input_placeholder_customer_phone }}" required>
-                    @error('phone')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="col-12" style="display: @if ($order_form->customer_address_visible === 'true') block @else none @endif">
-                    <label for="address" class="form-label">{{ $order_form->lable_customer_address }} <sup
-                            class="text-danger">
-                            @if ($order_form->customer_address_required === 'true')
-                                *
-                            @endif
-                        </sup></label>
-                    <input type="text" name="address" class="form-control @error('address') is-invalid @enderror"
-                        id="address" value="{{ old('address') }}"
-                        placeholder="{{ $order_form->input_placeholder_customer_address }}"
-                        @if ($order_form->customer_address_required === 'true' && $order_form->customer_address_visible === 'true') required @endif>
-                    @error('address')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="col-12" style="display: @if ($order_form->customer_notes_visible === 'true') block @else none @endif">
-                    <label for="note" class="form-label">{{ $order_form->lable_customer_notes }} <sup
-                            class="text-danger">
-                            @if ($order_form->customer_notes_required === 'true')
-                                *
-                            @endif
-                        </sup></label>
-                    <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3"
-                        placeholder="{{ $order_form->input_placeholder_customer_notes }}"
-                        @if ($order_form->customer_notes_required === 'true' && $order_form->customer_notes_visible === 'true') required @endif></textarea>
-                    @error('note')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="col-md-4">
-                    <label for="inputWilaya" class="form-label">الولاية</label>
-                    <select id="inputWilaya" name="wilaya" class="form-select @error('wilaya') is-invalid @enderror"
-                        onchange="show_shipping_prices(this.value);">
-                        <option value="0" selected>إختر الولاية...</option>
-                        @foreach ($wilayas as $wilaya)
-                            <option value="{{ $wilaya->wilaya_id }}"
-                                {{ old('wilaya') == $wilaya->wilaya_id ? 'selected' : '' }}>
-                                {{ get_wilaya_data($wilaya->wilaya_id)->ar_name }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    @error('wilaya')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="col-md-4">
-                    <label for="inputDayra" class="form-label">الدئرة</label>
-                    <select id="inputDayra" name="dayra" class="form-select @error('dayrea') is-invalid @enderror">
-                        <option value="0" selected>إختر الدائرة...</option>
-                        <option value="0">...</option>
-                    </select>
-                    @error('dayrea')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="col-md-4">
-                    <label for="inputBaladia" class="form-label">البلدية</label>
-                    <select id="inputBaladia" name="baladia"
-                        class="form-select @error('baladia') is-invalid @enderror">
-                        <option value="0" selected>إختر البلدية...</option>
-                        <option value="0">...</option>
-                    </select>
-                    @error('baladia')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="row mt-3 mb-3">
-                    <div class="col-md-12">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5>
-                                <i class="fas fa-truck"></i>
-                                التوصيل
-                            </h5>
-                            @if ($product->free_shipping === 'yes')
-                                <p id="show_shipping_price">التوصيل مجاني</p>
-                            @else
-                                <p id="show_shipping_price">إختر الولاية</p>
-                            @endif
-                        </div>
-                        <div id="shipping_method" class="row d-flex justify-content-between align-items-center"
-                            style="display: none !important;">
-
-                            <div class="col-md-6">
-                                <div class="card p-3 text-center border option-card" id="card_home"
-                                    onclick="selectOption('home');show_to_home_price();countTotalPrice();">
-                                    <input class="form-check-input d-none" type="radio" id="to_home"
-                                        name="shipping_and_point" value="home"
-                                        {{ old('shipping_and_point', 'home') == 'home' ? 'checked' : '' }}>
-                                    <label class="form-check-label fw-bold" for="to_home">التوصيل للمنزل</label>
-                                    <p id="to_home_price">00</p><sup> د.ج</sup>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="card p-3 text-center border option-card" id="card_descktop"
-                                    onclick="selectOption('descktop');show_to_desck_price();countTotalPrice();">
-                                    <input class="form-check-input d-none" type="radio" id="to_descktop"
-                                        name="shipping_and_point" value="descktop"
-                                        {{ old('shipping_and_point') == 'descktop' ? 'checked' : '' }}>
-                                    <label class="form-check-label fw-bold" for="to_descktop">التوصيل للمكتب</label>
-                                    <p id="to_desck_price">00</p><sup> د.ج</sup>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        @error('shipping_and_point')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-                <!--product options-->
-                @if (seller_product_has_variations($product->id))
-                    <div class="row mt-3 mb-3">
-                        <div class="col-md-12">
-                            <h5>إختر اللون</h5>
-                            @foreach ($product_variations as $product_variation)
-                                {{-- <input class="form-check-input" type="radio" name="product_varition"
-                                    value="{{ $product_variation->id }}"
-                                    style="background-color: {{ $product_variation->color }};width:30px;height:30px;border:1px solid #000;"
-                                    onchange="get_varition_id(this);" @if ($product_variations[0]['id'] == $product_variation['id']) checked @endif> --}}
-                                <input class="form-check-input" type="radio" name="product_varition"
-                                    value="{{ $product_variation->id }}"
-                                    style="background-color: {{ $product_variation->color }};width:30px;height:30px;border:1px solid #000;"
-                                    onchange="get_varition_id(this);">
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-                @if (seller_product_has_attributes($product->id))
-                    <div class="row mt-3 mb-3">
-                        <div class="col-md-12">
-                            @foreach ($product_attributes as $index => $product_attribute)
-                                @if ($index == 0)
-                                    <h5>إختر {{ get_seller_attribute_name($product_attribute->attribute->id) }}</h5>
-                                @endif
-                                {{-- @if (atrribute_has_more_values($product_attribute->attribute_id)) --}}
-                                {{-- <input class="form-check-input" type="radio" name="product_attribute"
-                                        value="{{ $product_attribute->id }}" onchange="get_attribute_id(this);" @if ($product_attributes[0]['id'] == $product_attribute['id']) checked @endif> --}}
-                                <input class="form-check-input" type="radio" name="product_attribute"
-                                    data-unit-price="{{ $product->price }}"
-                                    data-aditional-price="{{ $product_attribute->additional_price }}"
-                                    value="{{ $product_attribute->id }}"
-                                    onchange="get_attribute_id(this);add_additional_price_to_product_price(this);">
-                                <label for="product_attribute">{{ $product_attribute->value }}</label>
-                                {{-- @endif --}}
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-                <!--/product options-->
-                <!--payment method-->
-                <div class="row mb-4 mt-4">
-                    <div class="col-md-12">
-                        <h5 class="mb-3 fw-bold text-dark sub-title">طريقة الدفع</h5>
-                        <div class="d-flex flex-wrap gap-3">
-                            @if($cash_status=='active')
-                            <!-- الدفع عند الاستلام -->
-                            <div class="payment-option">
-                                <input type="radio" name="payment_method" id="cod" value="cod"
-                                    class="payment-radio" checked>
-                                <label for="cod" class="payment-label">
-                                    <div class="payment-content">
-                                        <i class="fas fa-money-bill-wave payment-icon"></i>
-                                        <span class="payment-text">الدفع عند الاستلام</span>
+                                @if (is_seller_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')) && $chargily_status == 'active' && is_seller_chargily_authorized(tenant('id')))
+                                    <!-- Chargily -->
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" id="chargily" value="chargily"
+                                            class="payment-radio" checked>
+                                        <label for="chargily" class="payment-label">
+                                            <div class="payment-content">
+                                                <i class="fas fa-credit-card payment-icon"></i>
+                                                <span class="payment-text">Chargily</span>
+                                            </div>
+                                        </label>
                                     </div>
-                                </label>
+                                @endif
+                                @if (is_seller_aproved(tenant('id')) &&
+                                        is_seller_bank_account_exists(tenant('id')) &&
+                                        ($ccp_status == 'active' || $baridimob_status == 'active') &&
+                                        is_seller_bank_transfer_authorized(tenant('id')))
+                                    <!-- التحويل البنكي -->
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" id="bank_transfer"
+                                            value="verments" class="payment-radio" checked>
+                                        <label for="bank_transfer" class="payment-label">
+                                            <div class="payment-content">
+                                                <i class="fas fa-university payment-icon"></i>
+                                                <span class="payment-text">تحويل بنكي</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                @endif
+
                             </div>
-                            @endif
-                            @if (is_seller_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')) && $chargily_status=='active')
-                                <!-- Chargily -->
-                                <div class="payment-option">
-                                    <input type="radio" name="payment_method" id="chargily" value="chargily"
-                                        class="payment-radio">
-                                    <label for="chargily" class="payment-label">
-                                        <div class="payment-content">
-                                            <i class="fas fa-credit-card payment-icon"></i>
-                                            <span class="payment-text">Chargily</span>
-                                        </div>
-                                    </label>
-                                </div>
-                            @endif
-
-                            @if (is_seller_aproved(tenant('id')) && is_seller_bank_account_exists(tenant('id')) && ($ccp_status =='active' || $baridimob_status == 'active'))
-                                <!-- التحويل البنكي -->
-                                <div class="payment-option">
-                                    <input type="radio" name="payment_method" id="bank_transfer" value="verments"
-                                        class="payment-radio">
-                                    <label for="bank_transfer" class="payment-label">
-                                        <div class="payment-content">
-                                            <i class="fas fa-university payment-icon"></i>
-                                            <span class="payment-text">تحويل بنكي</span>
-                                        </div>
-                                    </label>
-                                </div>
-                            @endif
-
                         </div>
                     </div>
-                </div>
-                @if (is_product_has_coupon($product->id))
-                    <!---->
-                    <div class="col-md-12 mb-4">
-                        <label for="coupon" class="form-label">{{ $order_form->lable_product_coupon_code }}</label>
-                        <input type="text" name="coupon"
-                            class="form-control @error('coupon') is-invalid @enderror" id="coupon"
-                            value="{{ old('coupon') }}" data-product-id="{{ $product->id }}"
-                            placeholder="أدخل كود الكوبون هنا للحصول على خصم">
-                        @error('coupon')
+                    <div class="col-12 text-center">
+                        <button id="buyNowButton" type="submit"
+                            class="form-control btn btn-primary bay-now-btn buy-btn-attention buy-btn"><i
+                                class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
+                    </div>
+                </form>
+            @else
+                <form id="orderForm" action="/order" class="row g-3 border p-3 rounded mt-3 mb-3 order-form"
+                    method="POST">
+                    @csrf
+                    <input type="hidden" name="device_fingerprint" id="device_fingerprint">
+                    <div class="col-12 text-center">
+                        <p>{{ $order_form->form_title }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="name" class="form-label">{{ $order_form->lable_customer_name }} <sup
+                                class="text-danger">
+                                @if ($order_form->customer_name_required === 'true')
+                                    *
+                                @endif
+                            </sup></label>
+                        <input type="name" name="name" class="form-control @error('name') is-invalid @enderror"
+                            id="name" value="{{ old('name') }}"
+                            placeholder="{{ $order_form->input_placeholder_customer_name }}"
+                            @if ($order_form->customer_name_required === 'true') required @endif>
+                        @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    <!---->
-                @endif
-
-                <!--/payment method-->
-                <div class="row mb-3 mt-3">
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label">{{ $order_form->lable_customer_phone }} <sup
+                                class="text-danger">
+                                @if ($order_form->customer_phone_required === 'true')
+                                    *
+                                @endif
+                            </sup></label>
+                        <input type="phone" name="phone"
+                            class="form-control @error('phone') is-invalid @enderror" id="phone"
+                            value="{{ old('phone') }}" onchange="create_abandoned_order();"
+                            placeholder="{{ $order_form->input_placeholder_customer_phone }}" required>
+                        @error('phone')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-12" style="display: @if ($order_form->customer_address_visible === 'true') block @else none @endif">
+                        <label for="address" class="form-label">{{ $order_form->lable_customer_address }} <sup
+                                class="text-danger">
+                                @if ($order_form->customer_address_required === 'true')
+                                    *
+                                @endif
+                            </sup></label>
+                        <input type="text" name="address"
+                            class="form-control @error('address') is-invalid @enderror" id="address"
+                            value="{{ old('address') }}"
+                            placeholder="{{ $order_form->input_placeholder_customer_address }}"
+                            @if ($order_form->customer_address_required === 'true' && $order_form->customer_address_visible === 'true') required @endif>
+                        @error('address')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-12" style="display: @if ($order_form->customer_notes_visible === 'true') block @else none @endif">
+                        <label for="note" class="form-label">{{ $order_form->lable_customer_notes }} <sup
+                                class="text-danger">
+                                @if ($order_form->customer_notes_required === 'true')
+                                    *
+                                @endif
+                            </sup></label>
+                        <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3"
+                            placeholder="{{ $order_form->input_placeholder_customer_notes }}"
+                            @if ($order_form->customer_notes_required === 'true' && $order_form->customer_notes_visible === 'true') required @endif></textarea>
+                        @error('note')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <div class="col-md-4">
-                        {{-- @livewire('seller-item-qty-controller') --}}
-                        <div class="d-flex justify-content-center">
-                            <a class="btn border rounded"
-                                onclick="increment_qty({{ $product->qty }});countTotalPrice()"><i
-                                    class="fas fa-plus"></i></a>
-                            <span id="livewier_qty"
-                                class="fw-bold w-100 text-center">{{ $product->minimum_order_qty }}</span>
-                            <input id="hidden_qty" type="hidden" name="qty"
-                                value="{{ $product->minimum_order_qty }}">
-                            @error('qty')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                        <label for="inputWilaya" class="form-label">الولاية</label>
+                        <select id="inputWilaya" name="wilaya"
+                            class="form-select @error('wilaya') is-invalid @enderror"
+                            onchange="show_shipping_prices(this.value);">
+                            <option value="0" selected>إختر الولاية...</option>
+                            @foreach ($wilayas as $wilaya)
+                                <option value="{{ $wilaya->wilaya_id }}"
+                                    {{ old('wilaya') == $wilaya->wilaya_id ? 'selected' : '' }}>
+                                    {{ get_wilaya_data($wilaya->wilaya_id)->ar_name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @error('wilaya')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-4">
+                        <label for="inputDayra" class="form-label">الدئرة</label>
+                        <select id="inputDayra" name="dayra"
+                            class="form-select @error('dayrea') is-invalid @enderror">
+                            <option value="0" selected>إختر الدائرة...</option>
+                            <option value="0">...</option>
+                        </select>
+                        @error('dayrea')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-4">
+                        <label for="inputBaladia" class="form-label">البلدية</label>
+                        <select id="inputBaladia" name="baladia"
+                            class="form-select @error('baladia') is-invalid @enderror">
+                            <option value="0" selected>إختر البلدية...</option>
+                            <option value="0">...</option>
+                        </select>
+                        @error('baladia')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="row mt-3 mb-3">
+                        <div class="col-md-12">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5>
+                                    <i class="fas fa-truck"></i>
+                                    التوصيل
+                                </h5>
+                                @if ($product->free_shipping === 'yes')
+                                    <p id="show_shipping_price">التوصيل مجاني</p>
+                                @else
+                                    <p id="show_shipping_price">إختر الولاية</p>
+                                @endif
+                            </div>
+                            <div id="shipping_method" class="row d-flex justify-content-between align-items-center"
+                                style="display: none !important;">
+
+                                <div class="col-md-6">
+                                    <div class="card p-3 text-center border option-card" id="card_home"
+                                        onclick="selectOption('home');show_to_home_price();countTotalPrice();">
+                                        <input class="form-check-input d-none" type="radio" id="to_home"
+                                            name="shipping_and_point" value="home"
+                                            {{ old('shipping_and_point', 'home') == 'home' ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-bold" for="to_home">التوصيل للمنزل</label>
+                                        <p id="to_home_price">00</p><sup> د.ج</sup>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="card p-3 text-center border option-card" id="card_descktop"
+                                        onclick="selectOption('descktop');show_to_desck_price();countTotalPrice();">
+                                        <input class="form-check-input d-none" type="radio" id="to_descktop"
+                                            name="shipping_and_point" value="descktop"
+                                            {{ old('shipping_and_point') == 'descktop' ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-bold" for="to_descktop">التوصيل
+                                            للمكتب</label>
+                                        <p id="to_desck_price">00</p><sup> د.ج</sup>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            @error('shipping_and_point')
+                                <div class="text-danger">{{ $message }}</div>
                             @enderror
-                            <a class="btn border rounded"
-                                onclick="decrement_qty({{ $product->minimum_order_qty }});countTotalPrice()"><i
-                                    class="fas fa-minus"></i></a>
                         </div>
                     </div>
-                    <div class="col-md-8">
-                        {{-- <input type="hidden" name="seller_id" value="{{$product->seller_id}}" /> --}}
-                        {{-- <input type="hidden" name="user_id" value="{{(auth()->user())? auth()->user()->id : 'null' }}"/> --}}
-                        <input type="hidden" name="product_id" value="{{ $product->id }}" />
-                        {{-- <input type="hidden" name="product_name" value="{{$product->name}}"/>
+                    <!--product options-->
+                    @if (seller_product_has_variations($product->id))
+                        <div class="row mt-3 mb-3">
+                            <div class="col-md-12">
+                                <h5>إختر اللون</h5>
+                                @foreach ($product_variations as $product_variation)
+                                    {{-- <input class="form-check-input" type="radio" name="product_varition"
+                                    value="{{ $product_variation->id }}"
+                                    style="background-color: {{ $product_variation->color }};width:30px;height:30px;border:1px solid #000;"
+                                    onchange="get_varition_id(this);" @if ($product_variations[0]['id'] == $product_variation['id']) checked @endif> --}}
+                                    <input class="form-check-input" type="radio" name="product_varition"
+                                        value="{{ $product_variation->id }}"
+                                        style="background-color: {{ $product_variation->color }};width:30px;height:30px;border:1px solid #000;"
+                                        onchange="get_varition_id(this);">
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                    @if (seller_product_has_attributes($product->id))
+                        <div class="row mt-3 mb-3">
+                            <div class="col-md-12">
+                                @foreach ($product_attributes as $index => $product_attribute)
+                                    @if ($index == 0)
+                                        <h5>إختر {{ get_seller_attribute_name($product_attribute->attribute->id) }}
+                                        </h5>
+                                    @endif
+                                    {{-- @if (atrribute_has_more_values($product_attribute->attribute_id)) --}}
+                                    {{-- <input class="form-check-input" type="radio" name="product_attribute"
+                                        value="{{ $product_attribute->id }}" onchange="get_attribute_id(this);" @if ($product_attributes[0]['id'] == $product_attribute['id']) checked @endif> --}}
+                                    <input class="form-check-input" type="radio" name="product_attribute"
+                                        data-unit-price="{{ $product->price }}"
+                                        data-aditional-price="{{ $product_attribute->additional_price }}"
+                                        value="{{ $product_attribute->id }}"
+                                        onchange="get_attribute_id(this);add_additional_price_to_product_price(this);">
+                                    <label for="product_attribute">{{ $product_attribute->value }}</label>
+                                    {{-- @endif --}}
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                    <!--/product options-->
+                    <!--payment method-->
+                    <div class="row mb-4 mt-4">
+                        <div class="col-md-12">
+                            <h5 class="mb-3 fw-bold text-dark sub-title">طريقة الدفع</h5>
+                            <div class="d-flex flex-wrap gap-3">
+                                @if ($cash_status == 'active')
+                                    <!-- الدفع عند الاستلام -->
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" id="cod" value="cod"
+                                            class="payment-radio" checked>
+                                        <label for="cod" class="payment-label">
+                                            <div class="payment-content">
+                                                <i class="fas fa-money-bill-wave payment-icon"></i>
+                                                <span class="payment-text">الدفع عند الاستلام</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                @endif
+                                @if (is_seller_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')) && $chargily_status == 'active' && is_seller_chargily_authorized(tenant('id')))
+                                    <!-- Chargily -->
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" id="chargily" value="chargily"
+                                            class="payment-radio">
+                                        <label for="chargily" class="payment-label">
+                                            <div class="payment-content">
+                                                <i class="fas fa-credit-card payment-icon"></i>
+                                                <span class="payment-text">Chargily</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                @endif
+
+                                @if (is_seller_aproved(tenant('id')) &&
+                                        is_seller_bank_account_exists(tenant('id')) &&
+                                        ($ccp_status == 'active' || $baridimob_status == 'active') &&
+                                        is_seller_bank_transfer_authorized(tenant('id')))
+                                    <!-- التحويل البنكي -->
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" id="bank_transfer"
+                                            value="verments" class="payment-radio">
+                                        <label for="bank_transfer" class="payment-label">
+                                            <div class="payment-content">
+                                                <i class="fas fa-university payment-icon"></i>
+                                                <span class="payment-text">تحويل بنكي</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                @endif
+
+                            </div>
+                        </div>
+                    </div>
+                    @if (is_product_has_coupon($product->id))
+                        <!---->
+                        <div class="col-md-12 mb-4">
+                            <label for="coupon"
+                                class="form-label">{{ $order_form->lable_product_coupon_code }}</label>
+                            <input type="text" name="coupon"
+                                class="form-control @error('coupon') is-invalid @enderror" id="coupon"
+                                value="{{ old('coupon') }}" data-product-id="{{ $product->id }}"
+                                placeholder="أدخل كود الكوبون هنا للحصول على خصم">
+                            @error('coupon')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <!---->
+                    @endif
+
+                    <!--/payment method-->
+                    <div class="row mb-3 mt-3">
+                        <div class="col-md-4">
+                            {{-- @livewire('seller-item-qty-controller') --}}
+                            <div class="d-flex justify-content-center">
+                                <a class="btn border rounded"
+                                    onclick="increment_qty({{ $product->qty }});countTotalPrice()"><i
+                                        class="fas fa-plus"></i></a>
+                                <span id="livewier_qty"
+                                    class="fw-bold w-100 text-center">{{ $product->minimum_order_qty }}</span>
+                                <input id="hidden_qty" type="hidden" name="qty"
+                                    value="{{ $product->minimum_order_qty }}">
+                                @error('qty')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <a class="btn border rounded"
+                                    onclick="decrement_qty({{ $product->minimum_order_qty }});countTotalPrice()"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            {{-- <input type="hidden" name="seller_id" value="{{$product->seller_id}}" /> --}}
+                            {{-- <input type="hidden" name="user_id" value="{{(auth()->user())? auth()->user()->id : 'null' }}"/> --}}
+                            <input type="hidden" name="product_id" value="{{ $product->id }}" />
+                            {{-- <input type="hidden" name="product_name" value="{{$product->name}}"/>
                   @if (seller_product_has_discount($product->id))
                   <input type="hidden" name="price" value="{{$product->activeDiscount->discount_amount}}" />
                   @else
@@ -620,89 +664,90 @@
                   @else
                   <input type="hidden" name="form_total_amount" id="form_total_amount" value="{{($product->minimum_order_qty * $product->price)+300}}" />
                   @endif --}}
-                        <button id="buyNowButton" type="submit" class="form-control btn btn-primary bay-now-btn buy-btn-attention buy-btn"><i
-                                class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
+                            <button id="buyNowButton" type="submit"
+                                class="form-control btn btn-primary bay-now-btn buy-btn-attention buy-btn"><i
+                                    class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12">
-                    <div class="accordion accordion-flush" id="accordionFlushExample">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="flush-headingOne">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#flush-collapseOne" aria-expanded="false"
-                                    aria-controls="flush-collapseOne">
-                                    <i class="fas fa-shopping-cart"></i> ملخص الطلبية
-                                </button>
-                            </h2>
-                            <div id="flush-collapseOne" class="accordion-collapse collapse"
-                                aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                                <div class="accordion-body">
-                                    <div class="row">
-                                        <div class="sm-product-img" style="width: 20%;">
-                                            <img src="{{ asset($product->image) }}" height="50px" width="50px"
-                                                alt="">
+                    <div class="col-12">
+                        <div class="accordion accordion-flush" id="accordionFlushExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="flush-headingOne">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
+                                        aria-expanded="false" aria-controls="flush-collapseOne">
+                                        <i class="fas fa-shopping-cart"></i> ملخص الطلبية
+                                    </button>
+                                </h2>
+                                <div id="flush-collapseOne" class="accordion-collapse collapse"
+                                    aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="sm-product-img" style="width: 20%;">
+                                                <img src="{{ asset($product->image) }}" height="50px"
+                                                    width="50px" alt="">
+                                            </div>
+                                            <div class="sm-product-name w-60" style="width: 50%;">
+                                                <h3 class="">{{ $product->name }}</h3>
+                                            </div>
+                                            <div class="qty" style="width: 10%;">
+                                                X<span id="qty">{{ $product->minimum_order_qty }}</span>
+                                            </div>
+                                            <div class="sm-product-price" style="width: 20%;">
+                                                @if (seller_product_has_discount($product->id))
+                                                    <span id="unit_price"
+                                                        class="price">{{ $product->activeDiscount->discount_amount }}
+                                                    </span><sup>د.ج</sup>
+                                                @else
+                                                    <span id="unit_price" class="price">{{ $product->price }}
+                                                    </span><sup>د.ج</sup>
+                                                @endif
+                                            </div>
                                         </div>
-                                        <div class="sm-product-name w-60" style="width: 50%;">
-                                            <h3 class="">{{ $product->name }}</h3>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="shipping" style="width: 80%;">
+                                                <i class="fas fa-calculator"></i> المجموع الفرعي
+                                            </div>
+                                            <div class="shipping-price" style="width: 20%;">
+                                                @if (seller_product_has_discount($product->id))
+                                                    <span id="sub_total"
+                                                        class="price">{{ $product->activeDiscount->discount_amount }}
+                                                    </span><sup>د.ج</sup>
+                                                @else
+                                                    <span id="sub_total" class="price">{{ $product->price }}
+                                                    </span><sup>د.ج</sup>
+                                                @endif
+                                            </div>
                                         </div>
-                                        <div class="qty" style="width: 10%;">
-                                            X<span id="qty">{{ $product->minimum_order_qty }}</span>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="shipping" style="width: 80%;">
+                                                <i class="fas fa-truck"></i> التوصيل
+                                            </div>
+                                            <div class="shipping-price" style="width: 20%;">
+                                                <span id="shipping_price"
+                                                    class="price">{{ number_format(00, 2) }}</span><sup> د.ج</sup>
+                                            </div>
                                         </div>
-                                        <div class="sm-product-price" style="width: 20%;">
-                                            @if (seller_product_has_discount($product->id))
-                                                <span id="unit_price"
-                                                    class="price">{{ $product->activeDiscount->discount_amount }}
-                                                </span><sup>د.ج</sup>
-                                            @else
-                                                <span id="unit_price" class="price">{{ $product->price }}
-                                                </span><sup>د.ج</sup>
-                                            @endif
+                                        <hr>
+                                        <div class="row">
+                                            <div class="discount" style="width: 80%;">
+                                                <i class="fas fa-percentage"></i> الخصم
+                                            </div>
+                                            <div class="shipping-price" style="width: 20%;">
+                                                <span id="discount"
+                                                    class="price">{{ number_format(00, 2) }}</span><sup> د.ج</sup>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="shipping" style="width: 80%;">
-                                            <i class="fas fa-calculator"></i> المجموع الفرعي
-                                        </div>
-                                        <div class="shipping-price" style="width: 20%;">
-                                            @if (seller_product_has_discount($product->id))
-                                                <span id="sub_total"
-                                                    class="price">{{ $product->activeDiscount->discount_amount }}
-                                                </span><sup>د.ج</sup>
-                                            @else
-                                                <span id="sub_total" class="price">{{ $product->price }}
-                                                </span><sup>د.ج</sup>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="shipping" style="width: 80%;">
-                                            <i class="fas fa-truck"></i> التوصيل
-                                        </div>
-                                        <div class="shipping-price" style="width: 20%;">
-                                            <span id="shipping_price"
-                                                class="price">{{ number_format(00, 2) }}</span><sup> د.ج</sup>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="discount" style="width: 80%;">
-                                            <i class="fas fa-percentage"></i> الخصم
-                                        </div>
-                                        <div class="shipping-price" style="width: 20%;">
-                                            <span id="discount"
-                                                class="price">{{ number_format(00, 2) }}</span><sup> د.ج</sup>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="sum-text" style="width: 80%;">
-                                            <b><i class="fa fa-calculator"></i> المجموع </b>
-                                        </div>
-                                        <div class="sum-value" style="width: 20%;">
-                                            <b>
-                                                {{-- @if (seller_product_has_discount($product->id))
+                                        <hr>
+                                        <div class="row">
+                                            <div class="sum-text" style="width: 80%;">
+                                                <b><i class="fa fa-calculator"></i> المجموع </b>
+                                            </div>
+                                            <div class="sum-value" style="width: 20%;">
+                                                <b>
+                                                    {{-- @if (seller_product_has_discount($product->id))
                                                     <span
                                                         id="total_price">{{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}</span>
                                                     <sup>د.ج</sup>
@@ -711,29 +756,28 @@
                                                         id="total_price">{{ number_format($product->minimum_order_qty * $product->price, 2) }}</span>
                                                     <sup>د.ج</sup>
                                                 @endif --}}
-                                                <span id="total_price"
-                                                    data-totalprice="@if (seller_product_has_discount($product->id)) {{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}@else{{ number_format($product->minimum_order_qty * $product->price, 2) }} @endif">
-                                                    @if (seller_product_has_discount($product->id))
-                                                        {{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}@else{{ number_format($product->minimum_order_qty * $product->price, 2) }}
-                                                    @endif
-                                                    <sup>د.ج</sup>
-                                                </span>
-                                            </b>
+                                                    <span id="total_price"
+                                                        data-totalprice="@if (seller_product_has_discount($product->id)) {{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}@else{{ number_format($product->minimum_order_qty * $product->price, 2) }} @endif">
+                                                        @if (seller_product_has_discount($product->id))
+                                                            {{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}@else{{ number_format($product->minimum_order_qty * $product->price, 2) }}
+                                                        @endif
+                                                        <sup>د.ج</sup>
+                                                    </span>
+                                                </b>
+                                            </div>
                                         </div>
-                                    </div>
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
             @endif
             {{-- start test  --}}
             <div id="floatingBuyBar" class="floating-buy-bar">
 
-                <button id="floatingBuyButton"
-                    class="btn btn-primary w-100 buy-btn-attention buy-btn">
+                <button id="floatingBuyButton" class="btn btn-primary w-100 buy-btn-attention buy-btn">
 
                     <i class="fas fa-shopping-cart"></i>
 
@@ -770,293 +814,288 @@
             {{-- product description section  --}}
             <div class="row mt-4">
                 <div class="col-md-12">
-                {!! $product->description !!}
+                    {!! $product->description !!}
                 </div>
             </div>
             {{-- end product description section  --}}
-            @if(count($product->videos) > 0)
-            {{-- product videos section  --}}
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fas fa-video"></i> فيديوهات المنتج
-                        </div>
-                        @foreach ($product->videos as $video)
-                            @if ($video->type == 'youtube')
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <div class="ratio ratio-16x9">
-                                            <iframe src="https://www.youtube.com/embed/{{ $video->youtube_id }}"
-                                                title="YouTube video player" allowfullscreen>
-                                            </iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            @elseif($video->type == 'vimeo')
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-12">
+            @if (count($product->videos) > 0)
+                {{-- product videos section  --}}
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-video"></i> فيديوهات المنتج
+                            </div>
+                            @foreach ($product->videos as $video)
+                                @if ($video->type == 'youtube')
+                                    <div class="card mb-3">
+                                        <div class="card-body">
                                             <div class="ratio ratio-16x9">
-                                                <iframe src="https://player.vimeo.com/video/{{ $video->youtube_id }}"
-                                                    title="Vimeo video player" allowfullscreen>
+                                                <iframe src="https://www.youtube.com/embed/{{ $video->youtube_id }}"
+                                                    title="YouTube video player" allowfullscreen>
                                                 </iframe>
                                             </div>
-
                                         </div>
                                     </div>
-                                </div>
-                            @else
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="ratio ratio-16x9">
-                                                <video controls>
-                                                    <source class="embed-responsive-item"
-                                                        src="{{ $video->file_path }}" type="video/mp4"
-                                                        whidth="100%" height="auto">
-                                                </video>
+                                @elseif($video->type == 'vimeo')
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="ratio ratio-16x9">
+                                                    <iframe
+                                                        src="https://player.vimeo.com/video/{{ $video->youtube_id }}"
+                                                        title="Vimeo video player" allowfullscreen>
+                                                    </iframe>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endif
-                        @endforeach
+                                @else
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="ratio ratio-16x9">
+                                                    <video controls>
+                                                        <source class="embed-responsive-item"
+                                                            src="{{ $video->file_path }}" type="video/mp4"
+                                                            whidth="100%" height="auto">
+                                                    </video>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            </div>
             @endif
             {{-- end product videos section  --}}
 
         </div>
-            {{-- start products for you  --}}
-            @if(count($products_for_you)!=0)
-                <div class="col-12 mt-3">
+        {{-- start products for you  --}}
+        @if (count($products_for_you) != 0)
+            <div class="col-12 mt-3">
                 <h2 class="text-center mb-5 fade-in title">قد يعجبك أيضا</h2>
                 <div class="row g-4 justify-content-center">
-                <!-- Product Card Template -->
-                        @foreach ($products_for_you as $key => $product)
-                            <div class="col-12 col-sm-6 col-lg-3">
-                                <div
-                                    class="card h-100 shadow-sm border-0 product-card position-relative overflow-hidden">
+                    <!-- Product Card Template -->
+                    @foreach ($products_for_you as $key => $product)
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="card h-100 shadow-sm border-0 product-card position-relative overflow-hidden">
 
-                                    <!-- شارة نفاد الكمية -->
-                                    @if ($product->qty == 0 && $product->product_type == 'physical')
-                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">غير
-                                            متوفر</span>
-                                    @endif
+                                <!-- شارة نفاد الكمية -->
+                                @if ($product->qty == 0 && $product->product_type == 'physical')
+                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">غير
+                                        متوفر</span>
+                                @endif
 
-                                    <!-- صورة المنتج -->
-                                    <div class="position-relative zoom-hover">
-                                        <img src="{{ asset($product->image) }}" class="card-img-top rounded-top"
-                                            alt="{{ $product->name }}">
-                                        <button
-                                            class="quick-view-btn btn btn-light btn-sm position-absolute top-0 end-0 m-2"
-                                            data-product-id="{{ $key }}">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
+                                <!-- صورة المنتج -->
+                                <div class="position-relative zoom-hover">
+                                    <img src="{{ asset($product->image) }}" class="card-img-top rounded-top"
+                                        alt="{{ $product->name }}">
+                                    <button
+                                        class="quick-view-btn btn btn-light btn-sm position-absolute top-0 end-0 m-2"
+                                        data-product-id="{{ $key }}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+
+                                <!-- معلومات المنتج -->
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <div>
+                                        <h5 class="card-title fw-bold">{{ $product->name }}</h5>
+                                        <div class="mb-2 small text-warning">
+                                            @php
+                                                $total_stars = 0;
+                                                $reviews = $product->reviews;
+                                                foreach ($reviews as $review) {
+                                                    $total_stars += $review->rating;
+                                                }
+                                                if ($reviews->count() > 0) {
+                                                    $stars = $total_stars / $reviews->count();
+                                                } else {
+                                                    $stars = 0;
+                                                }
+
+                                                $rest = 5 - round($stars);
+                                            @endphp
+                                            @for ($i = 0; $i < round($stars); $i++)
+                                                <i class="fas fa-star text-warning"></i>
+                                            @endfor
+                                            @for ($i = 0; $i < round($rest); $i++)
+                                                <i class="far fa-star text-warning"></i>
+                                            @endfor
+                                            <span
+                                                class="ms-1 text-muted">{{ '(' . number_format(round($stars), 1) . ')' }}</span>
+                                        </div>
+
+                                        @if (seller_product_has_discount($product->id))
+                                            <p class="price fw-bold text-primary mb-3">
+                                                {{ $product->activeDiscount->discount_amount }}
+                                                <sup>د.ج</sup> <span class="text-decoration-line-through text-danger">
+                                                    {{ $product->price }}<sup>د.ج</sup></span><sup><span
+                                                        class="text-success">
+                                                        (-{{ $product->activeDiscount->discount_percentage }}%)
+                                                    </span></sup>
+                                            </p>
+                                        @else
+                                            <p class="price fw-bold text-primary mb-3">
+                                                {{ $product->price }} <sup>د.ج</sup>
+                                            </p>
+                                        @endif
                                     </div>
 
-                                    <!-- معلومات المنتج -->
-                                    <div class="card-body d-flex flex-column justify-content-between">
-                                        <div>
-                                            <h5 class="card-title fw-bold">{{ $product->name }}</h5>
-                                            <div class="mb-2 small text-warning">
-                                                @php
-                                                    $total_stars = 0;
-                                                    $reviews = $product->reviews;
-                                                    foreach ($reviews as $review) {
-                                                        $total_stars += $review->rating;
-                                                    }
-                                                    if ($reviews->count() > 0) {
-                                                        $stars = $total_stars / $reviews->count();
-                                                    } else {
-                                                        $stars = 0;
-                                                    }
+                                    <!-- أزرار الإجراءات -->
+                                    <div class="d-flex justify-content-between align-items-center gap-2">
+                                        <a href="/product/{{ $product->id }}"
+                                            class="btn btn-outline-primary btn-sm w-100">عرض التفاصيل</a>
 
-                                                    $rest = 5 - round($stars);
-                                                @endphp
-                                                @for ($i = 0; $i < round($stars); $i++)
-                                                    <i class="fas fa-star text-warning"></i>
-                                                @endfor
-                                                @for ($i = 0; $i < round($rest); $i++)
-                                                    <i class="far fa-star text-warning"></i>
-                                                @endfor
-                                                <span
-                                                    class="ms-1 text-muted">{{ '(' . number_format(round($stars), 1) . ')' }}</span>
-                                            </div>
+                                        @if ($product->qty > 0 && $product->product_type == 'physical')
+                                            <form method="post" action="{{ route('tenant.add-to-cart') }}"
+                                                class="d-inline-block">
+                                                @csrf
+                                                <input type="hidden" name="product_id"
+                                                    value="{{ $product->id }}">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="btn btn-primary btn-sm add-to-cart-btn"
+                                                    onclick="addToCartAnimation(this)">
+                                                    <input id="variation_id" type="hidden" name="variation_id"
+                                                        value="0" />
 
-                                            @if (seller_product_has_discount($product->id))
-                                                <p class="price fw-bold text-primary mb-3">
-                                                    {{ $product->activeDiscount->discount_amount }}
-                                                    <sup>د.ج</sup> <span
-                                                        class="text-decoration-line-through text-danger">
-                                                        {{ $product->price }}<sup>د.ج</sup></span><sup><span
-                                                            class="text-success">
-                                                            (-{{ $product->activeDiscount->discount_percentage }}%)
-                                                        </span></sup>
-                                                </p>
-                                            @else
-                                                <p class="price fw-bold text-primary mb-3">
-                                                    {{ $product->price }} <sup>د.ج</sup>
-                                                </p>
-                                            @endif
-                                        </div>
-
-                                        <!-- أزرار الإجراءات -->
-                                        <div class="d-flex justify-content-between align-items-center gap-2">
-                                            <a href="/product/{{ $product->id }}"
-                                                class="btn btn-outline-primary btn-sm w-100">عرض التفاصيل</a>
-
-                                            @if ($product->qty > 0 && $product->product_type == 'physical')
-                                                <form method="post" action="{{ route('tenant.add-to-cart') }}"
-                                                    class="d-inline-block">
-                                                    @csrf
-                                                    <input type="hidden" name="product_id"
-                                                        value="{{ $product->id }}">
-                                                    <input type="hidden" name="quantity" value="1">
-                                                    <button type="submit"
-                                                        class="btn btn-primary btn-sm add-to-cart-btn"
-                                                        onclick="addToCartAnimation(this)">
-                                                        <input id="variation_id" type="hidden" name="variation_id"
-                                                            value="0" />
-
-                                                        <input id="attribute_id" type="hidden" name="attribute_id"
-                                                            value="0" />
-                                                        <i class="fas fa-cart-plus"></i>
-                                                    </button>
-                                                </form>
-                                                {{-- <button class="btn btn-primary btn-sm add-to-cart-btn" onclick="addToCartAnimation(this)">
+                                                    <input id="attribute_id" type="hidden" name="attribute_id"
+                                                        value="0" />
+                                                    <i class="fas fa-cart-plus"></i>
+                                                </button>
+                                            </form>
+                                            {{-- <button class="btn btn-primary btn-sm add-to-cart-btn" onclick="addToCartAnimation(this)">
                 <i class="fas fa-cart-plus"></i>
               </button> --}}
-                                            @else
-                                                <button class="btn btn-secondary btn-sm" disabled>
-                                                    <i class="fas fa-ban"></i>
-                                                </button>
-                                            @endif
+                                        @else
+                                            <button class="btn btn-secondary btn-sm" disabled>
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        @endif
 
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
                         </div>
-            @endif
-            @if(count($products_for_you)==0 && count($other_products)!=0)
-                <div class="col-12 mt-3">
+                    @endforeach
+                </div>
+        @endif
+        @if (count($products_for_you) == 0 && count($other_products) != 0)
+            <div class="col-12 mt-3">
                 <h2 class="text-center mb-5 fade-in title">إخترنا لك</h2>
                 <div class="row g-4 justify-content-center">
-                <!-- Product Card Template -->
-                        @foreach ($other_products as $key => $product)
-                            <div class="col-12 col-sm-6 col-lg-3">
-                                <div
-                                    class="card h-100 shadow-sm border-0 product-card position-relative overflow-hidden">
+                    <!-- Product Card Template -->
+                    @foreach ($other_products as $key => $product)
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="card h-100 shadow-sm border-0 product-card position-relative overflow-hidden">
 
-                                    <!-- شارة نفاد الكمية -->
-                                    @if ($product->qty == 0 && $product->product_type == 'physical')
-                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">غير
-                                            متوفر</span>
-                                    @endif
+                                <!-- شارة نفاد الكمية -->
+                                @if ($product->qty == 0 && $product->product_type == 'physical')
+                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">غير
+                                        متوفر</span>
+                                @endif
 
-                                    <!-- صورة المنتج -->
-                                    <div class="position-relative zoom-hover">
-                                        <img src="{{ asset($product->image) }}" class="card-img-top rounded-top"
-                                            alt="{{ $product->name }}">
-                                        <button
-                                            class="quick-view-btn btn btn-light btn-sm position-absolute top-0 end-0 m-2"
-                                            data-product-id="{{ $key }}">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
+                                <!-- صورة المنتج -->
+                                <div class="position-relative zoom-hover">
+                                    <img src="{{ asset($product->image) }}" class="card-img-top rounded-top"
+                                        alt="{{ $product->name }}">
+                                    <button
+                                        class="quick-view-btn btn btn-light btn-sm position-absolute top-0 end-0 m-2"
+                                        data-product-id="{{ $key }}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+
+                                <!-- معلومات المنتج -->
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <div>
+                                        <h5 class="card-title fw-bold">{{ $product->name }}</h5>
+                                        <div class="mb-2 small text-warning">
+                                            @php
+                                                $total_stars = 0;
+                                                $reviews = $product->reviews;
+                                                foreach ($reviews as $review) {
+                                                    $total_stars += $review->rating;
+                                                }
+                                                if ($reviews->count() > 0) {
+                                                    $stars = $total_stars / $reviews->count();
+                                                } else {
+                                                    $stars = 0;
+                                                }
+
+                                                $rest = 5 - round($stars);
+                                            @endphp
+                                            @for ($i = 0; $i < round($stars); $i++)
+                                                <i class="fas fa-star text-warning"></i>
+                                            @endfor
+                                            @for ($i = 0; $i < round($rest); $i++)
+                                                <i class="far fa-star text-warning"></i>
+                                            @endfor
+                                            <span
+                                                class="ms-1 text-muted">{{ '(' . number_format(round($stars), 1) . ')' }}</span>
+                                        </div>
+
+                                        @if (seller_product_has_discount($product->id))
+                                            <p class="price fw-bold text-primary mb-3">
+                                                {{ $product->activeDiscount->discount_amount }}
+                                                <sup>د.ج</sup> <span class="text-decoration-line-through text-danger">
+                                                    {{ $product->price }}<sup>د.ج</sup></span><sup><span
+                                                        class="text-success">
+                                                        (-{{ $product->activeDiscount->discount_percentage }}%)
+                                                    </span></sup>
+                                            </p>
+                                        @else
+                                            <p class="price fw-bold text-primary mb-3">
+                                                {{ $product->price }} <sup>د.ج</sup>
+                                            </p>
+                                        @endif
                                     </div>
 
-                                    <!-- معلومات المنتج -->
-                                    <div class="card-body d-flex flex-column justify-content-between">
-                                        <div>
-                                            <h5 class="card-title fw-bold">{{ $product->name }}</h5>
-                                            <div class="mb-2 small text-warning">
-                                                @php
-                                                    $total_stars = 0;
-                                                    $reviews = $product->reviews;
-                                                    foreach ($reviews as $review) {
-                                                        $total_stars += $review->rating;
-                                                    }
-                                                    if ($reviews->count() > 0) {
-                                                        $stars = $total_stars / $reviews->count();
-                                                    } else {
-                                                        $stars = 0;
-                                                    }
+                                    <!-- أزرار الإجراءات -->
+                                    <div class="d-flex justify-content-between align-items-center gap-2">
+                                        <a href="/product/{{ $product->id }}"
+                                            class="btn btn-outline-primary btn-sm w-100">عرض التفاصيل</a>
 
-                                                    $rest = 5 - round($stars);
-                                                @endphp
-                                                @for ($i = 0; $i < round($stars); $i++)
-                                                    <i class="fas fa-star text-warning"></i>
-                                                @endfor
-                                                @for ($i = 0; $i < round($rest); $i++)
-                                                    <i class="far fa-star text-warning"></i>
-                                                @endfor
-                                                <span
-                                                    class="ms-1 text-muted">{{ '(' . number_format(round($stars), 1) . ')' }}</span>
-                                            </div>
+                                        @if ($product->qty > 0 && $product->product_type == 'physical')
+                                            <form method="post" action="{{ route('tenant.add-to-cart') }}"
+                                                class="d-inline-block">
+                                                @csrf
+                                                <input type="hidden" name="product_id"
+                                                    value="{{ $product->id }}">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="btn btn-primary btn-sm add-to-cart-btn"
+                                                    onclick="addToCartAnimation(this)">
+                                                    <input id="variation_id" type="hidden" name="variation_id"
+                                                        value="0" />
 
-                                            @if (seller_product_has_discount($product->id))
-                                                <p class="price fw-bold text-primary mb-3">
-                                                    {{ $product->activeDiscount->discount_amount }}
-                                                    <sup>د.ج</sup> <span
-                                                        class="text-decoration-line-through text-danger">
-                                                        {{ $product->price }}<sup>د.ج</sup></span><sup><span
-                                                            class="text-success">
-                                                            (-{{ $product->activeDiscount->discount_percentage }}%)
-                                                        </span></sup>
-                                                </p>
-                                            @else
-                                                <p class="price fw-bold text-primary mb-3">
-                                                    {{ $product->price }} <sup>د.ج</sup>
-                                                </p>
-                                            @endif
-                                        </div>
-
-                                        <!-- أزرار الإجراءات -->
-                                        <div class="d-flex justify-content-between align-items-center gap-2">
-                                            <a href="/product/{{ $product->id }}"
-                                                class="btn btn-outline-primary btn-sm w-100">عرض التفاصيل</a>
-
-                                            @if ($product->qty > 0 && $product->product_type == 'physical')
-                                                <form method="post" action="{{ route('tenant.add-to-cart') }}"
-                                                    class="d-inline-block">
-                                                    @csrf
-                                                    <input type="hidden" name="product_id"
-                                                        value="{{ $product->id }}">
-                                                    <input type="hidden" name="quantity" value="1">
-                                                    <button type="submit"
-                                                        class="btn btn-primary btn-sm add-to-cart-btn"
-                                                        onclick="addToCartAnimation(this)">
-                                                        <input id="variation_id" type="hidden" name="variation_id"
-                                                            value="0" />
-
-                                                        <input id="attribute_id" type="hidden" name="attribute_id"
-                                                            value="0" />
-                                                        <i class="fas fa-cart-plus"></i>
-                                                    </button>
-                                                </form>
-                                                {{-- <button class="btn btn-primary btn-sm add-to-cart-btn" onclick="addToCartAnimation(this)">
+                                                    <input id="attribute_id" type="hidden" name="attribute_id"
+                                                        value="0" />
+                                                    <i class="fas fa-cart-plus"></i>
+                                                </button>
+                                            </form>
+                                            {{-- <button class="btn btn-primary btn-sm add-to-cart-btn" onclick="addToCartAnimation(this)">
                 <i class="fas fa-cart-plus"></i>
               </button> --}}
-                                            @else
-                                                <button class="btn btn-secondary btn-sm" disabled>
-                                                    <i class="fas fa-ban"></i>
-                                                </button>
-                                            @endif
+                                        @else
+                                            <button class="btn btn-secondary btn-sm" disabled>
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        @endif
 
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
                         </div>
-            @endif          
-        </div>
-        {{-- end products for you  --}}
+                    @endforeach
+                </div>
+        @endif
     </div>
+    {{-- end products for you  --}}
+</div>
 </div>
 
 

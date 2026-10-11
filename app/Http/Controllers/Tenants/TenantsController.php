@@ -2738,27 +2738,39 @@ class TenantsController extends Controller
         $order->update();
 
         $product = SellerProducts::where('id', $id)->first();
-        $file = $product->file;
-        // تقسيم الرابط
-        $parts = explode('/storage/app/public/seller/', $file);
-        // المسار داخل storage
-        $filePath = $parts[1];
+        if (!$product || empty($product->file)) {
+            abort(404, 'الملف غير موجود');
+        }
 
-        return Storage::disk('seller')->download($filePath);
-        // return response()->download($file);
+        $file = $product->file;
+        $filePath = str_contains($file, '/storage/app/public/seller/')
+            ? explode('/storage/app/public/seller/', $file)[1]
+            : ltrim($file, '/');
+
+        if ($product->file_disk === 'r2' || Storage::disk('r2')->exists($filePath)) {
+            return Storage::disk('r2')->download($filePath, basename($filePath));
+        }
+
+        return Storage::disk('seller')->download($filePath, basename($filePath));
     }
 
     // test download
     public function testDownload(Request $request, $token)
     {
         $product = SellerProducts::where('id', 5)->first();
-        $file = $product->file;
-        // تقسيم الرابط
-        $parts = explode('/storage/app/public/seller/', $file);
-        // المسار داخل storage
-        $filePath = $parts[1];
+        if (!$product || empty($product->file)) {
+            abort(404, 'الملف غير موجود');
+        }
 
-        // dd(Storage::disk('seller'));
-        return Storage::disk('seller')->download($filePath);
+        $file = $product->file;
+        $filePath = str_contains($file, '/storage/app/public/seller/')
+            ? explode('/storage/app/public/seller/', $file)[1]
+            : ltrim($file, '/');
+
+        if ($product->file_disk === 'r2' || Storage::disk('r2')->exists($filePath)) {
+            return Storage::disk('r2')->download($filePath, basename($filePath));
+        }
+
+        return Storage::disk('seller')->download($filePath, basename($filePath));
     }
 }

@@ -383,7 +383,7 @@ class ChargilyPayController extends Controller
                     $checkout = $this->chargilyPayInstance()->checkouts()->get($checkout_id);
                 }
             } catch (\Exception $e) {
-                Log::error('Chargily back checkout fetch error: ' . $e->getMessage());
+                Log::error('Chargily back checkout fetch error: '.$e->getMessage());
             }
         }
 
@@ -398,10 +398,11 @@ class ChargilyPayController extends Controller
         }
 
         // في حال لم يتم العثور على سجل الدفع
-        if (! $payment) {
+        if (!$payment) {
             if (function_exists('tenant') && tenant('id')) {
-                return redirect()->route('tenant.home')->with('payment_error', 'تعذر العثور على بيانات عملية الدفع أو تم إلغاؤها.');
+                return redirect()->route('tenant.store')->with('payment_error', 'تعذر العثور على بيانات عملية الدفع أو تم إلغاؤها.');
             }
+
             return redirect()->route('site.index')->with('error', 'تعذر العثور على بيانات عملية الدفع أو تم إلغاؤها.');
         }
 
@@ -482,7 +483,7 @@ class ChargilyPayController extends Controller
         $tenant_id = $request->query('tenant_id');
 
         // إذا لم يكن tenant_id في الرابط، نحاول استخراجه من الـ Payload
-        if (! $tenant_id) {
+        if (!$tenant_id) {
             $rawPayload = $request->getContent();
             if ($rawPayload) {
                 $payloadData = json_decode($rawPayload, true);
@@ -490,7 +491,7 @@ class ChargilyPayController extends Controller
                 $tenant_id = $metadata['tenant_id'] ?? null;
 
                 // إذا كان نوع الدفع خاص بالمتاجر ولم يكن tenant_id في metadata، نبحث في جدول ChargilyPaymentForTenants
-                if (! $tenant_id && isset($metadata['payment_id']) && isset($metadata['payment_type']) && in_array($metadata['payment_type'], ['supplier_order', 'seller_order'])) {
+                if (!$tenant_id && isset($metadata['payment_id']) && isset($metadata['payment_type']) && in_array($metadata['payment_type'], ['supplier_order', 'seller_order'])) {
                     $tenantPayment = \App\Models\ChargilyPaymentForTenants::find($metadata['payment_id']);
                     if ($tenantPayment && $tenantPayment->user) {
                         $tenant_id = $tenantPayment->user->tenant_id;
@@ -504,16 +505,16 @@ class ChargilyPayController extends Controller
             try {
                 $webhook = $this->chargilyPayForTenantsInstance($tenant_id)->webhook()->get();
             } catch (\Exception $e) {
-                Log::warning("Chargily webhook verification failed for tenant [{$tenant_id}]: " . $e->getMessage());
+                Log::warning("Chargily webhook verification failed for tenant [{$tenant_id}]: ".$e->getMessage());
             }
         }
 
         // إذا لم يكن خاصاً بمتجر أو فشل التحقق كـ Tenant، نجرب مفاتيح المنصة الرئيسية (Central)
-        if (! $webhook) {
+        if (!$webhook) {
             try {
                 $webhook = $this->chargilyPayInstance()->webhook()->get();
             } catch (\Exception $e) {
-                Log::error('Chargily central webhook verification error: ' . $e->getMessage());
+                Log::error('Chargily central webhook verification error: '.$e->getMessage());
             }
         }
 
@@ -577,7 +578,7 @@ class ChargilyPayController extends Controller
                                 $order = SupplierPlanOrder::where('supplier_id', $payment->payment_reference_id)->where('status', 'pending')->latest()->first();
 
                                 if ($status === 'paid' && !$wasAlreadyPaid) {
-                                    \DB::transaction(function () use ($order, $payment, $checkout, $status) {
+                                    \DB::transaction(function () use ($order, $payment, $checkout) {
                                         // update order status
                                         if ($order) {
                                             $order->status = 'approved';
@@ -628,7 +629,7 @@ class ChargilyPayController extends Controller
                                 $order = SupplierPlanOrder::where('supplier_id', $payment->payment_reference_id)->where('status', 'pending')->latest()->first();
 
                                 if ($status === 'paid' && !$wasAlreadyPaid) {
-                                    \DB::transaction(function () use ($order, $payment, $checkout, $status) {
+                                    \DB::transaction(function () use ($order, $payment, $checkout) {
                                         // update order status
                                         if ($order) {
                                             $order->status = 'approved';
@@ -693,7 +694,7 @@ class ChargilyPayController extends Controller
                                 $order = SellerPlanOrder::where('seller_id', $payment->payment_reference_id)->where('status', 'pending')->latest()->first();
 
                                 if ($status === 'paid' && !$wasAlreadyPaid) {
-                                    \DB::transaction(function () use ($order, $payment, $checkout, $status) {
+                                    \DB::transaction(function () use ($order, $payment, $checkout) {
                                         // update order status
                                         if ($order) {
                                             $order->status = 'approved';
@@ -744,7 +745,7 @@ class ChargilyPayController extends Controller
                                 $order = SellerPlanOrder::where('seller_id', $payment->payment_reference_id)->where('status', 'pending')->latest()->first();
 
                                 if ($status === 'paid' && !$wasAlreadyPaid) {
-                                    \DB::transaction(function () use ($order, $payment, $checkout, $status) {
+                                    \DB::transaction(function () use ($order, $payment, $checkout) {
                                         // update order status
                                         if ($order) {
                                             $order->status = 'approved';
@@ -822,8 +823,32 @@ class ChargilyPayController extends Controller
                                         $order->download_expires_at = now()->addHours(24);
                                         // $order->save();
                                         // end test
-                                    }else
-                                    {
+
+                                        // خصم حصة استخدام شارجلي (طلب واحد) إذا كان البائع على الخطة المجانية فقط
+                                        if (!$wasAlreadyPaid) {
+                                            $seller = get_seller_data_from_id($order->seller_id);
+                                            $planId = $seller?->plan_subscription?->plan_id;
+
+                                            // الخصم يطبق فقط إذا كان البائع على الخطة المجانية (1) وليس على الخطط المدفوعة (2 أو 3)
+                                            if ($planId == 1 || !in_array($planId, [2, 3])) {
+                                                $sellerUser = \App\Models\User::where('tenant_id', $seller->tenant_id)->first();
+                                                if ($sellerUser) {
+                                                    $servicePurchase = \App\Models\SellerServicePurchase::where('user_id', $sellerUser->id)
+                                                        ->where('status', 'active')
+                                                        ->where('orders_remaining', '>', 0)
+                                                        ->whereHas('service', function ($q) {
+                                                            $q->where('category', 'payment');
+                                                        })
+                                                        ->orderBy('id', 'asc')
+                                                        ->first();
+
+                                                    if ($servicePurchase) {
+                                                        $servicePurchase->consumeOrder();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else {
                                         $order->status = 'canceled';
                                         $order->confirmation_status = 'confirmed';
                                     }
@@ -849,7 +874,7 @@ class ChargilyPayController extends Controller
                                                 'user_id' => $user->id,
                                                 'transaction_type' => 'addition',
                                                 'amount' => $checkout->getAmount(),
-                                                'description' => 'شحن الرصيد بواسطة ' . ($checkout->getPaymentMethod() ?? 'Chargily Pay') . ' - معرف العملية #' . $payment->id . ' رابط العملية: <a href="' . $checkout->getUrl() . '" target="_blank">إضغط هنا</a>',
+                                                'description' => 'شحن الرصيد بواسطة '.($checkout->getPaymentMethod() ?? 'Chargily Pay').' - معرف العملية #'.$payment->id.' رابط العملية: <a href="'.$checkout->getUrl().'" target="_blank">إضغط هنا</a>',
                                                 'status' => 'completed',
                                             ]);
 
@@ -869,7 +894,7 @@ class ChargilyPayController extends Controller
                                         Log::info("Chargily wallet topup successful for user [{$user->id}], amount: {$checkout->getAmount()}");
                                     }
                                 } else {
-                                    Log::warning("Chargily wallet topup ignored or not paid. Status: [{$status}], Payment ID: [{$payment->id}], WasAlreadyPaid: [" . ($wasAlreadyPaid ? 'yes' : 'no') . "]");
+                                    Log::warning("Chargily wallet topup ignored or not paid. Status: [{$status}], Payment ID: [{$payment->id}], WasAlreadyPaid: [".($wasAlreadyPaid ? 'yes' : 'no').']');
                                 }
                                 break;
 
@@ -934,12 +959,12 @@ class ChargilyPayController extends Controller
     protected function chargilyPayForTenantsInstance($tenant_id)
     {
         $user = get_user_data($tenant_id);
-        if (! $user) {
+        if (!$user) {
             throw new \Exception("المستخدم الخاص بالمتجر ({$tenant_id}) غير موجود.");
         }
 
         $settings = $user->chargilySettings;
-        if (! $settings || empty($settings->secret_key)) {
+        if (!$settings || empty($settings->secret_key)) {
             throw new \Exception('لم يتم ضبط إعدادات بوابة الدفع Chargily لهذا المتجر.');
         }
 

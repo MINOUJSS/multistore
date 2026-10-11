@@ -88,7 +88,56 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+
+        'r2' => [
+            'driver' => 's3',
+            'key' => env('R2_ACCESS_KEY_ID'),
+            'secret' => env('R2_SECRET_ACCESS_KEY'),
+            'region' => env('R2_DEFAULT_REGION', 'auto'),
+            'bucket' => env('R2_BUCKET'),
+            'url' => env('R2_PUBLIC_URL'),
+            'endpoint' => env('R2_ENDPOINT'),
+            'use_path_style_endpoint' => env('R2_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'r2_private' => [
+            'driver' => 's3',
+            'key' => env('R2_ACCESS_KEY_ID'),
+            'secret' => env('R2_SECRET_ACCESS_KEY'),
+            'region' => env('R2_DEFAULT_REGION', 'auto'),
+            'bucket' => env('R2_BUCKET'),
+            'endpoint' => env('R2_ENDPOINT'),
+            'use_path_style_endpoint' => env('R2_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'private',
+            'throw' => false,
+        ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Seller Storage Default Disk
+    |--------------------------------------------------------------------------
+    |
+    | Defines the active disk for seller uploads ('seller' for local or 'r2'
+    | for Cloudflare R2). Fallback and existing files are dynamically read
+    | from their respective disks.
+    |
+    */
+    'seller_default_disk' => env('SELLER_STORAGE_DISK', 'seller'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Supplier Storage Default Disk
+    |--------------------------------------------------------------------------
+    |
+    | Defines the active disk for supplier uploads ('supplier' for local or 'r2'
+    | for Cloudflare R2). Fallback and existing files are dynamically read
+    | from their respective disks.
+    |
+    */
+    'supplier_default_disk' => env('SUPPLIER_STORAGE_DISK', 'supplier'),
 
     /*
     |--------------------------------------------------------------------------

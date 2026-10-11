@@ -9,7 +9,7 @@ class SupplierProductImages extends Model
 {
     use HasFactory;
     //
-    protected $fillable = ['product_id', 'image_path', 'is_primary', 'order'];
+    protected $fillable = ['product_id', 'image_path', 'disk', 'is_primary', 'order'];
 
     public function product()
     {

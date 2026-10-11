@@ -73,6 +73,11 @@ class User extends Authenticatable
         return $this->hasMany(BalanceTransaction::class);
     }
 
+    public function servicePurchases()
+    {
+        return $this->hasMany(SellerServicePurchase::class);
+    }
+
     public function store_settings()
     {
         $this->hasMany(UserStoreSetting::class, 'user_id');

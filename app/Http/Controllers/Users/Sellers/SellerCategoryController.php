@@ -85,8 +85,10 @@ class SellerCategoryController extends Controller
         //     $data['image'] = Storage::url($path);
         // }
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store(get_seller_store_name(auth()->user()->tenant_id).'/images/categories', 'seller');
-            $data['image'] = Storage::disk('seller')->url('app/public/seller/'.$path);
+            $mediaService = app(\App\Services\Seller\SellerMediaService::class);
+            $storeName = get_seller_store_name(auth()->user()->tenant_id);
+            $upload = $mediaService->storeFile($request->file('image'), "{$storeName}/images/categories");
+            $data['image'] = $upload['url'];
         }
 
         $storeCategory = UserStoreCategory::create($data);
@@ -164,19 +166,14 @@ class SellerCategoryController extends Controller
         //     }
         $data = $request->except('image');
         if ($request->hasFile('image')) {
+            $mediaService = app(\App\Services\Seller\SellerMediaService::class);
             // Delete associated image
             if ($category->image) {
-                $fullPath = get_seller_store_name(auth()->user()->tenant_id).'/images/categories/'.basename($category->image);
-
-                if (Storage::disk('seller')->exists($fullPath)) {
-                    Storage::disk('seller')->delete($fullPath);
-                }
+                $mediaService->deleteFile($category->image);
             }
-            $path = $request->file('image')->store(get_seller_store_name(auth()->user()->tenant_id).'/images/categories', 'seller');
-            $data['image'] = Storage::disk('seller')->url('app/public/seller/'.$path);
-            // if ($data['image']) {
-            //     $category->update($data);
-            // }
+            $storeName = get_seller_store_name(auth()->user()->tenant_id);
+            $upload = $mediaService->storeFile($request->file('image'), "{$storeName}/images/categories");
+            $data['image'] = $upload['url'];
         }
         $category->update($data);
 
@@ -237,11 +234,8 @@ class SellerCategoryController extends Controller
         $category = UserStoreCategory::findOrFail($id);
         // Delete associated image
         if ($category->image) {
-            $fullPath = get_seller_store_name(auth()->user()->tenant_id).'/images/categories/'.basename($category->image);
-
-            if (Storage::disk('seller')->exists($fullPath)) {
-                Storage::disk('seller')->delete($fullPath);
-            }
+            $mediaService = app(\App\Services\Seller\SellerMediaService::class);
+            $mediaService->deleteFile($category->image);
         }
         $category->delete();
 

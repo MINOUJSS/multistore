@@ -38,14 +38,24 @@ class SellerTempCleanupService
         foreach ($sellers as $seller) {
             if ($this->isSellerOffline($seller, $thresholdHours)) {
                 $offlineSellersTotal++;
-                $storeName = get_seller_store_name($seller->tenant_id);
-                $candidateDirs = array_unique([
-                    $storeName . '/temp',
-                    $seller->tenant_id . '/temp',
-                ]);
+                $storeName = trim((string) get_seller_store_name($seller->tenant_id));
+                $tenantId = trim((string) $seller->tenant_id);
+
+                if (empty($storeName) && empty($tenantId)) {
+                    continue;
+                }
+
+                $candidateDirs = array_filter(array_unique([
+                    !empty($storeName) ? $storeName . '/temp' : null,
+                    !empty($tenantId) ? $tenantId . '/temp' : null,
+                ]));
 
                 $sellerHasTemp = false;
                 foreach ($candidateDirs as $tempDir) {
+                    if (empty($tempDir) || !str_ends_with($tempDir, '/temp') || $tempDir === '/temp' || $tempDir === 'temp') {
+                        continue;
+                    }
+
                     if (Storage::disk('seller')->exists($tempDir)) {
                         $files = Storage::disk('seller')->allFiles($tempDir);
                         $fileCount = count($files);
@@ -192,13 +202,27 @@ class SellerTempCleanupService
         $freedBytes = 0;
 
         // Determine store directory inside 'seller' disk (storage/app/public/seller/)
-        $storeName = get_seller_store_name($seller->tenant_id);
-        $candidateDirs = array_unique([
-            $storeName . '/temp',
-            $seller->tenant_id . '/temp',
-        ]);
+        $storeName = trim((string) get_seller_store_name($seller->tenant_id));
+        $tenantId = trim((string) $seller->tenant_id);
+
+        if (empty($storeName) && empty($tenantId)) {
+            return [
+                'deleted_files' => 0,
+                'freed_bytes' => 0,
+            ];
+        }
+
+        $candidateDirs = array_filter(array_unique([
+            !empty($storeName) ? $storeName . '/temp' : null,
+            !empty($tenantId) ? $tenantId . '/temp' : null,
+        ]));
 
         foreach ($candidateDirs as $tempDir) {
+            // Absolute safeguard: ensure tempDir is strictly {store}/temp and not root or empty
+            if (empty($tempDir) || !str_ends_with($tempDir, '/temp') || $tempDir === '/temp' || $tempDir === 'temp') {
+                continue;
+            }
+
             if (Storage::disk('seller')->exists($tempDir)) {
                 $files = Storage::disk('seller')->allFiles($tempDir);
                 foreach ($files as $file) {
@@ -213,11 +237,13 @@ class SellerTempCleanupService
                     }
                 }
 
-                // Delete any subdirectories inside temp
+                // Delete any subdirectories strictly inside temp
                 $subDirs = Storage::disk('seller')->allDirectories($tempDir);
                 foreach ($subDirs as $subDir) {
                     try {
-                        Storage::disk('seller')->deleteDirectory($subDir);
+                        if (str_starts_with($subDir, $tempDir . '/')) {
+                            Storage::disk('seller')->deleteDirectory($subDir);
+                        }
                     } catch (\Throwable $e) {
                         Log::warning("Failed to delete sub-temp directory: {$subDir}. Error: " . $e->getMessage());
                     }

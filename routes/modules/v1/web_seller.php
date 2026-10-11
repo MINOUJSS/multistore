@@ -28,6 +28,7 @@ use App\Http\Controllers\Users\Sellers\SellerProductController;
 use App\Http\Controllers\Users\Sellers\SellerProductsCouponsController;
 use App\Http\Controllers\Users\Sellers\SellerProfileController;
 use App\Http\Controllers\Users\Sellers\SellerProofsRefusedChatController;
+use App\Http\Controllers\Users\Sellers\SellerServicesController;
 use App\Http\Controllers\Users\Sellers\SellerSettingController;
 use App\Http\Controllers\Users\Sellers\SellerShippingController;
 use App\Http\Controllers\Users\Sellers\SellerSliderController;
@@ -256,6 +257,9 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::post('/seller-panel/subscription/pay/baridimob', [SellerSubscriptionController::class, 'baridimob'])->name('subscription.payment.baridimob');
                     Route::post('/seller-panel/subscription/pay/ccp', [SellerSubscriptionController::class, 'ccp'])->name('subscription.payment.ccp');
                     Route::post('/seller-panel/subscription/pay/wallet', [SellerSubscriptionController::class, 'wallet'])->name('subscription.payment.wallet');
+                    // Services & Add-ons Routes
+                    Route::get('/seller-panel/services', [SellerServicesController::class, 'index'])->name('services.index');
+                    Route::post('/seller-panel/services/{id}/purchase', [SellerServicesController::class, 'purchase'])->name('services.purchase');
                     // Page Routes
                     Route::put('/seller-panel/page/update/{id}', [SellerPageController::class, 'update'])->name('page.update');
                     // fqs section routes

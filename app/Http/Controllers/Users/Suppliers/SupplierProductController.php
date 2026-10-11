@@ -139,21 +139,25 @@ class SupplierProductController extends Controller
 
             // رفع الصورة الأساسية
             if ($request->hasFile('add_image')) {
-                $path = $request->file('add_image')->store(get_supplier_store_name(auth()->user()->tenant_id)."/products/{$product->id}/images", 'supplier');
-                $url = Storage::disk('supplier')->url('tenantsupplier/'.$path);
-                $product->image = $url;
+                $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+                $storeName = get_supplier_store_name(auth()->user()->tenant_id);
+                $upload = $mediaService->storeFile($request->file('add_image'), "{$storeName}/products/{$product->id}/images");
+                $product->image = $upload['url'];
+                $product->disk = $upload['disk'];
                 $product->update();
             }
 
             // رفع الصور الإضافية
             if ($request->hasFile('add_images')) {
+                $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+                $storeName = get_supplier_store_name(auth()->user()->tenant_id);
                 $imagesData = [];
                 foreach ($request->file('add_images') as $image) {
-                    $path = $image->store(get_supplier_store_name(auth()->user()->tenant_id)."/products/{$product->id}/images", 'supplier');
-                    $url = Storage::disk('supplier')->url('tenantsupplier/'.$path);
+                    $upload = $mediaService->storeFile($image, "{$storeName}/products/{$product->id}/images");
                     $imagesData[] = [
                         'product_id' => $product->id,
-                        'image_path' => $url,
+                        'image_path' => $upload['url'],
+                        'disk' => $upload['disk'],
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
@@ -386,31 +390,30 @@ class SupplierProductController extends Controller
 
             // رفع الصورة إلى نطاق المستأجر
             if ($request->hasFile('image')) {
-                // delete old image
-                $url = explode('storage/tenantsupplier/app/public/', $product->image);
-                if (count($url) >= 2) {
-                    $imagePath = $url[1];
-                    if (Storage::disk('public')->exists($imagePath)) {
-                        Storage::disk('public')->delete($imagePath);
-                    }
+                $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+                if ($product->image) {
+                    $mediaService->deleteFile($product->image, $product->disk ?? null);
                 }
 
-                $path = $request->file('image')->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/products/'.$product_id, 'public'); // التخزين في قرص المستأجر
-                $url = Storage::disk('public')->url('tenantsupplier/app/public/'.$path); // رابط الصورة
-                $product->image = $url;
+                $storeName = get_supplier_store_name(auth()->user()->tenant_id);
+                $upload = $mediaService->storeFile($request->file('image'), "{$storeName}/products/{$product_id}/images");
+                $product->image = $upload['url'];
+                $product->disk = $upload['disk'];
             }
 
             // رفع الصور
             $imageUrls = [];
             if ($request->hasFile('images')) {
+                $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+                $storeName = get_supplier_store_name(auth()->user()->tenant_id);
                 foreach ($request->file('images') as $image) {
-                    $path = $image->store('supplier/'.get_supplier_store_name(auth()->user()->tenant_id).'/images/products/'.$product_id, 'public'); // حفظ الصور في storage/app/public/uploads/products
-                    $url = Storage::disk('public')->url('tenantsupplier/app/public/'.$path); // رابط الصورة
-                    $imageUrls[] = $url;
+                    $upload = $mediaService->storeFile($image, "{$storeName}/products/{$product_id}/images");
+                    $imageUrls[] = $upload['url'];
                     // insert into product images table
                     $p_image = new SupplierProductImages();
                     $p_image->product_id = $product_id;
-                    $p_image->image_path = $url;
+                    $p_image->image_path = $upload['url'];
+                    $p_image->disk = $upload['disk'];
                     $p_image->save();
                 }
             }
@@ -483,16 +486,16 @@ class SupplierProductController extends Controller
                             }
                             $updateData['file_path'] = null;
                         } elseif ($type === 'local' && isset($request->update_videos['file'][$i])) {
+                            $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
                             // حذف الملف القديم إن وُجد
-                            if ($video->file_path && Storage::disk($video->file_disk)->exists($video->file_path)) {
-                                Storage::disk($video->file_disk)->delete($video->file_path);
+                            if ($video->file_path) {
+                                $mediaService->deleteFile($video->file_path, $video->file_disk ?? null);
                             }
 
-                            // رفع الملف الجديد
-                            // $path = $request->update_videos['file'][$i]->store('products/videos', 'supplier');
-                            $path = $request->update_videos['file'][$i]->store(get_supplier_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'supplier');
-                            $updateData['file_path'] = Storage::disk('supplier')->url('tenantsupplier/app/public/supplier/'.$path);
-                            $updateData['file_disk'] = 'supplier';
+                            $storeName = get_supplier_store_name(auth()->user()->tenant_id);
+                            $upload = $mediaService->storeFile($request->update_videos['file'][$i], "{$storeName}/videos/products/{$product->id}");
+                            $updateData['file_path'] = $upload['url'];
+                            $updateData['file_disk'] = $upload['disk'];
                             $updateData['youtube_url'] = null;
                             $updateData['youtube_id'] = null;
                         }
@@ -504,6 +507,8 @@ class SupplierProductController extends Controller
 
             // 4️⃣ إضافة فيديوهات جديدة
             if ($request->has('videos')) {
+                $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+                $storeName = get_supplier_store_name(auth()->user()->tenant_id);
                 foreach ($request->videos['type'] as $i => $type) {
                     $isActive = isset($request->videos['is_active'][$i]) ? 1 : 0;
 
@@ -523,9 +528,9 @@ class SupplierProductController extends Controller
                             $data['youtube_id'] = get_vimeo_id($request->videos['youtube_url'][$i]);
                         }
                     } elseif ($type === 'local' && isset($request->videos['file'][$i])) {
-                        $path = $request->videos['file'][$i]->store(get_supplier_store_name(auth()->user()->tenant_id)."/videos/products/{$product->id}", 'supplier');
-                        $data['file_path'] = Storage::disk('supplier')->url('tenantsupplier/app/public/supplier/'.$path);
-                        $data['file_disk'] = 'supplier';
+                        $upload = $mediaService->storeFile($request->videos['file'][$i], "{$storeName}/videos/products/{$product->id}");
+                        $data['file_path'] = $upload['url'];
+                        $data['file_disk'] = $upload['disk'];
                     }
 
                     SupplierProductVideos::create($data);
@@ -659,21 +664,78 @@ class SupplierProductController extends Controller
     // delete product
     public function delete($id)
     {
-        // get product folder
-        $product = SupplierProducts::findOrfail($id);
-        // delete product images folder
-        $store_name = get_supplier_store_name(get_tenant_id_from_supplier($product->supplier_id));
-        $folderPath = $store_name.'/products/'.$product->id;
-        if (Storage::disk('supplier')->exists($folderPath)) {
-            Storage::disk('supplier')->deleteDirectory($folderPath); // حذف المجلد بالكامل
-        }
-        // delete product frome database
-        $product->delete();
+        $product = SupplierProducts::find($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => "تم حذف مجلد المنتج $id بنجاح",
-        ]);
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'المنتج غير موجود أو تم حذفه مسبقاً',
+            ], 404);
+        }
+
+        // Verify supplier ownership if supplier is authenticated
+        if (auth()->check() && auth()->user()->tenant_id) {
+            $supplier = get_supplier_data(auth()->user()->tenant_id);
+            if ($supplier && (int) $product->supplier_id !== (int) $supplier->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'غير مصرح لك بحذف هذا المنتج',
+                ], 403);
+            }
+        }
+
+        try {
+            $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+
+            // 1. Delete main image
+            if (!empty($product->image)) {
+                $mediaService->deleteFile($product->image, $product->disk ?? null);
+            }
+
+            // 2. Delete gallery images
+            $galleryImages = SupplierProductImages::where('product_id', $product->id)->get();
+            foreach ($galleryImages as $img) {
+                if (!empty($img->image_path)) {
+                    $mediaService->deleteFile($img->image_path, $img->disk ?? null);
+                }
+                $img->delete();
+            }
+
+            // 3. Delete local videos
+            $videos = SupplierProductVideos::where('product_id', $product->id)->get();
+            foreach ($videos as $video) {
+                if ($video->type === 'local' && !empty($video->file_path)) {
+                    $mediaService->deleteFile($video->file_path, $video->file_disk ?? null);
+                }
+                $video->delete();
+            }
+
+            // 4. Delete entire product directory from R2 & local disks
+            $store_name = get_supplier_store_name(get_tenant_id_from_supplier($product->supplier_id));
+            if (!empty($store_name)) {
+                $folderPath = $store_name . '/products/' . $product->id;
+                $mediaService->deleteDirectory($folderPath);
+            }
+
+            // 5. Delete variations, discounts, attributes, reviews
+            SupplierProductVariations::where('product_id', $product->id)->delete();
+            SupplierProductDiscounts::where('product_id', $product->id)->delete();
+            SupplierProductAttributes::where('product_id', $product->id)->delete();
+            SupplierProductsReviews::where('product_id', $product->id)->delete();
+
+            // 6. Delete product from database
+            $product->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => "تم حذف المنتج وكافة ملفاته بنجاح",
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء حذف المنتج: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     // bulk delete products
@@ -687,19 +749,50 @@ class SupplierProductController extends Controller
         $supplierId = get_supplier_data(auth()->user()->tenant_id)->id;
         $products = SupplierProducts::whereIn('id', $request->ids)->where('supplier_id', $supplierId)->get();
 
+        $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
         foreach ($products as $product) {
-            $store_name = get_supplier_store_name(get_tenant_id_from_supplier($product->supplier_id));
-            $folderPath = $store_name.'/products/'.$product->id;
-
-            if (Storage::disk('supplier')->exists($folderPath)) {
-                Storage::disk('supplier')->deleteDirectory($folderPath);
+            // Delete main image
+            if (!empty($product->image)) {
+                $mediaService->deleteFile($product->image, $product->disk ?? null);
             }
+
+            // Delete gallery images
+            $galleryImages = SupplierProductImages::where('product_id', $product->id)->get();
+            foreach ($galleryImages as $img) {
+                if (!empty($img->image_path)) {
+                    $mediaService->deleteFile($img->image_path, $img->disk ?? null);
+                }
+                $img->delete();
+            }
+
+            // Delete local videos
+            $videos = SupplierProductVideos::where('product_id', $product->id)->get();
+            foreach ($videos as $video) {
+                if ($video->type === 'local' && !empty($video->file_path)) {
+                    $mediaService->deleteFile($video->file_path, $video->file_disk ?? null);
+                }
+                $video->delete();
+            }
+
+            // Delete product directory
+            $store_name = get_supplier_store_name(get_tenant_id_from_supplier($product->supplier_id));
+            if (!empty($store_name)) {
+                $folderPath = $store_name . '/products/' . $product->id;
+                $mediaService->deleteDirectory($folderPath);
+            }
+
+            // Delete relations
+            SupplierProductVariations::where('product_id', $product->id)->delete();
+            SupplierProductDiscounts::where('product_id', $product->id)->delete();
+            SupplierProductAttributes::where('product_id', $product->id)->delete();
+            SupplierProductsReviews::where('product_id', $product->id)->delete();
+
             $product->delete();
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'تم حذف المنتجات المحددة بنجاح',
+            'message' => 'تم حذف المنتجات المحددة وكافة ملفاتها بنجاح',
         ]);
     }
 
@@ -708,14 +801,11 @@ class SupplierProductController extends Controller
     {
         // get image from database
         $image = SupplierProductImages::find($id);
-        $product_id = $image->product_id;
         if ($image != null) {
-            // delete image from supplier images folder
-            $url = explode('storage/tenantsupplier/app/public/', $image->image_path);
-            $imagePath = $url[1];
-            if (Storage::disk('public')->exists($imagePath)) {
-                Storage::disk('public')->delete($imagePath);
-            }
+            $product_id = $image->product_id;
+            $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+            $mediaService->deleteFile($image->image_path, $image->disk ?? null);
+
             $image->delete();
             $product_images = SupplierProductImages::where('product_id', $product_id)->get();
 
@@ -736,14 +826,11 @@ class SupplierProductController extends Controller
     {
         // get video from database
         $video = SupplierProductVideos::find($id);
-        $product_id = $video->product_id;
         if ($video != null) {
-            // delete video from supplier videos folder
-            $url = explode('storage/tenantsupplier/app/public/', $video->file_path);
-            $videoPath = $url[1];
-            if (Storage::disk('public')->exists($videoPath)) {
-                Storage::disk('public')->delete($videoPath);
-            }
+            $product_id = $video->product_id;
+            $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
+            $mediaService->deleteFile($video->file_path, $video->file_disk ?? null);
+
             $video->delete();
             $product_videos = SupplierProductVideos::where('product_id', $product_id)->get();
 

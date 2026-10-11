@@ -59,15 +59,28 @@ class SellerAttachProductMedia implements ShouldQueue
                 'exists' => Storage::disk('seller')->exists($upload->path),
             ]);
 
-            Storage::disk('seller')->move(
-                $upload->path,
-                $newPath
-            );
+            $targetDisk = config('filesystems.seller_default_disk', 'seller');
+            if ($targetDisk === 'r2') {
+                $r2TargetPath = "seller/{$newPath}";
+                $stream = Storage::disk('seller')->readStream($upload->path);
+                if ($stream) {
+                    Storage::disk('r2')->writeStream($r2TargetPath, $stream);
+                    if (is_resource($stream)) {
+                        fclose($stream);
+                    }
+                    Storage::disk('seller')->delete($upload->path);
+                    $this->product->file_disk = 'r2';
+                    $this->product->file = $r2TargetPath;
+                }
+            } else {
+                Storage::disk('seller')->move(
+                    $upload->path,
+                    $newPath
+                );
+                $this->product->file_disk = 'seller';
+                $this->product->file = $newPath;
+            }
 
-            // delete temp file
-            // Storage::disk('seller')->delete($upload->path);
-
-            $this->product->file = $newPath;
             $this->product->save();
 
             // $this->product->update([

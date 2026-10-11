@@ -64,17 +64,25 @@ document.addEventListener("DOMContentLoaded", function () {
                         method: "DELETE",
                         headers: {
                             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
                         }
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire("تم الحذف!", "تم حذف المنتج بنجاح.", "success");
+                    .then(response => {
+                        return response.json().then(data => ({ ok: response.ok, data })).catch(() => ({ ok: false, data: { message: "استجابة غير صالحة من السيرفر" } }));
+                    })
+                    .then(({ ok, data }) => {
+                        if (ok && data.success) {
+                            Swal.fire("تم الحذف!", data.message || "تم حذف المنتج بنجاح.", "success");
                             location.reload();
                         } else {
-                            Swal.fire("خطأ!", "حدثت مشكلة أثناء الحذف.", "error");
+                            Swal.fire("تنبيه", data.message || "حدثت مشكلة أثناء الحذف.", "warning").then(() => {
+                                location.reload();
+                            });
                         }
+                    })
+                    .catch(error => {
+                        Swal.fire("خطأ!", "حدث خطأ في الاتصال بالسيرفر.", "error");
                     });
                 }
             });

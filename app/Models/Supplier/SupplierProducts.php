@@ -21,6 +21,7 @@ class SupplierProducts extends Model
         'price',
         'cost',
         'image',
+        'disk',
         'qty',
         'minimum_order_qty',
         'condition',

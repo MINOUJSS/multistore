@@ -510,6 +510,29 @@ class SellerOrderController extends Controller
             ]);
         }
 
+        // خصم حصة استخدام التحويل البنكي للبائعين في الخطة المجانية والخطة المتقدمة فقط
+        $seller = get_seller_data_from_id($order->seller_id);
+        $planId = $seller?->plan_subscription?->plan_id;
+
+        if (in_array($planId, [1, 2]) || $planId != 3) {
+            $sellerUser = auth()->user() ?? \App\Models\User::where('tenant_id', $seller->tenant_id)->first();
+            if ($sellerUser) {
+                $servicePurchase = \App\Models\SellerServicePurchase::where('user_id', $sellerUser->id)
+                    ->where('status', 'active')
+                    ->where('orders_remaining', '>', 0)
+                    ->whereHas('service', function ($q) {
+                        $q->where('category', 'store_features')
+                          ->orWhere('slug', 'like', 'bank_transfer%');
+                    })
+                    ->orderBy('id', 'asc')
+                    ->first();
+
+                if ($servicePurchase) {
+                    $servicePurchase->consumeOrder();
+                }
+            }
+        }
+
         return response()->json(['message' => 'تم قبول الدفع']);
     }
 

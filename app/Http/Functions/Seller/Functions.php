@@ -807,3 +807,74 @@ function seller_store_url($tenantId)
 
     return "{$scheme}://{$store}.".config('app.domain');
 }
+
+/**
+ * Check if the seller is authorized to display/use Chargily Pay on their storefront:
+ * 1. Subscribed to Advanced plan (ID 2) or Professional plan (ID 3).
+ * OR
+ * 2. Has an active Chargily Pay package purchase from platform services with remaining orders (> 0).
+ */
+function is_seller_chargily_authorized($tenant_id): bool
+{
+    $seller = get_seller_data($tenant_id);
+    if (!$seller) {
+        return false;
+    }
+
+    // 1. Check if active plan is Advanced (2) or Professional (3)
+    $planId = $seller->plan_subscription?->plan_id;
+    if (in_array($planId, [2, 3])) {
+        return true;
+    }
+
+    // 2. Check if seller purchased a Chargily Pay package from platform services with remaining orders
+    $user = App\Models\User::where('tenant_id', $tenant_id)->first();
+    if ($user) {
+        return $user->servicePurchases()
+            ->where('status', 'active')
+            ->where('orders_remaining', '>', 0)
+            ->whereHas('service', function ($query) {
+                $query->where('category', 'payment');
+            })
+            ->exists();
+    }
+
+    return false;
+}
+
+/**
+ * Check if the seller is authorized to display/use Bank Transfer on their storefront:
+ * 1. Subscribed to Professional plan (ID 3).
+ * OR
+ * 2. Has an active Bank Transfer package purchase from platform services with remaining orders (> 0).
+ */
+function is_seller_bank_transfer_authorized($tenant_id): bool
+{
+    $seller = get_seller_data($tenant_id);
+    if (!$seller) {
+        return false;
+    }
+
+    // 1. Check if active plan is Professional (3)
+    $planId = $seller->plan_subscription?->plan_id;
+    if ($planId == 3) {
+        return true;
+    }
+
+    // 2. Check if seller purchased a Bank Transfer package from platform services with remaining orders
+    $user = App\Models\User::where('tenant_id', $tenant_id)->first();
+    if ($user) {
+        return $user->servicePurchases()
+            ->where('status', 'active')
+            ->where('orders_remaining', '>', 0)
+            ->whereHas('service', function ($query) {
+                $query->where('category', 'store_features')
+                      ->orWhere('slug', 'like', 'bank_transfer%');
+            })
+            ->exists();
+    }
+
+    return false;
+}
+
+

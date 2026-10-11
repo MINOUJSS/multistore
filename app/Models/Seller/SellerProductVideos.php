@@ -34,6 +34,19 @@ class SellerProductVideos extends Model
     public function getVideoUrlAttribute()
     {
         if ($this->type === 'local' && $this->file_path) {
+            if (str_starts_with($this->file_path, 'http://') || str_starts_with($this->file_path, 'https://')) {
+                return $this->file_path;
+            }
+
+            if ($this->file_disk === 'r2') {
+                $r2PublicUrl = rtrim((string) config('filesystems.disks.r2.url', ''), '/');
+                $filePath = str_starts_with($this->file_path, 'seller/') ? $this->file_path : 'seller/' . ltrim($this->file_path, '/');
+                if (!empty($r2PublicUrl)) {
+                    return $r2PublicUrl . '/' . ltrim($filePath, '/');
+                }
+                return \Illuminate\Support\Facades\Storage::disk('r2')->url($filePath);
+            }
+
             return asset('storage/'.$this->file_path);
         }
 
