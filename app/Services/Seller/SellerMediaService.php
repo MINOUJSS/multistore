@@ -324,6 +324,54 @@ class SellerMediaService
     }
 
     /**
+     * Check if a seller digital file exists on Cloudflare R2 or local disk using dual-check logic.
+     *
+     * @param string|null $filePath Path relative to disk root or URL
+     * @return bool
+     */
+    public function hasDigitalFile(?string $filePath): bool
+    {
+        if (empty($filePath)) {
+            return false;
+        }
+
+        $cleanPath = $this->extractRelativePath($filePath);
+        if (empty($cleanPath)) {
+            return false;
+        }
+
+        $r2Prefixed = $this->prefixR2Path($cleanPath);
+
+        // 1. Check Cloudflare R2 disk with 'seller/' prefix
+        try {
+            if (Storage::disk('r2')->exists($r2Prefixed)) {
+                return true;
+            }
+            // 2. Check Cloudflare R2 without prefix (fallback)
+            if (Storage::disk('r2')->exists($cleanPath)) {
+                return true;
+            }
+            // 3. Check Cloudflare R2 private bucket if configured
+            if (config('filesystems.disks.r2_private') && (Storage::disk('r2_private')->exists($r2Prefixed) || Storage::disk('r2_private')->exists($cleanPath))) {
+                return true;
+            }
+        } catch (\Throwable $e) {
+            Log::warning("SellerMediaService::hasDigitalFile R2 check failed for [{$filePath}]: " . $e->getMessage());
+        }
+
+        // 4. Fallback to Local 'seller' disk
+        try {
+            if (Storage::disk('seller')->exists($cleanPath)) {
+                return true;
+            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+        return false;
+    }
+
+    /**
      * Migrate a single file from local storage to Cloudflare R2.
      *
      * @param string $relativePath Path relative to 'seller' disk (e.g. "store/products/1/images/pic.png")

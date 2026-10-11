@@ -114,4 +114,12 @@ class SellerProducts extends Model implements HasMedia
         $this->addMediaCollection('gallery');
         $this->addMediaCollection('digital-files')->singleFile();
     }
+
+    /**
+     * Check if this digital product has an available file on Cloudflare R2 or local storage.
+     */
+    public function hasDigitalFileAvailable(): bool
+    {
+        return is_digital_product_file_available($this);
+    }
 }

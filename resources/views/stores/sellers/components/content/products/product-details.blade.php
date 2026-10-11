@@ -255,6 +255,7 @@
                 $chargily_status = $pmObj?->Chargily_Pay?->status ?? 'inactive';
                 $ccp_status = $pmObj?->Ccp?->status ?? 'inactive';
                 $baridimob_status = $pmObj?->BaridiMob?->status ?? 'inactive';
+                $is_digital_file_available = is_digital_product_file_available($product);
             @endphp
             {{-- order form  --}}
             @if ($product->product_type === 'digital')
@@ -312,57 +313,76 @@
                     <div class="row mb-4 mt-4">
                         <div class="col-md-12">
                             <h5 class="mb-3 fw-bold text-dark sub-title">طريقة الدفع</h5>
-                            <div class="d-flex flex-wrap gap-3">
+                            @if ($is_digital_file_available)
+                                <div class="d-flex flex-wrap gap-3">
 
-                                {{-- <!-- الدفع عند الاستلام -->
-                            <div class="payment-option">
-                                <input type="radio" name="payment_method" id="cod" value="cod"
-                                    class="payment-radio" checked>
-                                <label for="cod" class="payment-label">
-                                    <div class="payment-content">
-                                        <i class="fas fa-money-bill-wave payment-icon"></i>
-                                        <span class="payment-text">الدفع عند الاستلام</span>
-                                    </div>
-                                </label>
-                            </div> --}}
+                                    {{-- <!-- الدفع عند الاستلام -->
+                                <div class="payment-option">
+                                    <input type="radio" name="payment_method" id="cod" value="cod"
+                                        class="payment-radio" checked>
+                                    <label for="cod" class="payment-label">
+                                        <div class="payment-content">
+                                            <i class="fas fa-money-bill-wave payment-icon"></i>
+                                            <span class="payment-text">الدفع عند الاستلام</span>
+                                        </div>
+                                    </label>
+                                </div> --}}
 
-                                @if (is_seller_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')) && $chargily_status == 'active' && is_seller_chargily_authorized(tenant('id')))
-                                    <!-- Chargily -->
-                                    <div class="payment-option">
-                                        <input type="radio" name="payment_method" id="chargily" value="chargily"
-                                            class="payment-radio" checked>
-                                        <label for="chargily" class="payment-label">
-                                            <div class="payment-content">
-                                                <i class="fas fa-credit-card payment-icon"></i>
-                                                <span class="payment-text">Chargily</span>
-                                            </div>
-                                        </label>
-                                    </div>
-                                @endif
-                                @if (is_seller_aproved(tenant('id')) &&
-                                        is_seller_bank_account_exists(tenant('id')) &&
-                                        ($ccp_status == 'active' || $baridimob_status == 'active') &&
-                                        is_seller_bank_transfer_authorized(tenant('id')))
-                                    <!-- التحويل البنكي -->
-                                    <div class="payment-option">
-                                        <input type="radio" name="payment_method" id="bank_transfer"
-                                            value="verments" class="payment-radio" checked>
-                                        <label for="bank_transfer" class="payment-label">
-                                            <div class="payment-content">
-                                                <i class="fas fa-university payment-icon"></i>
-                                                <span class="payment-text">تحويل بنكي</span>
-                                            </div>
-                                        </label>
-                                    </div>
-                                @endif
+                                    @if (is_seller_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')) && $chargily_status == 'active' && is_seller_chargily_authorized(tenant('id')))
+                                        <!-- Chargily -->
+                                        <div class="payment-option">
+                                            <input type="radio" name="payment_method" id="chargily" value="chargily"
+                                                class="payment-radio" checked>
+                                            <label for="chargily" class="payment-label">
+                                                <div class="payment-content">
+                                                    <i class="fas fa-credit-card payment-icon"></i>
+                                                    <span class="payment-text">Chargily</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    @endif
+                                    @if (is_seller_aproved(tenant('id')) &&
+                                            is_seller_bank_account_exists(tenant('id')) &&
+                                            ($ccp_status == 'active' || $baridimob_status == 'active') &&
+                                            is_seller_bank_transfer_authorized(tenant('id')))
+                                        <!-- التحويل البنكي -->
+                                        <div class="payment-option">
+                                            <input type="radio" name="payment_method" id="bank_transfer"
+                                                value="verments" class="payment-radio" checked>
+                                            <label for="bank_transfer" class="payment-label">
+                                                <div class="payment-content">
+                                                    <i class="fas fa-university payment-icon"></i>
+                                                    <span class="payment-text">تحويل بنكي</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    @endif
 
-                            </div>
+                                </div>
+                            @else
+                                <div class="alert alert-warning border-0 shadow-sm rounded-3 p-3 text-center mb-0">
+                                    <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+                                        <i class="fas fa-exclamation-triangle text-warning fs-5"></i>
+                                        <strong class="text-dark">هذا المنتج غير متاح للشراء حالياً</strong>
+                                    </div>
+                                    <p class="small text-muted mb-0">
+                                        الملف الرقمي الخاص بهذا المنتج قيد التجهيز من قبل المتجر. ستظهر وسائل الدفع تلقائياً فور توفر الملف.
+                                    </p>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="col-12 text-center">
-                        <button id="buyNowButton" type="submit"
-                            class="form-control btn btn-primary bay-now-btn buy-btn-attention buy-btn"><i
-                                class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
+                        @if ($is_digital_file_available)
+                            <button id="buyNowButton" type="submit"
+                                class="form-control btn btn-primary bay-now-btn buy-btn-attention buy-btn"><i
+                                    class="fas fa-shopping-cart"></i>{{ $order_form->form_submit_button }}</button>
+                        @else
+                            <button id="buyNowButton" type="button" disabled
+                                class="form-control btn btn-secondary bay-now-btn opacity-50" style="cursor: not-allowed;">
+                                <i class="fas fa-lock me-1"></i> الشراء غير متاح حالياً
+                            </button>
+                        @endif
                     </div>
                 </form>
             @else
@@ -777,11 +797,15 @@
             {{-- start test  --}}
             <div id="floatingBuyBar" class="floating-buy-bar">
 
-                <button id="floatingBuyButton" class="btn btn-primary w-100 buy-btn-attention buy-btn">
+                <button id="floatingBuyButton" class="btn btn-primary w-100 buy-btn-attention buy-btn" @if($product->product_type === 'digital' && !$is_digital_file_available) disabled style="opacity: 0.5; cursor: not-allowed;" @endif>
 
                     <i class="fas fa-shopping-cart"></i>
 
-                    {{ $order_form->form_submit_button }}
+                    @if($product->product_type === 'digital' && !$is_digital_file_available)
+                        الشراء غير متاح حالياً
+                    @else
+                        {{ $order_form->form_submit_button }}
+                    @endif
 
                 </button>
 

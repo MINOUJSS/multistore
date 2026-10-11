@@ -877,4 +877,27 @@ function is_seller_bank_transfer_authorized($tenant_id): bool
     return false;
 }
 
+/**
+ * Check if the digital product has an uploaded file that exists on Cloudflare R2 or local storage.
+ * Returns true if not a digital product (so it does not block physical products).
+ * Returns true for digital products ONLY if the file actually exists on R2 or local disk.
+ */
+function is_digital_product_file_available($product): bool
+{
+    if (!$product) {
+        return false;
+    }
+
+    // Physical products do not require a downloadable file
+    if ($product->product_type !== 'digital') {
+        return true;
+    }
+
+    if (empty($product->file)) {
+        return false;
+    }
+
+    return app(\App\Services\Seller\SellerMediaService::class)->hasDigitalFile($product->file);
+}
+
 

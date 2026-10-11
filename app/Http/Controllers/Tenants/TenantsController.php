@@ -812,6 +812,16 @@ class TenantsController extends Controller
             }
 
             if ($product->product_type === 'digital') {
+                if (!is_digital_product_file_available($product)) {
+                    if ($request->expectsJson() || $request->ajax()) {
+                        return response()->json([
+                            'message' => 'عذراً، هذا المنتج الرقمي غير متوفر للشراء حالياً نظراً لعدم توفر ملف التحميل.',
+                            'errors' => ['product' => ['الملف الرقمي غير متاح حالياً على الخادم.']],
+                        ], 422);
+                    }
+                    return back()->withErrors(['product' => 'عذراً، هذا المنتج الرقمي غير متوفر للشراء حالياً نظراً لعدم توفر ملف التحميل.'])->withInput();
+                }
+
                 $rules = array_merge($rules, [
                     'email' => 'required|email|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                     // لا تحتاج عنوان
