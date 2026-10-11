@@ -1028,10 +1028,14 @@
                                                         <h6 id="edit_digital_file_name" class="fw-bold text-dark mb-1 text-truncate" title="اسم الملف">
                                                             -
                                                         </h6>
-                                                        <div class="d-flex align-items-center gap-2 text-muted small">
+                                                        <div class="d-flex align-items-center gap-2 text-muted small flex-wrap">
                                                             <span id="edit_digital_file_size" class="fw-semibold">-</span>
                                                             <span>•</span>
                                                             <span id="edit_digital_file_type" class="badge bg-secondary-subtle text-secondary px-2 py-0.5 rounded-pill text-uppercase">-</span>
+                                                            <span id="edit_digital_file_disk_separator" style="display: none;">•</span>
+                                                            <span id="edit_digital_file_disk" class="badge bg-info-subtle text-info border border-info-subtle px-2 py-0.5 rounded-pill" style="display: none;">
+                                                                <i id="edit_digital_file_disk_icon" class="fa-solid fa-cloud me-1"></i><span id="edit_digital_file_disk_name">-</span>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -111,6 +111,23 @@
                         $('#edit_digital_file_size').text(fileInfo.file_size || 'حجم غير معروف');
                         $('#edit_digital_file_type').text((fileInfo.file_ext || 'ملف').toUpperCase());
 
+                        // عرض ديسك التخزين (Cloudflare R2 أو سيرفر محلي)
+                        if (fileInfo.file_disk) {
+                            $('#edit_digital_file_disk_name').text(fileInfo.file_disk);
+                            if (fileInfo.file_disk.includes('R2')) {
+                                $('#edit_digital_file_disk_icon').attr('class', 'fa-solid fa-cloud text-info me-1');
+                                $('#edit_digital_file_disk').attr('class', 'badge bg-info-subtle text-info border border-info-subtle px-2 py-0.5 rounded-pill');
+                            } else {
+                                $('#edit_digital_file_disk_icon').attr('class', 'fa-solid fa-server text-secondary me-1');
+                                $('#edit_digital_file_disk').attr('class', 'badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-0.5 rounded-pill');
+                            }
+                            $('#edit_digital_file_disk_separator').show();
+                            $('#edit_digital_file_disk').show();
+                        } else {
+                            $('#edit_digital_file_disk_separator').hide();
+                            $('#edit_digital_file_disk').hide();
+                        }
+
                         // تخصيص الأيقونة واللون المناسب لنوع الملف
                         let ext = (fileInfo.file_ext || '').toLowerCase();
                         let iconClass = 'fa-solid fa-file fa-2x text-secondary';
@@ -139,6 +156,8 @@
                     } else {
                         $('#edit_digital_file_info_box').hide();
                         $('#edit_digital_file_missing_box').show();
+                        $('#edit_digital_file_disk_separator').hide();
+                        $('#edit_digital_file_disk').hide();
                         $('#edit_digital_status_badge')
                             .removeClass('bg-success-subtle text-success border-success-subtle')
                             .addClass('bg-danger-subtle text-danger border-danger-subtle')

@@ -390,16 +390,48 @@ class SellerProductController extends Controller
             $file_size = null;
             $file_ext = null;
             $file_exists = false;
+            $file_disk_name = null;
             $download_url = null;
 
             if (!empty($product->file)) {
                 $has_file = true;
                 $file_name = basename($product->file);
                 $file_ext = strtolower(pathinfo($product->file, PATHINFO_EXTENSION));
-                $disk = Storage::disk('seller');
-                if ($disk->exists($product->file)) {
-                    $file_exists = true;
-                    $bytes = $disk->size($product->file);
+
+                $mediaService = app(\App\Services\Seller\SellerMediaService::class);
+                $cleanPath = $mediaService->extractRelativePath($product->file);
+                $r2Prefixed = $mediaService->prefixR2Path($cleanPath);
+                $bytes = null;
+
+                // 1. Check Cloudflare R2 disk (both prefixed with 'seller/' and raw fallback)
+                try {
+                    if (Storage::disk('r2')->exists($r2Prefixed)) {
+                        $file_exists = true;
+                        $bytes = Storage::disk('r2')->size($r2Prefixed);
+                        $file_disk_name = 'Cloudflare R2';
+                    } elseif (Storage::disk('r2')->exists($cleanPath)) {
+                        $file_exists = true;
+                        $bytes = Storage::disk('r2')->size($cleanPath);
+                        $file_disk_name = 'Cloudflare R2';
+                    }
+                } catch (\Throwable $e) {
+                    \Log::warning("Failed checking R2 digital file for product {$product->id}: " . $e->getMessage());
+                }
+
+                // 2. Check local 'seller' disk fallback
+                if (!$file_exists) {
+                    try {
+                        if (Storage::disk('seller')->exists($cleanPath)) {
+                            $file_exists = true;
+                            $bytes = Storage::disk('seller')->size($cleanPath);
+                            $file_disk_name = 'سيرفر محلي';
+                        }
+                    } catch (\Throwable $e) {
+                        // ignore
+                    }
+                }
+
+                if ($file_exists && $bytes !== null) {
                     if ($bytes >= 1048576) {
                         $file_size = number_format($bytes / 1048576, 2) . ' MB';
                     } elseif ($bytes >= 1024) {
@@ -417,6 +449,7 @@ class SellerProductController extends Controller
                 'file_name' => $file_name,
                 'file_size' => $file_size,
                 'file_ext' => $file_ext,
+                'file_disk' => $file_disk_name,
                 'download_url' => $download_url,
             ];
         }
@@ -452,16 +485,14 @@ class SellerProductController extends Controller
             abort(404, 'لا يوجد ملف رقمي مرفق بهذا المنتج');
         }
 
-        $disk = Storage::disk('seller');
-        if ($product->file_disk === 'r2' || Storage::disk('r2')->exists($product->file)) {
-            return Storage::disk('r2')->download($product->file, basename($product->file));
+        $mediaService = app(\App\Services\Seller\SellerMediaService::class);
+        $download = $mediaService->downloadDigitalFile($product->file, basename($product->file));
+
+        if ($download) {
+            return $download;
         }
 
-        if (!$disk->exists($product->file)) {
-            abort(404, 'الملف غير موجود في خادم التخزين، يرجى إعادة رفع الملف');
-        }
-
-        return $disk->download($product->file, basename($product->file));
+        abort(404, 'الملف غير موجود في خادم التخزين، يرجى إعادة رفع الملف');
     }
 
     public function update(Request $request, $product_id)
