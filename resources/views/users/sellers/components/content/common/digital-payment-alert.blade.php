@@ -118,7 +118,7 @@
                         <div>
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <span class="fw-bold text-dark small">
-                                    <i class="fa-solid fa-building-columns text-primary me-1"></i> 3. التحويل البنكي (CCP / بنك)
+                                    <i class="fa-solid fa-building-columns text-primary me-1"></i> 3. التحويل البنكي (CCP / بريدي موب)
                                 </span>
                                 @if ($digitalPaymentStatus['bank']['ready'])
                                     <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 small">جاهز ✅</span>
