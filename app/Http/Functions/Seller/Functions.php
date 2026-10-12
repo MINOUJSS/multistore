@@ -944,7 +944,7 @@ function get_seller_digital_payment_status($tenant_id = null): array
     $chargilyAuth = is_seller_chargily_authorized($tenantId);
     $chargilyByPlan = in_array($planId, [2, 3]);
     $chargilyByService = !$chargilyByPlan && $chargilyAuth;
-    $chargilyCredentials = !empty($user?->chargilySettings?->app_key) && !empty($user?->chargilySettings?->secret_key);
+    $chargilyCredentials = (!empty($user?->chargilySettings?->public_key) || !empty($user?->chargilySettings?->app_key)) && !empty($user?->chargilySettings?->secret_key);
     $chargilyReady = $isApproved && $chargilyAuth && $chargilyCredentials && $chargilyActive;
 
     // Bank transfer checks

@@ -1,5 +1,32 @@
 @php
-    $digitalPaymentStatus = get_seller_digital_payment_status(auth()->user()->tenant_id ?? null);
+    $sellerTenantId = auth()->user()->tenant_id ?? null;
+    $digitalPaymentStatus = get_seller_digital_payment_status($sellerTenantId);
+
+    // سكريبت التحقق من وجود حساب شارجيلي في قاعدة البيانات (chargily_setting_for_tenants)
+    $sellerUserId = auth()->id();
+    $chargilySetting = \App\Models\ChargilySettingForTenants::where('user_id', $sellerUserId)->first();
+    $hasChargilyDbAccount = !empty($chargilySetting?->public_key) && !empty($chargilySetting?->secret_key);
+
+    // تحديث حالة بيانات الربط من قاعدة البيانات مباشرة
+    $digitalPaymentStatus['chargily']['credentials'] = $hasChargilyDbAccount;
+    $digitalPaymentStatus['chargily']['mode'] = $chargilySetting?->mode ?? null;
+
+    // سكريبت للتحكم في شارة وجاهزية شارجيلي (مطابق لشروط صفحة تفاصيل المنتج product-details.blade.php)
+    $isChargilyReady = $digitalPaymentStatus['is_approved']
+        && $digitalPaymentStatus['chargily']['auth']
+        && $digitalPaymentStatus['chargily']['credentials']
+        && $digitalPaymentStatus['chargily']['active'];
+    $digitalPaymentStatus['chargily']['ready'] = $isChargilyReady;
+
+    // سكريبت للتحكم في شارة وجاهزية التحويل البنكي (مطابق لشروط صفحة تفاصيل المنتج product-details.blade.php)
+    $isBankReady = $digitalPaymentStatus['is_approved']
+        && $digitalPaymentStatus['bank']['auth']
+        && $digitalPaymentStatus['bank']['credentials']
+        && $digitalPaymentStatus['bank']['active'];
+    $digitalPaymentStatus['bank']['ready'] = $isBankReady;
+
+    // تحديث شرط ظهور الصندوق بناءً على الجاهزية الدقيقة
+    $digitalPaymentStatus['should_alert'] = $digitalPaymentStatus['has_digital_products'] && !($isChargilyReady || $isBankReady);
 @endphp
 
 @if ($digitalPaymentStatus['should_alert'])
@@ -103,10 +130,15 @@
                                 <span class="fw-bold text-dark small">
                                     <i class="fa-solid fa-credit-card text-info me-1"></i> 2. بوابة شارجيلي (Chargily)
                                 </span>
+                                <!-- سكريبت التحكم في Badge شارجيلي (السطور 106 إلى 110) -->
                                 @if ($digitalPaymentStatus['chargily']['ready'])
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 small">جاهزة ✅</span>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 small">
+                                        جاهزة <i class="fa-solid fa-check ms-1"></i>
+                                    </span>
                                 @else
-                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-0.5 small">غير مكتملة</span>
+                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-0.5 small">
+                                        غير مكتملة <i class="fa-solid fa-clock ms-1"></i>
+                                    </span>
                                 @endif
                             </div>
 
@@ -130,7 +162,7 @@
                                     @endif
                                 </li>
 
-                                <!-- Sub-condition B: API Credentials -->
+                                <!-- Sub-condition B: API Credentials (chargily_setting_for_tenants) -->
                                 <li class="d-flex align-items-center justify-content-between p-1.5 rounded-2 bg-light border border-light-subtle">
                                     <span class="d-inline-flex align-items-center gap-1 text-secondary">
                                         @if ($digitalPaymentStatus['chargily']['credentials'])
@@ -141,7 +173,12 @@
                                         <span>مفاتيح الربط (API Keys)</span>
                                     </span>
                                     @if ($digitalPaymentStatus['chargily']['credentials'])
-                                        <span class="badge bg-success-subtle text-success px-1.5 py-0.5 small">مضافة</span>
+                                        <span class="badge bg-success-subtle text-success px-1.5 py-0.5 small d-inline-flex align-items-center gap-1">
+                                            <span>مضافة</span>
+                                            @if (!empty($digitalPaymentStatus['chargily']['mode']))
+                                                <span class="text-uppercase fw-normal opacity-75">({{ $digitalPaymentStatus['chargily']['mode'] }})</span>
+                                            @endif
+                                        </span>
                                     @else
                                         <a href="{{ route('seller.profile') }}" class="badge bg-danger-subtle text-danger text-decoration-none px-1.5 py-0.5 small">
                                             إضافة الآن <i class="fa-solid fa-arrow-left ms-1"></i>
@@ -180,10 +217,15 @@
                                 <span class="fw-bold text-dark small">
                                     <i class="fa-solid fa-building-columns text-primary me-1"></i> 3. التحويل البنكي (CCP / بريدي موب)
                                 </span>
+                                <!-- سكريبت للتحكم في Badge التحويل البنكي (السطور 183 إلى 187) -->
                                 @if ($digitalPaymentStatus['bank']['ready'])
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 small">جاهز ✅</span>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 small">
+                                        جاهز <i class="fa-solid fa-check ms-1"></i>
+                                    </span>
                                 @else
-                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-0.5 small">غير مكتمل</span>
+                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-0.5 small">
+                                        غير مكتمل <i class="fa-solid fa-clock ms-1"></i>
+                                    </span>
                                 @endif
                             </div>
 
