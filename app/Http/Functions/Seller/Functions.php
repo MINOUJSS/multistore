@@ -945,17 +945,17 @@ function get_seller_digital_payment_status($tenant_id = null): array
     $chargilyByPlan = in_array($planId, [2, 3]);
     $chargilyByService = !$chargilyByPlan && $chargilyAuth;
     $chargilyCredentials = !empty($user?->chargilySettings?->app_key) && !empty($user?->chargilySettings?->secret_key);
-    $chargilyReady = $chargilyAuth && $chargilyCredentials && $chargilyActive;
+    $chargilyReady = $isApproved && $chargilyAuth && $chargilyCredentials && $chargilyActive;
 
     // Bank transfer checks
     $bankAuth = is_seller_bank_transfer_authorized($tenantId);
     $bankByPlan = ($planId == 3);
     $bankByService = !$bankByPlan && $bankAuth;
     $bankCredentials = !empty($user?->bank_settings?->account_number) || !empty($user?->bank_settings?->ccp_number) || !empty($user?->bank_settings?->rip_number);
-    $bankReady = $bankAuth && $bankCredentials && $bankActive;
+    $bankReady = $isApproved && $bankAuth && $bankCredentials && $bankActive;
 
-    // The alert is shown if the seller has digital products, has an approved account, but neither digital payment method is ready
-    $shouldAlert = $hasDigitalProducts && $isApproved && !($chargilyReady || $bankReady);
+    // The alert is shown if the seller has digital products, but neither digital payment method is fully ready to accept payments
+    $shouldAlert = $hasDigitalProducts && !($chargilyReady || $bankReady);
 
     return [
         'should_alert' => $shouldAlert,
