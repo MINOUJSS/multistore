@@ -66,7 +66,7 @@
                                     @else
                                         <i class="fa-solid fa-circle-xmark text-danger me-1"></i>
                                     @endif
-                                    1. توثيق الحساب
+                                    1. توثيق الحساب (شرط أساسي)
                                 </span>
                                 @if ($digitalPaymentStatus['is_approved'])
                                     <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 small">
@@ -78,13 +78,19 @@
                                     </span>
                                 @endif
                             </div>
-                            <p class="text-muted small mb-0" style="font-size: 0.82rem; line-height: 1.5;">
+                            <p class="text-muted small mb-3" style="font-size: 0.82rem; line-height: 1.5;">
                                 @if ($digitalPaymentStatus['is_approved'])
-                                    تم اعتماد وتوثيق متجرك في المنصة بنجاح، ويمكنك استقبال المدفوعات فور اكتمال وسيلة الدفع.
+                                    تم اعتماد وتوثيق متجرك في المنصة بنجاح، ويمكنك استقبال المدفوعات فور اكتمال أي وسيلة دفع أدناه.
                                 @else
-                                    حساب متجرك غير موثق حالياً أو بانتظار مراجعة الإدارة؛ يلزم توثيق الحساب أولاً لتتمكن من بيع واستقبال مدفوعات المنتجات الرقمية.
+                                    حساب متجرك غير موثق حالياً أو بانتظار المراجعة؛ يلزم اعتماد الحساب أولاً لتتمكن من استقبال المدفوعات الرقمية.
                                 @endif
                             </p>
+                        </div>
+                        <div class="pt-2 border-top">
+                            <span class="text-secondary small d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                                <i class="fa-solid fa-shield-halved text-warning"></i>
+                                شرط إلزامي مشترك لكافة بوابات الدفع
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -103,10 +109,64 @@
                                     <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-0.5 small">غير مكتملة</span>
                                 @endif
                             </div>
-                            <ul class="text-muted small ps-3 mb-2" style="font-size: 0.82rem; line-height: 1.55;">
-                                <li><strong>الباقة أو الرصيد:</strong> مشمولة تلقائياً في <u>الباقة المتقدمة فما فوق</u>، أو شراء رصيد طلبات من خدمات المنصة.</li>
-                                <li><strong>بيانات الربط:</strong> إضافة مفاتيح الربط (App Key / Secret Key) في <a href="{{ route('seller.profile') }}" class="text-primary fw-bold text-decoration-none">الملف الشخصي</a>.</li>
-                                <li><strong>تفعيل المتجر:</strong> تفعيل خيار شارجيلي في <a href="{{ route('seller.settings') }}" class="text-primary fw-bold text-decoration-none">إعدادات المتجر</a>.</li>
+
+                            <ul class="list-unstyled d-flex flex-column gap-2 mb-2" style="font-size: 0.81rem;">
+                                <!-- Sub-condition A: Authorization / Plan -->
+                                <li class="d-flex align-items-center justify-content-between p-1.5 rounded-2 bg-light border border-light-subtle">
+                                    <span class="d-inline-flex align-items-center gap-1 text-secondary">
+                                        @if ($digitalPaymentStatus['chargily']['auth'])
+                                            <i class="fa-solid fa-circle-check text-success"></i>
+                                        @else
+                                            <i class="fa-solid fa-circle-xmark text-danger"></i>
+                                        @endif
+                                        <span>صلاحية البوابة (باقة / رصيد)</span>
+                                    </span>
+                                    @if ($digitalPaymentStatus['chargily']['auth'])
+                                        <span class="badge bg-success-subtle text-success px-1.5 py-0.5 small">متاحة</span>
+                                    @else
+                                        <a href="{{ route('seller.services.index') }}" class="badge bg-danger-subtle text-danger text-decoration-none px-1.5 py-0.5 small">
+                                            ترقية / شحن <i class="fa-solid fa-arrow-left ms-1"></i>
+                                        </a>
+                                    @endif
+                                </li>
+
+                                <!-- Sub-condition B: API Credentials -->
+                                <li class="d-flex align-items-center justify-content-between p-1.5 rounded-2 bg-light border border-light-subtle">
+                                    <span class="d-inline-flex align-items-center gap-1 text-secondary">
+                                        @if ($digitalPaymentStatus['chargily']['credentials'])
+                                            <i class="fa-solid fa-circle-check text-success"></i>
+                                        @else
+                                            <i class="fa-solid fa-circle-xmark text-danger"></i>
+                                        @endif
+                                        <span>مفاتيح الربط (API Keys)</span>
+                                    </span>
+                                    @if ($digitalPaymentStatus['chargily']['credentials'])
+                                        <span class="badge bg-success-subtle text-success px-1.5 py-0.5 small">مضافة</span>
+                                    @else
+                                        <a href="{{ route('seller.profile') }}" class="badge bg-danger-subtle text-danger text-decoration-none px-1.5 py-0.5 small">
+                                            إضافة الآن <i class="fa-solid fa-arrow-left ms-1"></i>
+                                        </a>
+                                    @endif
+                                </li>
+
+                                <!-- Sub-condition C: Store Settings Active -->
+                                <li class="d-flex align-items-center justify-content-between p-1.5 rounded-2 bg-light border border-light-subtle">
+                                    <span class="d-inline-flex align-items-center gap-1 text-secondary">
+                                        @if ($digitalPaymentStatus['chargily']['active'])
+                                            <i class="fa-solid fa-circle-check text-success"></i>
+                                        @else
+                                            <i class="fa-solid fa-circle-xmark text-danger"></i>
+                                        @endif
+                                        <span>تفعيل الخيار في المتجر</span>
+                                    </span>
+                                    @if ($digitalPaymentStatus['chargily']['active'])
+                                        <span class="badge bg-success-subtle text-success px-1.5 py-0.5 small">مفعل</span>
+                                    @else
+                                        <a href="{{ route('seller.settings') }}" class="badge bg-warning-subtle text-warning-emphasis text-decoration-none px-1.5 py-0.5 small">
+                                            تفعيل الآن <i class="fa-solid fa-arrow-left ms-1"></i>
+                                        </a>
+                                    @endif
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -126,10 +186,64 @@
                                     <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-0.5 small">غير مكتمل</span>
                                 @endif
                             </div>
-                            <ul class="text-muted small ps-3 mb-2" style="font-size: 0.82rem; line-height: 1.55;">
-                                <li><strong>الباقة أو الرصيد:</strong> مشمول تلقائياً في <u>الباقة الاحترافية</u>، أو شراء رصيد طلبات من خدمات المنصة.</li>
-                                <li><strong>معلومات الحساب:</strong> إضافة الحساب البنكي أو رقم CCP / بريدي موب في <a href="{{ route('seller.profile') }}" class="text-primary fw-bold text-decoration-none">الملف الشخصي</a>.</li>
-                                <li><strong>تفعيل المتجر:</strong> تفعيل خيار الحوالة البنكية في <a href="{{ route('seller.settings') }}" class="text-primary fw-bold text-decoration-none">إعدادات المتجر</a>.</li>
+
+                            <ul class="list-unstyled d-flex flex-column gap-2 mb-2" style="font-size: 0.81rem;">
+                                <!-- Sub-condition A: Authorization / Plan -->
+                                <li class="d-flex align-items-center justify-content-between p-1.5 rounded-2 bg-light border border-light-subtle">
+                                    <span class="d-inline-flex align-items-center gap-1 text-secondary">
+                                        @if ($digitalPaymentStatus['bank']['auth'])
+                                            <i class="fa-solid fa-circle-check text-success"></i>
+                                        @else
+                                            <i class="fa-solid fa-circle-xmark text-danger"></i>
+                                        @endif
+                                        <span>صلاحية التحويل (باقة / رصيد)</span>
+                                    </span>
+                                    @if ($digitalPaymentStatus['bank']['auth'])
+                                        <span class="badge bg-success-subtle text-success px-1.5 py-0.5 small">متاحة</span>
+                                    @else
+                                        <a href="{{ route('seller.services.index') }}" class="badge bg-danger-subtle text-danger text-decoration-none px-1.5 py-0.5 small">
+                                            ترقية / شحن <i class="fa-solid fa-arrow-left ms-1"></i>
+                                        </a>
+                                    @endif
+                                </li>
+
+                                <!-- Sub-condition B: Bank Account Info -->
+                                <li class="d-flex align-items-center justify-content-between p-1.5 rounded-2 bg-light border border-light-subtle">
+                                    <span class="d-inline-flex align-items-center gap-1 text-secondary">
+                                        @if ($digitalPaymentStatus['bank']['credentials'])
+                                            <i class="fa-solid fa-circle-check text-success"></i>
+                                        @else
+                                            <i class="fa-solid fa-circle-xmark text-danger"></i>
+                                        @endif
+                                        <span>بيانات الحساب البنكي / CCP</span>
+                                    </span>
+                                    @if ($digitalPaymentStatus['bank']['credentials'])
+                                        <span class="badge bg-success-subtle text-success px-1.5 py-0.5 small">مضافة</span>
+                                    @else
+                                        <a href="{{ route('seller.profile') }}" class="badge bg-danger-subtle text-danger text-decoration-none px-1.5 py-0.5 small">
+                                            إضافة الآن <i class="fa-solid fa-arrow-left ms-1"></i>
+                                        </a>
+                                    @endif
+                                </li>
+
+                                <!-- Sub-condition C: Store Settings Active -->
+                                <li class="d-flex align-items-center justify-content-between p-1.5 rounded-2 bg-light border border-light-subtle">
+                                    <span class="d-inline-flex align-items-center gap-1 text-secondary">
+                                        @if ($digitalPaymentStatus['bank']['active'])
+                                            <i class="fa-solid fa-circle-check text-success"></i>
+                                        @else
+                                            <i class="fa-solid fa-circle-xmark text-danger"></i>
+                                        @endif
+                                        <span>تفعيل الخيار في المتجر</span>
+                                    </span>
+                                    @if ($digitalPaymentStatus['bank']['active'])
+                                        <span class="badge bg-success-subtle text-success px-1.5 py-0.5 small">مفعل</span>
+                                    @else
+                                        <a href="{{ route('seller.settings') }}" class="badge bg-warning-subtle text-warning-emphasis text-decoration-none px-1.5 py-0.5 small">
+                                            تفعيل الآن <i class="fa-solid fa-arrow-left ms-1"></i>
+                                        </a>
+                                    @endif
+                                </li>
                             </ul>
                         </div>
                     </div>
