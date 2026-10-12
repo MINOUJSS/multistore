@@ -55,20 +55,35 @@
 
             <!-- 3 Required Conditions Grid -->
             <div class="row g-3">
-                <!-- Condition 1: Approval Status -->
+                <!-- Condition 1: Account Verification Status -->
                 <div class="col-md-4">
                     <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs d-flex flex-column justify-content-between">
                         <div>
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <span class="fw-bold text-dark small">
-                                    <i class="fa-solid fa-circle-check text-success me-1"></i> 1. توثيق الحساب
+                                    @if ($digitalPaymentStatus['is_approved'])
+                                        <i class="fa-solid fa-circle-check text-success me-1"></i>
+                                    @else
+                                        <i class="fa-solid fa-circle-xmark text-danger me-1"></i>
+                                    @endif
+                                    1. توثيق الحساب
                                 </span>
-                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 small">
-                                    موثق ✅
-                                </span>
+                                @if ($digitalPaymentStatus['is_approved'])
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 small">
+                                        موثق <i class="fa-solid fa-check ms-1"></i>
+                                    </span>
+                                @else
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5 small">
+                                        غير موثق <i class="fa-solid fa-xmark ms-1"></i>
+                                    </span>
+                                @endif
                             </div>
                             <p class="text-muted small mb-0" style="font-size: 0.82rem; line-height: 1.5;">
-                                تم اعتماد وتوثيق متجرك في المنصة بنجاح (<code class="text-dark fw-bold">approval_status = approved</code>).
+                                @if ($digitalPaymentStatus['is_approved'])
+                                    تم اعتماد وتوثيق متجرك في المنصة بنجاح، ويمكنك استقبال المدفوعات فور اكتمال وسيلة الدفع.
+                                @else
+                                    حساب متجرك غير موثق حالياً أو بانتظار مراجعة الإدارة؛ يلزم توثيق الحساب أولاً لتتمكن من بيع واستقبال مدفوعات المنتجات الرقمية.
+                                @endif
                             </p>
                         </div>
                     </div>
