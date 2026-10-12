@@ -900,4 +900,98 @@ function is_digital_product_file_available($product): bool
     return app(\App\Services\Seller\SellerMediaService::class)->hasDigitalFile($product->file);
 }
 
+/**
+ * Detailed status of seller digital payment prerequisites and readiness.
+ *
+ * @param string|null $tenant_id
+ * @return array
+ */
+function get_seller_digital_payment_status($tenant_id = null): array
+{
+    $tenantId = $tenant_id ?: (auth()->check() ? auth()->user()->tenant_id : tenant('id'));
+    if (!$tenantId) {
+        return [
+            'should_alert' => false,
+            'has_digital_products' => false,
+            'digital_products_count' => 0,
+            'is_approved' => false,
+            'plan_id' => null,
+            'chargily' => ['ready' => false, 'auth' => false, 'by_plan' => false, 'by_service' => false, 'credentials' => false, 'active' => false],
+            'bank' => ['ready' => false, 'auth' => false, 'by_plan' => false, 'by_service' => false, 'credentials' => false, 'active' => false],
+        ];
+    }
+
+    $seller = get_seller_data($tenantId);
+    $isApproved = ($seller && $seller->approval_status === 'approved');
+
+    $digitalProductsCount = $seller
+        ? \App\Models\Seller\SellerProducts::where('seller_id', $seller->id)->where('product_type', 'digital')->count()
+        : 0;
+    $hasDigitalProducts = ($digitalProductsCount > 0);
+
+    $user = \App\Models\User::where('tenant_id', $tenantId)->first();
+    $planId = $seller?->plan_subscription?->plan_id;
+
+    $pmSetting = $user
+        ? \App\Models\UserStoreSetting::where('user_id', $user->id)->where('key', 'store_payment_methods')->first()
+        : null;
+    $pmObj = $pmSetting?->value ? json_decode($pmSetting->value) : null;
+
+    $chargilyActive = ($pmObj?->Chargily_Pay?->status ?? 'inactive') === 'active';
+    $bankActive = (($pmObj?->Ccp?->status ?? 'inactive') === 'active') || (($pmObj?->BaridiMob?->status ?? 'inactive') === 'active');
+
+    // Chargily checks
+    $chargilyAuth = is_seller_chargily_authorized($tenantId);
+    $chargilyByPlan = in_array($planId, [2, 3]);
+    $chargilyByService = !$chargilyByPlan && $chargilyAuth;
+    $chargilyCredentials = !empty($user?->chargilySettings?->app_key) && !empty($user?->chargilySettings?->secret_key);
+    $chargilyReady = $chargilyAuth && $chargilyCredentials && $chargilyActive;
+
+    // Bank transfer checks
+    $bankAuth = is_seller_bank_transfer_authorized($tenantId);
+    $bankByPlan = ($planId == 3);
+    $bankByService = !$bankByPlan && $bankAuth;
+    $bankCredentials = !empty($user?->bank_settings?->account_number) || !empty($user?->bank_settings?->ccp_number) || !empty($user?->bank_settings?->rip_number);
+    $bankReady = $bankAuth && $bankCredentials && $bankActive;
+
+    // The alert is shown if the seller has digital products, has an approved account, but neither digital payment method is ready
+    $shouldAlert = $hasDigitalProducts && $isApproved && !($chargilyReady || $bankReady);
+
+    return [
+        'should_alert' => $shouldAlert,
+        'has_digital_products' => $hasDigitalProducts,
+        'digital_products_count' => $digitalProductsCount,
+        'is_approved' => $isApproved,
+        'plan_id' => $planId,
+        'chargily' => [
+            'ready' => $chargilyReady,
+            'auth' => $chargilyAuth,
+            'by_plan' => $chargilyByPlan,
+            'by_service' => $chargilyByService,
+            'credentials' => $chargilyCredentials,
+            'active' => $chargilyActive,
+        ],
+        'bank' => [
+            'ready' => $bankReady,
+            'auth' => $bankAuth,
+            'by_plan' => $bankByPlan,
+            'by_service' => $bankByService,
+            'credentials' => $bankCredentials,
+            'active' => $bankActive,
+        ],
+    ];
+}
+
+/**
+ * Check if the seller should see the digital payment warning banner.
+ *
+ * @param string|null $tenant_id
+ * @return bool
+ */
+function should_show_seller_digital_payment_alert($tenant_id = null): bool
+{
+    $status = get_seller_digital_payment_status($tenant_id);
+    return $status['should_alert'] ?? false;
+}
+
 

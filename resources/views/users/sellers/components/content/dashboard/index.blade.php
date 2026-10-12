@@ -153,6 +153,9 @@
         </div>
     </div>
 
+    <!-- Digital Payment Methods Alert for Sellers -->
+    @include('users.sellers.components.content.common.digital-payment-alert')
+
     <!-- Dedicated Call Center & Technical Support Hub -->
     <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden"
         style="background: linear-gradient(135deg, #ffffff 0%, #fcf7fa 100%); border-right: 5px solid #a40c72 !important;">

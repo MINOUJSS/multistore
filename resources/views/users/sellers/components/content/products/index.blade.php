@@ -126,6 +126,9 @@
         </div>
     </div>
 
+    <!-- Digital Payment Methods Alert for Sellers -->
+    @include('users.sellers.components.content.common.digital-payment-alert')
+
     <!-- Statistical Indicator Cards Grid -->
     <div class="row g-3 mb-4">
         <!-- 1. Total Products -->
