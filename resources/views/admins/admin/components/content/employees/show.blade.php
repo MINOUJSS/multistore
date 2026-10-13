@@ -42,8 +42,9 @@
             <div class="card border-0 shadow-sm rounded-4 bg-white text-center p-4 h-100">
                 <div class="mb-3 position-relative d-inline-block mx-auto">
                     @if($employee->photo)
-                        <img src="{{ asset('storage/' . $employee->photo) }}" alt="{{ $employee->name }}" class="rounded-circle border border-4 border-white shadow-sm object-fit-cover" width="110" height="110">
+                        <img src="{{ admin_file_url($employee->photo) }}" alt="{{ $employee->name }}" class="rounded-circle border border-4 border-white shadow-sm object-fit-cover" width="110" height="110">
                     @else
+
                         <div class="avatar-lg rounded-circle d-flex align-items-center justify-content-center fw-bold fs-2 mx-auto border border-4 border-white shadow-sm" style="width: 110px; height: 110px; background-color: rgba(79, 70, 229, 0.1); color: #4f46e5;">
                             {{ mb_substr($employee->name, 0, 1) }}
                         </div>

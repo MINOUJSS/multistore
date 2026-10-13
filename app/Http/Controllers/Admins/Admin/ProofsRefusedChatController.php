@@ -30,11 +30,10 @@ class ProofsRefusedChatController extends Controller
         $attachments = [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                // $path = $file->store("public/proofs_refused_chats/$paymentProofId");
-                $path=Storage::disk('general')->put('proofs_refused_chats/'.$paymentProofId.'/admin', $file);
-                // $attachments[] = str_replace('app/public/', '', $path);
-                $attachments[] = $path;
+                $stored = admin_media_service()->storeFile($file, 'proofs_refused_chats/'.$paymentProofId.'/admin');
+                $attachments[] = $stored['path'];
             }
+
         }
 
         $message = ProofsRefusedMessage::create([

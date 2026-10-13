@@ -56,10 +56,11 @@ class AdminDisputeController extends Controller
 
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $path = $file->store('disputes/payment-proofs/despute-'.$disputeId.'/attachments/admin', 'public');
-                $attachments[] = 'app/public/'.$path;
+                $stored = admin_media_service()->storeFile($file, 'disputes/payment-proofs/despute-'.$disputeId.'/attachments/admin');
+                $attachments[] = $stored['path'];
             }
         }
+
 
         // return response()->json(['success' => true, 'attachments' => json_encode($attachments)]);
 
@@ -206,12 +207,12 @@ class AdminDisputeController extends Controller
         // 📂 حفظ الـ PDF داخل storage
         // $fileName = 'dispute_'.$dispute->id.'_'.Str::random(6).'.pdf';
         $fileName = 'dispute_'.$dispute->id.'.pdf';
-        $filePath = 'public/disputes/payment-proofs/archives/'.date('Y').'/'.date('m').'/'.$fileName;
+        $filePath = 'disputes/payment-proofs/archives/'.date('Y').'/'.date('m').'/'.$fileName;
 
-        Storage::put($filePath, $pdf->output());
+        $savedPath = admin_media_service()->put($filePath, $pdf->output());
         $data[] = [
             'fileName' => $fileName,
-            'filePath' => $filePath,
+            'filePath' => $savedPath ?: $filePath,
         ];
 
         return $data;
@@ -219,7 +220,16 @@ class AdminDisputeController extends Controller
 
     public function exportPdf($disputeId)
     {
-        // ✅ إرجاع رابط التحميل
-        return response()->download(storage_path('app/'.$filePath));
+        $dispute = Dispute::findOrFail($disputeId);
+        $fileName = 'dispute_'.$dispute->id.'.pdf';
+        $filePath = 'disputes/payment-proofs/archives/'.date('Y').'/'.date('m').'/'.$fileName;
+
+        $download = admin_media_service()->download($filePath, $fileName);
+        if ($download) {
+            return $download;
+        }
+
+        return redirect()->back()->with('error', 'الملف غير موجود في الأرشيف.');
     }
 }
+

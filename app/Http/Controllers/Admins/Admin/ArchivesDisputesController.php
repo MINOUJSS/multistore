@@ -19,17 +19,21 @@ class ArchivesDisputesController extends Controller
     public function download($id)
     {
         $archive = DisputesArchive::findOrFail($id);
-        return Storage::disk('public')->download(str_replace('public/','',$archive->file_path));
+        $download = admin_media_service()->download($archive->file_path);
+        if ($download) {
+            return $download;
+        }
+
+        return redirect()->back()->with('error', 'الملف غير موجود في الأرشيف.');
     }
+
     //destroy
     public function destroy($id)
     {
         $archive = DisputesArchive::findOrFail($id);
-        // dd($archive);
-        // حذف الملف المرفق
-        //str_replace('public/','',
-        Storage::disk('public')->delete(str_replace('public/','',$archive->file_path));
+        admin_media_service()->deleteFile($archive->file_path);
         $archive->delete();
         return redirect()->route('admin.payment_proof.disputes.archives')->with('success', 'تم حذف الشكوى بنجاح');
     }
+
 }

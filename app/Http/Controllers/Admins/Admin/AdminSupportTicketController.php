@@ -98,10 +98,11 @@ class AdminSupportTicketController extends Controller
         $attachments = [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $path = $file->store('support_tickets/admin_' . $admin->id, 'public');
-                $attachments[] = 'storage/' . $path;
+                $stored = admin_media_service()->storeFile($file, 'support_tickets/admin_' . $admin->id);
+                $attachments[] = $stored['path'];
             }
         }
+
 
         $reply = SupportTicketReply::create([
             'ticket_id' => $ticket->id,

@@ -141,6 +141,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Storage Default Disk
+    |--------------------------------------------------------------------------
+    |
+    | Defines the active disk for platform admin files and archives ('general'
+    | for local storage or 'r2' for Cloudflare R2). Fallback and existing files
+    | are dynamically read from their respective disks.
+    |
+    */
+    'admin_default_disk' => env('ADMIN_STORAGE_DISK', 'general'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Symbolic Links
     |--------------------------------------------------------------------------
     |

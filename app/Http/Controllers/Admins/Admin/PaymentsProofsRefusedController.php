@@ -143,10 +143,10 @@ class PaymentsProofsRefusedController extends Controller
         $fileName = 'proof_refused_'.$proof->order_number.'.pdf';
         $filePath = 'archives/proofs-refused/'.date('Y').'/'.date('m').'/'.$fileName;
 
-        Storage::disk('general')->put($filePath, $pdf->output());
+        $savedPath = admin_media_service()->put($filePath, $pdf->output());
         $data[] = [
             'fileName' => $fileName,
-            'filePath' => $filePath,
+            'filePath' => $savedPath ?: $filePath,
         ];
 
         return $data;
@@ -154,7 +154,16 @@ class PaymentsProofsRefusedController extends Controller
 
     public function exportPdf($proofRefusedId)
     {
-        // ✅ إرجاع رابط التحميل
-        return response()->download(storage_path('app/'.$filePath));
+        $proof = PaymentsProofsRefused::findOrFail($proofRefusedId);
+        $fileName = 'proof_refused_'.$proof->order_number.'.pdf';
+        $filePath = 'archives/proofs-refused/'.date('Y').'/'.date('m').'/'.$fileName;
+
+        $download = admin_media_service()->download($filePath, $fileName);
+        if ($download) {
+            return $download;
+        }
+
+        return redirect()->back()->with('error', 'الملف غير موجود في الأرشيف.');
     }
+
 }

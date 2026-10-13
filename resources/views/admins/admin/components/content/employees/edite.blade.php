@@ -126,10 +126,11 @@
                         </div>
                         @if ($employee->photo)
                             <div class="d-flex align-items-center gap-2 p-2 bg-light rounded-3 border w-auto d-inline-flex">
-                                <img src="{{ asset('storage/' . $employee->photo) }}" alt="صورة الموظف" class="rounded-2 object-fit-cover" width="48" height="48">
+                                <img src="{{ admin_file_url($employee->photo) }}" alt="صورة الموظف" class="rounded-2 object-fit-cover" width="48" height="48">
                                 <small class="text-muted fw-semibold">الصورة الحالية للموظف</small>
                             </div>
                         @endif
+
                     </div>
                 </div>
 

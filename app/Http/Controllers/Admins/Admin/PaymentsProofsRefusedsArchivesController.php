@@ -20,39 +20,31 @@ class PaymentsProofsRefusedsArchivesController extends Controller
     public function download($id)
     {
         $archive = PaymentsProofsRefusedsArchive::findOrFail($id);
+        $filePath = 'archives/proofs-refused/'.$archive->created_at->format('Y').'/'.$archive->created_at->format('m').'/proof_refused_'.$archive->order_number.'.pdf';
 
-        return Storage::disk('general')->download('archives/proofs-refused/'.$archive->created_at->format('Y').'/'.$archive->created_at->format('m').'/proof_refused_'.$archive->order_number.'.pdf');
+        $download = admin_media_service()->download($filePath);
+        if ($download) {
+            return $download;
+        }
+
+        return redirect()->back()->with('error', 'الملف المطلوب غير موجود في الأرشيف.');
     }
 
     // destroy
     public function destroy($id)
     {
         $archive = PaymentsProofsRefusedsArchive::findOrFail($id);
-        // حذف الملف المرفق
-        // str_replace('public/','',
-        if (Storage::disk('general')->exists('archives/proofs-refused/'.$archive->created_at->format('Y').'/'.$archive->created_at->format('m').'/proof_refused_'.$archive->order_number.'.pdf')) {
-            Storage::disk('general')->delete('archives/proofs-refused/'.$archive->created_at->format('Y').'/'.$archive->created_at->format('m').'/proof_refused_'.$archive->order_number.'.pdf');
+        $pdfPath = 'archives/proofs-refused/'.$archive->created_at->format('Y').'/'.$archive->created_at->format('m').'/proof_refused_'.$archive->order_number.'.pdf';
+
+        // حذف الملف المرفق من السحابة والمحلي
+        admin_media_service()->deleteFile($pdfPath);
+
+        // تنظيف المجلد إن أصبح فارغاً
+        $monthDir = 'archives/proofs-refused/'.$archive->created_at->format('Y').'/'.$archive->created_at->format('m');
+        if (empty(admin_media_service()->files($monthDir))) {
+            admin_media_service()->deleteDirectory($monthDir);
         }
-        // delete month folder if it is empty
-        if (empty(Storage::disk('general')->files('archives/proofs-refused/'.$archive->created_at->format('Y').'/'.$archive->created_at->format('m')))) {
-            Storage::disk('general')->deleteDirectory('archives/proofs-refused/'.$archive->created_at->format('Y').'/'.$archive->created_at->format('m'));
-        }
-        // delete year folder if it is empty
-        if (empty(Storage::disk('general')->files('archives/proofs-refused/'.$archive->created_at->format('Y')))) {
-            Storage::disk('general')->deleteDirectory('archives/proofs-refused/'.$archive->created_at->format('Y'));
-        }
-        // delete proof-refused folder if it is empty
-        if (empty(Storage::disk('general')->files('archives/proofs-refused'))) {
-            Storage::disk('general')->deleteDirectory('archives/proofs-refused');
-        }
-        // delete archive folder if it is empty
-        if (empty(Storage::disk('general')->files('archives'))) {
-            Storage::disk('general')->deleteDirectory('archives');
-        }
-        // delte general folder if it is empty
-        if (empty(Storage::disk('general')->files(''))) {
-            Storage::disk('general')->deleteDirectory('');
-        }
+
         // ::::::::::::::::::::::::::
         // start clear supplier storage
         // :::::::::::::::::::::::::::
