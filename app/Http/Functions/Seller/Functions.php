@@ -994,4 +994,112 @@ function should_show_seller_digital_payment_alert($tenant_id = null): bool
     return $status['should_alert'] ?? false;
 }
 
+/**
+ * Assign free plan welcome services to a new seller:
+ * - 5 free Chargily Pay orders quota
+ * - 3 free Bank Transfer orders quota
+ *
+ * @param \App\Models\User $user
+ * @return void
+ */
+function assign_free_plan_welcome_services(\App\Models\User $user): void
+{
+    if (!$user) {
+        return;
+    }
+
+    // 1. Ensure Chargily Pay 5 orders service exists
+    $chargilyService = \App\Models\PlatformService::firstOrCreate(
+        ['slug' => 'chargily_pay_5_orders'],
+        [
+            'name_ar' => 'باقة 5 طلبات دفع شارجلي (Chargily Pay)',
+            'name_en' => 'Chargily Pay - 5 Orders Pack',
+            'description_ar' => 'باقة تتيح قبول الدفع الإلكتروني بالبطاقة الذهبية و CIB لـ 5 طلبات متجر بنجاح دون أي التزام.',
+            'description_en' => 'Trial pack to accept Chargily electronic payments for 5 orders.',
+            'icon' => 'fa-solid fa-credit-card',
+            'category' => 'payment',
+            'price' => 0.00,
+            'billing_type' => 'order_quota',
+            'orders_limit' => 5,
+            'validity_days' => null,
+            'credits_amount' => null,
+            'badge_text' => 'ترحيبية مجانية',
+            'badge_color' => 'secondary',
+            'features' => [
+                'قبول الدفع بالبطاقة الذهبية وبطاقات CIB لـ 5 طلبات',
+                'تأكيد الطلبات تلقائياً فور نجاح عملية الدفع',
+                'مشمولة مجاناً مع الخطة المجانية',
+            ],
+            'is_active' => true,
+            'sort_order' => 1,
+        ]
+    );
+
+    // 2. Ensure Bank Transfer 3 orders service exists
+    $bankService = \App\Models\PlatformService::firstOrCreate(
+        ['slug' => 'bank_transfer_3_orders'],
+        [
+            'name_ar' => 'باقة 3 طلبات دفع بالتحويل البنكي',
+            'name_en' => 'Bank Transfer - 3 Orders Pack',
+            'description_ar' => 'تفعيل خيار الدفع عبر التحويل البنكي و CCP وبريدي موب لـ 3 طلبات في متجرك على الخطة المجانية.',
+            'description_en' => 'Accept bank transfer and BaridiMob payments for 3 orders on Free plan.',
+            'icon' => 'fa-solid fa-building-columns',
+            'category' => 'store_features',
+            'price' => 0.00,
+            'billing_type' => 'order_quota',
+            'orders_limit' => 3,
+            'validity_days' => null,
+            'credits_amount' => null,
+            'badge_text' => 'ترحيبية مجانية',
+            'badge_color' => 'secondary',
+            'features' => [
+                'إمكانية رفع إيصال الدفع البنكي لـ 3 طلبات',
+                'دعم الدفع عبر CCP وبريدي موب والتحويلات البنكية',
+                'مشمولة مجاناً مع الخطة المجانية',
+            ],
+            'is_active' => true,
+            'sort_order' => 5,
+        ]
+    );
+
+    // 3. Grant 5 Chargily orders to the seller
+    \App\Models\SellerServicePurchase::firstOrCreate(
+        [
+            'user_id' => $user->id,
+            'platform_service_id' => $chargilyService->id,
+            'billing_type' => 'order_quota',
+        ],
+        [
+            'paid_amount' => 0.00,
+            'status' => 'active',
+            'orders_total' => 5,
+            'orders_remaining' => 5,
+            'meta_data' => [
+                'source' => 'free_plan_welcome_bonus',
+                'description' => 'رصيد ترحيبي مجاني لـ 5 طلبات دفع شارجيلي مع الخطة المجانية',
+            ],
+        ]
+    );
+
+    // 4. Grant 3 Bank Transfer orders to the seller
+    \App\Models\SellerServicePurchase::firstOrCreate(
+        [
+            'user_id' => $user->id,
+            'platform_service_id' => $bankService->id,
+            'billing_type' => 'order_quota',
+        ],
+        [
+            'paid_amount' => 0.00,
+            'status' => 'active',
+            'orders_total' => 3,
+            'orders_remaining' => 3,
+            'meta_data' => [
+                'source' => 'free_plan_welcome_bonus',
+                'description' => 'رصيد ترحيبي مجاني لـ 3 طلبات تحويل بنكي مع الخطة المجانية',
+            ],
+        ]
+    );
+}
+
+
 

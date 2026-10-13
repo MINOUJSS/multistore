@@ -152,6 +152,11 @@ class RegistredSellerController extends Controller
                     'quantity' => '50',
                 ]);
 
+                // assign free plan welcome services (5 Chargily orders & 3 Bank transfer orders)
+                if ($plan->price == 0 || $plan->id == 1) {
+                    assign_free_plan_welcome_services($user);
+                }
+
                 // Create all default content (sliders, benefits, categories, products, shipping, faqs, pages)
                 // Executed inside transaction to guarantee full atomicity (All or Nothing)
                 event(new CreateSellerEvent($seller, $user));

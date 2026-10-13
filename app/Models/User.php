@@ -109,6 +109,11 @@ class User extends Authenticatable
         return $this->hasOne(UserFreeOrder::class, 'user_id');
     }
 
+    public function free_order()
+    {
+        return $this->freeOrder();
+    }
+
     // facebook_pixle
     public function facebook_pixle()
     {

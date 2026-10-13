@@ -178,14 +178,14 @@
                         style="width: 8px; height: 8px;"></span>
                     الكول سنتر متاح الآن (24/7)
                 </span>
-                <button class="btn btn-sm btn-light border-0 shadow-sm rounded-circle p-2" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#sellerSupportPanel" aria-expanded="true">
+                <button class="btn btn-sm btn-light border-0 shadow-sm rounded-circle p-2 collapsed" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#sellerSupportPanel" aria-expanded="false">
                     <i class="fas fa-chevron-down"></i>
                 </button>
             </div>
         </div>
 
-        <div class="collapse show" id="sellerSupportPanel">
+        <div class="collapse" id="sellerSupportPanel">
             <div class="card-body p-4 pt-1">
                 <div class="row g-3">
                     <!-- 1. Direct Call Center Line -->

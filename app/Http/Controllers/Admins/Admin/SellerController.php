@@ -12,6 +12,9 @@ use App\Models\BalanceTransaction;
 use App\Models\UserBalance;
 use App\Models\UserNotification;
 use App\Models\UserRequestsValidation;
+use App\Models\PlatformService;
+use App\Models\SellerServicePurchase;
+use App\Models\UserFreeOrder;
 use App\Services\Admins\Admin\SellerStoreResetService;
 use App\Services\Admins\Admin\SellerTempCleanupService;
 use Illuminate\Http\Request;
@@ -138,6 +141,25 @@ class SellerController extends Controller
             ->take(20)
             ->get();
 
+        // Active Services Quotas & Free Orders
+        $chargilyQuotaRemaining = $user
+            ? (int) $user->servicePurchases()
+                ->where('status', 'active')
+                ->whereHas('service', fn($q) => $q->where('category', 'payment'))
+                ->sum('orders_remaining')
+            : 0;
+
+        $bankTransferQuotaRemaining = $user
+            ? (int) $user->servicePurchases()
+                ->where('status', 'active')
+                ->whereHas('service', fn($q) => $q->where('category', 'store_features')->orWhere('slug', 'like', 'bank_transfer%'))
+                ->sum('orders_remaining')
+            : 0;
+
+        $freeOrdersRemaining = $user
+            ? (int) ($user->freeOrder?->quantity ?? \App\Models\UserFreeOrder::where('user_id', $user->id)->value('quantity') ?? 0)
+            : 0;
+
         return view('admins.admin.seller.show', compact(
             'seller',
             'user',
@@ -147,7 +169,10 @@ class SellerController extends Controller
             'deliveredOrdersCount',
             'pendingOrdersCount',
             'ordersWithProofCount',
-            'ordersWithProofs'
+            'ordersWithProofs',
+            'chargilyQuotaRemaining',
+            'bankTransferQuotaRemaining',
+            'freeOrdersRemaining'
         ));
     }
 
@@ -513,4 +538,353 @@ class SellerController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ أثناء تنظيف الملفات المؤقتة: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Add Chargily Pay orders, Bank Transfer orders, and Free Store Orders to the seller.
+     */
+    public function addServicesAndOrders(Request $request, $id)
+    {
+        $request->validate([
+            'chargily_orders' => ['nullable', 'integer', 'min:0'],
+            'bank_transfer_orders' => ['nullable', 'integer', 'min:0'],
+            'free_orders' => ['nullable', 'integer', 'min:0'],
+            'notes' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $chargilyOrders = (int) $request->input('chargily_orders', 0);
+        $bankTransferOrders = (int) $request->input('bank_transfer_orders', 0);
+        $freeOrders = (int) $request->input('free_orders', 0);
+        $notes = $request->input('notes') ?? 'إضافة يدوية من إدارة المنصة';
+
+        if ($chargilyOrders <= 0 && $bankTransferOrders <= 0 && $freeOrders <= 0) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'يرجى إدخال كمية موجبة (أكبر من 0) لخدمة واحدة على الأقل لإضافتها.',
+                ], 422);
+            }
+            return redirect()->back()->with('error', 'يرجى إدخال كمية موجبة (أكبر من 0) لخدمة واحدة على الأقل لإضافتها.');
+        }
+
+        try {
+            \DB::beginTransaction();
+
+            $seller = Seller::findOrFail($id);
+            $user = User::where('tenant_id', $seller->tenant_id)->firstOrFail();
+            $adminUser = auth('admin')->user();
+            $adminInfo = $adminUser ? ($adminUser->name ?? $adminUser->email) : 'الإدارة';
+
+            $addedItems = [];
+
+            // 1. Add Chargily Pay Orders Quota
+            if ($chargilyOrders > 0) {
+                $chargilyService = PlatformService::firstOrCreate(
+                    ['slug' => 'chargily_pay_5_orders'],
+                    [
+                        'name_ar' => 'باقة 5 طلبات دفع شارجلي (Chargily Pay)',
+                        'name_en' => 'Chargily Pay - 5 Orders Pack',
+                        'description_ar' => 'باقة تتيح قبول الدفع الإلكتروني بالبطاقة الذهبية و CIB لـ 5 طلبات متجر بنجاح دون أي التزام.',
+                        'description_en' => 'Trial pack to accept Chargily electronic payments for 5 orders.',
+                        'icon' => 'fa-solid fa-credit-card',
+                        'category' => 'payment',
+                        'price' => 0.00,
+                        'billing_type' => 'order_quota',
+                        'orders_limit' => 5,
+                        'badge_text' => 'إضافة إدارية',
+                        'badge_color' => 'secondary',
+                        'features' => [
+                            'قبول الدفع بالبطاقة الذهبية وبطاقات CIB',
+                            'تأكيد الطلبات تلقائياً فور نجاح عملية الدفع',
+                        ],
+                        'is_active' => true,
+                        'sort_order' => 1,
+                    ]
+                );
+
+                SellerServicePurchase::create([
+                    'user_id' => $user->id,
+                    'platform_service_id' => $chargilyService->id,
+                    'paid_amount' => 0.00,
+                    'status' => 'active',
+                    'billing_type' => 'order_quota',
+                    'orders_total' => $chargilyOrders,
+                    'orders_remaining' => $chargilyOrders,
+                    'meta_data' => [
+                        'source' => 'admin_grant',
+                        'granted_by' => $adminInfo,
+                        'notes' => $notes,
+                    ],
+                ]);
+
+                $addedItems[] = "{$chargilyOrders} طلب دفع شارجيلي";
+            }
+
+            // 2. Add Bank Transfer Orders Quota
+            if ($bankTransferOrders > 0) {
+                $bankService = PlatformService::firstOrCreate(
+                    ['slug' => 'bank_transfer_3_orders'],
+                    [
+                        'name_ar' => 'باقة 3 طلبات دفع بالتحويل البنكي',
+                        'name_en' => 'Bank Transfer - 3 Orders Pack',
+                        'description_ar' => 'تفعيل خيار الدفع عبر التحويل البنكي و CCP وبريدي موب لـ 3 طلبات في متجرك.',
+                        'description_en' => 'Accept bank transfer and BaridiMob payments for 3 orders.',
+                        'icon' => 'fa-solid fa-building-columns',
+                        'category' => 'store_features',
+                        'price' => 0.00,
+                        'billing_type' => 'order_quota',
+                        'orders_limit' => 3,
+                        'badge_text' => 'إضافة إدارية',
+                        'badge_color' => 'secondary',
+                        'features' => [
+                            'إمكانية رفع إيصال الدفع البنكي',
+                            'دعم الدفع عبر CCP وبريدي موب والتحويلات البنكية',
+                        ],
+                        'is_active' => true,
+                        'sort_order' => 5,
+                    ]
+                );
+
+                SellerServicePurchase::create([
+                    'user_id' => $user->id,
+                    'platform_service_id' => $bankService->id,
+                    'paid_amount' => 0.00,
+                    'status' => 'active',
+                    'billing_type' => 'order_quota',
+                    'orders_total' => $bankTransferOrders,
+                    'orders_remaining' => $bankTransferOrders,
+                    'meta_data' => [
+                        'source' => 'admin_grant',
+                        'granted_by' => $adminInfo,
+                        'notes' => $notes,
+                    ],
+                ]);
+
+                $addedItems[] = "{$bankTransferOrders} طلب تحويل بنكي";
+            }
+
+            // 3. Add Free Store Orders
+            if ($freeOrders > 0) {
+                $freeOrderRecord = UserFreeOrder::firstOrCreate(
+                    ['user_id' => $user->id],
+                    ['quantity' => 0]
+                );
+                $freeOrderRecord->increment('quantity', $freeOrders);
+
+                $addedItems[] = "{$freeOrders} طلب متجر مجاني";
+            }
+
+            \DB::commit();
+
+            $message = 'تم بنجاح شحن: ' . implode('، ', $addedItems) . ' لحساب البائع.';
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                ]);
+            }
+
+            return redirect()->back()->with('success', $message);
+        } catch (\Throwable $e) {
+            \DB::rollBack();
+            \Illuminate\Support\Facades\Log::error("Add Services and Orders Failed for Seller {$id}: " . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'حدث خطأ أثناء إضافة الخدمات والطلبات: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'حدث خطأ أثناء إضافة الخدمات والطلبات: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Add services (Chargily Pay, Bank Transfer) and free store orders to all sellers in bulk.
+     */
+    public function bulkAddServicesAndOrders(Request $request)
+    {
+        $request->validate([
+            'chargily_orders' => 'nullable|integer|min:0',
+            'bank_transfer_orders' => 'nullable|integer|min:0',
+            'free_orders' => 'nullable|integer|min:0',
+            'target_audience' => 'nullable|string|in:all,approved,active',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $chargilyOrders = (int) $request->input('chargily_orders', 0);
+        $bankTransferOrders = (int) $request->input('bank_transfer_orders', 0);
+        $freeOrders = (int) $request->input('free_orders', 0);
+        $targetAudience = $request->input('target_audience', 'all');
+        $notes = $request->input('notes', 'شحن جماعي بواسطة الإدارة لجميع البائعين');
+
+        if ($chargilyOrders <= 0 && $bankTransferOrders <= 0 && $freeOrders <= 0) {
+            $errMessage = 'يرجى إدخال كمية موجبة (أكبر من 0) لخدمة واحدة على الأقل للشحن الجماعي.';
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $errMessage,
+                ], 422);
+            }
+            return redirect()->back()->with('error', $errMessage);
+        }
+
+        try {
+            $adminUser = auth('admin')->user();
+            $adminInfo = $adminUser ? ($adminUser->name ?? $adminUser->email) : 'الإدارة';
+
+            // Ensure platform services exist beforehand
+            $chargilyService = null;
+            if ($chargilyOrders > 0) {
+                $chargilyService = PlatformService::firstOrCreate(
+                    ['slug' => 'chargily_pay_5_orders'],
+                    [
+                        'name_ar' => 'باقة 5 طلبات دفع شارجلي (Chargily Pay)',
+                        'name_en' => 'Chargily Pay - 5 Orders Pack',
+                        'description_ar' => 'باقة تتيح قبول الدفع الإلكتروني بالبطاقة الذهبية و CIB لـ 5 طلبات متجر بنجاح دون أي التزام.',
+                        'description_en' => 'Trial pack to accept Chargily electronic payments for 5 orders.',
+                        'icon' => 'fa-solid fa-credit-card',
+                        'category' => 'payment',
+                        'price' => 0.00,
+                        'billing_type' => 'order_quota',
+                        'orders_limit' => 5,
+                        'badge_text' => 'إضافة إدارية',
+                        'badge_color' => 'secondary',
+                        'features' => [
+                            'قبول الدفع بالبطاقة الذهبية وبطاقات CIB',
+                            'تأكيد الطلبات تلقائياً فور نجاح عملية الدفع',
+                        ],
+                        'is_active' => true,
+                        'sort_order' => 1,
+                    ]
+                );
+            }
+
+            $bankService = null;
+            if ($bankTransferOrders > 0) {
+                $bankService = PlatformService::firstOrCreate(
+                    ['slug' => 'bank_transfer_3_orders'],
+                    [
+                        'name_ar' => 'باقة 3 طلبات دفع بالتحويل البنكي',
+                        'name_en' => 'Bank Transfer - 3 Orders Pack',
+                        'description_ar' => 'تفعيل خيار الدفع عبر التحويل البنكي و CCP وبريدي موب لـ 3 طلبات في متجرك.',
+                        'description_en' => 'Accept bank transfer and BaridiMob payments for 3 orders.',
+                        'icon' => 'fa-solid fa-building-columns',
+                        'category' => 'store_features',
+                        'price' => 0.00,
+                        'billing_type' => 'order_quota',
+                        'orders_limit' => 3,
+                        'badge_text' => 'إضافة إدارية',
+                        'badge_color' => 'secondary',
+                        'features' => [
+                            'إمكانية رفع إيصال الدفع البنكي',
+                            'دعم الدفع عبر CCP وبريدي موب والتحويلات البنكية',
+                        ],
+                        'is_active' => true,
+                        'sort_order' => 5,
+                    ]
+                );
+            }
+
+            $query = Seller::with('user');
+            if ($targetAudience === 'approved') {
+                $query->where('approval_status', 'approved');
+            } elseif ($targetAudience === 'active') {
+                $query->where('status', 'active');
+            }
+
+            $processedCount = 0;
+
+            \DB::transaction(function () use ($query, $chargilyOrders, $chargilyService, $bankTransferOrders, $bankService, $freeOrders, $adminInfo, $notes, &$processedCount) {
+                $query->chunkById(100, function ($sellers) use ($chargilyOrders, $chargilyService, $bankTransferOrders, $bankService, $freeOrders, $adminInfo, $notes, &$processedCount) {
+                    foreach ($sellers as $seller) {
+                        $user = $seller->user;
+                        if (!$user && $seller->tenant_id) {
+                            $user = User::where('tenant_id', $seller->tenant_id)->first();
+                        }
+                        if (!$user) {
+                            continue;
+                        }
+
+                        // 1. Add Chargily Quota
+                        if ($chargilyOrders > 0 && $chargilyService) {
+                            SellerServicePurchase::create([
+                                'user_id' => $user->id,
+                                'platform_service_id' => $chargilyService->id,
+                                'paid_amount' => 0.00,
+                                'status' => 'active',
+                                'billing_type' => 'order_quota',
+                                'orders_total' => $chargilyOrders,
+                                'orders_remaining' => $chargilyOrders,
+                                'meta_data' => [
+                                    'source' => 'admin_bulk_grant',
+                                    'granted_by' => $adminInfo,
+                                    'notes' => $notes,
+                                ],
+                            ]);
+                        }
+
+                        // 2. Add Bank Transfer Quota
+                        if ($bankTransferOrders > 0 && $bankService) {
+                            SellerServicePurchase::create([
+                                'user_id' => $user->id,
+                                'platform_service_id' => $bankService->id,
+                                'paid_amount' => 0.00,
+                                'status' => 'active',
+                                'billing_type' => 'order_quota',
+                                'orders_total' => $bankTransferOrders,
+                                'orders_remaining' => $bankTransferOrders,
+                                'meta_data' => [
+                                    'source' => 'admin_bulk_grant',
+                                    'granted_by' => $adminInfo,
+                                    'notes' => $notes,
+                                ],
+                            ]);
+                        }
+
+                        // 3. Add Free Store Orders
+                        if ($freeOrders > 0) {
+                            $freeOrderRecord = UserFreeOrder::firstOrCreate(
+                                ['user_id' => $user->id],
+                                ['quantity' => 0]
+                            );
+                            $freeOrderRecord->increment('quantity', $freeOrders);
+                        }
+
+                        $processedCount++;
+                    }
+                });
+            });
+
+            $addedItems = [];
+            if ($chargilyOrders > 0) $addedItems[] = "{$chargilyOrders} طلب شارجلي";
+            if ($bankTransferOrders > 0) $addedItems[] = "{$bankTransferOrders} طلب تحويل بنكي";
+            if ($freeOrders > 0) $addedItems[] = "{$freeOrders} طلب متجر مجاني";
+
+            $message = "تم بنجاح شحن (" . implode('، ', $addedItems) . ") لـ {$processedCount} بائع بنجاح.";
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'processed_count' => $processedCount,
+                ]);
+            }
+
+            return redirect()->back()->with('success', $message);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Bulk Add Services and Orders Failed: " . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'حدث خطأ أثناء الشحن الجماعي للخدمات والطلبات: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'حدث خطأ أثناء الشحن الجماعي للخدمات والطلبات: ' . $e->getMessage());
+        }
+    }
 }
+

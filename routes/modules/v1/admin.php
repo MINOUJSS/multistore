@@ -91,6 +91,8 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::post('/ah-admin/seller/{id}/reset-balance', [SellerController::class, 'resetBalance'])->name('seller.reset_balance');
                 Route::post('/ah-admin/sellers/clean-offline-temp', [SellerController::class, 'cleanOfflineTemp'])->name('sellers.clean_offline_temp');
                 Route::post('/ah-admin/seller/{id}/clean-temp', [SellerController::class, 'cleanSingleSellerTemp'])->name('seller.clean_temp');
+                Route::post('/ah-admin/seller/{id}/add-services-and-orders', [SellerController::class, 'addServicesAndOrders'])->name('seller.add_services_orders');
+                Route::post('/ah-admin/sellers/bulk-add-services-and-orders', [SellerController::class, 'bulkAddServicesAndOrders'])->name('sellers.bulk_add_services_orders');
 
                 // seller plans management routes
                 Route::get('/ah-admin/seller-plans', [SellerPlanController::class, 'index'])->name('seller_plans.index');

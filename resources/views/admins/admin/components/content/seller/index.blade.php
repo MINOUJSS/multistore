@@ -217,7 +217,15 @@
                 <i class="fa-solid fa-table" style="color: #a40c72;"></i>
                 <span>قائمة البائعين المسجلين</span>
             </div>
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button type="button" class="btn text-white btn-sm fw-bold px-3 py-1.5 rounded-3 shadow-sm d-flex align-items-center gap-2"
+                    style="background: linear-gradient(135deg, #a40c72 0%, #be0681 100%);"
+                    data-bs-toggle="modal" data-bs-target="#bulkAddServicesModal"
+                    title="إضافة رصيد شارجلي، التحويل البنكي، والطلبات المجانية لجميع البائعين دفعة واحدة">
+                    <i class="fa-solid fa-gift"></i>
+                    <span>شحن خدمات وطلبات لجميع البائعين</span>
+                </button>
+
                 <button type="button" class="btn btn-outline-danger btn-sm fw-bold px-3 py-1.5 rounded-3 shadow-sm d-flex align-items-center gap-2"
                     data-bs-toggle="modal" data-bs-target="#cleanOfflineTempModal"
                     title="حذف الملفات المؤقتة للبائعين غير المتصلين (منذ أكثر من ساعة)">
@@ -477,6 +485,172 @@
             </div>
         </div>
     </div>
+
+    <!-- Bulk Add Services and Free Orders Modal -->
+    <div class="modal fade" id="bulkAddServicesModal" tabindex="-1" aria-labelledby="bulkAddServicesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                <!-- Header -->
+                <div class="modal-header text-white border-0 py-3 px-4 position-relative"
+                    style="background: linear-gradient(135deg, #5c0649 0%, #a40c72 100%);">
+                    <div class="d-flex align-items-center gap-2.5">
+                        <div class="p-2 bg-white bg-opacity-20 rounded-3 text-white">
+                            <i class="fa-solid fa-gift fs-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="bulkAddServicesModalLabel">شحن خدمات ورصيد جماعي للبائعين</h5>
+                            <small class="text-white-50">إضافة طلبات شارجلي، التحويل البنكي، والطلبات المجانية دفعة واحدة بضغطة زر</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form id="bulkAddServicesForm" onsubmit="event.preventDefault(); executeBulkAddServicesAndOrders();">
+                    @csrf
+                    <div class="modal-body p-4 bg-light bg-opacity-50">
+                        <!-- Target Audience Card -->
+                        <div class="card border-0 shadow-sm rounded-3 mb-3 bg-white">
+                            <div class="card-body p-3">
+                                <label for="bulkTargetAudience" class="form-label fw-bold text-dark small mb-1.5 d-flex align-items-center gap-1.5">
+                                    <i class="fa-solid fa-users text-primary"></i>
+                                    <span>فئة البائعين المستهدفين للشحن:</span>
+                                </label>
+                                <select name="target_audience" id="bulkTargetAudience" class="form-select rounded-3 border-light-subtle bg-light">
+                                    <option value="all" selected>
+                                        جميع البائعين المسجلين في المنصة ({{ $sellerStats['total'] ?? $sellers->total() }} بائع)
+                                    </option>
+                                    <option value="approved">
+                                        البائعين المعتمدين فقط ({{ $sellerStats['approved'] ?? 0 }} بائع)
+                                    </option>
+                                    <option value="active">
+                                        البائعين النشطين فقط
+                                    </option>
+                                </select>
+                                <small class="text-muted d-block mt-1" style="font-size: 0.76rem;">
+                                    <i class="fa-solid fa-circle-info me-1"></i> سيتم تطبيق الإضافة تلقائياً على كل بائع يندرج تحت الفئة المحددة أعلاه.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- 3 Quota Input Cards -->
+                        <div class="row g-3">
+                            <!-- 1. Chargily Pay Orders Quota -->
+                            <div class="col-md-6">
+                                <div class="border rounded-3 p-3 h-100 bg-white shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <label for="bulkInputChargilyOrders" class="form-label fw-bold text-dark small mb-0 d-flex align-items-center gap-1.5">
+                                            <i class="fa-solid fa-credit-card text-info"></i>
+                                            <span>طلبات دفع شارجلي (CIB / الذهبية)</span>
+                                        </label>
+                                        <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-2 py-0.5 small">
+                                            + شحن رصيد
+                                        </span>
+                                    </div>
+                                    <div class="input-group mb-2">
+                                        <input type="number" min="0" step="1" name="chargily_orders" id="bulkInputChargilyOrders"
+                                            class="form-control rounded-start-3" value="0" placeholder="عدد الطلبات...">
+                                        <span class="input-group-text bg-light text-muted small rounded-end-3">طلب</span>
+                                    </div>
+                                    <div class="d-flex gap-1 flex-wrap">
+                                        <span class="text-muted small me-1" style="font-size: 0.75rem;">إضافة سريعة:</span>
+                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputChargilyOrders', 5)">+5</button>
+                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputChargilyOrders', 10)">+10</button>
+                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputChargilyOrders', 25)">+25</button>
+                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputChargilyOrders', 50)">+50</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Bank Transfer Orders Quota -->
+                            <div class="col-md-6">
+                                <div class="border rounded-3 p-3 h-100 bg-white shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <label for="bulkInputBankOrders" class="form-label fw-bold text-dark small mb-0 d-flex align-items-center gap-1.5">
+                                            <i class="fa-solid fa-building-columns text-primary"></i>
+                                            <span>طلبات التحويل البنكي (CCP / بريدي موب)</span>
+                                        </label>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0.5 small">
+                                            + شحن رصيد
+                                        </span>
+                                    </div>
+                                    <div class="input-group mb-2">
+                                        <input type="number" min="0" step="1" name="bank_transfer_orders" id="bulkInputBankOrders"
+                                            class="form-control rounded-start-3" value="0" placeholder="عدد الطلبات...">
+                                        <span class="input-group-text bg-light text-muted small rounded-end-3">طلب</span>
+                                    </div>
+                                    <div class="d-flex gap-1 flex-wrap">
+                                        <span class="text-muted small me-1" style="font-size: 0.75rem;">إضافة سريعة:</span>
+                                        <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputBankOrders', 3)">+3</button>
+                                        <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputBankOrders', 6)">+6</button>
+                                        <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputBankOrders', 15)">+15</button>
+                                        <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputBankOrders', 30)">+30</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Free Store Orders -->
+                            <div class="col-12">
+                                <div class="border rounded-3 p-3 bg-white shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <label for="bulkInputFreeOrders" class="form-label fw-bold text-dark small mb-0 d-flex align-items-center gap-1.5">
+                                            <i class="fa-solid fa-box-open text-success"></i>
+                                            <span>طلبات المتجر المجانية (User Free Orders)</span>
+                                        </label>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 small">
+                                            + زيادة الرصيد
+                                        </span>
+                                    </div>
+                                    <div class="input-group mb-2">
+                                        <input type="number" min="0" step="1" name="free_orders" id="bulkInputFreeOrders"
+                                            class="form-control rounded-start-3" value="0" placeholder="عدد الطلبات المجانية...">
+                                        <span class="input-group-text bg-light text-muted small rounded-end-3">طلب متجر</span>
+                                    </div>
+                                    <div class="d-flex gap-1 flex-wrap">
+                                        <span class="text-muted small me-1" style="font-size: 0.75rem;">إضافة سريعة:</span>
+                                        <button type="button" class="btn btn-xs btn-outline-success py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputFreeOrders', 10)">+10</button>
+                                        <button type="button" class="btn btn-xs btn-outline-success py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputFreeOrders', 50)">+50</button>
+                                        <button type="button" class="btn btn-xs btn-outline-success py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputFreeOrders', 100)">+100</button>
+                                        <button type="button" class="btn btn-xs btn-outline-success py-0 px-2 rounded-pill small" onclick="setBulkQuotaValue('bulkInputFreeOrders', 200)">+200</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. Administrative Notes -->
+                            <div class="col-12">
+                                <div class="bg-white p-3 rounded-3 border shadow-sm">
+                                    <label for="bulkInputQuotaNotes" class="form-label fw-bold text-dark small mb-1">
+                                        ملاحظات / سبب الشحن الجماعي <span class="text-muted fw-normal">(اختياري للتوثيق الإداري)</span>
+                                    </label>
+                                    <textarea name="notes" id="bulkInputQuotaNotes" class="form-control rounded-3" rows="2"
+                                        placeholder="اكتب ملاحظة أو مناسبة الشحن (مثال: هدية افتتاحية، ترقية ترويجية لجميع البائعين...)..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Confirmation Checkbox -->
+                            <div class="col-12">
+                                <div class="form-check p-3 bg-warning bg-opacity-10 rounded-3 border border-warning-subtle d-flex align-items-center gap-2">
+                                    <input class="form-check-input ms-0 me-2 mt-0" type="checkbox" id="bulkConfirmCheckbox" required>
+                                    <label class="form-check-label small fw-bold text-dark mb-0 cursor-pointer" for="bulkConfirmCheckbox">
+                                        أؤكد رغبتي في شحن الرصيد والخدمات المحددة أعلاه لجميع البائعين المستهدفين بضغطة زر واحدة.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="bulkAddServicesErrorAlert" class="alert alert-danger d-none mt-3 mb-0 py-2 small"></div>
+                    </div>
+
+                    <div class="modal-footer bg-light border-0 px-4 py-3 d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary rounded-3 px-4 fw-semibold" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" id="submitBulkAddServicesBtn" class="btn text-white fw-bold rounded-3 px-4 shadow-sm"
+                            style="background: linear-gradient(135deg, #a40c72 0%, #be0681 100%);">
+                            <i class="fa-solid fa-bolt me-1"></i> تنفيذ الشحن الجماعي الآن
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -485,6 +659,127 @@
     const tooltipList = [...tooltipTriggerList].map(
         tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
     );
+
+    function setBulkQuotaValue(elementId, value) {
+        const input = document.getElementById(elementId);
+        if (input) {
+            const current = parseInt(input.value) || 0;
+            input.value = current + value;
+        }
+    }
+
+    function executeBulkAddServicesAndOrders() {
+        const btn = document.getElementById('submitBulkAddServicesBtn');
+        const errorAlert = document.getElementById('bulkAddServicesErrorAlert');
+        const chargilyOrders = parseInt(document.getElementById('bulkInputChargilyOrders').value) || 0;
+        const bankOrders = parseInt(document.getElementById('bulkInputBankOrders').value) || 0;
+        const freeOrders = parseInt(document.getElementById('bulkInputFreeOrders').value) || 0;
+        const targetAudience = document.getElementById('bulkTargetAudience').value;
+        const notes = document.getElementById('bulkInputQuotaNotes').value.trim();
+        const confirmCheck = document.getElementById('bulkConfirmCheckbox');
+
+        if (errorAlert) {
+            errorAlert.classList.add('d-none');
+            errorAlert.innerText = '';
+        }
+
+        if (!confirmCheck.checked) {
+            if (errorAlert) {
+                errorAlert.innerText = 'يرجى وضع علامة التأكيد في المربع للمتابعة.';
+                errorAlert.classList.remove('d-none');
+            }
+            return;
+        }
+
+        if (chargilyOrders <= 0 && bankOrders <= 0 && freeOrders <= 0) {
+            if (errorAlert) {
+                errorAlert.innerText = 'يرجى إدخال كمية أكبر من 0 لخدمة واحدة على الأقل قبل المتابعة.';
+                errorAlert.classList.remove('d-none');
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'تنبيه',
+                    text: 'يرجى إدخال كمية أكبر من 0 لخدمة واحدة على الأقل.',
+                    confirmButtonColor: '#a40c72',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جاري الشحن والمعالجة الجماعية...';
+
+        fetch('{{ route('admin.sellers.bulk_add_services_orders') }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chargily_orders: chargilyOrders,
+                bank_transfer_orders: bankOrders,
+                free_orders: freeOrders,
+                target_audience: targetAudience,
+                notes: notes
+            })
+        })
+        .then(response => response.json().then(data => ({
+            status: response.status,
+            body: data
+        })))
+        .then(res => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-bolt me-1"></i> تنفيذ الشحن الجماعي الآن';
+
+            if (res.body.success) {
+                const modalEl = document.getElementById('bulkAddServicesModal');
+                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.hide();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم الشحن الجماعي بنجاح',
+                    text: res.body.message || 'تم شحن الخدمات والطلبات لجميع البائعين بنجاح.',
+                    confirmButtonColor: '#a40c72',
+                    confirmButtonText: 'ممتاز'
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                if (errorAlert) {
+                    errorAlert.innerText = res.body.message || 'حدث خطأ أثناء الشحن الجماعي.';
+                    errorAlert.classList.remove('d-none');
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ',
+                        text: res.body.message || 'حدث خطأ أثناء الشحن الجماعي.',
+                        confirmButtonColor: '#dc3545',
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-bolt me-1"></i> تنفيذ الشحن الجماعي الآن';
+            if (errorAlert) {
+                errorAlert.innerText = 'حدث خطأ في الاتصال بالسيرفر أثناء الشحن الجماعي.';
+                errorAlert.classList.remove('d-none');
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ في الاتصال',
+                    text: 'حدث خطأ في الاتصال بالسيرفر، يرجى إعادة المحاولة.',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        });
+    }
 </script>
 
 <style>

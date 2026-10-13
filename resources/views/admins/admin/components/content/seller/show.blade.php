@@ -76,6 +76,11 @@
                         onclick="printSellerInfo()">
                         <i class="fa-solid fa-print me-1"></i> طباعة المعلومات
                     </button>
+                    <button class="btn btn-info text-dark fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
+                        data-bs-toggle="modal" data-bs-target="#addServicesAndOrdersModal"
+                        title="إضافة وتزويد رصيد طلبات لخدمة شارجيلي، التحويل البنكي والطلبات المجانية للبائع">
+                        <i class="fa-solid fa-gift me-1"></i> شحن الخدمات والطلبات
+                    </button>
                     <button class="btn btn-warning text-dark fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
                         data-bs-toggle="modal" data-bs-target="#changePasswordModal">
                         <i class="fa-solid fa-key me-1"></i> تغيير كلمة المرور
@@ -1170,7 +1175,285 @@
     </div>
 </div>
 
+<!-- Modal: شحن خدمات شارجيلي والتحويل البنكي والطلبات المجانية للبائع -->
+<div class="modal fade" id="addServicesAndOrdersModal" tabindex="-1" aria-labelledby="addServicesAndOrdersModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header text-white border-0 py-3 px-4"
+                style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="d-inline-flex p-2 rounded-3 bg-white bg-opacity-20 text-white">
+                        <i class="fa-solid fa-gift fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold fs-6 mb-0 text-white" id="addServicesAndOrdersModalLabel">
+                            شحن خدمات الدفع والطلبات المجانية للبائع
+                        </h5>
+                        <small class="text-white-50" style="font-size: 0.78rem;">
+                            متجر: {{ $seller->store_name }} ({{ $seller->full_name }})
+                        </small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addServicesAndOrdersForm" onsubmit="event.preventDefault(); executeAddServicesAndOrders({{ $seller->id }});">
+                @csrf
+                <div class="modal-body p-4">
+                    <!-- Current Quota Balances Summary Card -->
+                    <div class="card border-0 rounded-3 mb-3 p-3"
+                        style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-right: 4px solid #0284c7 !important;">
+                        <h6 class="fw-bold text-dark mb-2 small d-flex align-items-center gap-1.5">
+                            <i class="fa-solid fa-chart-pie text-info"></i>
+                            الأرصدة الحالية المتوفرة في حساب البائع:
+                        </h6>
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <div class="bg-white p-2.5 rounded-3 border border-light-subtle text-center shadow-2xs">
+                                    <span class="text-muted small d-block" style="font-size: 0.78rem;">طلبات شارجيلي المتبقية</span>
+                                    <strong class="fs-5 text-dark" id="currentChargilyQuotaBadge">
+                                        {{ $chargilyQuotaRemaining ?? 0 }}
+                                    </strong>
+                                    <span class="text-muted small">طلب</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="bg-white p-2.5 rounded-3 border border-light-subtle text-center shadow-2xs">
+                                    <span class="text-muted small d-block" style="font-size: 0.78rem;">طلبات التحويل البنكي</span>
+                                    <strong class="fs-5 text-dark" id="currentBankQuotaBadge">
+                                        {{ $bankTransferQuotaRemaining ?? 0 }}
+                                    </strong>
+                                    <span class="text-muted small">طلب</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="bg-white p-2.5 rounded-3 border border-light-subtle text-center shadow-2xs">
+                                    <span class="text-muted small d-block" style="font-size: 0.78rem;">طلبات المتجر المجانية</span>
+                                    <strong class="fs-5 text-dark" id="currentFreeOrdersBadge">
+                                        {{ $freeOrdersRemaining ?? ($user?->freeOrder?->quantity ?? 0) }}
+                                    </strong>
+                                    <span class="text-muted small">طلب</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quota Addition Inputs -->
+                    <div class="row g-3">
+                        <!-- 1. Chargily Pay Orders Quota -->
+                        <div class="col-md-6">
+                            <div class="border rounded-3 p-3 h-100 bg-white">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <label for="inputChargilyOrders" class="form-label fw-bold text-dark small mb-0 d-flex align-items-center gap-1.5">
+                                        <i class="fa-solid fa-credit-card text-info"></i>
+                                        <span>طلبات دفع شارجلي (Chargily)</span>
+                                    </label>
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-2 py-0.5 small">
+                                        + رصيد إضافي
+                                    </span>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <input type="number" min="0" step="1" name="chargily_orders" id="inputChargilyOrders"
+                                        class="form-control rounded-start-3" value="0" placeholder="عدد الطلبات...">
+                                    <span class="input-group-text bg-light text-muted small rounded-end-3">طلب</span>
+                                </div>
+                                <div class="d-flex gap-1 flex-wrap">
+                                    <span class="text-muted small me-1" style="font-size: 0.75rem;">إضافة سريعة:</span>
+                                    <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 rounded-pill small" onclick="setQuotaValue('inputChargilyOrders', 5)">+5</button>
+                                    <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 rounded-pill small" onclick="setQuotaValue('inputChargilyOrders', 25)">+25</button>
+                                    <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 rounded-pill small" onclick="setQuotaValue('inputChargilyOrders', 60)">+60</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Bank Transfer Orders Quota -->
+                        <div class="col-md-6">
+                            <div class="border rounded-3 p-3 h-100 bg-white">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <label for="inputBankOrders" class="form-label fw-bold text-dark small mb-0 d-flex align-items-center gap-1.5">
+                                        <i class="fa-solid fa-building-columns text-primary"></i>
+                                        <span>طلبات التحويل البنكي (CCP)</span>
+                                    </label>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0.5 small">
+                                        + رصيد إضافي
+                                    </span>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <input type="number" min="0" step="1" name="bank_transfer_orders" id="inputBankOrders"
+                                        class="form-control rounded-start-3" value="0" placeholder="عدد الطلبات...">
+                                    <span class="input-group-text bg-light text-muted small rounded-end-3">طلب</span>
+                                </div>
+                                <div class="d-flex gap-1 flex-wrap">
+                                    <span class="text-muted small me-1" style="font-size: 0.75rem;">إضافة سريعة:</span>
+                                    <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill small" onclick="setQuotaValue('inputBankOrders', 3)">+3</button>
+                                    <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill small" onclick="setQuotaValue('inputBankOrders', 10)">+10</button>
+                                    <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill small" onclick="setQuotaValue('inputBankOrders', 30)">+30</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Free Store Orders -->
+                        <div class="col-12">
+                            <div class="border rounded-3 p-3 bg-white">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <label for="inputFreeOrders" class="form-label fw-bold text-dark small mb-0 d-flex align-items-center gap-1.5">
+                                        <i class="fa-solid fa-box-open text-success"></i>
+                                        <span>الطلبات المجانية للمتجر (User Free Orders)</span>
+                                    </label>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5 small">
+                                        + زيادة الرصيد
+                                    </span>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <input type="number" min="0" step="1" name="free_orders" id="inputFreeOrders"
+                                        class="form-control rounded-start-3" value="0" placeholder="عدد الطلبات المجانية...">
+                                    <span class="input-group-text bg-light text-muted small rounded-end-3">طلب متجر</span>
+                                </div>
+                                <div class="d-flex gap-1 flex-wrap">
+                                    <span class="text-muted small me-1" style="font-size: 0.75rem;">إضافة سريعة:</span>
+                                    <button type="button" class="btn btn-xs btn-outline-success py-0 px-2 rounded-pill small" onclick="setQuotaValue('inputFreeOrders', 50)">+50</button>
+                                    <button type="button" class="btn btn-xs btn-outline-success py-0 px-2 rounded-pill small" onclick="setQuotaValue('inputFreeOrders', 100)">+100</button>
+                                    <button type="button" class="btn btn-xs btn-outline-success py-0 px-2 rounded-pill small" onclick="setQuotaValue('inputFreeOrders', 200)">+200</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Administrative Notes -->
+                        <div class="col-12">
+                            <div>
+                                <label for="inputQuotaNotes" class="form-label fw-bold text-dark small mb-1">
+                                    ملاحظات / سبب الإضافة <span class="text-muted fw-normal">(اختياري للتوثيق الإداري)</span>
+                                </label>
+                                <textarea name="notes" id="inputQuotaNotes" class="form-control rounded-3" rows="2"
+                                    placeholder="اكتب ملاحظة أو سبب منح الرصيد (مثال: رصيد ترويجي، تعويض، ترقية يدوية...)..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="addServicesErrorAlert" class="alert alert-danger d-none mt-3 mb-0 py-2 small"></div>
+                </div>
+                <div class="modal-footer bg-light border-0 px-4 py-3 d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary rounded-3 px-4 fw-semibold" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" id="submitAddServicesBtn" class="btn btn-primary fw-bold rounded-3 px-4 shadow-sm"
+                        style="background-color: #0284c7; border: none;">
+                        <i class="fa-solid fa-plus me-1"></i> تأكيد إضافة الرصيد للبائع
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+    function setQuotaValue(elementId, value) {
+        const input = document.getElementById(elementId);
+        if (input) {
+            const current = parseInt(input.value) || 0;
+            input.value = current + value;
+        }
+    }
+
+    function executeAddServicesAndOrders(sellerId) {
+        const btn = document.getElementById('submitAddServicesBtn');
+        const errorAlert = document.getElementById('addServicesErrorAlert');
+        const chargilyOrders = parseInt(document.getElementById('inputChargilyOrders').value) || 0;
+        const bankOrders = parseInt(document.getElementById('inputBankOrders').value) || 0;
+        const freeOrders = parseInt(document.getElementById('inputFreeOrders').value) || 0;
+        const notes = document.getElementById('inputQuotaNotes').value.trim();
+
+        if (errorAlert) {
+            errorAlert.classList.add('d-none');
+            errorAlert.innerText = '';
+        }
+
+        if (chargilyOrders <= 0 && bankOrders <= 0 && freeOrders <= 0) {
+            if (errorAlert) {
+                errorAlert.innerText = 'يرجى إدخال كمية أكبر من 0 لخدمة واحدة على الأقل قبل المتابعة.';
+                errorAlert.classList.remove('d-none');
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'تنبيه',
+                    text: 'يرجى إدخال كمية أكبر من 0 لخدمة واحدة على الأقل.',
+                    confirmButtonColor: '#0284c7',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جاري الشحن والإضافة...';
+
+        fetch('{{ route('admin.seller.add_services_orders', $seller->id) }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chargily_orders: chargilyOrders,
+                bank_transfer_orders: bankOrders,
+                free_orders: freeOrders,
+                notes: notes
+            })
+        })
+        .then(response => response.json().then(data => ({
+            status: response.status,
+            body: data
+        })))
+        .then(res => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-plus me-1"></i> تأكيد إضافة الرصيد للبائع';
+
+            if (res.body.success) {
+                const modalEl = document.getElementById('addServicesAndOrdersModal');
+                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.hide();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم الشحن بنجاح',
+                    text: res.body.message || 'تم شحن الخدمات والطلبات لحساب البائع بنجاح.',
+                    confirmButtonColor: '#0284c7',
+                    confirmButtonText: 'حسناً'
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                if (errorAlert) {
+                    errorAlert.innerText = res.body.message || 'حدث خطأ أثناء إضافة الخدمات.';
+                    errorAlert.classList.remove('d-none');
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ',
+                        text: res.body.message || 'حدث خطأ أثناء إضافة الخدمات.',
+                        confirmButtonColor: '#dc3545',
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-plus me-1"></i> تأكيد إضافة الرصيد للبائع';
+            if (errorAlert) {
+                errorAlert.innerText = 'حدث خطأ في الاتصال بالخادم، يرجى إعادة المحاولة.';
+                errorAlert.classList.remove('d-none');
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ في الاتصال',
+                    text: 'حدث خطأ في الاتصال بالخادم، يرجى إعادة المحاولة.',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        });
+    }
     function executeResetBalance(sellerId) {
         const btn = document.getElementById('confirmResetBalanceBtn');
         const reasonInput = document.getElementById('resetBalanceReason');
