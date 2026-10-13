@@ -429,4 +429,97 @@ class AdminMediaService
 
         return [];
     }
+
+    /**
+     * Safely migrate a local file to Cloudflare R2 and optionally delete local copy after verification.
+     *
+     * @param string $relativePath
+     * @param bool $deleteLocal
+     * @param string|null $sourceDisk
+     * @return array ['success' => bool, 'r2_url' => ?string, 'r2_path' => ?string, 'bytes' => int, 'message' => string]
+     */
+    public function migrateLocalFileToR2(string $relativePath, bool $deleteLocal = false, ?string $sourceDisk = null): array
+    {
+        $cleanPath = $this->extractRelativePath($relativePath);
+
+        // Find which disk actually holds the local file
+        $foundDisk = null;
+        if ($sourceDisk && Storage::disk($sourceDisk)->exists($cleanPath)) {
+            $foundDisk = $sourceDisk;
+        } else {
+            foreach ($this->fallbackDisks as $fDisk) {
+                if (Storage::disk($fDisk)->exists($cleanPath)) {
+                    $foundDisk = $fDisk;
+                    break;
+                }
+            }
+        }
+
+        if (!$foundDisk) {
+            return [
+                'success' => false,
+                'r2_url'  => null,
+                'r2_path' => null,
+                'bytes'   => 0,
+                'message' => "Local file does not exist on any local disk: {$cleanPath}",
+            ];
+        }
+
+        try {
+            $stream = Storage::disk($foundDisk)->readStream($cleanPath);
+            if ($stream === false) {
+                return [
+                    'success' => false,
+                    'r2_url'  => null,
+                    'r2_path' => null,
+                    'bytes'   => 0,
+                    'message' => "Unable to read local stream for: {$cleanPath} from disk: {$foundDisk}",
+                ];
+            }
+
+            // Write stream to Cloudflare R2 inside 'admin/' folder
+            $r2TargetPath = $this->prefixR2Path($cleanPath);
+            $written = Storage::disk('r2')->writeStream($r2TargetPath, $stream);
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+
+            if (!$written || !Storage::disk('r2')->exists($r2TargetPath)) {
+                return [
+                    'success' => false,
+                    'r2_url'  => null,
+                    'r2_path' => null,
+                    'bytes'   => 0,
+                    'message' => "Failed to write or verify file on Cloudflare R2: {$r2TargetPath}",
+                ];
+            }
+
+            $bytes = Storage::disk($foundDisk)->size($cleanPath);
+            $r2Url = $this->getUrl($r2TargetPath, 'r2');
+
+            // Delete local copy only after verified R2 existence
+            if ($deleteLocal) {
+                Storage::disk($foundDisk)->delete($cleanPath);
+            }
+
+            return [
+                'success'    => true,
+                'r2_url'     => $r2Url,
+                'r2_path'    => $r2TargetPath,
+                'bytes'      => $bytes,
+                'found_disk' => $foundDisk,
+                'message'    => 'Migrated successfully',
+            ];
+        } catch (\Throwable $e) {
+            Log::error("AdminMediaService: Migration to R2 failed for {$cleanPath}: " . $e->getMessage());
+            return [
+                'success' => false,
+                'r2_url'  => null,
+                'r2_path' => null,
+                'bytes'   => 0,
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
 }
+
