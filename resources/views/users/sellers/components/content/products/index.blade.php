@@ -365,6 +365,13 @@
                                             class="fa-solid {{ $product->status == 'active' ? 'fa-circle-check' : 'fa-circle-xmark' }} me-1"></i>{{ $product->status == 'active' ? 'نشط' : 'غير نشط' }}</span>
                                 </td>
                                 <td data-label="الإجراءات" class="pe-md-4 text-end">
+                                    <button type="button"
+                                        class="btn btn-sm btn-outline-purple rounded-3 manage-landing-pages px-2.5 py-1 me-1 shadow-2xs fw-semibold"
+                                        data-product-id="{{ $product->id }}"
+                                        data-product-name="{{ $product->name }}"
+                                        title="إدارة وتوليد صفحات الهبوط بالذكاء الاصطناعي لهذا المنتج">
+                                        <i class="fa-solid fa-wand-magic-sparkles me-1 text-purple"></i> صفحات الهبوط
+                                    </button>
                                     <button value="{{ $product->id }}"
                                         class="btn btn-sm btn-outline-plum rounded-3 editproduct px-2.5 py-1 me-1 shadow-2xs fw-semibold"
                                         data-bs-toggle="modal" data-bs-target="#editModal">
@@ -1179,5 +1186,8 @@
             </div>
         </div>
     </div>
+
+    {{-- AI Landing Pages Management & Edit Modals --}}
+    @include('users.sellers.components.content.products.modals.landing_pages_modal')
 
 </div>

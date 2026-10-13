@@ -42,4 +42,8 @@ return [
         'public_key' => env('CHARGILY_PUBLIC_KEY', 'test_pk_dQD6KsE788otDQXgFrsVVzDt9wDmfo1dFupH5oKE'),
         'secret_key' => env('CHARGILY_SECRET_KEY', 'test_sk_gpdoJktjYvibE4ydPsWQs6tf062lu6Rj5N4hQCo3'),
     ],
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-1.5-flash'),
+    ],
 ];

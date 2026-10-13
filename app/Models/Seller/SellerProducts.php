@@ -88,6 +88,11 @@ class SellerProducts extends Model implements HasMedia
                     ->whereDate('end_date', '>=', now());
     }
 
+    public function landingPages()
+    {
+        return $this->hasMany(SellerProductLandingPage::class, 'product_id');
+    }
+
     public function visits()
     {
         return $this->hasMany(SellerProductsVisits::class, 'product_id');

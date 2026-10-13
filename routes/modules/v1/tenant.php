@@ -48,6 +48,8 @@ Route::middleware([
             Route::get('/product/{id}', [TenantsController::class, 'product'])->name('product');
             Route::get('/products-by-category/{id}', [TenantsController::class, 'products_by_category'])->name('products-by-category');
             Route::get('/products/products-search', [TenantsController::class, 'products_search'])->name('products-search');
+            // store AI landing pages
+            Route::get('/lp/{slug}', [TenantsController::class, 'landing_page'])->name('landing-page');
             // store cart
             Route::get('/cart', [TenantsController::class, 'cart'])->name('cart');
             // store checkout

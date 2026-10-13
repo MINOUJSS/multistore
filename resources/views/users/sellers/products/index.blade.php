@@ -122,6 +122,6 @@
 
 <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
 @include('users.sellers.components.content.products.js.filepond-js')
-
+@include('users.sellers.components.content.products.js.landing-pages-js')
 
 @endsection

@@ -92,6 +92,21 @@ class SellerServicePurchase extends Model
     }
 
     /**
+     * Consume credits from this purchase
+     */
+    public function consumeCredits(int $amount = 10): bool
+    {
+        if ($this->credits_remaining >= $amount) {
+            $this->decrement('credits_remaining', $amount);
+            if ($this->credits_remaining <= 0 && $this->billing_type === 'credit_pack') {
+                $this->update(['status' => 'consumed']);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Calculate remaining days if period limited
      */
     public function getRemainingDaysAttribute(): ?int

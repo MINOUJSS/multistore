@@ -25,6 +25,7 @@ use App\Http\Controllers\Users\Sellers\SellerPaymentController;
 use App\Http\Controllers\Users\Sellers\SellerPaymentsProofsRefusedController;
 use App\Http\Controllers\Users\Sellers\SellerPlanController;
 use App\Http\Controllers\Users\Sellers\SellerProductController;
+use App\Http\Controllers\Users\Sellers\SellerLandingPageController;
 use App\Http\Controllers\Users\Sellers\SellerProductsCouponsController;
 use App\Http\Controllers\Users\Sellers\SellerProfileController;
 use App\Http\Controllers\Users\Sellers\SellerProofsRefusedChatController;
@@ -109,6 +110,13 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::delete('/seller-panel/product/attributes/delete/{id}', [SellerProductController::class, 'delete_product_attribute'])->name('product.delete_product_attribute');
                     Route::get('/seller-panel/product/get-json-data/{id}', [SellerProductController::class, 'get_json_data'])->name('product.get_json_data');
                     Route::get('/seller-panel/filter-products', [SellerProductController::class, 'filterProducts'])->name('product.filterProducts');
+                    // AI Landing Pages routes
+                    Route::get('/seller-panel/product/{id}/landing-pages', [SellerLandingPageController::class, 'index'])->name('product.landing_pages');
+                    Route::post('/seller-panel/product/{id}/landing-pages/generate', [SellerLandingPageController::class, 'generate'])->name('product.landing_pages.generate');
+                    Route::get('/seller-panel/landing-pages/{id}/edit', [SellerLandingPageController::class, 'edit'])->name('landing_pages.edit');
+                    Route::post('/seller-panel/landing-pages/{id}/update', [SellerLandingPageController::class, 'update'])->name('landing_pages.update');
+                    Route::post('/seller-panel/landing-pages/{id}/toggle-status', [SellerLandingPageController::class, 'toggleStatus'])->name('landing_pages.toggle_status');
+                    Route::delete('/seller-panel/landing-pages/{id}/delete', [SellerLandingPageController::class, 'destroy'])->name('landing_pages.delete');
                     // upload and delete digital product to temp folder
                     Route::post('/seller-panel/upload-temp', [TempUploadController::class, 'store'])
                        ->name('temp.store');

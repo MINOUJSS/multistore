@@ -2783,4 +2783,35 @@ class TenantsController extends Controller
 
         return Storage::disk('seller')->download($filePath, basename($filePath));
     }
+
+    /**
+     * Display AI-generated product landing page for tenant customers
+     */
+    public function landing_page($slug)
+    {
+        $sellerData = get_seller_data(tenant('id'));
+        if (!$sellerData) {
+            abort(404, 'المتجر غير موجود');
+        }
+
+        $landingPage = \App\Models\Seller\SellerProductLandingPage::where('seller_id', $sellerData->id)
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+
+        // Increment visit counter
+        $landingPage->increment('views_count');
+
+        $product = $landingPage->product;
+        if (!$product || $product->status !== 'active') {
+            abort(404, 'المنتج غير متاح حالياً');
+        }
+
+        $content = $landingPage->content_json ?? [];
+        $wilayas = \App\Models\Wilaya::orderBy('id', 'asc')->get();
+        $user = get_user_data(tenant('id'));
+        $store_settings = $user ? UserStoreSetting::where('user_id', $user->id)->get() : collect();
+
+        return view('stores.sellers.landing.show', compact('landingPage', 'product', 'content', 'wilayas', 'store_settings'));
+    }
 }
