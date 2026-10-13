@@ -203,4 +203,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserNotification::class);
     }
+
+    /**
+     * طلبات التوثيق الخاصة بالمستخدم
+     */
+    public function requestsValidations()
+    {
+        return $this->hasMany(UserRequestsValidation::class);
+    }
 }

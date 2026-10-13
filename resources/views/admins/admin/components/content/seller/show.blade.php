@@ -56,22 +56,36 @@
             </div>
             <div class="col-lg-5 text-lg-end">
                 <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
-                    {{-- حالة الموافقة --}}
+                    {{-- حالة الموافقة والتوثيق --}}
                     @if ($seller->approval_status == 'approved')
-                        <button class="btn btn-danger text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
-                            data-bs-toggle="modal" data-bs-target="#unApproveModal">
-                            <i class="fa-solid fa-user-xmark me-1"></i> رفض توثيق البائع
+                        {{-- في حالة ما إذا كان البائع موثق: زر برتقالي لرفع التوثيق --}}
+                        <button class="btn text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
+                            style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);"
+                            data-bs-toggle="modal" data-bs-target="#unApproveModal"
+                            title="إلغاء ورفع حالة التوثيق عن البائع">
+                            <i class="fa-solid fa-user-slash me-1"></i> رفع التوثيق عن البائع
                         </button>
-                    @elseif($seller->approval_status == 'pending')
-                        <button class="btn btn-danger text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
-                            data-bs-toggle="modal" data-bs-target="#unApproveModal">
-                            <i class="fa-solid fa-user-xmark me-1"></i> رفض توثيق البائع
-                        </button>
+                    @elseif (!empty($hasPendingValidation))
+                        {{-- في حالة طلب البائع للتوثيق من خلال جدول طلبات التوثيق: قبول أو رفض الطلب --}}
                         <button class="btn btn-success text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
-                            onclick="approveSeller({{ $seller->id }})">
+                            onclick="approveSeller({{ $seller->id }})"
+                            title="الموافقة على طلب التوثيق">
+                            <i class="fa-solid fa-user-check me-1"></i> قبول التوثيق
+                        </button>
+                        <button class="btn btn-danger text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
+                            data-bs-toggle="modal" data-bs-target="#unApproveModal"
+                            title="رفض طلب التوثيق">
+                            <i class="fa-solid fa-user-xmark me-1"></i> رفض التوثيق
+                        </button>
+                    @else
+                        {{-- في حالة لم يطلب البائع التوثيق بعد: يظهر فقط زر التوثيق المباشر دون إمكانية الرفض --}}
+                        <button class="btn btn-success text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
+                            onclick="approveSeller({{ $seller->id }})"
+                            title="توثيق حساب البائع مباشرة">
                             <i class="fa-solid fa-user-check me-1"></i> توثيق البائع
                         </button>
                     @endif
+
                     <button class="btn btn-light text-dark fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
                         onclick="printSellerInfo()">
                         <i class="fa-solid fa-print me-1"></i> طباعة المعلومات
@@ -748,8 +762,12 @@
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content border-0 shadow rounded-4">
-            <div class="modal-header bg-danger text-white rounded-top-4">
-                <h5 class="modal-title fw-bold" id="unApproveModalLabel">حذف توثيق البائع</h5>
+            <div class="modal-header rounded-top-4"
+                @if ($seller->approval_status == 'approved') style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important; color: #fff !important;" @else class="bg-danger text-white" @endif>
+                <h5 class="modal-title fw-bold" id="unApproveModalLabel">
+                    <i class="fa-solid {{ $seller->approval_status == 'approved' ? 'fa-user-slash' : 'fa-user-xmark' }} me-1"></i>
+                    {{ $seller->approval_status == 'approved' ? 'رفع التوثيق عن البائع' : 'رفض طلب توثيق البائع' }}
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
@@ -758,19 +776,25 @@
                 <div class="modal-body py-4">
                     <input type="hidden" name="seller_id" value="{{ $seller->id }}">
                     <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label fw-semibold">سبب حذف
-                            التوثيق</label>
-                        <textarea name="reason" class="form-control rounded-3" placeholder="أدخل سبب إلغاء التوثيق هنا..."></textarea>
+                        <label for="unapproveReasonTextarea" class="form-label fw-semibold">
+                            {{ $seller->approval_status == 'approved' ? 'سبب رفع التوثيق عن البائع:' : 'سبب رفض طلب التوثيق:' }}
+                        </label>
+                        <textarea id="unapproveReasonTextarea" name="reason" class="form-control rounded-3" rows="3"
+                            placeholder="{{ $seller->approval_status == 'approved' ? 'أدخل سبب رفع التوثيق هنا لتوثيقه وإرسال إشعار للبائع...' : 'أدخل سبب رفض طلب التوثيق هنا لإعلام البائع...' }}" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">إغلاق</button>
-                    <button type="submit" class="btn btn-danger rounded-3 fw-bold">حذف توثيق البائع</button>
+                    <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn text-white rounded-3 fw-bold"
+                        @if ($seller->approval_status == 'approved') style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border: none;" @else class="btn btn-danger" @endif>
+                        {{ $seller->approval_status == 'approved' ? 'تأكيد رفع التوثيق' : 'تأكيد رفض التوثيق' }}
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 
 {{-- sweetalert  --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -160,6 +160,11 @@ class SellerController extends Controller
             ? (int) ($user->freeOrder?->quantity ?? \App\Models\UserFreeOrder::where('user_id', $user->id)->value('quantity') ?? 0)
             : 0;
 
+        // Pending identity/business validation request
+        $hasPendingValidation = $user
+            ? UserRequestsValidation::where('user_id', $user->id)->where('status', 'pending')->exists()
+            : false;
+
         return view('admins.admin.seller.show', compact(
             'seller',
             'user',
@@ -172,7 +177,8 @@ class SellerController extends Controller
             'ordersWithProofs',
             'chargilyQuotaRemaining',
             'bankTransferQuotaRemaining',
-            'freeOrdersRemaining'
+            'freeOrdersRemaining',
+            'hasPendingValidation'
         ));
     }
 
