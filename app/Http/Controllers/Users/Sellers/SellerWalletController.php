@@ -58,7 +58,7 @@ class SellerWalletController extends Controller
                 'amount' => $request->amount,
                 'payment_method' => 'BaridiMob',
                 'description' => 'الرصيد قيد المعالجة',
-                'payment_proof' => $proofPath,
+                'payment_proof' => $proofPath['url'] ?? $proofPath, // Use the URL if available, otherwise use the path
                 'status' => 'pending', // قيد المراجعة
             ]);
 
@@ -93,7 +93,7 @@ class SellerWalletController extends Controller
                 'amount' => $request->amount,
                 'payment_method' => 'Ccp',
                 'description' => 'الرصيد قيد المعالجة',
-                'payment_proof' => $proofPath,
+                'payment_proof' => $proofPath['url'] ?? $proofPath, // Use the URL if available, otherwise use the path
                 'status' => 'pending', // قيد المراجعة
             ]);
 
