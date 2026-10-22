@@ -542,7 +542,7 @@ class SellerProductController extends Controller
             $rules['product_cost'] = 'required|numeric|min:0';
         } else {
             // للمنتج الرقمي
-            $rules['digital_file'] = 'required|file|mimes:zip,pdf,mp4|max:51200'; // 50MB
+            // $rules['digital_file'] = 'required|file|mimes:zip,pdf,mp4|max:51200'; // 50MB
         }
 
         // التحقق من صحة البيانات
