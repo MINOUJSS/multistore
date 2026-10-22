@@ -69,15 +69,30 @@
                                 <td data-label="تاريخ الإرسال" class="text-muted small dir-ltr">{{ $request->created_at->format('Y-m-d H:i') }}</td>
                                 <td data-label="ملاحظة" class="text-muted small text-start px-3">{{ $request->description ?? '—' }}</td>
                                 <td data-label="الإثبات">
+                                    @php
+                                     $mediaService = app(\App\Services\Seller\SellerMediaService::class);   
+                                    @endphp
                                     @if($request->payment_proof)
                                         @if(get_user_data_from_user_id($request->user_id)->type==='supplier')
-                                            <a href="{{ asset('storage/tenantsupplier/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-3 px-2.5">
-                                                <i class="fa-solid fa-file-image me-1"></i> عرض الإثبات
-                                            </a>
+                                            @if($mediaService->getActiveDisk() === 'supplier')
+                                                <a href="{{ asset('storage/tenantsupplier/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-3 px-2.5">
+                                                    <i class="fa-solid fa-file-image me-1"></i> عرض الإثبات
+                                                </a>
+                                            @else
+                                                <a href="{{ $request->payment_proof }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-3 px-2.5">
+                                                    <i class="fa-solid fa-file-image me-1"></i> عرض الإثبات
+                                                </a>
+                                            @endif
                                         @elseif(get_user_data_from_user_id($request->user_id)->type==='seller')
-                                            <a href="{{ asset('storage/app/public/seller/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-3 px-2.5">
-                                                <i class="fa-solid fa-file-image me-1"></i> عرض الإثبات
-                                            </a>
+                                            @if($mediaService->getActiveDisk() === 'seller')
+                                                <a href="{{ asset('storage/app/public/seller/' . $request->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-3 px-2.5">
+                                                    <i class="fa-solid fa-file-image me-1"></i> عرض الإثبات
+                                                </a>
+                                            @else
+                                                <a href="{{ $request->payment_proof }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-3 px-2.5">
+                                                    <i class="fa-solid fa-file-image me-1"></i> عرض الإثبات
+                                                </a>
+                                            @endif
                                         @endif
                                     @else
                                         <span class="text-muted small">—</span>
