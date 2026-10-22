@@ -42,8 +42,10 @@ class SellerWalletController extends Controller
         ]);
 
         try {
+            $mediaService = app(\App\Services\Seller\SellerMediaService::class);
+            $disk = $mediaService->getActiveDisk();
             // رفع ملف إثبات الدفع
-            $proofPath = $request->file('payment_proof')->store(get_seller_store_name(auth()->user()->tenant_id).'/wallet_proofs', 'seller');
+            $proofPath = $request->file('payment_proof')->store(get_seller_store_name(auth()->user()->tenant_id).'/wallet_proofs', $disk);
 
             // إنشاء سجل في قاعدة البيانات
             BalanceTransaction::create([
@@ -70,8 +72,10 @@ class SellerWalletController extends Controller
         ]);
 
         try {
+            $mediaService = app(\App\Services\Seller\SellerMediaService::class);
+            $disk = $mediaService->getActiveDisk();
             // رفع ملف إثبات الدفع
-            $proofPath = $request->file('payment_proof')->store(get_seller_store_name(auth()->user()->tenant_id).'/wallet_proofs', 'seller');
+            $proofPath = $request->file('payment_proof')->store(get_seller_store_name(auth()->user()->tenant_id).'/wallet_proofs', $disk);
 
             // إنشاء سجل في قاعدة البيانات
             BalanceTransaction::create([
