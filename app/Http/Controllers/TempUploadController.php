@@ -31,6 +31,8 @@ class TempUploadController extends Controller
             );
         }
 
+        \Log::info('Stored Path:', ['path' => $path]);
+
         $upload = TempUploads::create([
             'user_id' => auth()->id(),
             'disk' => $mediaService->getActiveDisk(),
