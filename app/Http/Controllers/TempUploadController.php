@@ -26,7 +26,7 @@ class TempUploadController extends Controller
             );
         } else {
             $path = $file->store(
-                get_seller_store_name(auth()->user()->tenant_id).'/temp',
+                'seller/'.get_seller_store_name(auth()->user()->tenant_id).'/temp',
                 'r2'
             );
         }
