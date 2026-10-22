@@ -140,12 +140,23 @@
                                     <span class="text-secondary small">{{ $addition->description ?? '—' }}</span>
                                 </td>
                                 <td data-label="الإثبات" class="text-center">
+                                    @php
+                                     $mediaService = app(\App\Services\Seller\SellerMediaService::class);   
+                                    @endphp
                                     @if($addition->payment_proof)
-                                        <a href="{{ asset('storage/app/public/seller/' . $addition->payment_proof) }}" target="_blank"
+                                    @if($mediaService->getActiveDisk() === 'seller')
+                                            <a href="{{ asset('storage/app/public/seller/' . $addition->payment_proof) }}" target="_blank"
+                                                class="btn btn-sm btn-outline-plum rounded-3 px-2.5 py-1 small d-inline-flex align-items-center gap-1">
+                                                <i class="fa-solid fa-file-arrow-down"></i>
+                                                <span>عرض الإثبات</span>
+                                            </a>
+                                    @else
+                                        <a href="{{ $addition->payment_proof }}" target="_blank"
                                             class="btn btn-sm btn-outline-plum rounded-3 px-2.5 py-1 small d-inline-flex align-items-center gap-1">
                                             <i class="fa-solid fa-file-arrow-down"></i>
                                             <span>عرض الإثبات</span>
                                         </a>
+                                    @endif
                                     @else
                                         <span class="text-muted small">—</span>
                                     @endif
