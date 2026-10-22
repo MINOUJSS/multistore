@@ -415,7 +415,7 @@ class SellerProductController extends Controller
                         $file_disk_name = 'Cloudflare R2';
                     }
                 } catch (\Throwable $e) {
-                    \Log::warning("Failed checking R2 digital file for product {$product->id}: " . $e->getMessage());
+                    \Log::warning("Failed checking R2 digital file for product {$product->id}: ".$e->getMessage());
                 }
 
                 // 2. Check local 'seller' disk fallback
@@ -433,11 +433,11 @@ class SellerProductController extends Controller
 
                 if ($file_exists && $bytes !== null) {
                     if ($bytes >= 1048576) {
-                        $file_size = number_format($bytes / 1048576, 2) . ' MB';
+                        $file_size = number_format($bytes / 1048576, 2).' MB';
                     } elseif ($bytes >= 1024) {
-                        $file_size = number_format($bytes / 1024, 2) . ' KB';
+                        $file_size = number_format($bytes / 1024, 2).' KB';
                     } else {
-                        $file_size = $bytes . ' Bytes';
+                        $file_size = $bytes.' Bytes';
                     }
                     $download_url = route('seller.product.download_test', $product->id);
                 }
@@ -542,7 +542,7 @@ class SellerProductController extends Controller
             $rules['product_cost'] = 'required|numeric|min:0';
         } else {
             // للمنتج الرقمي
-            // $rules['digital_file'] = 'required|file|mimes:zip,pdf,mp4|max:51200'; // 50MB
+            $rules['digital_file'] = 'required|file|mimes:zip,pdf,mp4|max:51200'; // 50MB
         }
 
         // التحقق من صحة البيانات
@@ -960,7 +960,7 @@ class SellerProductController extends Controller
             // 5. Delete entire product directory from R2 & local disks
             $store_name = get_seller_store_name(get_tenant_id_from_seller($product->seller_id));
             if (!empty($store_name)) {
-                $folderPath = $store_name . '/products/' . $product->id;
+                $folderPath = $store_name.'/products/'.$product->id;
                 $mediaService->deleteDirectory($folderPath);
             }
 
@@ -975,12 +975,12 @@ class SellerProductController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => "تم حذف المنتج وكافة ملفاته بنجاح",
+                'message' => 'تم حذف المنتج وكافة ملفاته بنجاح',
             ]);
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'حدث خطأ أثناء حذف المنتج: ' . $e->getMessage(),
+                'message' => 'حدث خطأ أثناء حذف المنتج: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -1029,7 +1029,7 @@ class SellerProductController extends Controller
             // Delete product directory
             $store_name = get_seller_store_name(get_tenant_id_from_seller($product->seller_id));
             if (!empty($store_name)) {
-                $folderPath = $store_name . '/products/' . $product->id;
+                $folderPath = $store_name.'/products/'.$product->id;
                 $mediaService->deleteDirectory($folderPath);
             }
 

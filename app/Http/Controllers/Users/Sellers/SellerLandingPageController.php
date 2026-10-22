@@ -93,7 +93,8 @@ class SellerLandingPageController extends Controller
         // Generate content
         $angle = $request->input('marketing_angle', 'general');
         $customPrompt = $request->input('custom_prompt');
-        $content = $this->aiService->generate($product, $angle, $customPrompt);
+        $generateExtraImages = $request->boolean('generate_extra_images', true);
+        $content = $this->aiService->generate($product, $angle, $customPrompt, $generateExtraImages);
 
         // Deduct credits
         $this->aiService->deductCredits($user, $cost);

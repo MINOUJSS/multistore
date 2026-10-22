@@ -10,6 +10,7 @@ class TempUploadController extends Controller
 {
     public function store(Request $request)
     {
+        $mediaService = app(\App\Services\Seller\SellerMediaService::class);
         // dd(
         //     $request->all(),
         //     $_FILES,
@@ -17,13 +18,22 @@ class TempUploadController extends Controller
         // );
         $file = $request->file('digital_file');
 
-        $path = $file->store(
-            get_seller_store_name(auth()->user()->tenant_id).'/temp',
-            'seller'
-        );
+        // \Log::info($mediaService->getActiveDisk());
+        if ($mediaService) {
+            $path = $file->store(
+                get_seller_store_name(auth()->user()->tenant_id).'/temp',
+                'seller'
+            );
+        } else {
+            $path = $file->store(
+                get_seller_store_name(auth()->user()->tenant_id).'/temp',
+                'r2'
+            );
+        }
 
         $upload = TempUploads::create([
             'user_id' => auth()->id(),
+            'disk' => $mediaService->getActiveDisk(),
             'path' => $path,
             'original_name' => $file->getClientOriginalName(),
             'type' => 'digital',

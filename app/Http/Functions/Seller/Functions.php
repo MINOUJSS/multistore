@@ -710,7 +710,7 @@ function is_seller($tenant_id)
 function is_seller_aproved($tenant_id)
 {
     $seller = App\Models\Seller\Seller::where('tenant_id', $tenant_id)->first();
-    if ($seller->approval_status == 'approved') {
+    if ($seller && $seller->approval_status == 'approved') {
         return true;
     } else {
         return false;

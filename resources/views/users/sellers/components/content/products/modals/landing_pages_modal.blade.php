@@ -99,6 +99,16 @@
                                             placeholder="مثال: ركّز على أن المنتج مناسب للرياضيين، أو قدم عرض اشتري 1 واحصل على الثاني بنصف السعر..."></textarea>
                                     </div>
 
+                                    <div class="col-12">
+                                        <div class="form-check form-switch p-2.5 bg-light rounded-3 border d-flex align-items-center">
+                                            <input class="form-check-input ms-0 me-3" type="checkbox" name="generate_extra_images" id="lpExtraImages" value="1" checked style="width: 2.2em; height: 1.2em;">
+                                            <label class="form-check-label fw-bold small text-dark cursor-pointer mb-0" for="lpExtraImages">
+                                                <i class="fa-solid fa-mobile-screen-button text-plum me-1"></i>
+                                                توليد صور إضافية وشريط إنفوجرافيك مطول مخصص لشاشات الهواتف الذكية (Mobile Infographic)
+                                            </label>
+                                        </div>
+                                    </div>
+
                                     <div class="col-12 text-end pt-2">
                                         <button type="submit" class="btn btn-plum px-4 py-2 rounded-3 fw-bold shadow-sm" id="btnSubmitGenerateLp">
                                             <i class="fa-solid fa-wand-magic-sparkles me-1"></i> توليد صفحة الهبوط الآن (خصم 10 نقاط)

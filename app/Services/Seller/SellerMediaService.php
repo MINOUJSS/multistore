@@ -342,30 +342,30 @@ class SellerMediaService
 
         $r2Prefixed = $this->prefixR2Path($cleanPath);
 
-        // 1. Check Cloudflare R2 disk with 'seller/' prefix
-        try {
-            if (Storage::disk('r2')->exists($r2Prefixed)) {
-                return true;
-            }
-            // 2. Check Cloudflare R2 without prefix (fallback)
-            if (Storage::disk('r2')->exists($cleanPath)) {
-                return true;
-            }
-            // 3. Check Cloudflare R2 private bucket if configured
-            if (config('filesystems.disks.r2_private') && (Storage::disk('r2_private')->exists($r2Prefixed) || Storage::disk('r2_private')->exists($cleanPath))) {
-                return true;
-            }
-        } catch (\Throwable $e) {
-            Log::warning("SellerMediaService::hasDigitalFile R2 check failed for [{$filePath}]: " . $e->getMessage());
-        }
-
-        // 4. Fallback to Local 'seller' disk
+        // 1. Fast Check on Local 'seller' disk (instant local response)
         try {
             if (Storage::disk('seller')->exists($cleanPath)) {
                 return true;
             }
         } catch (\Throwable $e) {
             // ignore
+        }
+
+        // 2. Check Cloudflare R2 disk with 'seller/' prefix
+        try {
+            if (Storage::disk('r2')->exists($r2Prefixed)) {
+                return true;
+            }
+            // 3. Check Cloudflare R2 without prefix (fallback)
+            if (Storage::disk('r2')->exists($cleanPath)) {
+                return true;
+            }
+            // 4. Check Cloudflare R2 private bucket if configured
+            if (config('filesystems.disks.r2_private') && (Storage::disk('r2_private')->exists($r2Prefixed) || Storage::disk('r2_private')->exists($cleanPath))) {
+                return true;
+            }
+        } catch (\Throwable $e) {
+            Log::warning("SellerMediaService::hasDigitalFile R2 check failed for [{$filePath}]: " . $e->getMessage());
         }
 
         return false;
