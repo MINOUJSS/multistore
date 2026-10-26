@@ -102,12 +102,30 @@
                 //console.log(xhr.responseText);
                 // var errorsDiv = document.getElementById('editFormErrors');
                 if (xhr.status === 422) {
-                    // Display validation errors
+                    // Display validation errors under inputs and in SweetAlert
                     var errors = xhr.responseJSON.errors;
+                    var errorList = '';
                     console.log(errors);
+
+                    // Reset previous inline errors
+                    $('.text-danger[class*="error-"]').text('');
+
                     $.each(errors, function(key, value) {
-                        // errorsDiv.append(value[0]);
                         $('.error-' + key).text(value[0]);
+                        errorList += '<li style="margin-bottom: 6px;">' + value[0] + '</li>';
+                    });
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'يرجى تصحيح الأخطاء التالية',
+                        html: '<div class="text-start" style="max-height: 250px; overflow-y: auto; padding: 12px 16px; background: #fff5f5; border-radius: 8px; border: 1px solid #fed7d7; direction: rtl;">' +
+                              '<ul style="margin: 0; padding-right: 20px; color: #c53030; font-size: 0.95rem; line-height: 1.6;">' + errorList + '</ul>' +
+                              '</div>',
+                        confirmButtonText: 'حسناً',
+                        confirmButtonColor: '#a40c72',
+                        customClass: {
+                            popup: 'rounded-4 shadow-lg'
+                        }
                     });
 
                 } else {
