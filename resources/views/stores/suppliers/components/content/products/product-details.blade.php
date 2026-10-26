@@ -126,12 +126,258 @@
 
         }
 
-        .buy-btn{
+    .buy-btn{
 
         animation:pulse 2.5s infinite;
 
         }
     /* endtest  */
+
+    /* =======================================
+       ELEGANT PAYMENT METHOD CARDS
+       ======================================= */
+    :root {
+        --store-primary-color: {{ has_supplier_settings(tenant('id')) ? get_store_parimary_color(tenant('id')) : '#a40c72' }};
+    }
+
+    .payment-options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 12px;
+        width: 100%;
+    }
+
+    .payment-option-card {
+        position: relative;
+        margin: 0;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+    }
+
+    .payment-option-card .payment-radio {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        pointer-events: none;
+    }
+
+    .payment-option-card .payment-card-body {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 13px 15px;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+        height: 100%;
+        position: relative;
+    }
+
+    .payment-option-card:hover .payment-card-body {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .payment-option-card .payment-radio:checked + .payment-card-body {
+        border-color: var(--store-primary-color, #a40c72) !important;
+        background: rgba(164, 12, 114, 0.04);
+        box-shadow: 0 6px 18px rgba(164, 12, 114, 0.12);
+    }
+
+    .payment-icon-wrapper {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+        transition: all 0.25s ease;
+    }
+
+    .payment-icon-cod {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .payment-icon-chargily {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .payment-icon-bank {
+        background: #fffbeb;
+        color: #d97706;
+    }
+
+    .payment-radio-indicator {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid #cbd5e1;
+        margin-inline-start: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+
+    .payment-radio-indicator::after {
+        content: '';
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--store-primary-color, #a40c72);
+        transform: scale(0);
+        transition: transform 0.2s ease;
+    }
+
+    .payment-option-card .payment-radio:checked + .payment-card-body .payment-radio-indicator {
+        border-color: var(--store-primary-color, #a40c72);
+    }
+
+    .payment-option-card .payment-radio:checked + .payment-card-body .payment-radio-indicator::after {
+        transform: scale(1);
+    }
+
+    /* =======================================
+       ELEGANT PRODUCT OPTIONS (COLORS & ATTRS)
+       ======================================= */
+    .color-swatches-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .color-swatch-item {
+        position: relative;
+        cursor: pointer;
+        display: inline-flex;
+        margin: 0;
+    }
+
+    .color-swatch-radio {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        pointer-events: none;
+    }
+
+    .color-swatch-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #ffffff;
+        box-shadow: 0 0 0 1px #cbd5e1, 0 2px 5px rgba(0, 0, 0, 0.12);
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .color-swatch-item:hover .color-swatch-circle {
+        transform: scale(1.14);
+        box-shadow: 0 0 0 1px #94a3b8, 0 4px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    .color-swatch-radio:checked + .color-swatch-circle {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--store-primary-color, #a40c72), 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .color-check-icon {
+        color: #ffffff;
+        font-size: 0.85rem;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+    }
+
+    .color-swatch-radio:checked + .color-swatch-circle .color-check-icon {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .attribute-pills-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .attribute-pill-item {
+        position: relative;
+        cursor: pointer;
+        display: inline-flex;
+        margin: 0;
+    }
+
+    .attribute-pill-radio {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        pointer-events: none;
+    }
+
+    .attribute-pill-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        color: #334155;
+        font-size: 0.92rem;
+        font-weight: 500;
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+        min-width: 48px;
+    }
+
+    .attribute-pill-item:hover .attribute-pill-btn {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .attribute-pill-radio:checked + .attribute-pill-btn {
+        border-color: var(--store-primary-color, #a40c72) !important;
+        background: rgba(164, 12, 114, 0.05);
+        color: var(--store-primary-color, #a40c72);
+        font-weight: 700;
+        box-shadow: 0 3px 10px rgba(164, 12, 114, 0.12);
+    }
+
+    .attribute-price-badge {
+        font-size: 0.75rem;
+        padding: 2px 7px;
+        border-radius: 6px;
+        background: #f1f5f9;
+        color: #64748b;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .attribute-pill-radio:checked + .attribute-pill-btn .attribute-price-badge {
+        background: var(--store-primary-color, #a40c72);
+        color: #ffffff;
+    }
 
 </style>
 <div class="container">
@@ -382,17 +628,22 @@
                 @if (supplier_product_has_variations($product->id))
                     <div class="row mt-3 mb-3">
                         <div class="col-md-12">
-                            <h5>إختر اللون</h5>
-                            @foreach ($product_variations as $product_variation)
-                                {{-- <input class="form-check-input" type="radio" name="product_varition"
-                                    value="{{ $product_variation->id }}"
-                                    style="background-color: {{ $product_variation->color }};width:30px;height:30px;border:1px solid #000;"
-                                    onchange="get_varition_id(this);" @if ($product_variations[0]['id'] == $product_variation['id']) checked @endif> --}}
-                                <input class="form-check-input" type="radio" name="product_varition"
-                                    value="{{ $product_variation->id }}"
-                                    style="background-color: {{ $product_variation->color }};width:30px;height:30px;border:1px solid #000;"
-                                    onchange="get_varition_id(this);">
-                            @endforeach
+                            <h5 class="fw-bold text-dark sub-title mb-2.5 d-flex align-items-center gap-2">
+                                <i class="fas fa-palette opacity-75"></i> إختر اللون
+                            </h5>
+                            <div class="color-swatches-wrapper pt-1 pb-1">
+                                @foreach ($product_variations as $product_variation)
+                                    <label class="color-swatch-item" for="variation_{{ $product_variation->id }}" title="{{ $product_variation->color }}">
+                                        <input class="form-check-input color-swatch-radio" type="radio" name="product_varition"
+                                            id="variation_{{ $product_variation->id }}"
+                                            value="{{ $product_variation->id }}"
+                                            onchange="get_varition_id(this);">
+                                        <span class="color-swatch-circle" style="background-color: {{ $product_variation->color }};">
+                                            <i class="fas fa-check color-check-icon"></i>
+                                        </span>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 @endif
@@ -401,70 +652,127 @@
                         <div class="col-md-12">
                             @foreach ($product_attributes as $index => $product_attribute)
                                 @if ($index == 0)
-                                    <h5>إختر {{ get_supplier_attribute_name($product_attribute->attribute->id) }}</h5>
+                                    <h5 class="fw-bold text-dark sub-title mb-2.5 d-flex align-items-center gap-2">
+                                        <i class="fas fa-sliders-h opacity-75"></i> إختر {{ get_supplier_attribute_name($product_attribute->attribute->id) }}
+                                    </h5>
                                 @endif
-                                {{-- @if (atrribute_has_more_values($product_attribute->attribute_id)) --}}
-                                {{-- <input class="form-check-input" type="radio" name="product_attribute"
-                                        value="{{ $product_attribute->id }}" onchange="get_attribute_id(this);" @if ($product_attributes[0]['id'] == $product_attribute['id']) checked @endif> --}}
-                                <input class="form-check-input" type="radio" name="product_attribute"
-                                    data-unit-price="{{ $product->price }}"
-                                    data-aditional-price="{{ $product_attribute->additional_price }}"
-                                    value="{{ $product_attribute->id }}"
-                                    onchange="get_attribute_id(this);add_additional_price_to_product_price(this);">
-                                <label for="product_attribute">{{ $product_attribute->value }}</label>
-                                {{-- @endif --}}
                             @endforeach
+                            <div class="attribute-pills-wrapper pt-1 pb-1">
+                                @foreach ($product_attributes as $product_attribute)
+                                    <label class="attribute-pill-item" for="attr_{{ $product_attribute->id }}">
+                                        <input class="form-check-input attribute-pill-radio" type="radio" name="product_attribute"
+                                            id="attr_{{ $product_attribute->id }}"
+                                            data-unit-price="{{ $product->price }}"
+                                            data-aditional-price="{{ $product_attribute->additional_price }}"
+                                            value="{{ $product_attribute->id }}"
+                                            onchange="get_attribute_id(this);add_additional_price_to_product_price(this);">
+                                        <span class="attribute-pill-btn">
+                                            <span>{{ $product_attribute->value }}</span>
+                                            @if ($product_attribute->additional_price > 0)
+                                                <span class="attribute-price-badge">
+                                                    +{{ number_format($product_attribute->additional_price, 0) }} د.ج
+                                                </span>
+                                            @endif
+                                        </span>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 @endif
                 <!--/product options-->
                 <!--payment method-->
+                @php
+                    $is_cod_active = ($cash_status == 'active');
+                    $is_chargily_active = (is_supplier_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')) && $chargily_status == 'active');
+                    $is_bank_active = (is_supplier_aproved(tenant('id')) && is_supplier_bank_account_exists(tenant('id')) && ($ccp_status == 'active' || $baridimob_status == 'active'));
+                    $has_any_payment_method = $is_cod_active || $is_chargily_active || $is_bank_active;
+                @endphp
                 <div class="row mb-4 mt-4">
                     <div class="col-md-12">
-                        <h5 class="mb-3 fw-bold text-dark sub-title">طريقة الدفع</h5>
-                        <div class="d-flex flex-wrap gap-3">
-                            @if($cash_status=='active')
-                            <!-- الدفع عند الاستلام -->
-                            <div class="payment-option">
-                                <input type="radio" name="payment_method" id="cod" value="cod"
-                                    class="payment-radio" checked>
-                                <label for="cod" class="payment-label">
-                                    <div class="payment-content">
-                                        <i class="fas fa-money-bill-wave payment-icon"></i>
-                                        <span class="payment-text">الدفع عند الاستلام</span>
+                        <h5 class="mb-3 fw-bold text-dark sub-title">
+                            <i class="fas fa-wallet me-2 opacity-75"></i>طريقة الدفع
+                        </h5>
+                        @if ($has_any_payment_method)
+                            <div class="payment-options-grid">
+                                @if ($is_cod_active)
+                                    <!-- الدفع عند الاستلام -->
+                                    <div class="payment-option">
+                                        <label for="cod" class="payment-option-card w-100">
+                                            <input type="radio" name="payment_method" id="cod" value="cod"
+                                                class="payment-radio" checked>
+                                            <div class="payment-card-body">
+                                                <div class="payment-icon-wrapper payment-icon-cod">
+                                                    <i class="fas fa-money-bill-wave"></i>
+                                                </div>
+                                                <div class="payment-info text-start">
+                                                    <div class="fw-bold text-dark fs-6">الدفع عند الاستلام</div>
+                                                    <small class="text-muted d-block" style="font-size: 0.78rem;">
+                                                        ادفع نقداً عند استلام طلبك
+                                                    </small>
+                                                </div>
+                                                <div class="payment-radio-indicator"></div>
+                                            </div>
+                                        </label>
                                     </div>
-                                </label>
+                                @endif
+
+                                @if ($is_chargily_active)
+                                    <!-- Chargily Pay -->
+                                    <div class="payment-option">
+                                        <label for="chargily" class="payment-option-card w-100">
+                                            <input type="radio" name="payment_method" id="chargily" value="chargily"
+                                                class="payment-radio" {{ !$is_cod_active ? 'checked' : '' }}>
+                                            <div class="payment-card-body">
+                                                <div class="payment-icon-wrapper payment-icon-chargily">
+                                                    <i class="fas fa-credit-card"></i>
+                                                </div>
+                                                <div class="payment-info text-start">
+                                                    <div class="fw-bold text-dark fs-6">Chargily Pay</div>
+                                                    <small class="text-muted d-block" style="font-size: 0.78rem;">
+                                                        البطاقة الذهبية / CIB (فوري ⚡)
+                                                    </small>
+                                                </div>
+                                                <div class="payment-radio-indicator"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                @endif
+
+                                @if ($is_bank_active)
+                                    <!-- التحويل البنكي -->
+                                    <div class="payment-option">
+                                        <label for="bank_transfer" class="payment-option-card w-100">
+                                            <input type="radio" name="payment_method" id="bank_transfer" value="verments"
+                                                class="payment-radio" {{ (!$is_cod_active && !$is_chargily_active) ? 'checked' : '' }}>
+                                            <div class="payment-card-body">
+                                                <div class="payment-icon-wrapper payment-icon-bank">
+                                                    <i class="fas fa-university"></i>
+                                                </div>
+                                                <div class="payment-info text-start">
+                                                    <div class="fw-bold text-dark fs-6">تحويل بنكي</div>
+                                                    <small class="text-muted d-block" style="font-size: 0.78rem;">
+                                                        بريدي موب / CCP (تأكيد يدوي)
+                                                    </small>
+                                                </div>
+                                                <div class="payment-radio-indicator"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                @endif
+
                             </div>
-                            @endif
-                            @if (is_supplier_aproved(tenant('id')) && is_chargily_settings_exists(tenant('id')) && is_chargily_settings_exists(tenant('id')) && $chargily_status=='active')
-                                <!-- Chargily -->
-                                <div class="payment-option">
-                                    <input type="radio" name="payment_method" id="chargily" value="chargily"
-                                        class="payment-radio">
-                                    <label for="chargily" class="payment-label">
-                                        <div class="payment-content">
-                                            <i class="fas fa-credit-card payment-icon"></i>
-                                            <span class="payment-text">Chargily</span>
-                                        </div>
-                                    </label>
+                        @else
+                            <div class="alert alert-warning border border-warning-subtle shadow-sm rounded-4 p-3.5 text-center mb-0">
+                                <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+                                    <i class="fas fa-wallet text-warning fs-4"></i>
+                                    <h6 class="fw-bold text-dark mb-0">وسائل الدفع غير متوفرة حالياً</h6>
                                 </div>
-                            @endif
-
-                            @if (is_supplier_aproved(tenant('id')) && is_supplier_bank_account_exists(tenant('id')) && ($ccp_status =='active' || $baridimob_status == 'active'))
-                                <!-- التحويل البنكي -->
-                                <div class="payment-option">
-                                    <input type="radio" name="payment_method" id="bank_transfer" value="verments"
-                                        class="payment-radio">
-                                    <label for="bank_transfer" class="payment-label">
-                                        <div class="payment-content">
-                                            <i class="fas fa-university payment-icon"></i>
-                                            <span class="payment-text">تحويل بنكي</span>
-                                        </div>
-                                    </label>
-                                </div>
-                            @endif
-
-                        </div>
+                                <p class="small text-muted mb-0" style="line-height: 1.6;">
+                                    نعتذر منكم، وسائل الدفع غير متوفرة حالياً. لا يمكن إتمام عملية الشراء بدون تفعيل وسائل الدفع المعتمدة من قِبل إدارة المتجر.
+                                </p>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 @if (is_product_has_coupon($product->id))
