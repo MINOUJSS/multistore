@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Stancl\Tenancy\Database\Models\Domain;
+use App\Models\Domain;
 use Stancl\Tenancy\Database\Models\Tenant;
 
 return [
@@ -17,9 +17,9 @@ return [
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
     'central_domains' => [
-        '127.0.0.1',
-        'localhost',
-        'multistore.test',
+        // '127.0.0.1',
+        // 'localhost',
+        // 'multistore.test',
         'dzora.net',
         // 'https://dc23-154-121-106-90.ngrok-free.app',
     ],

@@ -78,6 +78,10 @@
         <a href="{{route('seller.support_tickets.index')}}"><i class="fa-solid fa-headset"></i> <span>تذاكر الدعم الفني</span></a>
     </div>
 
+    <div class="item {{ request()->routeIs('seller.domain.*') ? 'active' : '' }}">
+        <a href="{{route('seller.domain.index')}}"><i class="fa-solid fa-globe"></i> <span>الدومين المخصص</span></a>
+    </div>
+
     <div class="item {{ request()->routeIs('seller.settings') ? 'active' : '' }}">
         <a href="{{route('seller.settings')}}"><i class="fa-solid fa-gear"></i> <span>الإعدادات</span></a>
     </div>

@@ -15,6 +15,7 @@ use App\Http\Controllers\Users\Sellers\SellerCategoriesCouponsController;
 use App\Http\Controllers\Users\Sellers\SellerCategoryController;
 use App\Http\Controllers\Users\Sellers\SellerController;
 use App\Http\Controllers\Users\Sellers\SellerCouponController;
+use App\Http\Controllers\Users\Sellers\SellerCustomDomainController;
 use App\Http\Controllers\Users\Sellers\SellerCustomerBlockListController;
 use App\Http\Controllers\Users\Sellers\SellerFqsController;
 use App\Http\Controllers\Users\Sellers\SellerOrderAbandonedController;
@@ -88,6 +89,14 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::get('/seller-panel/settings', [SellerSettingController::class, 'index'])->name('settings');
                     Route::post('/seller-panel/settings/theme-update/{user_id}', [SellerSettingController::class, 'theme_update'])->name('theme-update');
                     Route::put('/seller-panel/settings/update', [SellerSettingController::class, 'update'])->name('settings.update');
+
+                    // seller custom domain routes
+                    Route::prefix('/seller-panel/domain')->name('domain.')->group(function () {
+                        Route::get('/', [SellerCustomDomainController::class, 'index'])->name('index');
+                        Route::post('/store', [SellerCustomDomainController::class, 'store'])->name('store');
+                        Route::get('/check/{id}', [SellerCustomDomainController::class, 'checkStatus'])->name('check');
+                        Route::delete('/delete/{id}', [SellerCustomDomainController::class, 'destroy'])->name('destroy');
+                    });
                     Route::get('/seller-panel/clear-tab-flag', function () {
                         session()->forget('activate_store_tab');
                         session()->forget('activate_security_tab');
