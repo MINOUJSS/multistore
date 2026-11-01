@@ -48,13 +48,17 @@ class SellerCustomDomainController extends Controller
 
         $fallbackOrigin = $this->cloudflareService->getFallbackOrigin();
         $isConfigured = $this->cloudflareService->isConfigured();
+        $ns1 = config('cloudflare.nameserver_1', 'ns1.dzora.net');
+        $ns2 = config('cloudflare.nameserver_2', 'ns2.dzora.net');
 
         return view('users.sellers.domain.index', compact(
             'tenant',
             'primaryDomain',
             'customDomains',
             'fallbackOrigin',
-            'isConfigured'
+            'isConfigured',
+            'ns1',
+            'ns2'
         ));
     }
 

@@ -12,9 +12,9 @@ class TelegramService
 
     public function __construct()
     {
-        $this->botToken = env('TELEGRAM_BOT_TOKEN');
-        // $this->botToken = config('services.telegram.bot_token');
-        $this->apiUrl = "https://api.telegram.org/bot{$this->botToken}";
+        $this->botToken = config('telegram.bot_token');
+        $baseUrl = rtrim(config('telegram.api_url', 'https://api.telegram.org'), '/');
+        $this->apiUrl = "{$baseUrl}/bot{$this->botToken}";
     }
 
     public function sendMessage($chatId, $message)
@@ -42,7 +42,7 @@ class TelegramService
             'body' => $response->body(),
         ]);
         Log::info('TOKEN', [
-            'token' => env('TELEGRAM_BOT_TOKEN'),
+            'token' => config('telegram.bot_token'),
         ]);
 
         return $response->json();

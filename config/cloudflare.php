@@ -16,6 +16,12 @@ return [
     'fallback_origin' => env('CLOUDFLARE_FALLBACK_ORIGIN', 'fallback1.dzora.net'),
 
     /*
+    | Custom Nameservers (Vanity NS)
+    */
+    'nameserver_1' => env('CLOUDFLARE_NS1', 'ns1.dzora.net'),
+    'nameserver_2' => env('CLOUDFLARE_NS2', 'ns2.dzora.net'),
+
+    /*
     | API Base URL
     */
     'api_base_url' => env('CLOUDFLARE_API_BASE_URL', 'https://api.cloudflare.com/client/v4'),
