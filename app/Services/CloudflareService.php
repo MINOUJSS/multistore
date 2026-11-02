@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -11,6 +12,8 @@ class CloudflareService
 {
     protected string $accountId;
     protected string $zoneId;
+    protected string $email;
+    protected string $apiKey;
     protected string $apiToken;
     protected string $fallbackOrigin;
     protected string $apiBaseUrl;
@@ -19,6 +22,8 @@ class CloudflareService
     {
         $this->accountId = (string) config('cloudflare.account_id', '');
         $this->zoneId = (string) config('cloudflare.zone_id', '');
+        $this->email = (string) config('cloudflare.email', '');
+        $this->apiKey = (string) config('cloudflare.api_key', '');
         $this->apiToken = (string) config('cloudflare.api_token', '');
         $this->fallbackOrigin = (string) config('cloudflare.fallback_origin', 'fallback1.dzora.net');
         $this->apiBaseUrl = rtrim((string) config('cloudflare.api_base_url', 'https://api.cloudflare.com/client/v4'), '/');
@@ -26,10 +31,37 @@ class CloudflareService
 
     /**
      * Check if Cloudflare API credentials are configured.
+     * Supports both:
+     * 1. Global API Key (CLOUDFLARE_EMAIL + CLOUDFLARE_API_KEY / CLOUDFLARE_API_TOKEN)
+     * 2. Scoped API Token (CLOUDFLARE_API_TOKEN)
      */
     public function isConfigured(): bool
     {
-        return !empty($this->zoneId) && !empty($this->apiToken);
+        $hasZone = !empty($this->zoneId);
+        $hasGlobalKey = !empty($this->email) && (!empty($this->apiKey) || !empty($this->apiToken));
+        $hasScopedToken = !empty($this->apiToken);
+
+        return $hasZone && ($hasGlobalKey || $hasScopedToken);
+    }
+
+    /**
+     * Build an authenticated HTTP client instance.
+     */
+    protected function http(int $timeout = 20): PendingRequest
+    {
+        $client = Http::timeout($timeout);
+
+        // 1. Global API Key Authentication (X-Auth-Email + X-Auth-Key)
+        if (!empty($this->email)) {
+            $key = !empty($this->apiKey) ? $this->apiKey : $this->apiToken;
+            return $client->withHeaders([
+                'X-Auth-Email' => $this->email,
+                'X-Auth-Key' => $key,
+            ]);
+        }
+
+        // 2. Scoped API Token Authentication (Bearer Token)
+        return $client->withToken($this->apiToken);
     }
 
     /**
@@ -65,18 +97,16 @@ class CloudflareService
         $url = "{$this->apiBaseUrl}/zones/{$this->zoneId}/custom_hostnames";
 
         try {
-            $response = Http::withToken($this->apiToken)
-                ->timeout(20)
-                ->post($url, [
-                    'hostname' => $hostname,
-                    'ssl' => [
-                        'method' => 'http',
-                        'type' => 'dv',
-                        'settings' => [
-                            'min_tls_version' => '1.2',
-                        ],
+            $response = $this->http(20)->post($url, [
+                'hostname' => $hostname,
+                'ssl' => [
+                    'method' => 'http',
+                    'type' => 'dv',
+                    'settings' => [
+                        'min_tls_version' => '1.2',
                     ],
-                ]);
+                ],
+            ]);
 
             $json = $response->json();
 
@@ -141,9 +171,7 @@ class CloudflareService
         $url = "{$this->apiBaseUrl}/zones/{$this->zoneId}/custom_hostnames/{$hostnameId}";
 
         try {
-            $response = Http::withToken($this->apiToken)
-                ->timeout(15)
-                ->get($url);
+            $response = $this->http(15)->get($url);
 
             $json = $response->json();
 
@@ -199,9 +227,7 @@ class CloudflareService
         $url = "{$this->apiBaseUrl}/zones/{$this->zoneId}/custom_hostnames/{$hostnameId}";
 
         try {
-            $response = Http::withToken($this->apiToken)
-                ->timeout(15)
-                ->delete($url);
+            $response = $this->http(15)->delete($url);
 
             $json = $response->json();
 

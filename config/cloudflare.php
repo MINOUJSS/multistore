@@ -12,6 +12,8 @@ return [
 
     'account_id' => env('CLOUDFLARE_ACCOUNT_ID', ''),
     'zone_id' => env('CLOUDFLARE_ZONE_ID', ''),
+    'email' => env('CLOUDFLARE_EMAIL', ''),
+    'api_key' => env('CLOUDFLARE_API_KEY', ''),
     'api_token' => env('CLOUDFLARE_API_TOKEN', ''),
     'fallback_origin' => env('CLOUDFLARE_FALLBACK_ORIGIN', 'fallback1.dzora.net'),
 
