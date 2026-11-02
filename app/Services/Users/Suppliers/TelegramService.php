@@ -28,6 +28,8 @@ class TelegramService
         // return $response->successful();
         $token = $this->botToken;
 
+        $telegram_link = "https://api.telegram.org/bot{$token}/sendMessage";
+
         $response = Http::post(
             "https://api.telegram.org/bot{$token}/sendMessage",
             [
@@ -36,6 +38,8 @@ class TelegramService
                 'parse_mode' => 'HTML',
             ]
         );
+
+        Log::info('the telegrame request:', $telegram_link);
 
         Log::info('Telegram API response', [
             'status' => $response->status(),
