@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Admins\Admin\Auth;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedSessionController extends Controller
 {
-    //show login form
+    // show login form
     public function create()
     {
         return view('admins.admin.auth.login');
     }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -22,6 +23,9 @@ class AuthenticatedSessionController extends Controller
         $remember = $request->boolean('remember'); // Get the boolean value of 'remember'
         if (Auth::guard('admin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
+
+            // Dispatch the job to send Telegram info about the login
+            sendTelegramInfoAboutLogin::dispatch();
 
             return redirect()->intended(route('admin.dashboard'));
         }

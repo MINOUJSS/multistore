@@ -14,7 +14,8 @@ class BackupController extends Controller
 
     public function __construct()
     {
-        $this->backupPath = env('APP_NAME', 'laravel-backup');
+        $this->disk = config('backup.backup.destination.disks.0', 'local');
+        $this->backupPath = config('backup.backup.name', config('app.name', 'laravel-backup'));
     }
 
     public function index()

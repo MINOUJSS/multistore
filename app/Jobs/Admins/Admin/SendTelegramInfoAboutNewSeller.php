@@ -42,6 +42,6 @@ class SendTelegramInfoAboutNewSeller implements ShouldQueue
 
         $message .= "📦 <b>الخطة:</b> {$this->data['plan_name']}";
 
-        $telegramservice->sendMessage(env('ADMIN_CHAT_ID'), $message);
+        $telegramservice->sendMessage(config('telegram.admin_chat_id'), $message);
     }
 }

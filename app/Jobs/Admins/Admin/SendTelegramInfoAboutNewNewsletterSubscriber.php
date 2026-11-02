@@ -36,6 +36,6 @@ class SendTelegramInfoAboutNewNewsletterSubscriber implements ShouldQueue
         foreach ($this->data as $key => $value) {
             $message .= "<b>{$key}:</b> {$value}\n";
         }
-        $telegramservice->sendMessage(env('ADMIN_CHAT_ID'), $message);
+        $telegramservice->sendMessage(config('telegram.admin_chat_id'), $message);
     }
 }
