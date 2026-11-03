@@ -29,7 +29,7 @@ class sendTelegramInfoAboutLogin implements ShouldQueue
     public function handle(): void
     {
         $telegramservice = new TelegramService();
-        $message = '<b>تم تسجيل الدخول إلى لوحة التحكم الأدمن</b> \n\n';
+        $message = '<b>تم تسجيل الدخول إلى لوحة التحكم الأدمن</b>';
         $telegramservice->sendMessage(config('telegram.admin_chat_id'), $message);
     }
 }

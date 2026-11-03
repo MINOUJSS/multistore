@@ -21,7 +21,7 @@ class StoreVisitorsReportService
 
     public function __construct()
     {
-        $this->botToken = env('TELEGRAM_BOT_TOKEN');
+        $this->botToken = config('telegram.bot_token');
         $this->apiUrl = "https://api.telegram.org/bot{$this->botToken}";
     }
 
@@ -29,8 +29,7 @@ class StoreVisitorsReportService
      * Send periodic visitors reports to all subscribed sellers and suppliers.
      *
      * @param string $frequency 'daily', 'weekly', or 'monthly'
-     * @param string $role 'all', 'seller', or 'supplier'
-     * @return array
+     * @param string $role      'all', 'seller', or 'supplier'
      */
     public function sendReports(string $frequency = 'daily', string $role = 'all'): array
     {
@@ -70,11 +69,11 @@ class StoreVisitorsReportService
             $processResult = $this->processSubscriberReport($subscription, $frequency);
 
             if ($processResult['status'] === 'sent') {
-                $results['sent_count']++;
+                ++$results['sent_count'];
             } elseif ($processResult['status'] === 'failed') {
-                $results['failed_count']++;
+                ++$results['failed_count'];
             } else {
-                $results['skipped_count']++;
+                ++$results['skipped_count'];
             }
 
             $results['details'][] = $processResult;
@@ -92,10 +91,6 @@ class StoreVisitorsReportService
 
     /**
      * Process report generation and sending for a single subscriber.
-     *
-     * @param UserApps $subscription
-     * @param string $frequency
-     * @return array
      */
     public function processSubscriberReport(UserApps $subscription, string $frequency): array
     {
@@ -103,7 +98,7 @@ class StoreVisitorsReportService
         if (!$user) {
             return [
                 'status' => 'skipped',
-                'reason' => 'User not found for subscription ID ' . $subscription->id,
+                'reason' => 'User not found for subscription ID '.$subscription->id,
             ];
         }
 
@@ -169,9 +164,6 @@ class StoreVisitorsReportService
 
     /**
      * Calculate current and previous date ranges based on frequency.
-     *
-     * @param string $frequency
-     * @return array
      */
     protected function calculatePeriods(string $frequency): array
     {
@@ -216,11 +208,6 @@ class StoreVisitorsReportService
 
     /**
      * Aggregate store visits and top visited products for the periods.
-     *
-     * @param mixed $store
-     * @param string $role
-     * @param array $periods
-     * @return array
      */
     protected function getStoreVisitsAnalytics($store, string $role, array $periods): array
     {
@@ -306,11 +293,6 @@ class StoreVisitorsReportService
 
     /**
      * Build dynamic actionable tips and motivational guidance tailored to performance.
-     *
-     * @param array $analytics
-     * @param string $frequency
-     * @param string $role
-     * @return array
      */
     protected function generateMotivationalGuidance(array $analytics, string $frequency, string $role): array
     {
@@ -321,21 +303,21 @@ class StoreVisitorsReportService
 
         // 1. Performance-based motivation & tips
         if ($trend === 'up') {
-            $tips[] = "🚀 <b>أداء رائع ومبشر!</b> حركة الزوار تشهد نمواً ملحوظاً، والفرصة مثالية الآن لتحويل هذا الاهتمام إلى مبيعات مؤكدة وأرباح مضاعفة.";
-            $tips[] = "🎯 <b>تكتيك رفع التحويل:</b> قدّم عروض حزم ترويجية (Bundles) أو خصماً محدود المدة لتحفيز الزائر على إتمام الشراء قبل مغادرة المتجر.";
-            $tips[] = "⚡ <b>سرعة التأكيد:</b> اتصل بالعملاء فور وصول الطلبات لتأكيدها وتجهيز الشحن، فالسرعة ترفع نسبة استلام الطرود إلى أكثر من 85%.";
+            $tips[] = '🚀 <b>أداء رائع ومبشر!</b> حركة الزوار تشهد نمواً ملحوظاً، والفرصة مثالية الآن لتحويل هذا الاهتمام إلى مبيعات مؤكدة وأرباح مضاعفة.';
+            $tips[] = '🎯 <b>تكتيك رفع التحويل:</b> قدّم عروض حزم ترويجية (Bundles) أو خصماً محدود المدة لتحفيز الزائر على إتمام الشراء قبل مغادرة المتجر.';
+            $tips[] = '⚡ <b>سرعة التأكيد:</b> اتصل بالعملاء فور وصول الطلبات لتأكيدها وتجهيز الشحن، فالسرعة ترفع نسبة استلام الطرود إلى أكثر من 85%.';
         } elseif ($trend === 'down') {
-            $tips[] = "💪 <b>استعد الزخم!</b> التجارة الإلكترونية جولات والركود المؤقت يتبعه انطلاقة قوية متى ما اتخذت الخطوات الصحيحة.";
-            $tips[] = "📢 <b>إعادة تنشيط الزيارات:</b> قم بتحديث إعلاناتك على منصات التواصل (فيسبوك، تيك توك، إنستغرام) وركز على صور وفيديوهات توضح فوائد منتجاتك عملياً.";
-            $tips[] = "🎁 <b>عرض لا يُقاوم:</b> جرب إطلاق ميزة الشحن المجاني لمدة 48 ساعة أو كود تخفيض استثنائي لإعادة جذب الزوار المترددين.";
+            $tips[] = '💪 <b>استعد الزخم!</b> التجارة الإلكترونية جولات والركود المؤقت يتبعه انطلاقة قوية متى ما اتخذت الخطوات الصحيحة.';
+            $tips[] = '📢 <b>إعادة تنشيط الزيارات:</b> قم بتحديث إعلاناتك على منصات التواصل (فيسبوك، تيك توك، إنستغرام) وركز على صور وفيديوهات توضح فوائد منتجاتك عملياً.';
+            $tips[] = '🎁 <b>عرض لا يُقاوم:</b> جرب إطلاق ميزة الشحن المجاني لمدة 48 ساعة أو كود تخفيض استثنائي لإعادة جذب الزوار المترددين.';
         } else {
             if ($currentVisits > 0) {
-                $tips[] = "⚖️ <b>حركة زوار متوازنة:</b> زوار متجرك في وتيرة مستقرة، ولكن بإمكانك كسر هذا النمط والوصول لآفاق أوسع بمضاعفة جهود التسويق.";
+                $tips[] = '⚖️ <b>حركة زوار متوازنة:</b> زوار متجرك في وتيرة مستقرة، ولكن بإمكانك كسر هذا النمط والوصول لآفاق أوسع بمضاعفة جهود التسويق.';
             } else {
-                $tips[] = "🌱 <b>بداية الانطلاق:</b> متجرك بانتظار زواره الأوائل! كل نجاح كبير في التجارة بدأ بخطوة أولى مدروسة.";
+                $tips[] = '🌱 <b>بداية الانطلاق:</b> متجرك بانتظار زواره الأوائل! كل نجاح كبير في التجارة بدأ بخطوة أولى مدروسة.';
             }
-            $tips[] = "📸 <b>تحسين العرض:</b> حسّن جودة الصور الرئيسية وعناوين المنتجات لتكون واضحة وجذابة تلفت الانتباه من النظرة الأولى.";
-            $tips[] = "🌐 <b>النشر والمشاركة:</b> شارك روابط المنتجات والمتجر في المجموعات والمنصات ذات الصلة بنيش عملك.";
+            $tips[] = '📸 <b>تحسين العرض:</b> حسّن جودة الصور الرئيسية وعناوين المنتجات لتكون واضحة وجذابة تلفت الانتباه من النظرة الأولى.';
+            $tips[] = '🌐 <b>النشر والمشاركة:</b> شارك روابط المنتجات والمتجر في المجموعات والمنصات ذات الصلة بنيش عملك.';
         }
 
         // 2. Specific advice for the top product
@@ -349,13 +331,6 @@ class StoreVisitorsReportService
 
     /**
      * Build HTML-formatted Telegram message.
-     *
-     * @param string $storeName
-     * @param string $role
-     * @param string $frequency
-     * @param array $periods
-     * @param array $analytics
-     * @return string
      */
     protected function buildReportMessage(string $storeName, string $role, string $frequency, array $periods, array $analytics): string
     {
@@ -374,7 +349,7 @@ class StoreVisitorsReportService
             $trendSign = '';
         }
 
-        $percentageStr = $trendSign . $analytics['percentage'] . '%';
+        $percentageStr = $trendSign.$analytics['percentage'].'%';
         $diffStr = ($analytics['difference'] > 0 ? "+{$analytics['difference']}" : "{$analytics['difference']}");
 
         $msg = "{$title}\n";
@@ -408,7 +383,7 @@ class StoreVisitorsReportService
             $msg .= "• {$tip}\n\n";
         }
 
-        $msg .= "✨ <i>منصة Dzora تتمنى لك مبيعات وفيرة وتوفيقاً مستمراً!</i>";
+        $msg .= '✨ <i>منصة Dzora تتمنى لك مبيعات وفيرة وتوفيقاً مستمراً!</i>';
 
         return trim($msg);
     }
@@ -417,13 +392,12 @@ class StoreVisitorsReportService
      * Send HTML message to Telegram API.
      *
      * @param string|int $chatId
-     * @param string $message
-     * @return bool
      */
     public function sendTelegramMessage($chatId, string $message): bool
     {
         if (empty($this->botToken)) {
             Log::warning('StoreVisitorsReportService: TELEGRAM_BOT_TOKEN is not configured in .env');
+
             return false;
         }
 
@@ -447,9 +421,10 @@ class StoreVisitorsReportService
 
             return false;
         } catch (\Throwable $e) {
-            Log::error('StoreVisitorsReportService: Exception while sending telegram message: ' . $e->getMessage(), [
+            Log::error('StoreVisitorsReportService: Exception while sending telegram message: '.$e->getMessage(), [
                 'chat_id' => $chatId,
             ]);
+
             return false;
         }
     }
