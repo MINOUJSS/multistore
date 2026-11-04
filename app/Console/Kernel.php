@@ -59,7 +59,7 @@ class Kernel extends ConsoleKernel
             📅 التاريخ: '.now()->format('Y-m-d');
 
             app(TelegramService::class)
-                ->sendMessage(env('ADMIN_CHAT_ID'), trim($message));
+                ->sendMessage(config('telegram.admin_chat_id'), trim($message));
         })->dailyAt('23:59');
         /*:::::::::::::::::::::::::::::::::::::::::::::::::::::
                 تنبيه عن وجود دفع عن طريق تحويل بنكي
@@ -86,7 +86,7 @@ class Kernel extends ConsoleKernel
                 ";
 
                     $telegram->sendMessage(
-                        env('ADMIN_CHAT_ID'),
+                        config('telegram.admin_chat_id'),
                         trim($message)
                     );
                 }
@@ -114,7 +114,7 @@ class Kernel extends ConsoleKernel
                 ";
 
                     $telegram->sendMessage(
-                        env('ADMIN_CHAT_ID'),
+                        config('telegram.admin_chat_id'),
                         trim($message)
                     );
                 }
@@ -136,7 +136,7 @@ class Kernel extends ConsoleKernel
                     ";
 
                     $telegram->sendMessage(
-                        env('ADMIN_CHAT_ID'),
+                        config('telegram.admin_chat_id'),
                         trim($message)
                     );
                 }
@@ -231,6 +231,16 @@ class Kernel extends ConsoleKernel
 
         // 3- التقرير الشهري: يرسل صباح أول يوم من كل شهر لمراجعة أداء الشهر كاملاً
         $schedule->command('store:send-visitors-report monthly')->monthlyOn(1, '09:00');
+
+        /*:::::::::::::::::::::::::::::::::::::::::::::::::::::
+        // 4- التقرير الأسبوعي الذكي لمدير الوكلاء واستكشاف التقنيات عبر تيليغرام
+        :::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        $schedule->command('ai:weekly-brief --telegram')->weeklyOn(1, '09:00');
+
+        /*:::::::::::::::::::::::::::::::::::::::::::::::::::::
+        // 5- حوار واستقبال أوامر تيليغرام الموجهة لمدير الوكلاء (ManagerAgent)
+        :::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        $schedule->command('ai:telegram-chat')->everyMinute()->withoutOverlapping();
     }
 
     /**
@@ -242,6 +252,8 @@ class Kernel extends ConsoleKernel
         Commands\SendStoreVisitorsReport::class,
         Commands\MigrateSellerMediaToR2::class,
         Commands\MigrateSupplierMediaToR2::class,
+        Commands\GenerateWeeklyAiBriefCommand::class,
+        Commands\TelegramAiChatCommand::class,
     ];
 
     protected function commands(): void

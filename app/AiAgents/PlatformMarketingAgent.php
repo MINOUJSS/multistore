@@ -52,7 +52,7 @@ class PlatformMarketingAgent extends Agent
      */
     public function instructions()
     {
-        return <<<INSTRUCTIONS
+        return <<<'INSTRUCTIONS'
 أنت خبير تسويق بالمحتوى ومتخصص في نمو منصات التجارة الإلكترونية لمنصة **dzora.net** الجزائرية.
 منصة dzora.net هي منصة SaaS متعددة التجار (Multi-vendor) تتيح:
 1. لكل تاجر الحصول على متجره الإلكتروني الخاص بنطاق مستقل أو فرعي.
