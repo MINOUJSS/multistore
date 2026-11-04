@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admins\Admin\AdminAppsController;
+use App\Http\Controllers\Admins\Admin\AiMarketingController;
 use App\Http\Controllers\Admins\Admin\AdminBankAccountController;
 use App\Http\Controllers\Admins\Admin\AdminController;
 use App\Http\Controllers\Admins\Admin\AdminDisputeController;
@@ -219,6 +220,14 @@ foreach (config('tenancy.central_domains') as $domain) {
 
                 // User Applications Statistics
                 Route::get('/ah-admin/apps', [AdminAppsController::class, 'index'])->name('apps.index');
+
+                // AI Marketing Agent Routes
+                Route::prefix('/ah-admin/ai-marketing')->name('ai_marketing.')->group(function () {
+                    Route::get('/', [AiMarketingController::class, 'index'])->name('index');
+                    Route::post('/generate', [AiMarketingController::class, 'generate'])->name('generate');
+                    Route::patch('/{id}/status', [AiMarketingController::class, 'updateStatus'])->name('status');
+                    Route::delete('/{id}', [AiMarketingController::class, 'destroy'])->name('destroy');
+                });
             });
         });
     });

@@ -32,6 +32,7 @@
             </div>
         </div>
         <div class="item"><a href="{{ route('admin.backup.index') }}"><i class="fa-solid fa-box-archive"></i> النسخ الإحتياطية</a></div>
+        <div class="item"><a href="{{ route('admin.ai_marketing.index') }}"><i class="fa-solid fa-robot text-warning"></i> وكيل التسويق الذكي</a></div>
         @endif
         <!--start messages and chat-->
         <div class="item">

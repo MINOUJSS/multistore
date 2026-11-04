@@ -21,6 +21,7 @@
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "3.0",
         "livewire/livewire": "^3.5",
+        "maestroerror/laragent": "*",
         "piteurstudio/courierdz": "dev-main",
         "realrashid/sweet-alert": "^7.2",
         "spatie/laravel-backup": "^9",
@@ -86,7 +87,7 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": false
         }
     },
     "minimum-stability": "stable",
