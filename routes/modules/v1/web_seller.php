@@ -91,7 +91,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::put('/seller-panel/settings/update', [SellerSettingController::class, 'update'])->name('settings.update');
 
                     // seller custom domain routes
-                    Route::prefix('/seller-panel/domain')->name('domain.')->group(function () {
+                    Route::prefix('/seller-panel/domain')->name('domain.')->middleware('seller.custom_domain')->group(function () {
                         Route::get('/', [SellerCustomDomainController::class, 'index'])->name('index');
                         Route::post('/store', [SellerCustomDomainController::class, 'store'])->name('store');
                         Route::get('/check/{id}', [SellerCustomDomainController::class, 'checkStatus'])->name('check');

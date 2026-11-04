@@ -79,5 +79,6 @@ class Kernel extends HttpKernel
         'SupplierRefusedPaymentProofs' => Middleware\SupplierRefusedPaymentProofs::class,
         'setlang' => Middleware\SetLang::class,
         'seller_or_supplier' => Middleware\EnsureSellerOrSupplier::class,
+        'seller.custom_domain' => Middleware\EnsureSellerCustomDomainAccess::class,
     ];
 }

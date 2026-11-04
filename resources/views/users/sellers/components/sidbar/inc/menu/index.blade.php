@@ -78,9 +78,11 @@
         <a href="{{route('seller.support_tickets.index')}}"><i class="fa-solid fa-headset"></i> <span>تذاكر الدعم الفني</span></a>
     </div>
 
+    @if(is_seller_custom_domain_authorized())
     <div class="item {{ request()->routeIs('seller.domain.*') ? 'active' : '' }}">
         <a href="{{route('seller.domain.index')}}"><i class="fa-solid fa-globe"></i> <span>الدومين المخصص</span></a>
     </div>
+    @endif
 
     <div class="item {{ request()->routeIs('seller.settings') ? 'active' : '' }}">
         <a href="{{route('seller.settings')}}"><i class="fa-solid fa-gear"></i> <span>الإعدادات</span></a>

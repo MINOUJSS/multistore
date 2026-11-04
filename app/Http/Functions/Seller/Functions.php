@@ -1103,3 +1103,42 @@ function assign_free_plan_welcome_services(\App\Models\User $user): void
 
 
 
+
+
+/**
+ * Check if the seller is authorized to use Custom Domain:
+ * 1. Plan must NOT be Free Plan (ID 1).
+ * 2. Plan has 'domane' permission enabled in SellerPlanAuthorizations OR is Advanced (2) or Professional (3).
+ */
+function is_seller_custom_domain_authorized($tenant_id = null): bool
+{
+    $tenantId = $tenant_id ?? (Illuminate\Support\Facades\Auth::check() ? Illuminate\Support\Facades\Auth::user()->tenant_id : null);
+    if (!$tenantId) {
+        return false;
+    }
+
+    $seller = get_seller_data($tenantId);
+    if (!$seller || !$seller->plan_subscription) {
+        return false;
+    }
+
+    $planId = $seller->plan_subscription->plan_id;
+
+    // Free plan (ID 1) is never authorized for custom domain
+    if ($planId == 1) {
+        return false;
+    }
+
+    // Check if permission exists in seller_plan_authorizations
+    $hasPermission = \App\Models\Seller\SellerPlanAuthorizations::where('plan_id', $planId)
+        ->where('permission_key', 'domane')
+        ->where('is_enabled', true)
+        ->exists();
+
+    if ($hasPermission) {
+        return true;
+    }
+
+    // Fallback: Paid plans (2, 3)
+    return in_array($planId, [2, 3]);
+}
