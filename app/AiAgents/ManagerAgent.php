@@ -14,9 +14,9 @@ use LarAgent\Agent;
 class ManagerAgent extends Agent
 {
     /**
-     * اسم النموذج الافتراضي.
+     * اسم النموذج الافتراضي (النموذج الخفيف والسريع والأكثر استقراراً ضد أوقات الذروة).
      */
-    protected $model = 'gemini-3.5-flash';
+    protected $model = 'gemini-3.5-flash-lite';
 
     /**
      * نمط تخزين سجل المحادثة:
@@ -65,8 +65,8 @@ class ManagerAgent extends Agent
             $this->provider = 'groq';
             $this->model = 'llama-3.3-70b-versatile';
         } else {
-            $this->provider = 'gemini';
-            $this->model = config('laragent.providers.gemini.model') ?: env('GEMINI_MODEL', 'gemini-3.5-flash');
+            $this->provider = ['gemini', 'gemini_lite'];
+            $this->model = config('laragent.providers.gemini.model') ?: env('GEMINI_MODEL', 'gemini-3.5-flash-lite');
         }
 
         parent::__construct($key, $usesUserId, $group);

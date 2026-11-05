@@ -113,13 +113,33 @@ class TelegramController extends Controller
                 // إرسال إشارة "جاري الكتابة..."
                 $this->sendChatAction($chatId, 'typing');
 
-                // تشغيل مدير الوكلاء وتمرير رسالة الأدمن
+                // تشغيل مدير الوكلاء وتمرير رسالة الأدمن مع آلية إعادة المحاولة الذكية
                 $sessionKey = 'telegram_chat_' . $chatId;
-                $manager = new ManagerAgent($sessionKey);
-                $reply = (string) $manager->respond($text);
+                $reply = null;
+                $maxAttempts = 2;
 
-                // ضمان حفظ السجل بشكل دائم
-                $manager->chatHistory()->save();
+                for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+                    try {
+                        $manager = new ManagerAgent($sessionKey);
+                        $reply = (string) $manager->respond($text);
+
+                        // ضمان حفظ السجل بشكل دائم
+                        $manager->chatHistory()->save();
+                        break;
+                    } catch (\Throwable $err) {
+                        $isTransient = str_contains($err->getMessage(), '503') 
+                            || str_contains($err->getMessage(), 'high demand') 
+                            || str_contains($err->getMessage(), '429');
+
+                        if ($isTransient && $attempt < $maxAttempts) {
+                            Log::warning("Gemini 503 high demand spike on attempt $attempt. Retrying in 1.5s...");
+                            $this->sendChatAction($chatId, 'typing');
+                            usleep(1500000); // انتظر 1.5 ثانية لتجاوز الضغط اللحظي
+                            continue;
+                        }
+                        throw $err;
+                    }
+                }
 
                 // إرسال الرد المنسق مع التجزئة الآمنة
                 $this->sendToTelegramSafe($chatId, $reply);

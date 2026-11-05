@@ -79,7 +79,17 @@ return [
             'default_truncation_threshold' => 1000000,
             'default_max_completion_tokens' => 10000,
             'default_temperature' => 1,
-            'model' => env('GEMINI_MODEL', 'gemini-3.5-flash'),
+            'model' => env('GEMINI_MODEL', 'gemini-3.5-flash-lite'),
+        ],
+
+        'gemini_lite' => [
+            'label' => 'gemini_lite',
+            'api_key' => env('GEMINI_API_KEY'),
+            'driver' => LarAgent\Drivers\Gemini\GeminiDriver::class,
+            'default_truncation_threshold' => 1000000,
+            'default_max_completion_tokens' => 10000,
+            'default_temperature' => 1,
+            'model' => 'gemini-3.5-flash-lite',
         ],
 
         'gemini_native' => [
@@ -171,7 +181,7 @@ return [
      * Instead, use the 'default_providers' config array or define multiple providers
      * in your agent's $provider property as an array.
      */
-    'fallback_provider' => null,
+    'fallback_provider' => 'gemini_lite',
 
     'mcp_tool_caching' => [
         'enabled' => env('MCP_TOOL_CACHE_ENABLED', false),
