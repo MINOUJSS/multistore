@@ -4,6 +4,7 @@ namespace App\AiAgents;
 
 use App\AgentTools\DelegateToBackendArchitectTool;
 use App\AgentTools\DelegateToCompetitorAgentTool;
+use App\AgentTools\DelegateToDocumentationAgentTool;
 use App\AgentTools\DelegateToErrorAuditorTool;
 use App\AgentTools\DelegateToFrontendAgentTool;
 use App\AgentTools\DelegateToJsAuditorTool;
@@ -51,6 +52,7 @@ class ManagerAgent extends Agent
         DelegateToJsAuditorTool::class,
         DelegateToSecurityAuditorTool::class,
         DelegateToCompetitorAgentTool::class,
+        DelegateToDocumentationAgentTool::class,
     ];
 
     public function __construct($key = null, bool $usesUserId = false, ?string $group = null)
@@ -109,6 +111,10 @@ class ManagerAgent extends Agent
 7. **وكيل استخبارات السوق والمنافسين (`CompetitorAgent`):**
    * خبير في تتبع حركات المنافسين (YouCan, Dropify, Shopify, Salla)، تحليل لوجستيات الشحن (Yalidine) وبوابات الدفع (Chargily)، وابتكار ميزات تنافسية عالية العائد للمنصة.
    * يمكنك تفويضه عبر أداة: `delegate_to_competitor_agent`.
+
+8. **وكيل التوثيق ودعم المستخدمين (`DocumentationAgent`):**
+   * خبير في تحويل المخرجات التقنية المعقدة إلى أدلة مستخدم مبسطة خطوة بخطوة موجهة للتجار والموردين، وصياغة التوثيق الرسمي للميزات وحفظها بصيغة Markdown في مجلد docs/.
+   * يمكنك تفويضه عبر أداة: `delegate_to_documentation_agent`.
 
 ### قواعد وبروتوكول العمل الإداري (Orchestration Protocol):
 1. **تحليل الطلب وتفكيكه (Deconstruction):**
