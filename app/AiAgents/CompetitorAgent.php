@@ -2,27 +2,27 @@
 
 namespace App\AiAgents;
 
-use LarAgent\Agent;
 use App\AgentTools\CompetitorMarketResearchTool;
-use App\AgentTools\WebSearchTrendsTool;
 use App\AgentTools\ReadPlatformGuidelinesTool;
+use App\AgentTools\WebSearchTrendsTool;
+use LarAgent\Agent;
 
 class CompetitorAgent extends Agent
 {
     /**
-     * اسم النموذج الافتراضي
+     * اسم النموذج الافتراضي.
      */
-    protected $model = 'gemini-3.5-flash-lite';
+    protected $model = 'gemini-1.5-flash';
 
     protected $history = 'in_memory';
 
     /**
-     * مزود الذكاء الاصطناعي الافتراضي
+     * مزود الذكاء الاصطناعي الافتراضي.
      */
     protected $provider = 'gemini';
 
     /**
-     * أدوات أبحاث السوق والمنافسين واستكشاف التريندات
+     * أدوات أبحاث السوق والمنافسين واستكشاف التريندات.
      */
     protected $tools = [
         CompetitorMarketResearchTool::class,
@@ -32,7 +32,7 @@ class CompetitorAgent extends Agent
 
     public function __construct($key = null, bool $usesUserId = false, ?string $group = null)
     {
-        $key = $key ?? 'competitor_agent_' . uniqid();
+        $key = $key ?? 'competitor_agent_'.uniqid();
 
         // التبديل التلقائي للمزود حسب المتوفر في ملف .env
         if (!empty(env('OPENAI_API_KEY'))) {
@@ -43,14 +43,14 @@ class CompetitorAgent extends Agent
             $this->model = 'llama-3.3-70b-versatile';
         } else {
             $this->provider = 'gemini';
-            $this->model = 'gemini-3.5-flash-lite';
+            $this->model = 'gemini-1.5-flash';
         }
 
         parent::__construct($key, $usesUserId, $group);
     }
 
     /**
-     * التعليمات البرمجية وهوية وكيل استخبارات السوق والمنافسين (Chief Market Intelligence & Product Strategist)
+     * التعليمات البرمجية وهوية وكيل استخبارات السوق والمنافسين (Chief Market Intelligence & Product Strategist).
      */
     public function instructions()
     {
@@ -80,4 +80,3 @@ class CompetitorAgent extends Agent
 INSTRUCTIONS;
     }
 }
-

@@ -2,26 +2,26 @@
 
 namespace App\AiAgents;
 
-use LarAgent\Agent;
 use App\AgentTools\ReadFrontendJsLogsTool;
 use App\AgentTools\ReadPlatformGuidelinesTool;
+use LarAgent\Agent;
 
 class JavaScriptAuditorAgent extends Agent
 {
     /**
-     * اسم النموذج الافتراضي
+     * اسم النموذج الافتراضي.
      */
-    protected $model = 'gemini-3.5-flash-lite';
+    protected $model = 'gemini-1.5-flash';
 
     protected $history = 'in_memory';
 
     /**
-     * مزود الذكاء الاصطناعي الافتراضي
+     * مزود الذكاء الاصطناعي الافتراضي.
      */
     protected $provider = 'gemini';
 
     /**
-     * أدوات قراءة أخطاء الواجهة وقواعد المنصة
+     * أدوات قراءة أخطاء الواجهة وقواعد المنصة.
      */
     protected $tools = [
         ReadFrontendJsLogsTool::class,
@@ -30,7 +30,7 @@ class JavaScriptAuditorAgent extends Agent
 
     public function __construct($key = null, bool $usesUserId = false, ?string $group = null)
     {
-        $key = $key ?? 'js_auditor_' . uniqid();
+        $key = $key ?? 'js_auditor_'.uniqid();
 
         // التبديل التلقائي للمزود حسب المتوفر في ملف .env
         if (!empty(env('OPENAI_API_KEY'))) {
@@ -41,14 +41,14 @@ class JavaScriptAuditorAgent extends Agent
             $this->model = 'llama-3.3-70b-versatile';
         } else {
             $this->provider = 'gemini';
-            $this->model = 'gemini-3.5-flash-lite';
+            $this->model = 'gemini-1.5-flash';
         }
 
         parent::__construct($key, $usesUserId, $group);
     }
 
     /**
-     * التعليمات البرمجية وهوية وكيل تدقيق أخطاء الـ JavaScript والواجهات (Lead Frontend QA & JavaScript Engineer)
+     * التعليمات البرمجية وهوية وكيل تدقيق أخطاء الـ JavaScript والواجهات (Lead Frontend QA & JavaScript Engineer).
      */
     public function instructions()
     {
@@ -80,4 +80,3 @@ class JavaScriptAuditorAgent extends Agent
 INSTRUCTIONS;
     }
 }
-

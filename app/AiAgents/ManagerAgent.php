@@ -2,31 +2,31 @@
 
 namespace App\AiAgents;
 
-use LarAgent\Agent;
-use App\AgentTools\DelegateToMarketingAgentTool;
 use App\AgentTools\DelegateToBackendArchitectTool;
-use App\AgentTools\DelegateToFrontendAgentTool;
-use App\AgentTools\DelegateToErrorAuditorTool;
-use App\AgentTools\DelegateToJsAuditorTool;
-use App\AgentTools\DelegateToSecurityAuditorTool;
 use App\AgentTools\DelegateToCompetitorAgentTool;
+use App\AgentTools\DelegateToErrorAuditorTool;
+use App\AgentTools\DelegateToFrontendAgentTool;
+use App\AgentTools\DelegateToJsAuditorTool;
+use App\AgentTools\DelegateToMarketingAgentTool;
+use App\AgentTools\DelegateToSecurityAuditorTool;
+use LarAgent\Agent;
 
 class ManagerAgent extends Agent
 {
     /**
-     * اسم النموذج الافتراضي
+     * اسم النموذج الافتراضي.
      */
-    protected $model = 'gemini-3.5-flash-lite';
+    protected $model = 'gemini-1.5-flash';
 
     protected $history = 'in_memory';
 
     /**
-     * مزود الذكاء الاصطناعي الافتراضي
+     * مزود الذكاء الاصطناعي الافتراضي.
      */
     protected $provider = 'gemini';
 
     /**
-     * أدوات التفويض وإدارة الوكلاء المتاحة للمدير
+     * أدوات التفويض وإدارة الوكلاء المتاحة للمدير.
      */
     protected $tools = [
         DelegateToMarketingAgentTool::class,
@@ -40,7 +40,7 @@ class ManagerAgent extends Agent
 
     public function __construct($key = null, bool $usesUserId = false, ?string $group = null)
     {
-        $key = $key ?? 'manager_session_' . uniqid();
+        $key = $key ?? 'manager_session_'.uniqid();
 
         // التبديل التلقائي للمزود حسب المتوفر في ملف .env
         if (!empty(env('OPENAI_API_KEY'))) {
@@ -51,14 +51,14 @@ class ManagerAgent extends Agent
             $this->model = 'llama-3.3-70b-versatile';
         } else {
             $this->provider = 'gemini';
-            $this->model = 'gemini-3.5-flash-lite';
+            $this->model = 'gemini-1.5-flash';
         }
 
         parent::__construct($key, $usesUserId, $group);
     }
 
     /**
-     * هوية وتعليمات مدير الوكلاء (Tech Lead & Hub-and-Spoke Orchestrator)
+     * هوية وتعليمات مدير الوكلاء (Tech Lead & Hub-and-Spoke Orchestrator).
      */
     public function instructions()
     {
@@ -117,4 +117,3 @@ INSTRUCTIONS;
         return $message;
     }
 }
-

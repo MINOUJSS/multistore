@@ -2,26 +2,26 @@
 
 namespace App\AiAgents;
 
-use LarAgent\Agent;
 use App\AgentTools\ReadLaravelLogsTool;
 use App\AgentTools\ReadPlatformGuidelinesTool;
+use LarAgent\Agent;
 
 class ErrorAuditorAgent extends Agent
 {
     /**
-     * اسم النموذج الافتراضي
+     * اسم النموذج الافتراضي.
      */
-    protected $model = 'gemini-3.5-flash-lite';
+    protected $model = 'gemini-1.5-flash';
 
     protected $history = 'in_memory';
 
     /**
-     * مزود الذكاء الاصطناعي الافتراضي
+     * مزود الذكاء الاصطناعي الافتراضي.
      */
     protected $provider = 'gemini';
 
     /**
-     * أدوات قراءة السجلات وقواعد المنصة
+     * أدوات قراءة السجلات وقواعد المنصة.
      */
     protected $tools = [
         ReadLaravelLogsTool::class,
@@ -30,7 +30,7 @@ class ErrorAuditorAgent extends Agent
 
     public function __construct($key = null, bool $usesUserId = false, ?string $group = null)
     {
-        $key = $key ?? 'error_auditor_' . uniqid();
+        $key = $key ?? 'error_auditor_'.uniqid();
 
         // التبديل التلقائي للمزود حسب المتوفر في ملف .env
         if (!empty(env('OPENAI_API_KEY'))) {
@@ -41,14 +41,14 @@ class ErrorAuditorAgent extends Agent
             $this->model = 'llama-3.3-70b-versatile';
         } else {
             $this->provider = 'gemini';
-            $this->model = 'gemini-3.5-flash-lite';
+            $this->model = 'gemini-1.5-flash';
         }
 
         parent::__construct($key, $usesUserId, $group);
     }
 
     /**
-     * التعليمات البرمجية وهوية وكيل تدقيق ومراقبة الأخطاء (Senior SRE & Bug Triage Auditor)
+     * التعليمات البرمجية وهوية وكيل تدقيق ومراقبة الأخطاء (Senior SRE & Bug Triage Auditor).
      */
     public function instructions()
     {
@@ -82,4 +82,3 @@ class ErrorAuditorAgent extends Agent
 INSTRUCTIONS;
     }
 }
-

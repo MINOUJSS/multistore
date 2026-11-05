@@ -2,26 +2,26 @@
 
 namespace App\AiAgents;
 
-use LarAgent\Agent;
-use App\AgentTools\ReadPlatformGuidelinesTool;
 use App\AgentTools\ExploreTechTrendsTool;
+use App\AgentTools\ReadPlatformGuidelinesTool;
+use LarAgent\Agent;
 
 class FrontendAgent extends Agent
 {
     /**
-     * اسم النموذج الافتراضي
+     * اسم النموذج الافتراضي.
      */
-    protected $model = 'gemini-3.5-flash-lite';
+    protected $model = 'gemini-1.5-flash';
 
     protected $history = 'in_memory';
 
     /**
-     * مزود الذكاء الاصطناعي الافتراضي
+     * مزود الذكاء الاصطناعي الافتراضي.
      */
     protected $provider = 'gemini';
 
     /**
-     * أدوات فحص إرشادات الفرونت إند واستكشاف التقنيات
+     * أدوات فحص إرشادات الفرونت إند واستكشاف التقنيات.
      */
     protected $tools = [
         ReadPlatformGuidelinesTool::class,
@@ -30,7 +30,7 @@ class FrontendAgent extends Agent
 
     public function __construct($key = null, bool $usesUserId = false, ?string $group = null)
     {
-        $key = $key ?? 'frontend_agent_' . uniqid();
+        $key = $key ?? 'frontend_agent_'.uniqid();
 
         // التبديل التلقائي للمزود حسب المتوفر في ملف .env
         if (!empty(env('OPENAI_API_KEY'))) {
@@ -41,14 +41,14 @@ class FrontendAgent extends Agent
             $this->model = 'llama-3.3-70b-versatile';
         } else {
             $this->provider = 'gemini';
-            $this->model = 'gemini-3.5-flash-lite';
+            $this->model = 'gemini-1.5-flash';
         }
 
         parent::__construct($key, $usesUserId, $group);
     }
 
     /**
-     * التعليمات البرمجية وهوية وكيل الفرونت إند (Lead Frontend & UI/UX Specialist)
+     * التعليمات البرمجية وهوية وكيل الفرونت إند (Lead Frontend & UI/UX Specialist).
      */
     public function instructions()
     {
@@ -93,4 +93,3 @@ INSTRUCTIONS;
         return $message;
     }
 }
-

@@ -2,26 +2,26 @@
 
 namespace App\AiAgents;
 
-use LarAgent\Agent;
-use App\AgentTools\SecurityAuditScanTool;
 use App\AgentTools\ReadPlatformGuidelinesTool;
+use App\AgentTools\SecurityAuditScanTool;
+use LarAgent\Agent;
 
 class SecurityAuditorAgent extends Agent
 {
     /**
-     * اسم النموذج الافتراضي
+     * اسم النموذج الافتراضي.
      */
-    protected $model = 'gemini-3.5-flash-lite';
+    protected $model = 'gemini-1.5-flash';
 
     protected $history = 'in_memory';
 
     /**
-     * مزود الذكاء الاصطناعي الافتراضي
+     * مزود الذكاء الاصطناعي الافتراضي.
      */
     protected $provider = 'gemini';
 
     /**
-     * أدوات الفحص الأمني وقراءة قواعد المنصة
+     * أدوات الفحص الأمني وقراءة قواعد المنصة.
      */
     protected $tools = [
         SecurityAuditScanTool::class,
@@ -30,7 +30,7 @@ class SecurityAuditorAgent extends Agent
 
     public function __construct($key = null, bool $usesUserId = false, ?string $group = null)
     {
-        $key = $key ?? 'security_auditor_' . uniqid();
+        $key = $key ?? 'security_auditor_'.uniqid();
 
         // التبديل التلقائي للمزود حسب المتوفر في ملف .env
         if (!empty(env('OPENAI_API_KEY'))) {
@@ -41,14 +41,14 @@ class SecurityAuditorAgent extends Agent
             $this->model = 'llama-3.3-70b-versatile';
         } else {
             $this->provider = 'gemini';
-            $this->model = 'gemini-3.5-flash-lite';
+            $this->model = 'gemini-1.5-flash';
         }
 
         parent::__construct($key, $usesUserId, $group);
     }
 
     /**
-     * التعليمات البرمجية وهوية وكيل الأمن السيبراني وتدقيق الثغرات (Chief Cybersecurity & AppSec Architect)
+     * التعليمات البرمجية وهوية وكيل الأمن السيبراني وتدقيق الثغرات (Chief Cybersecurity & AppSec Architect).
      */
     public function instructions()
     {
@@ -83,4 +83,3 @@ class SecurityAuditorAgent extends Agent
 INSTRUCTIONS;
     }
 }
-
