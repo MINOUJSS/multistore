@@ -65,7 +65,7 @@ class TelegramController extends Controller
             if (!empty($adminChatId) && $chatId === $adminChatId) {
                 if ($text === '/start' || $text === '/help') {
                     $welcome = "👋 <b>أهلاً بك يا {$senderName} في غرفة التحكم الذكية لمنصة dzora.net!</b>\n\n" .
-                               "أنا <b>مدير فريق وكلاء الذكاء الاصطناعي (ManagerAgent)</b>، وتحت إمرتي 6 وكلاء متخصصين:\n" .
+                               "أنا <b>مدير فريق وكلاء الذكاء الاصطناعي (ManagerAgent)</b>، وتحت إمرتي 7 وكلاء متخصصين:\n" .
                                "⚙️ <b>الباك إند:</b> معمارية Laravel والـ Multi-Tenancy.\n" .
                                "🎨 <b>الفرونت إند:</b> تصميم مكونات Blade و Tailwind CSS و Alpine.js.\n" .
                                "📢 <b>التسويق:</b> صناعة المحتوى الإعلاني وإحصائيات المنصة.\n" .
@@ -73,10 +73,40 @@ class TelegramController extends Controller
                                "🖥️ <b>أخطاء الواجهات:</b> تشخيص كونسول المتصفح وأعطال الـ JavaScript.\n" .
                                "🛡️ <b>الأمن السيبراني:</b> كشف ثغرات OWASP والترقيعات الدفاعية.\n" .
                                "📊 <b>المنافسين:</b> استخبارات السوق الجزائري (Yalidine, Dropify, YouCan).\n\n" .
-                               "💡 <b>كيف تتحكم بي؟</b>\n" .
-                               "يمكنك كتابة أي طلب أو سؤال وسأقوم فورياً بالتنسيق مع الوكيل المناسب وتزويدك بالنتيجة هنا!";
+                               "🧠 <b>ميزة الذاكرة الذكية:</b> أتذكر سياق استشاراتنا وأوامرك السابقة تلقائياً!\n\n" .
+                               "💡 <b>أوامر سريعة للتحكم:</b>\n" .
+                               "• <code>/reset</code> أو <code>/clear</code> : مسح الذاكرة وبدء جلسة جديدة.\n" .
+                               "• <code>/history</code> : فحص عدد الرسائل المتذكرة حالياً في الجلسة.\n" .
+                               "• <code>/help</code> : عرض هذه التعليمات.\n\n" .
+                               "اكتب أي طلب أو رد على استفسار وسأربطه بالسياق وأكمل العمل فوراً!";
 
                     $this->sendToTelegramSafe($chatId, $welcome);
+                    return 'ok';
+                }
+
+                // أمر مسح الذاكرة وبدء جلسة جديدة
+                if (in_array(mb_strtolower($text), ['/reset', '/clear', 'مسح الذاكرة', 'محادثة جديدة', 'جلسة جديدة'])) {
+                    $sessionKey = 'telegram_chat_' . $chatId;
+                    $manager = new ManagerAgent($sessionKey);
+                    $manager->chatHistory()->remove();
+
+                    $msg = "🧹 <b>تم مسح سجل المحادثة بنجاح!</b>\n\n" .
+                           "تم تصفير الذاكرة وأنا جاهز الآن لموضوع وسياق جديد كلياً.";
+                    $this->sendToTelegramSafe($chatId, $msg);
+                    return 'ok';
+                }
+
+                // أمر فحص حالة الذاكرة
+                if (in_array(mb_strtolower($text), ['/history', '/status', 'الذاكرة', 'سجل المحادثة'])) {
+                    $sessionKey = 'telegram_chat_' . $chatId;
+                    $manager = new ManagerAgent($sessionKey);
+                    $count = $manager->chatHistory()->count();
+
+                    $msg = "🧠 <b>حالة ذاكرة المحادثة الحالية:</b>\n\n" .
+                           "▫️ <b>معرّف الجلسة:</b> <code>{$sessionKey}</code>\n" .
+                           "▫️ <b>عدد الرسائل المتذكرة:</b> {$count} رسالة\n\n" .
+                           "💡 <i>لبدء جلسة جديدة ومسح الذاكرة، أرسل:</i> <code>/reset</code>";
+                    $this->sendToTelegramSafe($chatId, $msg);
                     return 'ok';
                 }
 
@@ -87,6 +117,9 @@ class TelegramController extends Controller
                 $sessionKey = 'telegram_chat_' . $chatId;
                 $manager = new ManagerAgent($sessionKey);
                 $reply = (string) $manager->respond($text);
+
+                // ضمان حفظ السجل بشكل دائم
+                $manager->chatHistory()->save();
 
                 // إرسال الرد المنسق مع التجزئة الآمنة
                 $this->sendToTelegramSafe($chatId, $reply);
