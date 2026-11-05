@@ -432,6 +432,9 @@
 
 </div>
 
+<!-- Telegram Notifications Promo Modal -->
+@include('users.sellers.components.content.dashboard.inc.telegram_promo_modal')
+
 <!-- SweetAlerts Notification Redirect -->
 @if (session('redicect_subscriber'))
     <script>
