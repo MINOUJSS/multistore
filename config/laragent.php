@@ -79,7 +79,7 @@ return [
             'default_truncation_threshold' => 1000000,
             'default_max_completion_tokens' => 10000,
             'default_temperature' => 1,
-            'model' => 'gemini-3.5-flash-lite',
+            'model' => env('GEMINI_MODEL', 'gemini-3.5-flash'),
         ],
 
         'gemini_native' => [

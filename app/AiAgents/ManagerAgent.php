@@ -16,7 +16,7 @@ class ManagerAgent extends Agent
     /**
      * اسم النموذج الافتراضي.
      */
-    protected $model = 'gemini-1.5-flash';
+    protected $model = 'gemini-3.5-flash';
 
     /**
      * نمط تخزين سجل المحادثة:
@@ -66,7 +66,7 @@ class ManagerAgent extends Agent
             $this->model = 'llama-3.3-70b-versatile';
         } else {
             $this->provider = 'gemini';
-            $this->model = 'gemini-1.5-flash';
+            $this->model = config('laragent.providers.gemini.model') ?: env('GEMINI_MODEL', 'gemini-3.5-flash');
         }
 
         parent::__construct($key, $usesUserId, $group);
