@@ -92,6 +92,12 @@ Route::middleware([
                 Route::get('/supplier-panel/settings', [SupplierSettingController::class, 'index'])->name('settings');
                 Route::post('/supplier-panel/settings/theme-update/{user_id}', [SupplierSettingController::class, 'theme_update'])->name('theme-update');
                 Route::put('/supplier-panel/settings/update', [SupplierSettingController::class, 'update'])->name('settings.update');
+
+                // supplier payment methods routes
+                Route::get('/supplier-panel/payment-methods', [SupplierSettingController::class, 'payment_methods'])->name('payment_methods');
+                Route::post('/supplier-panel/payment-methods/chargily/update', [SupplierSettingController::class, 'update_chargily_payment_method'])->name('payment_methods.chargily.update');
+                Route::post('/supplier-panel/payment-methods/bank/update', [SupplierSettingController::class, 'update_bank_payment_method'])->name('payment_methods.bank.update');
+                Route::post('/supplier-panel/payment-methods/toggle', [SupplierSettingController::class, 'toggle_payment_method'])->name('payment_methods.toggle');
                 Route::get('/supplier-panel/clear-tab-flag', function () {
                     session()->forget('activate_store_tab');
                     session()->forget('activate_security_tab');

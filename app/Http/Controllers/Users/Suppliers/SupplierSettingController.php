@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Users\Suppliers;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChargilySettingForTenants;
 use App\Models\Supplier\SupplierPage;
+use App\Models\User;
+use App\Models\UserBanckAccounts;
 use App\Models\UserBenefitSection;
 use App\Models\UserStoreSetting;
 use Illuminate\Http\Request;
@@ -193,5 +196,185 @@ class SupplierSettingController extends Controller
         ];
 
         return $descriptions[$key] ?? $key;
+    }
+
+    /**
+     * Show the dedicated payment methods management page for the supplier.
+     */
+    public function payment_methods()
+    {
+        $user = Auth::user();
+        $tenantId = $user->tenant_id;
+        $supplier = get_supplier_data($tenantId);
+
+        // Fetch store payment methods configuration from user_store_settings
+        $paymentSetting = UserStoreSetting::where('user_id', $user->id)->where('key', 'store_payment_methods')->first();
+        $defaultPaymentMethods = [
+            'Cash' => ['name' => 'Cash', 'status' => 'active'],
+            'Chargily_Pay' => ['name' => 'ChargilyPay', 'status' => 'inactive'],
+            'Ccp' => ['name' => 'Ccp', 'status' => 'inactive'],
+            'BaridiMob' => ['name' => 'BaridiMob', 'status' => 'inactive'],
+        ];
+
+        if ($paymentSetting && !empty($paymentSetting->value)) {
+            $decoded = json_decode($paymentSetting->value, true);
+            $paymentMethods = is_array($decoded) ? array_merge($defaultPaymentMethods, $decoded) : $defaultPaymentMethods;
+        } else {
+            $paymentMethods = $defaultPaymentMethods;
+        }
+
+        // Fetch Chargily & Bank Account records
+        $chargilySettings = $user->chargilySettings ?? ChargilySettingForTenants::where('user_id', $user->id)->first();
+        $bankSettings = $user->bank_settings ?? UserBanckAccounts::where('user_id', $user->id)->first();
+
+        // Check plan authorization
+        $planId = $supplier?->plan_subscription?->plan_id ?? 1;
+        $chargilyAuthorized = in_array($planId, [2, 3]);
+        $bankAuthorized = ($planId == 3);
+
+        return view('users.suppliers.payment_methods.index', compact(
+            'paymentMethods',
+            'chargilySettings',
+            'bankSettings',
+            'chargilyAuthorized',
+            'bankAuthorized',
+            'supplier',
+            'user'
+        ));
+    }
+
+    /**
+     * Update Chargily Pay settings and toggle its status in user_store_settings.
+     */
+    public function update_chargily_payment_method(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'public_key' => 'required|string',
+            'secret_key' => 'required|string',
+            'mode' => 'nullable|in:test,live,on',
+        ], [
+            'public_key.required' => 'يرجى إدخال المفتاح العام (Public Key)',
+            'secret_key.required' => 'يرجى إدخال المفتاح السري (Secret Key)',
+        ]);
+
+        $chargily = ChargilySettingForTenants::where('user_id', $user->id)->first();
+        if (!$chargily) {
+            $chargily = new ChargilySettingForTenants();
+            $chargily->user_id = $user->id;
+        }
+        $chargily->public_key = trim($request->public_key);
+        $chargily->secret_key = trim($request->secret_key);
+        $chargily->mode = ($request->mode === 'live' || $request->has('mode_live')) ? 'live' : 'test';
+        $chargily->save();
+
+        $chargilyStatus = $request->has('chargily_status') ? 'active' : 'inactive';
+        $this->updatePaymentMethodStatusInSettings($user->id, 'Chargily_Pay', $chargilyStatus);
+
+        return redirect()->back()->with('success', 'تم حفظ وتحديث إعدادات بوابة شارجيلي بنجاح!');
+    }
+
+    /**
+     * Update Bank / CCP account details and toggle its status in user_store_settings.
+     */
+    public function update_bank_payment_method(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'bank_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'account_number' => 'required|string|max:255',
+        ], [
+            'bank_name.required' => 'يرجى إدخال اسم البنك أو الحساب البريدي',
+            'name.required' => 'يرجى إدخال اسم صاحب الحساب',
+            'account_number.required' => 'يرجى إدخال رقم الحساب أو CCP أو RIP',
+        ]);
+
+        $bank = UserBanckAccounts::where('user_id', $user->id)->first();
+        if (!$bank) {
+            $bank = new UserBanckAccounts();
+            $bank->user_id = $user->id;
+        }
+        $bank->bank_name = trim($request->bank_name);
+        $bank->name = trim($request->name);
+        $bank->account_number = trim($request->account_number);
+        $bank->save();
+
+        $bankStatus = $request->has('bank_status') ? 'active' : 'inactive';
+        $this->updatePaymentMethodStatusInSettings($user->id, 'Ccp', $bankStatus);
+        $this->updatePaymentMethodStatusInSettings($user->id, 'BaridiMob', $bankStatus);
+
+        return redirect()->back()->with('success', 'تم حفظ وتحديث بيانات التحويل البنكي والبريدي بنجاح!');
+    }
+
+    /**
+     * Toggle status of any payment method in user_store_settings.
+     */
+    public function toggle_payment_method(Request $request)
+    {
+        $user = Auth::user();
+        $method = $request->input('method');
+        $statusInput = $request->input('status');
+        $status = in_array($statusInput, ['active', '1', 1, true, 'true', 'on'], true) ? 'active' : 'inactive';
+
+        if ($method === 'Bank_Transfer' || $method === 'bank') {
+            $this->updatePaymentMethodStatusInSettings($user->id, 'Ccp', $status);
+            $this->updatePaymentMethodStatusInSettings($user->id, 'BaridiMob', $status);
+        } else {
+            $this->updatePaymentMethodStatusInSettings($user->id, $method, $status);
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تم تغيير حالة وسيلة الدفع بنجاح!',
+                'status' => $status,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'تم تعديل حالة وسيلة الدفع بنجاح!');
+    }
+
+    /**
+     * Helper to update specific payment method status in user_store_settings table.
+     */
+    private function updatePaymentMethodStatusInSettings($userId, $methodKey, $status)
+    {
+        $setting = UserStoreSetting::where('user_id', $userId)->where('key', 'store_payment_methods')->first();
+        $defaultPaymentMethods = [
+            'Cash' => ['name' => 'Cash', 'status' => 'active'],
+            'Chargily_Pay' => ['name' => 'ChargilyPay', 'status' => 'inactive'],
+            'Ccp' => ['name' => 'Ccp', 'status' => 'inactive'],
+            'BaridiMob' => ['name' => 'BaridiMob', 'status' => 'inactive'],
+        ];
+
+        $methods = $defaultPaymentMethods;
+        if ($setting && !empty($setting->value)) {
+            $decoded = json_decode($setting->value, true);
+            if (is_array($decoded)) {
+                $methods = array_merge($defaultPaymentMethods, $decoded);
+            }
+        }
+
+        if (!isset($methods[$methodKey])) {
+            $methods[$methodKey] = ['name' => $methodKey, 'status' => $status];
+        } else {
+            $methods[$methodKey]['status'] = $status;
+        }
+
+        UserStoreSetting::updateOrCreate(
+            [
+                'user_id' => $userId,
+                'key' => 'store_payment_methods',
+            ],
+            [
+                'value' => json_encode($methods),
+                'type' => 'json',
+                'description' => 'طرق الدفع المتاحة للمتجر',
+                'status' => 'active',
+            ]
+        );
     }
 }
