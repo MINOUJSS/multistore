@@ -9,8 +9,7 @@ class UserBanckAccounts extends Model
 {
     use HasFactory;
     //
-    protected $filable = [
-        'id',
+    protected $fillable = [
         'user_id',
         'name',
         'bank_name',

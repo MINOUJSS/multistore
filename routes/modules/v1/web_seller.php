@@ -90,6 +90,12 @@ foreach (config('tenancy.central_domains') as $domain) {
                     Route::post('/seller-panel/settings/theme-update/{user_id}', [SellerSettingController::class, 'theme_update'])->name('theme-update');
                     Route::put('/seller-panel/settings/update', [SellerSettingController::class, 'update'])->name('settings.update');
 
+                    // seller payment methods routes
+                    Route::get('/seller-panel/payment-methods', [SellerSettingController::class, 'payment_methods'])->name('payment_methods');
+                    Route::post('/seller-panel/payment-methods/chargily/update', [SellerSettingController::class, 'update_chargily_payment_method'])->name('payment_methods.chargily.update');
+                    Route::post('/seller-panel/payment-methods/bank/update', [SellerSettingController::class, 'update_bank_payment_method'])->name('payment_methods.bank.update');
+                    Route::post('/seller-panel/payment-methods/toggle', [SellerSettingController::class, 'toggle_payment_method'])->name('payment_methods.toggle');
+
                     // seller custom domain routes
                     Route::prefix('/seller-panel/domain')->name('domain.')->middleware('seller.custom_domain')->group(function () {
                         Route::get('/', [SellerCustomDomainController::class, 'index'])->name('index');

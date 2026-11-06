@@ -84,6 +84,10 @@
     </div>
     @endif
 
+    <div class="item {{ request()->routeIs('seller.payment_methods*') ? 'active' : '' }}">
+        <a href="{{ route('seller.payment_methods') }}"><i class="fa-solid fa-credit-card"></i> <span>طرق الدفع</span></a>
+    </div>
+
     <div class="item {{ request()->routeIs('seller.settings') ? 'active' : '' }}">
         <a href="{{route('seller.settings')}}"><i class="fa-solid fa-gear"></i> <span>الإعدادات</span></a>
     </div>
