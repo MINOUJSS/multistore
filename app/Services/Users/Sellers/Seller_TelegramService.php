@@ -11,7 +11,7 @@ class Seller_TelegramService
 
     public function __construct()
     {
-        $this->botToken = econfig('telegram.bot_token');
+        $this->botToken = config('telegram.bot_token');
         $this->apiUrl = "https://api.telegram.org/bot{$this->botToken}";
     }
 
