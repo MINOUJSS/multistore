@@ -60,34 +60,36 @@
     <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden bg-white tg-help-card">
         <!-- Interactive Card Header / Collapse Trigger -->
         <div class="card-header bg-white border-0 p-3 p-md-3.5 d-flex flex-wrap align-items-center justify-content-between gap-3 cursor-pointer"
-             data-bs-toggle="collapse" data-bs-target="#telegramHelpCollapse" aria-expanded="false" aria-controls="telegramHelpCollapse"
-             id="telegramHelpHeader">
+            data-bs-toggle="collapse" data-bs-target="#telegramHelpCollapse" aria-expanded="false"
+            aria-controls="telegramHelpCollapse" id="telegramHelpHeader">
             <div class="d-flex align-items-center gap-3">
                 <div class="stat-icon-wrapper rounded-3 text-white shadow-sm"
-                     style="background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%); width: 44px; height: 44px;">
+                    style="background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%); width: 44px; height: 44px;">
                     <i class="fa-solid fa-circle-question fs-5"></i>
                 </div>
                 <div>
                     <div class="d-flex align-items-center gap-2 mb-0.5">
                         <h5 class="fw-bold text-dark mb-0 fs-6">دليل وخطوات ربط المتجر بإشعارات تليجرام للتوريد ✈️</h5>
-                        <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-0.5 small fw-bold">دليل سريع</span>
+                        <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-0.5 small fw-bold">دليل
+                            سريع</span>
                     </div>
-                    <p class="text-muted small mb-0">تعلم في 4 خطوات بسيطة كيف تفعل إشعارات طلبات التوريد الفورية بالجملة وحركات المخزون</p>
+                    <p class="text-muted small mb-0">تعلم في 4 خطوات بسيطة كيف تفعل إشعارات طلبات التوريد الفورية
+                        بالجملة وحركات المخزون</p>
                 </div>
             </div>
-            
+
             <div class="d-flex align-items-center gap-2 ms-auto ms-md-0">
                 <!-- Video Trigger Button (Stop propagation so clicking it directly opens modal without toggling collapse) -->
-                <button type="button" 
-                        class="btn btn-danger btn-sm text-white fw-bold px-3 py-2 rounded-pill shadow-xs d-inline-flex align-items-center gap-2"
-                        data-bs-toggle="modal" data-bs-target="#telegramVideoModal"
-                        onclick="event.stopPropagation();">
+                <button type="button"
+                    class="btn btn-danger btn-sm text-white fw-bold px-3 py-2 rounded-pill shadow-xs d-inline-flex align-items-center gap-2"
+                    data-bs-toggle="modal" data-bs-target="#telegramVideoModal" onclick="event.stopPropagation();">
                     <i class="fa-brands fa-youtube fs-6"></i>
                     <span>شاهد الفيديو التوضيحي</span>
                 </button>
-                
+
                 <!-- Collapse Arrow Icon Indicator -->
-                <div class="btn btn-light btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 34px; height: 34px;">
+                <div class="btn btn-light btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center"
+                    style="width: 34px; height: 34px;">
                     <i class="fa-solid fa-chevron-down text-secondary tg-chevron transition-transform"></i>
                 </div>
             </div>
@@ -96,21 +98,25 @@
         <!-- Collapsible Content Body -->
         <div class="collapse" id="telegramHelpCollapse">
             <div class="card-body p-4 pt-1 bg-white border-top border-light">
-                
+
                 <!-- Steps Grid (4 Visual Steps) -->
                 <div class="row g-3 my-2">
                     <!-- Step 1 -->
                     <div class="col-md-6 col-xl-3">
                         <div class="p-3.5 rounded-4 border bg-light h-100 tg-step-box position-relative">
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <span class="badge bg-primary text-white rounded-circle fs-6 fw-bold d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">1</span>
+                                <span
+                                    class="badge bg-primary text-white rounded-circle fs-6 fw-bold d-flex align-items-center justify-content-center"
+                                    style="width: 32px; height: 32px;">1</span>
                                 <i class="fab fa-telegram fs-4 text-info"></i>
                             </div>
                             <h6 class="fw-bold text-dark mb-1 fs-6">فتح بوت المنصة في تليجرام</h6>
                             <p class="text-muted small mb-2.5 leading-relaxed">
-                                ابحث في تطبيق تليجرام عن البوت: <strong class="text-dark">@MinouDZShopbot</strong> أو انقر على الزر بالأسفل لبدء المحادثة واضغط <strong>Start</strong>.
+                                ابحث في تطبيق تليجرام عن البوت: <strong class="text-dark">@MinouDZShopbot</strong> أو
+                                انقر على الزر بالأسفل لبدء المحادثة واضغط <strong>Start</strong>.
                             </p>
-                            <a href="https://t.me/MinouDZShopbot?start=start" target="_blank" class="btn btn-sm btn-info text-white rounded-pill px-3 py-1 fw-bold small d-inline-flex align-items-center gap-1.5 shadow-2xs">
+                            <a href="https://t.me/MinouDZShopbot?start=start" target="_blank"
+                                class="btn btn-sm btn-info text-white rounded-pill px-3 py-1 fw-bold small d-inline-flex align-items-center gap-1.5 shadow-2xs">
                                 <i class="fab fa-telegram-plane"></i>
                                 <span>فتح البوت مباشرة</span>
                             </a>
@@ -121,12 +127,15 @@
                     <div class="col-md-6 col-xl-3">
                         <div class="p-3.5 rounded-4 border bg-light h-100 tg-step-box position-relative">
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <span class="badge bg-primary text-white rounded-circle fs-6 fw-bold d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">2</span>
+                                <span
+                                    class="badge bg-primary text-white rounded-circle fs-6 fw-bold d-flex align-items-center justify-content-center"
+                                    style="width: 32px; height: 32px;">2</span>
                                 <i class="fa-solid fa-id-card-clip fs-4 text-warning"></i>
                             </div>
                             <h6 class="fw-bold text-dark mb-1 fs-6">استخراج معرف الـ Chat ID</h6>
                             <p class="text-muted small mb-0 leading-relaxed">
-                                بمجرد إرسال كلمة <code class="text-danger fw-bold">/start</code> للبوت، سيرد عليك فوراً برسالة ترحيبية تحتوي على <strong>رقم الـ Chat ID</strong> الخاص بحسابك. انسخ هذا الرقم.
+                                بمجرد إرسال كلمة <code class="text-danger fw-bold">/start</code> للبوت، سيرد عليك فوراً
+                                برسالة ترحيبية تحتوي على <strong>رقم الـ Chat ID</strong> الخاص بحسابك. انسخ هذا الرقم.
                             </p>
                         </div>
                     </div>
@@ -135,12 +144,15 @@
                     <div class="col-md-6 col-xl-3">
                         <div class="p-3.5 rounded-4 border bg-light h-100 tg-step-box position-relative">
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <span class="badge bg-primary text-white rounded-circle fs-6 fw-bold d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">3</span>
+                                <span
+                                    class="badge bg-primary text-white rounded-circle fs-6 fw-bold d-flex align-items-center justify-content-center"
+                                    style="width: 32px; height: 32px;">3</span>
                                 <i class="fa-solid fa-plus-circle fs-4 text-success"></i>
                             </div>
                             <h6 class="fw-bold text-dark mb-1 fs-6">إضافة المعرف وتفعيله</h6>
                             <p class="text-muted small mb-0 leading-relaxed">
-                                اضغط على زر <strong>"إضافة Chat ID"</strong> في هذه الصفحة، ثم الصق المعرف المنسوخ، واكتب اسماً توضيحياً (مثل: "هاتفي") واجعل الحالة <strong>نشط</strong>.
+                                اضغط على زر <strong>"إضافة Chat ID"</strong> في هذه الصفحة، ثم الصق المعرف المنسوخ،
+                                واجعل الحالة <strong>نشط</strong>.
                             </p>
                         </div>
                     </div>
@@ -149,28 +161,34 @@
                     <div class="col-md-6 col-xl-3">
                         <div class="p-3.5 rounded-4 border bg-light h-100 tg-step-box position-relative">
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <span class="badge bg-success text-white rounded-circle fs-6 fw-bold d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">4</span>
+                                <span
+                                    class="badge bg-success text-white rounded-circle fs-6 fw-bold d-flex align-items-center justify-content-center"
+                                    style="width: 32px; height: 32px;">4</span>
                                 <i class="fa-solid fa-boxes-stacked fs-4 text-primary"></i>
                             </div>
                             <h6 class="fw-bold text-dark mb-1 fs-6">استقبال طلبات التوريد فورياً</h6>
                             <p class="text-muted small mb-0 leading-relaxed">
-                                ستصلك رسالة تأكيد، ومن الآن فصاعداً سيبدأ حسابك باستقبال إشعار صوتي فوري في كل مرة يطلب فيها تاجر كميات جملة أو يسحب منتجات من مخزونك!
+                                ستصلك رسالة تأكيد، ومن الآن فصاعداً سيبدأ حسابك باستقبال إشعار صوتي فوري في كل مرة يطلب
+                                فيها تاجر كميات جملة أو يسحب منتجات من مخزونك!
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Bottom Video Highlight Bar -->
-                <div class="p-3 mt-3 rounded-3 bg-danger-subtle border border-danger-subtle d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div
+                    class="p-3 mt-3 rounded-3 bg-danger-subtle border border-danger-subtle d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div class="d-flex align-items-center gap-2.5">
                         <i class="fa-brands fa-youtube fs-3 text-danger"></i>
                         <div>
                             <div class="fw-bold text-dark small">هل تفضل متابعة الشرح العملي بالفيديو خطوة بخطوة؟</div>
-                            <div class="text-muted" style="font-size: 0.8rem;">شاهد فيديو قصير يوضح لك كيفية استخراج الـ Chat ID وربطه في ثوانٍ معدودة.</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">شاهد فيديو قصير يوضح لك كيفية استخراج
+                                الـ Chat ID وربطه في ثوانٍ معدودة.</div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-danger text-white fw-bold px-3.5 py-2 rounded-pill shadow-xs d-inline-flex align-items-center gap-2"
-                            data-bs-toggle="modal" data-bs-target="#telegramVideoModal">
+                    <button type="button"
+                        class="btn btn-danger text-white fw-bold px-3.5 py-2 rounded-pill shadow-xs d-inline-flex align-items-center gap-2"
+                        data-bs-toggle="modal" data-bs-target="#telegramVideoModal">
                         <i class="fa-solid fa-play"></i>
                         <span>تشغيل الفيديو التوضيحي 🎬</span>
                     </button>
@@ -208,7 +226,8 @@
                         </span>
                         <span class="badge bg-success-subtle text-success rounded-pill small">نشط</span>
                     </div>
-                    <h3 class="fw-bold mb-1 text-dark fs-4">{{ $telegramSettings->where('status', 'active')->count() }}</h3>
+                    <h3 class="fw-bold mb-1 text-dark fs-4">{{ $telegramSettings->where('status', 'active')->count() }}
+                    </h3>
                     <p class="text-muted small mb-0 fw-semibold">إشعارات التليجرام المفعلة</p>
                 </div>
             </div>
@@ -224,7 +243,8 @@
                         </span>
                         <span class="badge bg-secondary-subtle text-secondary rounded-pill small">معطل</span>
                     </div>
-                    <h3 class="fw-bold mb-1 text-dark fs-4">{{ $telegramSettings->where('status', '!=', 'active')->count() }}</h3>
+                    <h3 class="fw-bold mb-1 text-dark fs-4">
+                        {{ $telegramSettings->where('status', '!=', 'active')->count() }}</h3>
                     <p class="text-muted small mb-0 fw-semibold">إشعارات التليجرام المعطلة</p>
                 </div>
             </div>
@@ -349,7 +369,8 @@
                         style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
                         <i class="fab fa-telegram-plane"></i>
                     </span>
-                    <h5 class="modal-title fw-bold mb-0 fs-6 text-white" id="addTelegramModalLabel">إضافة إعدادات إشعارات Telegram</h5>
+                    <h5 class="modal-title fw-bold mb-0 fs-6 text-white" id="addTelegramModalLabel">إضافة إعدادات
+                        إشعارات Telegram</h5>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="إغلاق"></button>
@@ -373,7 +394,8 @@
 
                     <div class="p-3 bg-light rounded-3 border mb-4">
                         <div class="form-check form-switch d-flex align-items-center justify-content-between p-0 mb-0">
-                            <label class="form-check-label fw-bold text-dark small mb-0" for="status">تفعيل الإشعارات تلقائيًا</label>
+                            <label class="form-check-label fw-bold text-dark small mb-0" for="status">تفعيل
+                                الإشعارات تلقائيًا</label>
                             <input class="form-check-input ms-0 shadow-none" type="checkbox" name="status"
                                 id="status" checked style="width: 2.5em; height: 1.25em;">
                         </div>
@@ -402,7 +424,8 @@
                         style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
                         <i class="fas fa-edit"></i>
                     </span>
-                    <h5 class="modal-title fw-bold mb-0 fs-6 text-white" id="editTelegramModalLabel">تعديل إعدادات إشعارات Telegram</h5>
+                    <h5 class="modal-title fw-bold mb-0 fs-6 text-white" id="editTelegramModalLabel">تعديل إعدادات
+                        إشعارات Telegram</h5>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="إغلاق"></button>
@@ -427,7 +450,8 @@
 
                     <div class="p-3 bg-light rounded-3 border mb-4">
                         <div class="form-check form-switch d-flex align-items-center justify-content-between p-0 mb-0">
-                            <label class="form-check-label fw-bold text-dark small mb-0" for="edit_status">تفعيل الإشعارات</label>
+                            <label class="form-check-label fw-bold text-dark small mb-0" for="edit_status">تفعيل
+                                الإشعارات</label>
                             <input class="form-check-input ms-0 shadow-none" type="checkbox" name="status"
                                 id="edit_status" checked style="width: 2.5em; height: 1.25em;">
                         </div>
@@ -445,7 +469,8 @@
 </div>
 
 <!-- YouTube Tutorial Video Modal -->
-<div class="modal fade" id="telegramVideoModal" tabindex="-1" aria-labelledby="telegramVideoModalLabel" aria-hidden="true" dir="rtl">
+<div class="modal fade" id="telegramVideoModal" tabindex="-1" aria-labelledby="telegramVideoModalLabel"
+    aria-hidden="true" dir="rtl">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="modal-header bg-dark text-white py-3 px-4 border-0">
@@ -455,23 +480,26 @@
                         شرح بالفيديو: كيفية ربط المتجر بتطبيق إشعارات Telegram
                     </h5>
                 </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="إغلاق"></button>
             </div>
             <div class="modal-body p-0 bg-black">
                 <div class="ratio ratio-16x9">
                     <iframe id="telegramTutorialIframe"
-                            src="https://www.youtube.com/embed/nA_yWLP2ruk?start=19&enablejsapi=1" 
-                            title="شرح ربط المتجر بإشعارات تليجرام" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                            allowfullscreen>
+                        src="https://www.youtube.com/embed/nA_yWLP2ruk?start=19&enablejsapi=1"
+                        title="شرح ربط المتجر بإشعارات تليجرام"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
                     </iframe>
                 </div>
             </div>
             <div class="modal-footer bg-light py-2 px-4 border-0 d-flex justify-content-between align-items-center">
                 <small class="text-muted">
-                    <i class="fa-solid fa-info-circle me-1 text-primary"></i> يمكنك متابعة وتطبيق الخطوات مباشرة أثناء مشاهدة الفيديو
+                    <i class="fa-solid fa-info-circle me-1 text-primary"></i> يمكنك متابعة وتطبيق الخطوات مباشرة أثناء
+                    مشاهدة الفيديو
                 </small>
-                <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill" data-bs-dismiss="modal">إغلاق</button>
+                <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill"
+                    data-bs-dismiss="modal">إغلاق</button>
             </div>
         </div>
     </div>
@@ -699,11 +727,11 @@
 
 <!-- Tutorial Video Modal Control & Collapse Listener Script -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const videoModal = document.getElementById('telegramVideoModal');
         if (videoModal) {
             // Stop YouTube video audio when modal is closed
-            videoModal.addEventListener('hidden.bs.modal', function () {
+            videoModal.addEventListener('hidden.bs.modal', function() {
                 const iframe = document.getElementById('telegramTutorialIframe');
                 if (iframe) {
                     const currentSrc = iframe.src;
@@ -717,13 +745,13 @@
         const helpCollapse = document.getElementById('telegramHelpCollapse');
         const helpHeader = document.getElementById('telegramHelpHeader');
         if (helpCollapse && helpHeader) {
-            helpCollapse.addEventListener('show.bs.collapse', function () {
+            helpCollapse.addEventListener('show.bs.collapse', function() {
                 const chevron = helpHeader.querySelector('.tg-chevron');
                 if (chevron) {
                     chevron.style.transform = 'rotate(180deg)';
                 }
             });
-            helpCollapse.addEventListener('hide.bs.collapse', function () {
+            helpCollapse.addEventListener('hide.bs.collapse', function() {
                 const chevron = helpHeader.querySelector('.tg-chevron');
                 if (chevron) {
                     chevron.style.transform = 'rotate(0deg)';

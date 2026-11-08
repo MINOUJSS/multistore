@@ -153,7 +153,7 @@
                             <h6 class="fw-bold text-dark mb-1 fs-6">إضافة المعرف وتفعيله</h6>
                             <p class="text-muted small mb-0 leading-relaxed">
                                 اضغط على زر <strong>"إضافة Chat ID"</strong> في هذه الصفحة، ثم الصق المعرف المنسوخ،
-                                واكتب اسماً توضيحياً (مثل: "هاتفي") واجعل الحالة <strong>نشط</strong>.
+                                واجعل الحالة <strong>نشط</strong>.
                             </p>
                         </div>
                     </div>
