@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admins\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\Admins\Admin\MerchantActivityAnalyticsService;
 
 class AdminController extends Controller
 {
@@ -43,6 +44,9 @@ class AdminController extends Controller
             'period_days' => $activeDays,
         ];
 
-        return view('admins.admin.dashboard.index', compact('users', 'suppliers', 'sellers', 'marketers', 'activityStats'));
+        // Merchant (Seller) detailed analytics: timeline (daily, monthly, yearly), devices, browsers, and connection locations
+        $merchantActivity = app(MerchantActivityAnalyticsService::class)->getAnalytics('seller');
+
+        return view('admins.admin.dashboard.index', compact('users', 'suppliers', 'sellers', 'marketers', 'activityStats', 'merchantActivity'));
     }
 }

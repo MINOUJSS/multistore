@@ -58,4 +58,7 @@
         </div>
         @include('admins.admin.components.content.dashboard.inc.users_statistics.active_users')
     </div>
+
+    <!-- Merchant Activity & Connection Analytics Section (Daily, Monthly, Yearly, Devices, IPs) -->
+    @include('admins.admin.components.content.dashboard.inc.merchant_activity.index')
 </div>
