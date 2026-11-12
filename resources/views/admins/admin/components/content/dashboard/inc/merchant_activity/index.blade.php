@@ -200,16 +200,24 @@
                     </div>
 
                     <!-- Progress breakdown -->
+                    @php
+                        $devicePercentages = $merchantActivity['devices']['percentages'] 
+                            ?? $merchantActivity['devices']['devices']['percentages'] 
+                            ?? ['Desktop' => 0, 'Mobile' => 0, 'Tablet' => 0];
+                        $desktopPct = $devicePercentages['Desktop'] ?? 0;
+                        $mobilePct = $devicePercentages['Mobile'] ?? 0;
+                        $tabletPct = $devicePercentages['Tablet'] ?? 0;
+                    @endphp
                     <div class="pt-2 border-top">
                         <div class="device-progress-item">
                             <div class="d-flex justify-content-between align-items-center small mb-1">
                                 <span class="fw-semibold text-dark">
                                     <i class="fa-solid fa-desktop me-1 text-primary"></i> حاسوب (Desktop)
                                 </span>
-                                <span class="fw-bold text-dark">{{ $merchantActivity['devices']['percentages']['Desktop'] ?? 0 }}%</span>
+                                <span class="fw-bold text-dark">{{ $desktopPct }}%</span>
                             </div>
-                            <div class="progress rounded-pill" style="height: 6px; background-color: #e2e8f0;">
-                                <div class="progress-bar rounded-pill" style="width: {{ $merchantActivity['devices']['percentages']['Desktop'] ?? 0 }}%; background-color: #4f46e5;"></div>
+                            <div class="progress rounded-pill" role="progressbar" aria-valuenow="{{ $desktopPct }}" aria-valuemin="0" aria-valuemax="100" style="height: 6px; background-color: #e2e8f0;">
+                                <div class="progress-bar rounded-pill" style="width: {{ $desktopPct }}%; background-color: #4f46e5;"></div>
                             </div>
                         </div>
 
@@ -218,10 +226,10 @@
                                 <span class="fw-semibold text-dark">
                                     <i class="fa-solid fa-mobile-screen me-1" style="color: #10b981;"></i> هاتف ذكي (Mobile)
                                 </span>
-                                <span class="fw-bold text-dark">{{ $merchantActivity['devices']['percentages']['Mobile'] ?? 0 }}%</span>
+                                <span class="fw-bold text-dark">{{ $mobilePct }}%</span>
                             </div>
-                            <div class="progress rounded-pill" style="height: 6px; background-color: #e2e8f0;">
-                                <div class="progress-bar rounded-pill" style="width: {{ $merchantActivity['devices']['percentages']['Mobile'] ?? 0 }}%; background-color: #10b981;"></div>
+                            <div class="progress rounded-pill" role="progressbar" aria-valuenow="{{ $mobilePct }}" aria-valuemin="0" aria-valuemax="100" style="height: 6px; background-color: #e2e8f0;">
+                                <div class="progress-bar rounded-pill" style="width: {{ $mobilePct }}%; background-color: #10b981;"></div>
                             </div>
                         </div>
 
@@ -230,10 +238,10 @@
                                 <span class="fw-semibold text-dark">
                                     <i class="fa-solid fa-tablet-screen-button me-1" style="color: #f59e0b;"></i> جهاز لوحي (Tablet)
                                 </span>
-                                <span class="fw-bold text-dark">{{ $merchantActivity['devices']['percentages']['Tablet'] ?? 0 }}%</span>
+                                <span class="fw-bold text-dark">{{ $tabletPct }}%</span>
                             </div>
-                            <div class="progress rounded-pill" style="height: 6px; background-color: #e2e8f0;">
-                                <div class="progress-bar rounded-pill" style="width: {{ $merchantActivity['devices']['percentages']['Tablet'] ?? 0 }}%; background-color: #f59e0b;"></div>
+                            <div class="progress rounded-pill" role="progressbar" aria-valuenow="{{ $tabletPct }}" aria-valuemin="0" aria-valuemax="100" style="height: 6px; background-color: #e2e8f0;">
+                                <div class="progress-bar rounded-pill" style="width: {{ $tabletPct }}%; background-color: #f59e0b;"></div>
                             </div>
                         </div>
                     </div>

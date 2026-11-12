@@ -173,6 +173,8 @@ class MerchantActivityAnalyticsService
 
         return [
             'total_analyzed' => $records->count(),
+            'percentages' => $devicePercentages,
+            'device_counts' => $deviceCounts,
             'devices' => [
                 'labels' => ['حاسوب (Desktop)', 'هاتف ذكي (Mobile)', 'جهاز لوحي (Tablet)'],
                 'counts' => array_values($deviceCounts),
