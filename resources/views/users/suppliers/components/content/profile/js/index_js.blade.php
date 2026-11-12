@@ -12,13 +12,13 @@
         });
 
         //submit request validation form
-        document.getElementById('submit-validation-request').addEventListener('click', function() {
-            document.getElementById('requestValidationForm').submit();
+        document.getElementById('submit-validation-request')?.addEventListener('click', function() {
+            document.getElementById('requestValidationForm')?.submit();
         });
 
         //open avatar dialog
-        document.getElementById('avataruploadbtn').addEventListener('click', function() {
-            document.getElementById('avatarInput').click();
+        document.getElementById('avataruploadbtn')?.addEventListener('click', function() {
+            document.getElementById('avatarInput')?.click();
         });
 
         // Avatar preview

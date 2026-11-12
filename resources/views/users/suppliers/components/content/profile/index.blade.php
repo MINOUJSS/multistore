@@ -77,7 +77,7 @@
                     <form enctype="multipart/form-data">
                         <input id="avatarInput" type="file" name="avatar_Image" style="display: none;">
                     </form>
-                    <button id="avataruploadbtn"
+                    <button type="button" id="avataruploadbtn" onclick="document.getElementById('avatarInput')?.click();"
                         class="btn btn-supplier-primary position-absolute bottom-0 end-0 rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm"
                         style="width: 36px; height: 36px;">
                         <i class="fas fa-camera fs-6"></i>

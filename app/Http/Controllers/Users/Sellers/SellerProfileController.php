@@ -233,7 +233,18 @@ class SellerProfileController extends Controller
     // update avatar
     public function update_avatar(Request $request)
     {
-        // uplode the avatar
+        $validator = Validator::make($request->all(), [
+            'avatar_Image' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        // upload the avatar
         $seller = get_seller_data(auth()->user()->tenant_id);
         if ($request->hasFile('avatar_Image')) {
             $mediaService = app(\App\Services\Seller\SellerMediaService::class);
@@ -245,12 +256,12 @@ class SellerProfileController extends Controller
             $seller->avatar = $upload['url'];
             // change approval_status
             $seller->approval_status = 'pending';
+            $seller->save();
         }
-        $seller->save();
 
         return response()->json([
             'success' => true,
-            'avatar' => $url,
+            'avatar' => $seller->avatar,
             'message' => 'تم تحديث الصورة بنجاح',
         ]);
     }

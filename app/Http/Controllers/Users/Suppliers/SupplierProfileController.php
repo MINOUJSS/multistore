@@ -236,7 +236,18 @@ class SupplierProfileController extends Controller
     // update avatar
     public function update_avatar(Request $request)
     {
-        // uplode the avatar
+        $validator = Validator::make($request->all(), [
+            'avatar_Image' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        // upload the avatar
         $supplier = get_supplier_data(auth()->user()->tenant_id);
         if ($request->hasFile('avatar_Image')) {
             $mediaService = app(\App\Services\Supplier\SupplierMediaService::class);
@@ -248,12 +259,12 @@ class SupplierProfileController extends Controller
             $supplier->avatar = $upload['url'];
             // change approval_status
             $supplier->approval_status = 'pending';
+            $supplier->save();
         }
-        $supplier->save();
 
         return response()->json([
             'success' => true,
-            'avatar' => $url,
+            'avatar' => $supplier->avatar,
             'message' => 'تم تحديث الصورة بنجاح',
         ]);
     }
