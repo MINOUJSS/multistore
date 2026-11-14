@@ -13,13 +13,26 @@ class SellerUnApprovedNotification extends Notification implements ShouldQueue
     use Queueable;
 
     /**
-     * Create a new notification instance.
+     * The seller instance.
+     *
+     * @var Seller
      */
     public $seller;
 
-    public function __construct(Seller $seller)
+    /**
+     * The rejection reason.
+     *
+     * @var string|null
+     */
+    public $reason;
+
+    /**
+     * Create a new notification instance.
+     */
+    public function __construct(Seller $seller, ?string $reason = null)
     {
         $this->seller = $seller;
+        $this->reason = $reason;
     }
 
     /**
@@ -37,11 +50,21 @@ class SellerUnApprovedNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage())
-                    ->subject(' توثيق الحسابك ')
-                    ->line('للأسف،  تم حذف أو رفض توثيق حسابك.')
-                    ->action('الإنقل إلى صفحة الحساب', route('seller.profile'))
-                    ->line('شكرًا لاستخدامك منصتنا!');
+        $recipientName = $this->seller->full_name ?? $notifiable->name ?? 'تاجرنا العزيز';
+
+        $mail = (new MailMessage())
+            ->subject('تحديث بشأن طلب توثيق حسابك التجاري')
+            ->greeting('مرحباً ' . $recipientName . '،')
+            ->line('نأسف لإبلاغك بأنه تم رفض أو إلغاء توثيق حسابك التجاري على المنصة.');
+
+        if (!empty($this->reason)) {
+            $mail->line('**سبب الرفض:** ' . $this->reason);
+        }
+
+        return $mail
+            ->line('يرجى مراجعة الملاحظات أعلاه، وتحديث البيانات أو المستندات المطلوبة في ملفك الشخصي ثم إعادة تقديم طلب التوثيق.')
+            ->action('الانتقال إلى الملف الشخصي', route('seller.profile'))
+            ->line('شكرًا لتفهمك واستخدامك لمنصتنا!');
     }
 
     /**
@@ -52,6 +75,9 @@ class SellerUnApprovedNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
+            'seller_id' => $this->seller->id,
+            'reason' => $this->reason,
+            'title' => 'تم رفض توثيق الحساب',
         ];
     }
 }

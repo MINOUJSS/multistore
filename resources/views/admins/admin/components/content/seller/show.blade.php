@@ -776,17 +776,34 @@
                 <div class="modal-body py-4">
                     <input type="hidden" name="seller_id" value="{{ $seller->id }}">
                     <div class="mb-3">
-                        <label for="unapproveReasonTextarea" class="form-label fw-semibold">
+                        <label for="unapproveReasonSelect" class="form-label fw-semibold">
                             {{ $seller->approval_status == 'approved' ? 'سبب رفع التوثيق عن البائع:' : 'سبب رفض طلب التوثيق:' }}
                         </label>
-                        <textarea id="unapproveReasonTextarea" name="reason" class="form-control rounded-3" rows="3"
-                            placeholder="{{ $seller->approval_status == 'approved' ? 'أدخل سبب رفع التوثيق هنا لتوثيقه وإرسال إشعار للبائع...' : 'أدخل سبب رفض طلب التوثيق هنا لإعلام البائع...' }}" required></textarea>
+                        <select id="unapproveReasonSelect" name="reason" class="form-select rounded-3 mb-2" required>
+                            <option value="" disabled selected>-- اختر سبب الرفض من القائمة --</option>
+                            <option value="يرجى ملء جميع المعلومات والبيانات المطلوبة كاملة ثم تقديم الطلب.">يرجى ملء جميع المعلومات والبيانات المطلوبة كاملة ثم تقديم الطلب</option>
+                            <option value="بطاقة الهوية الوطنية ضرورية لتوثيق الحساب، يرجى إرفاقها.">بطاقة الهوية الوطنية ضرورية لتوثيق الحساب، يرجى إرفاقها</option>
+                            <option value="المعلومات التي أدخلتها غير متطابقة مع البيانات الموضحة في بطاقة الهوية.">المعلومات التي أدخلتها غير متطابقة مع البيانات الموضحة في بطاقة الهوية</option>
+                            <option value="صورة بطاقة الهوية غير واضحة أو غير مقروءة، يرجى إعادة رفع صورة عالية الدقة.">صورة بطاقة الهوية غير واضحة أو غير مقروءة، يرجى إعادة رفع صورة عالية الدقة</option>
+                            <option value="حسب معلومات بطاقتك الشخصية لم تبلغ السن القانونية لنقوم بتوثيق حسابك.">حسب معلومات بطاقتك الشخصية لم تبلغ السن القانونية لنقوم بتوثيق حسابك</option>
+                            <option value="وثيقة الهوية المرفقة منتهية الصلاحية أو غير صالحة.">وثيقة الهوية المرفقة منتهية الصلاحية أو غير صالحة</option>
+                            <option value="custom">سبب آخر (كتابة سبب مخصص)...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="customReasonWrapper" style="display: none;">
+                        <label for="customReasonTextarea" class="form-label fw-semibold text-muted small">
+                            تحديد السبب المخصص:
+                        </label>
+                        <textarea id="customReasonTextarea" class="form-control rounded-3" rows="3"
+                            placeholder="اكتب سبب الرفض بالتفصيل هنا ليتم إرساله للبائع..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn text-white rounded-3 fw-bold"
-                        @if ($seller->approval_status == 'approved') style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border: none;" @else class="btn btn-danger" @endif>
+                    <button type="button" class="btn btn-secondary rounded-3 px-3 py-2" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit"
+                        class="btn rounded-3 fw-bold px-4 py-2 shadow-sm text-white"
+                        style="{{ $seller->approval_status == 'approved' ? 'background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);' : 'background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);' }} border: none;">
+                        <i class="fa-solid {{ $seller->approval_status == 'approved' ? 'fa-user-slash' : 'fa-ban' }} me-1.5"></i>
                         {{ $seller->approval_status == 'approved' ? 'تأكيد رفع التوثيق' : 'تأكيد رفض التوثيق' }}
                     </button>
                 </div>
@@ -794,6 +811,31 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const reasonSelect = document.getElementById('unapproveReasonSelect');
+        const customWrapper = document.getElementById('customReasonWrapper');
+        const customTextarea = document.getElementById('customReasonTextarea');
+
+        if (reasonSelect && customWrapper && customTextarea) {
+            reasonSelect.addEventListener('change', function () {
+                if (this.value === 'custom') {
+                    customWrapper.style.display = 'block';
+                    customTextarea.setAttribute('required', 'required');
+                    customTextarea.setAttribute('name', 'reason');
+                    reasonSelect.removeAttribute('name');
+                    customTextarea.focus();
+                } else {
+                    customWrapper.style.display = 'none';
+                    customTextarea.removeAttribute('required');
+                    customTextarea.removeAttribute('name');
+                    reasonSelect.setAttribute('name', 'reason');
+                }
+            });
+        }
+    });
+</script>
 
 
 {{-- sweetalert  --}}

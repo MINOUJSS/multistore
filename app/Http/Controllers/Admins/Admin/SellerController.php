@@ -292,7 +292,7 @@ class SellerController extends Controller
         }
 
         // send notification to user
-        $user->notify(new \App\Notifications\Users\Sellers\SellerUnApprovedNotification($seller));
+        $user->notify(new \App\Notifications\Users\Sellers\SellerUnApprovedNotification($seller, $request->reason));
         // insert message in user notification table
         $user_notification = UserNotification::create([
             'user_id' => $user->id,
