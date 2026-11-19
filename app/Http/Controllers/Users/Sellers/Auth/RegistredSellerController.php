@@ -15,6 +15,7 @@ use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserFreeOrder;
 use App\Notifications\Admins\NewUserNotification;
+use App\Services\Seller\SellerMediaService;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -86,10 +87,13 @@ class RegistredSellerController extends Controller
             try {
                 // Start a transaction for atomicity
                 \DB::beginTransaction();
-                // check if seller folder exists
-                $path = 'seller/'.$store_name;
-                if (!Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->makeDirectory($path);
+                // check if seller folder exists on the active storage disk configured in .env
+                $mediaService = app(SellerMediaService::class);
+                $disk = $mediaService->getActiveDisk();
+                $path = ($disk === 'seller') ? $store_name : $mediaService->prefixR2Path($store_name);
+
+                if (!Storage::disk($disk)->exists($path)) {
+                    Storage::disk($disk)->makeDirectory($path);
                 }
                 // insert data into seller table and tenant table and domain table
                 $tenant = Tenant::create([
@@ -190,10 +194,9 @@ class RegistredSellerController extends Controller
                 // Rollback the transaction
                 \DB::rollBack();
 
-                // Clean up created directory on failure
-                $path = 'seller/'.$store_name;
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->deleteDirectory($path);
+                // Clean up created directory on failure using the active storage disk
+                if (isset($disk, $path) && Storage::disk($disk)->exists($path)) {
+                    Storage::disk($disk)->deleteDirectory($path);
                 }
 
                 // Log the error for debugging

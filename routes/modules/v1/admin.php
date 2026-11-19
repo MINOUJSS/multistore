@@ -126,6 +126,7 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::patch('/admin/payments/suppliers/subscribe/approve/{id}', [PaymentsController::class, 'approve_suppliers_subscribe_payment'])->name('payments.suppliers.subscribe.approve');
                 Route::get('/ah-admin/payments/sellers/subscribes-payments', [PaymentsController::class, 'sellers_subscribes_payments'])->name('payments.sellers.subscribes_payments');
                 Route::patch('/admin/payments/sellers/subscribe/approve/{id}', [PaymentsController::class, 'approve_sellers_subscribe_payment'])->name('payments.sellers.subscribe.approve');
+                Route::patch('/admin/payments/sellers/subscribe/reject/{id}', [PaymentsController::class, 'reject_sellers_subscribe_payment'])->name('payments.sellers.subscribe.reject');
 
                 // Admin Platform Bank Accounts (CCP, BaridiMob, Algerian Banks)
                 Route::prefix('/ah-admin/bank-accounts')->name('bank_accounts.')->group(function () {

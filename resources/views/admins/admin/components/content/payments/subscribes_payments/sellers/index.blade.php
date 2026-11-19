@@ -86,7 +86,15 @@
                                 <td data-label="تاريخ" class="text-muted small dir-ltr">{{ $order->created_at->format('Y-m-d H:i') }}</td>
                                 <td data-label="الإثبات">
                                     @if($order->payment_proof)
-                                        <a href="{{ asset('storage/app/public/' . $order->payment_proof) }}"
+                                        @php
+                                            $mediaService = app(\App\Services\Seller\SellerMediaService::class);
+                                            $proofUrl = str_starts_with($order->payment_proof, 'http')
+                                                ? $order->payment_proof
+                                                : ($mediaService->getActiveDisk() === 'r2'
+                                                    ? $mediaService->getUrl($order->payment_proof, 'r2')
+                                                    : asset('storage/' . ltrim($order->payment_proof, '/')));
+                                        @endphp
+                                        <a href="{{ $proofUrl }}"
                                            target="_blank" class="btn btn-sm btn-outline-primary rounded-3 px-2.5">
                                            <i class="fa-solid fa-eye me-1"></i> عرض
                                         </a>
@@ -105,11 +113,18 @@
                                 </td>
                                 <td data-label="الإجراء">
                                     @if($order->payment_status === 'unpaid' && $order->payment_proof != null)
-                                        <form action="{{ route('admin.payments.sellers.subscribe.approve', $order->id) }}" method="POST" onsubmit="return confirm('تأكيد الموافقة على الدفع؟');">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="btn btn-sm btn-success rounded-3 px-3">الموافقة</button>
-                                        </form>
+                                        <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                            <form action="{{ route('admin.payments.sellers.subscribe.approve', $order->id) }}" method="POST" onsubmit="return confirm('تأكيد الموافقة على الدفع؟');">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-sm btn-success rounded-3 px-3">الموافقة</button>
+                                            </form>
+                                            <form action="{{ route('admin.payments.sellers.subscribe.reject', $order->id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من رفض إثبات الدفع؟ سيتم حذف الإثبات تلقائياً.');">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-sm btn-danger rounded-3 px-3">رفض الإثبات</button>
+                                            </form>
+                                        </div>
                                     @else
                                         <span class="text-muted small">—</span>
                                     @endif

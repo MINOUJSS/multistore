@@ -10,8 +10,10 @@ use App\Models\Supplier\SupplierPlanOrder;
 use App\Models\Supplier\SupplierPlanSubscription;
 use App\Models\UserBalance;
 use App\Models\UserInvoice;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Services\Seller\SellerMediaService;
 
 class PaymentsController extends Controller
 {
@@ -173,6 +175,44 @@ class PaymentsController extends Controller
 
             // يُفضل تسجيل الخطأ في سجل الأخطاء أو إرسال إشعار للإدارة
             return back()->with('error', 'حدث خطأ أثناء معالجة الطلب: '.$e->getMessage());
+        }
+    }
+
+    public function reject_sellers_subscribe_payment(Request $request, $id)
+    {
+        try {
+            $order = SellerPlanOrder::findOrFail($id);
+
+            // 1. حذف ملف إثبات الدفع من الـ Storage (R2 أو ديسك seller أو public)
+            if (!empty($order->payment_proof)) {
+                app(SellerMediaService::class)->deleteFile($order->payment_proof);
+                $order->payment_proof = null; // تفريغ الحقل لتجنب أي روابط مكسورة
+            }
+
+            // 2. تحديث حالة الطلب وحالة الدفع
+            $order->status = 'cancelled';
+            $order->payment_status = 'failed';
+            $order->save();
+
+            // 3. إرسال إشعار للنظام وللبائع
+            $seller = \App\Models\Seller\Seller::find($order->seller_id);
+            if ($seller && $seller->user) {
+                $reason = $request->input('rejection_reason', 'تم رفض إثبات الدفع لعدم مطابقته للشروط، يرجى تقديم إثبات صالح.');
+                $seller->user->notifications()->create([
+                    'user_id' => $seller->user->id,
+                    'sender_id' => auth('admin')->id(),
+                    'type' => 'system',
+                    'title' => 'تم رفض إثبات دفع الاشتراك',
+                    'body' => $reason,
+                    'icon' => 'fas fa-ban',
+                    'color' => 'danger',
+                    'action_url' => route('seller.subscription'),
+                ]);
+            }
+
+            return back()->with('success', 'تم رفض الطلب وحذف إثبات الدفع بنجاح.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'حدث خطأ أثناء معالجة الطلب: ' . $e->getMessage());
         }
     }
 
