@@ -359,7 +359,9 @@ class AdminMediaService
     public function deleteDirectory(string $directoryPath, ?string $disk = null): bool
     {
         $relPath = $this->extractRelativePath($directoryPath);
-        if (empty($relPath)) {
+        $clean = trim($relPath, '/');
+        if (empty($clean) || in_array($clean, [self::R2_PREFIX, 'seller', 'supplier', 'public', '.', '..', 'admin'], true)) {
+            Log::error("AdminMediaService: BLOCKED dangerous root directory deletion attempt on path: '{$directoryPath}'");
             return false;
         }
 

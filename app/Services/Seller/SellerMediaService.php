@@ -20,6 +20,9 @@ class SellerMediaService
     public function prefixR2Path(string $path): string
     {
         $clean = ltrim(trim($path), '/');
+        if ($clean === '') {
+            return self::R2_PREFIX;
+        }
         if (str_starts_with($clean, self::R2_PREFIX . '/')) {
             return $clean;
         }
@@ -196,7 +199,9 @@ class SellerMediaService
     public function deleteDirectory(string $directoryPath, ?string $disk = null): bool
     {
         $relPath = $this->extractRelativePath($directoryPath);
-        if (empty($relPath)) {
+        $clean = trim($relPath, '/');
+        if (empty($clean) || in_array($clean, [self::R2_PREFIX, 'seller', 'supplier', 'public', '.', '..', 'admin'], true)) {
+            Log::error("SellerMediaService: BLOCKED dangerous root directory deletion attempt on path: '{$directoryPath}'");
             return false;
         }
 

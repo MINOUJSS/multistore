@@ -2,16 +2,16 @@
 
 use App\Models\Seller\SellerProductVariations;
 
-// function to chicke if seller folder exists
+// function to check if seller store exists (returns true if available, false if taken or invalid)
 function seller_exists($store_name)
 {
-    // find the store
-    $store = App\Models\Tenant::find($store_name);
-    if ($store == null) {
-        return true;
-    } else {
+    if (empty($store_name) || !is_string($store_name) || trim($store_name) === '') {
         return false;
     }
+
+    // find the store
+    $store = App\Models\Tenant::find($store_name);
+    return $store === null;
 }
 // get tenant id from seller id
 function get_tenant_id_from_seller($seller_id)

@@ -2,16 +2,16 @@
 
 use App\Models\Supplier\SupplierProductVariations;
 
-// function to chicke if supplier folder exists
+// function to check if supplier store exists (returns true if available, false if taken or invalid)
 function supplier_exists($store_name)
 {
-    // find the store
-    $store = App\Models\Tenant::find($store_name.'.supplier');
-    if ($store == null) {
-        return true;
-    } else {
+    if (empty($store_name) || !is_string($store_name) || trim($store_name) === '') {
         return false;
     }
+
+    // find the store
+    $store = App\Models\Tenant::find($store_name.'.supplier');
+    return $store === null;
 }
 // get tenant id from supplier id
 function get_tenant_id_from_supplier($supplier_id)

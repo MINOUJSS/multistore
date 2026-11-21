@@ -71,18 +71,37 @@ class RegistredSellerController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
+            'store_name' => [
+                'required',
+                'string',
+                'min:3',
+                'max:50',
+                'regex:/^[a-zA-Z0-9]+$/',
+            ],
             'full_name' => ['required', 'string', 'min:3', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'phone' => ['required', 'regex:/^(0)(5|6|7)[0-9]{8}$/', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'terms' => 'accepted',
+        ], [
+            'store_name.required' => 'اسم المتجر باللغة الإنجليزية مطلوب.',
+            'store_name.min' => 'اسم المتجر يجب ألا يقل عن 3 أحرف.',
+            'store_name.max' => 'اسم المتجر يجب ألا يتجاوز 50 حرفاً.',
+            'store_name.regex' => 'اسم المتجر يجب أن يتكون من أحرف إنجليزية وأرقام فقط (بدون مسافات أو رموز خاصة).',
         ]);
         // --------START--------------
         $store_name = strtolower(trim($request->store_name));
         $store_name = preg_replace('/[^a-z0-9]/', '', $store_name);
+
+        if (empty($store_name) || strlen($store_name) < 3) {
+            return redirect()->back()->withInput()->withErrors([
+                'store_name' => 'اسم المتجر غير صالح، يجب أن يحتوي على 3 أحرف إنجليزية أو أرقام على الأقل.',
+            ]);
+        }
+
         // verify if seller exists
         if (!seller_exists($store_name)) {
-            return redirect()->back()->withErrors(['store_name' => 'اسم المتجر محجوز مسبقاً، يرجى اختيار اسم آخر.']);
+            return redirect()->back()->withInput()->withErrors(['store_name' => 'اسم المتجر محجوز مسبقاً، يرجى اختيار اسم آخر.']);
         } else {
             try {
                 // Start a transaction for atomicity
@@ -103,7 +122,7 @@ class RegistredSellerController extends Controller
                 $tenant->domains()->create(['domain' => $store_name.'.'.request()->getHost()]);
                 // inserte seller data to database
                 $seller = Seller::create([
-                    'tenant_id' => $store_name,
+                    'tenant_id' => $tenant->id,
                     'full_name' => $request->full_name,
                     'store_name' => $store_name,
                     'email' => $request->email,
@@ -194,9 +213,18 @@ class RegistredSellerController extends Controller
                 // Rollback the transaction
                 \DB::rollBack();
 
-                // Clean up created directory on failure using the active storage disk
-                if (isset($disk, $path) && Storage::disk($disk)->exists($path)) {
-                    Storage::disk($disk)->deleteDirectory($path);
+                // Clean up created directory on failure ONLY if $store_name is valid and never a root directory
+                if (!empty($store_name) && strlen($store_name) >= 3 && isset($disk, $path)) {
+                    $cleanCheck = trim($path, '/');
+                    if ($cleanCheck !== '' && !in_array($cleanCheck, ['seller', 'supplier', '.', '..', 'public', 'admin'], true)) {
+                        try {
+                            if (Storage::disk($disk)->exists($path)) {
+                                Storage::disk($disk)->deleteDirectory($path);
+                            }
+                        } catch (\Throwable $delEx) {
+                            Log::warning("Failed to clean up seller directory on registration failure: {$path}. Error: " . $delEx->getMessage());
+                        }
+                    }
                 }
 
                 // Log the error for debugging
