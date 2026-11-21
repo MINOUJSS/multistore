@@ -80,6 +80,12 @@
                         data-bs-toggle="modal" data-bs-target="#changePasswordModal">
                         <i class="fa-solid fa-key me-1"></i> تغيير كلمة المرور
                     </button>
+                    <button class="btn text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-0"
+                        style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);"
+                        data-bs-toggle="modal" data-bs-target="#upgradeSupplierPlanModal"
+                        title="ترقية باقة اشتراك المورد يدوياً وتحديد المدة">
+                        <i class="fa-solid fa-gem me-1"></i> ترقية الاشتراك
+                    </button>
                     <button class="btn btn-outline-light text-white fw-bold px-3 py-2 rounded-3 shadow-sm border-2"
                         data-bs-toggle="modal" data-bs-target="#resetStoreModal"
                         title="إعادة ضبط مظهر وإعدادات المتجر إلى الوضع الافتراضي">
@@ -971,6 +977,116 @@
                     <i class="fa-solid fa-arrows-rotate me-1"></i> تأكيد إعادة الضبط الآن
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upgrade Supplier Plan Modal -->
+<div class="modal fade" id="upgradeSupplierPlanModal" tabindex="-1" aria-labelledby="upgradeSupplierPlanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0 pb-0 px-4 pt-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center justify-content-center rounded-3 text-white shadow-sm"
+                        style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); width: 48px; height: 48px;">
+                        <i class="fa-solid fa-gem fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-1" id="upgradeSupplierPlanModalLabel">ترقية باقة اشتراك المورد</h5>
+                        <p class="text-muted small mb-0">المورد: <strong class="text-dark">{{ $supplier->full_name }}</strong> ({{ '@' . $supplier->store_name }})</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="{{ route('admin.supplier.upgrade_plan', $supplier->id) }}" method="POST">
+                @csrf
+                <div class="modal-body px-4 py-3">
+                    <!-- Current Subscription Banner -->
+                    <div class="alert alert-light border rounded-3 p-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-primary"></i>
+                            <div>
+                                <small class="text-muted d-block">الاشتراك الحالي للمورد:</small>
+                                <span class="fw-bold text-dark">{{ $supplier->plan_subscription?->plan?->name ?? 'لا يوجد اشتراك نشط' }}</span>
+                            </div>
+                        </div>
+                        <div class="text-start">
+                            <small class="text-muted d-block">تاريخ انتهاء الصلاحية:</small>
+                            <span class="badge {{ $supplier->plan_subscription?->subscription_end_date && \Carbon\Carbon::parse($supplier->plan_subscription->subscription_end_date)->isFuture() ? 'bg-success' : 'bg-secondary' }} rounded-pill px-2.5 py-1">
+                                {{ $supplier->plan_subscription?->subscription_end_date ? \Carbon\Carbon::parse($supplier->plan_subscription->subscription_end_date)->format('Y-m-d') : 'غير محدد' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Plan Selection -->
+                    <div class="mb-3">
+                        <label for="supplierTargetPlanId" class="form-label fw-bold small text-dark">
+                            اختر الباقة المستهدفة <span class="text-danger">*</span>
+                        </label>
+                        <select name="plan_id" id="supplierTargetPlanId" class="form-select rounded-3 py-2" required>
+                            <option value="" disabled selected>-- اختر الخطة --</option>
+                            @foreach ($availablePlans as $plan)
+                                <option value="{{ $plan->id }}" {{ $supplier->plan_subscription?->plan_id == $plan->id ? 'selected' : '' }}>
+                                    {{ $plan->name }} ({{ number_format($plan->price, 2) }} د.ج)
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Duration in Days -->
+                    <div class="mb-3">
+                        <label for="supplierDurationDays" class="form-label fw-bold small text-dark">
+                            مدة الاشتراك (بالأيام) <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group mb-2">
+                            <input type="number" name="duration_days" id="supplierDurationDays"
+                                class="form-control rounded-start-3" value="30" min="1" max="3650" required>
+                            <span class="input-group-text bg-light rounded-end-3">يوماً</span>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="text-muted small me-1" style="font-size: 0.75rem;">تحديد سريع:</span>
+                            <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2 rounded-pill small" onclick="document.getElementById('supplierDurationDays').value = 30;">شهر (30 يوم)</button>
+                            <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2 rounded-pill small" onclick="document.getElementById('supplierDurationDays').value = 90;">3 أشهر (90 يوم)</button>
+                            <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2 rounded-pill small" onclick="document.getElementById('supplierDurationDays').value = 180;">6 أشهر (180 يوم)</button>
+                            <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2 rounded-pill small" onclick="document.getElementById('supplierDurationDays').value = 365;">سنة (365 يوم)</button>
+                        </div>
+                    </div>
+
+                    <!-- Option: Extend Existing -->
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="extend_existing" value="1" id="extendExistingSupplierPlan" checked>
+                        <label class="form-check-label text-dark fw-semibold small" for="extendExistingSupplierPlan">
+                            تمديد الاشتراك الحالي (إضافة الأيام إلى تاريخ انتهاء الاشتراك القائم إذا كان سارياً)
+                        </label>
+                    </div>
+
+                    <!-- Option: Notify Supplier -->
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="notify_supplier" value="1" id="notifySupplierCheckbox" checked>
+                        <label class="form-check-label text-dark fw-semibold small" for="notifySupplierCheckbox">
+                            إرسال إشعار فوري إلى المورد داخل لوحة التحكم
+                        </label>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-2">
+                        <label for="upgradeSupplierNotes" class="form-label fw-bold small text-dark">
+                            سبب الترقية / ملاحظات إدارية <span class="text-muted fw-normal">(اختياري)</span>
+                        </label>
+                        <textarea name="notes" id="upgradeSupplierNotes" rows="2" class="form-control rounded-3"
+                            placeholder="مثال: ترقية ترويجية، تعويض عن توقف، ترقية خاصة للشريك..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 bg-light px-4 py-3 d-flex justify-content-between rounded-bottom-4">
+                    <button type="button" class="btn btn-secondary rounded-3 px-4 fw-semibold" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn text-white fw-bold rounded-3 px-4 shadow-sm"
+                        style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);">
+                        <i class="fa-solid fa-gem me-1"></i> تأكيد ترقية باقة المورد
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

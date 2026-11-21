@@ -15,11 +15,14 @@ use App\Models\UserRequestsValidation;
 use App\Models\PlatformService;
 use App\Models\SellerServicePurchase;
 use App\Models\UserFreeOrder;
+use App\Models\Seller\SellerPlan;
+use App\Models\Seller\SellerPlanSubscription;
 use App\Services\Admins\Admin\SellerStoreResetService;
 use App\Services\Admins\Admin\SellerTempCleanupService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class SellerController extends Controller
 {
@@ -111,7 +114,10 @@ class SellerController extends Controller
         // 5. Offline Temp Files Stats (> 1 hour)
         $offlineTempStats = app(SellerTempCleanupService::class)->getOfflineTempStats(1);
 
-        return view('admins.admin.seller.index', compact('sellers', 'sellerStats', 'offlineTempStats'));
+        // 6. Available Plans for Upgrade
+        $availablePlans = SellerPlan::all();
+
+        return view('admins.admin.seller.index', compact('sellers', 'sellerStats', 'offlineTempStats', 'availablePlans'));
     }
 
     // show seller
@@ -165,6 +171,8 @@ class SellerController extends Controller
             ? UserRequestsValidation::where('user_id', $user->id)->where('status', 'pending')->exists()
             : false;
 
+        $availablePlans = SellerPlan::all();
+
         return view('admins.admin.seller.show', compact(
             'seller',
             'user',
@@ -178,7 +186,8 @@ class SellerController extends Controller
             'chargilyQuotaRemaining',
             'bankTransferQuotaRemaining',
             'freeOrdersRemaining',
-            'hasPendingValidation'
+            'hasPendingValidation',
+            'availablePlans'
         ));
     }
 
@@ -890,6 +899,247 @@ class SellerController extends Controller
             }
 
             return redirect()->back()->with('error', 'حدث خطأ أثناء الشحن الجماعي للخدمات والطلبات: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Manually upgrade a single seller's subscription plan.
+     */
+    public function upgradePlan(Request $request, $id)
+    {
+        $request->validate([
+            'plan_id' => 'required|exists:seller_plans,id',
+            'duration_days' => 'required|integer|min:1|max:3650',
+            'extend_existing' => 'nullable|boolean',
+            'notify_seller' => 'nullable|boolean',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        try {
+            $seller = Seller::findOrFail($id);
+            $plan = SellerPlan::findOrFail($request->plan_id);
+            $durationDays = (int) $request->duration_days;
+            $extendExisting = $request->boolean('extend_existing', true);
+            $notifySeller = $request->boolean('notify_seller', true);
+            $notes = $request->input('notes', 'ترقية يدوية من قِبل إدارة المنصة');
+
+            $subscription = SellerPlanSubscription::firstOrNew(['seller_id' => $seller->id]);
+
+            $now = Carbon::now();
+            $startDate = $now;
+            if ($extendExisting && $subscription->subscription_end_date && Carbon::parse($subscription->subscription_end_date)->isFuture()) {
+                $endDate = Carbon::parse($subscription->subscription_end_date)->addDays($durationDays);
+                $startDate = Carbon::parse($subscription->subscription_start_date ?? $now);
+            } else {
+                $endDate = (clone $now)->addDays($durationDays);
+            }
+
+            $subscription->seller_id = $seller->id;
+            $subscription->plan_id = $plan->id;
+            $subscription->duration = $durationDays;
+            $subscription->price = 0.00;
+            $subscription->discount = 0.00;
+            $subscription->payment_method = 'admin_grant';
+            $subscription->payment_status = 'paid';
+            $subscription->status = 'paid';
+            $subscription->change_subscription = true;
+            $subscription->subscription_start_date = $startDate;
+            $subscription->subscription_end_date = $endDate;
+            $subscription->save();
+
+            // Send notification to seller
+            if ($notifySeller && $seller->user) {
+                $seller->user->notifications()->create([
+                    'user_id' => $seller->user->id,
+                    'sender_id' => auth('admin')->id(),
+                    'type' => 'system',
+                    'title' => 'تمت ترقية باقة اشتراك متجرك بنجاح 🎉',
+                    'body' => $notes ? "تمت ترقية باقة متجرك إلى ({$plan->name}) لمدة {$durationDays} يوماً. ملاحظة: {$notes}" : "تمت ترقية باقة متجرك إلى ({$plan->name}) لمدة {$durationDays} يوماً بنجاح.",
+                    'icon' => 'fas fa-gem',
+                    'color' => 'success',
+                    'action_url' => route('seller.subscription'),
+                ]);
+            }
+
+            $message = "تمت ترقية باقة التاجر ({$seller->store_name}) إلى خطة ({$plan->name}) لمدة {$durationDays} يوماً بنجاح.";
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                ]);
+            }
+
+            return redirect()->back()->with('success', $message);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Seller Upgrade Plan Failed: " . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'حدث خطأ أثناء ترقية الباقة: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'حدث خطأ أثناء ترقية الباقة: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Bulk upgrade sellers subscription plans with registration date filtering.
+     */
+    public function bulkUpgradePlan(Request $request)
+    {
+        $request->validate([
+            'plan_id' => 'required|exists:seller_plans,id',
+            'duration_days' => 'required|integer|min:1|max:3650',
+            'selection_mode' => 'required|string|in:all,registered_before,registered_after,registered_between,selected_ids',
+            'before_date' => 'nullable|date',
+            'after_date' => 'nullable|date',
+            'from_date' => 'nullable|date',
+            'to_date' => 'nullable|date',
+            'selected_ids' => 'nullable|array',
+            'selected_ids.*' => 'integer|exists:sellers,id',
+            'target_status' => 'nullable|string|in:all,approved,pending',
+            'extend_existing' => 'nullable|boolean',
+            'notify_sellers' => 'nullable|boolean',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        try {
+            $plan = SellerPlan::findOrFail($request->plan_id);
+            $durationDays = (int) $request->duration_days;
+            $selectionMode = $request->input('selection_mode');
+            $targetStatus = $request->input('target_status', 'all');
+            $extendExisting = $request->boolean('extend_existing', true);
+            $notifySellers = $request->boolean('notify_sellers', true);
+            $notes = $request->input('notes', 'ترقية جماعية من قِبل إدارة المنصة');
+
+            $query = Seller::query();
+
+            // Status filter
+            if ($targetStatus === 'approved') {
+                $query->where('approval_status', 'approved');
+            } elseif ($targetStatus === 'pending') {
+                $query->where('approval_status', '!=', 'approved');
+            }
+
+            // Selection Mode / Date filtering
+            switch ($selectionMode) {
+                case 'registered_before':
+                    if (!$request->filled('before_date')) {
+                        return back()->with('error', 'يرجى تحديد تاريخ التسجيل المطلوب (قبل).');
+                    }
+                    $query->whereDate('created_at', '<=', Carbon::parse($request->before_date)->endOfDay());
+                    break;
+
+                case 'registered_after':
+                    if (!$request->filled('after_date')) {
+                        return back()->with('error', 'يرجى تحديد تاريخ التسجيل المطلوب (بعد).');
+                    }
+                    $query->whereDate('created_at', '>=', Carbon::parse($request->after_date)->startOfDay());
+                    break;
+
+                case 'registered_between':
+                    if (!$request->filled('from_date') || !$request->filled('to_date')) {
+                        return back()->with('error', 'يرجى تحديد التاريخ من وإلى بدقة.');
+                    }
+                    $query->whereDate('created_at', '>=', Carbon::parse($request->from_date)->startOfDay())
+                          ->whereDate('created_at', '<=', Carbon::parse($request->to_date)->endOfDay());
+                    break;
+
+                case 'selected_ids':
+                    $ids = $request->input('selected_ids', []);
+                    if (empty($ids)) {
+                        return back()->with('error', 'لم يتم تحديد أي بائع من الجدول للترقية.');
+                    }
+                    $query->whereIn('id', $ids);
+                    break;
+
+                case 'all':
+                default:
+                    // All sellers
+                    break;
+            }
+
+            $sellers = $query->with(['plan_subscription', 'user'])->get();
+
+            if ($sellers->isEmpty()) {
+                $msg = 'لم يتم العثور على أي بائع يطابق معايير الفلترة المحددة.';
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => $msg], 422);
+                }
+                return redirect()->back()->with('error', $msg);
+            }
+
+            $now = Carbon::now();
+            $processedCount = 0;
+
+            \DB::transaction(function () use ($sellers, $plan, $durationDays, $extendExisting, $notifySellers, $notes, $now, &$processedCount) {
+                foreach ($sellers as $seller) {
+                    $subscription = $seller->plan_subscription ?? SellerPlanSubscription::firstOrNew(['seller_id' => $seller->id]);
+
+                    $startDate = $now;
+                    if ($extendExisting && $subscription->subscription_end_date && Carbon::parse($subscription->subscription_end_date)->isFuture()) {
+                        $endDate = Carbon::parse($subscription->subscription_end_date)->addDays($durationDays);
+                        $startDate = Carbon::parse($subscription->subscription_start_date ?? $now);
+                    } else {
+                        $endDate = (clone $now)->addDays($durationDays);
+                    }
+
+                    $subscription->seller_id = $seller->id;
+                    $subscription->plan_id = $plan->id;
+                    $subscription->duration = $durationDays;
+                    $subscription->price = 0.00;
+                    $subscription->discount = 0.00;
+                    $subscription->payment_method = 'admin_grant';
+                    $subscription->payment_status = 'paid';
+                    $subscription->status = 'paid';
+                    $subscription->change_subscription = true;
+                    $subscription->subscription_start_date = $startDate;
+                    $subscription->subscription_end_date = $endDate;
+                    $subscription->save();
+
+                    // Notify seller
+                    if ($notifySellers && $seller->user) {
+                        $seller->user->notifications()->create([
+                            'user_id' => $seller->user->id,
+                            'sender_id' => auth('admin')->id(),
+                            'type' => 'system',
+                            'title' => 'تمت ترقية باقة اشتراك متجرك بنجاح 🎉',
+                            'body' => $notes ? "تمت ترقية باقة متجرك إلى ({$plan->name}) لمدة {$durationDays} يوماً. ملاحظة: {$notes}" : "تمت ترقية باقة متجرك إلى ({$plan->name}) لمدة {$durationDays} يوماً بنجاح.",
+                            'icon' => 'fas fa-gem',
+                            'color' => 'success',
+                            'action_url' => route('seller.subscription'),
+                        ]);
+                    }
+
+                    $processedCount++;
+                }
+            });
+
+            $message = "تمت بنجاح ترقية باقات {$processedCount} بائع إلى خطة ({$plan->name}) لمدة {$durationDays} يوماً.";
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'processed_count' => $processedCount,
+                ]);
+            }
+
+            return redirect()->back()->with('success', $message);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Bulk Seller Upgrade Plan Failed: " . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'حدث خطأ أثناء الترقية الجماعية: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'حدث خطأ أثناء الترقية الجماعية: ' . $e->getMessage());
         }
     }
 }

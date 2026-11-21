@@ -60,6 +60,8 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::post('/ah-admin/supplier/unapprove', [SupplierController::class, 'unapprove'])->name('supplier.unapprove');
                 Route::post('/ah-admin/supplier/{id}/change-password', [SupplierController::class, 'changePassword'])->name('supplier.changePassword');
                 Route::post('/ah-admin/supplier/{id}/reset-store', [SupplierController::class, 'resetStore'])->name('supplier.reset_store');
+                Route::post('/ah-admin/supplier/{id}/upgrade-plan', [SupplierController::class, 'upgradePlan'])->name('supplier.upgrade_plan');
+                Route::post('/ah-admin/suppliers/bulk-upgrade-plan', [SupplierController::class, 'bulkUpgradePlan'])->name('suppliers.bulk_upgrade_plan');
 
                 // supplier plans management routes
                 Route::get('/ah-admin/supplier-plans', [SupplierPlanController::class, 'index'])->name('supplier_plans.index');
@@ -94,6 +96,8 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::post('/ah-admin/seller/{id}/clean-temp', [SellerController::class, 'cleanSingleSellerTemp'])->name('seller.clean_temp');
                 Route::post('/ah-admin/seller/{id}/add-services-and-orders', [SellerController::class, 'addServicesAndOrders'])->name('seller.add_services_orders');
                 Route::post('/ah-admin/sellers/bulk-add-services-and-orders', [SellerController::class, 'bulkAddServicesAndOrders'])->name('sellers.bulk_add_services_orders');
+                Route::post('/ah-admin/seller/{id}/upgrade-plan', [SellerController::class, 'upgradePlan'])->name('seller.upgrade_plan');
+                Route::post('/ah-admin/sellers/bulk-upgrade-plan', [SellerController::class, 'bulkUpgradePlan'])->name('sellers.bulk_upgrade_plan');
 
                 // seller plans management routes
                 Route::get('/ah-admin/seller-plans', [SellerPlanController::class, 'index'])->name('seller_plans.index');

@@ -208,10 +208,17 @@
 
     <!-- Table Card -->
     <div class="card border-0 shadow-sm rounded-4 bg-white w-100 overflow-hidden mb-4" style="max-width: 100%;">
-        <div class="card-header bg-white border-0 fw-bold py-3 px-4 d-flex align-items-center justify-content-between">
+        <div class="card-header bg-white border-0 fw-bold py-3 px-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
                 <i class="fa-solid fa-table" style="color: #a40c72;"></i>
                 <span>قائمة الموردين المسجلين</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm text-white fw-bold px-3 py-1.5 rounded-3 shadow-sm"
+                    style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);"
+                    data-bs-toggle="modal" data-bs-target="#bulkUpgradeSupplierPlanModal">
+                    <i class="fa-solid fa-gem me-1"></i> ترقية جماعية للاشتراكات
+                </button>
             </div>
         </div>
 
@@ -220,6 +227,9 @@
                 <table class="table table-hover align-middle text-center mb-0" id="suppliersTable">
                     <thead class="bg-light text-muted small">
                         <tr>
+                            <th class="py-3 text-center" style="width: 40px;">
+                                <input type="checkbox" id="selectAllSuppliersCheckbox" class="form-check-input cursor-pointer" title="تحديد الكل">
+                            </th>
                             <th class="py-3">#</th>
                             <th class="py-3">الاسم</th>
                             <th class="py-3">البريد</th>
@@ -245,6 +255,9 @@
                                 $tenantId = $supplier->tenant?->id ?? $supplier->tenant_id;
                             @endphp
                             <tr>
+                                <td data-label="تحديد" class="text-center">
+                                    <input type="checkbox" name="selected_supplier_ids[]" value="{{ $supplier->id }}" class="form-check-input supplier-row-checkbox cursor-pointer">
+                                </td>
                                 <td data-label="#" class="fw-bold text-secondary">{{ $index + 1 }}</td>
 
                                 <td data-label="الاسم" class="fw-bold text-dark text-start px-3">
@@ -352,7 +365,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="14" class="py-5 text-muted empty-cell text-center">
+                                <td colspan="15" class="py-5 text-muted empty-cell text-center">
                                     <i class="fa-solid fa-store fs-2 mb-2 d-block opacity-50"></i>
                                     <span>لا يوجد موردين حالياً.</span>
                                 </td>
@@ -372,12 +385,291 @@
     </div>
 </div>
 
+<!-- Bulk Upgrade Supplier Plan Modal -->
+<div class="modal fade" id="bulkUpgradeSupplierPlanModal" tabindex="-1" aria-labelledby="bulkUpgradeSupplierPlanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0 pb-0 px-4 pt-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center justify-content-center rounded-3 text-white shadow-sm"
+                        style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); width: 48px; height: 48px;">
+                        <i class="fa-solid fa-gem fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-1" id="bulkUpgradeSupplierPlanModalLabel">ترقية اشتراكات الموردين (جماعي / حسب تاريخ التسجيل)</h5>
+                        <p class="text-muted small mb-0">ترقية باقات اشتراك متعددة للموردين حسب تاريخ التسجيل أو التحديد اليدوي</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="bulkUpgradeSupplierPlanForm" action="{{ route('admin.suppliers.bulk_upgrade_plan') }}" method="POST">
+                @csrf
+                <div class="modal-body px-4 py-3">
+                    <div class="row g-3">
+                        <!-- 1. Selection Mode -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold text-dark small mb-2 d-flex align-items-center gap-1.5">
+                                <i class="fa-solid fa-filter text-primary"></i>
+                                <span>نطاق وتحديد الموردين المستهدفين للترقية: <span class="text-danger">*</span></span>
+                            </label>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <div class="form-check p-2.5 border rounded-3 bg-light d-flex align-items-center gap-2 cursor-pointer h-100">
+                                        <input class="form-check-input ms-0 me-2" type="radio" name="selection_mode" id="supplierModeBefore" value="registered_before" checked onchange="toggleSupplierDateInputs()">
+                                        <label class="form-check-label small fw-bold text-dark mb-0 cursor-pointer" for="supplierModeBefore">
+                                            📅 سجلوا قبل تاريخ معين
+                                            <span class="d-block text-muted fw-normal" style="font-size: 0.72rem;">(مثال: لتعويض المسجلين قبل الخلل التقني الأخير)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check p-2.5 border rounded-3 bg-light d-flex align-items-center gap-2 cursor-pointer h-100">
+                                        <input class="form-check-input ms-0 me-2" type="radio" name="selection_mode" id="supplierModeBetween" value="registered_between" onchange="toggleSupplierDateInputs()">
+                                        <label class="form-check-label small fw-bold text-dark mb-0 cursor-pointer" for="supplierModeBetween">
+                                            📅 سجلوا بين تاريخين محددين
+                                            <span class="d-block text-muted fw-normal" style="font-size: 0.72rem;">(تحديد نطاق زمني من وإلى)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check p-2.5 border rounded-3 bg-light d-flex align-items-center gap-2 cursor-pointer h-100">
+                                        <input class="form-check-input ms-0 me-2" type="radio" name="selection_mode" id="supplierModeAfter" value="registered_after" onchange="toggleSupplierDateInputs()">
+                                        <label class="form-check-label small fw-bold text-dark mb-0 cursor-pointer" for="supplierModeAfter">
+                                            📅 سجلوا بعد تاريخ معين
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check p-2.5 border rounded-3 bg-light d-flex align-items-center gap-2 cursor-pointer h-100">
+                                        <input class="form-check-input ms-0 me-2" type="radio" name="selection_mode" id="supplierModeSelected" value="selected_ids" onchange="toggleSupplierDateInputs()">
+                                        <label class="form-check-label small fw-bold text-dark mb-0 cursor-pointer" for="supplierModeSelected">
+                                            ☑️ المحددين في الجدول (<span id="selectedSuppliersCountBadge" class="text-primary fw-bold">0</span>)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check p-2.5 border rounded-3 bg-light d-flex align-items-center gap-2 cursor-pointer h-100">
+                                        <input class="form-check-input ms-0 me-2" type="radio" name="selection_mode" id="supplierModeAll" value="all" onchange="toggleSupplierDateInputs()">
+                                        <label class="form-check-label small fw-bold text-dark mb-0 cursor-pointer" for="supplierModeAll">
+                                            👥 جميع الموردين المسجلين
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Dynamic Date Filters -->
+                        <div class="col-12" id="supplierDateContainer">
+                            <!-- Before Date Input -->
+                            <div id="supplierBeforeDateBox">
+                                <label for="supplierBeforeDateInput" class="form-label fw-bold text-dark small mb-1">
+                                    <i class="fa-solid fa-calendar-day text-danger me-1"></i> ترقية كل من سجل قبل تاريخ:
+                                </label>
+                                <input type="date" name="before_date" id="supplierBeforeDateInput" class="form-control rounded-3 py-2" value="{{ date('Y-m-d') }}">
+                            </div>
+
+                            <!-- After Date Input -->
+                            <div id="supplierAfterDateBox" class="d-none">
+                                <label for="supplierAfterDateInput" class="form-label fw-bold text-dark small mb-1">
+                                    <i class="fa-solid fa-calendar-day text-success me-1"></i> ترقية كل من سجل بعد تاريخ:
+                                </label>
+                                <input type="date" name="after_date" id="supplierAfterDateInput" class="form-control rounded-3 py-2" value="{{ date('Y-m-d') }}">
+                            </div>
+
+                            <!-- Between Dates Inputs -->
+                            <div id="supplierBetweenDatesBox" class="d-none">
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <label for="supplierFromDateInput" class="form-label fw-bold text-dark small mb-1">من تاريخ:</label>
+                                        <input type="date" name="from_date" id="supplierFromDateInput" class="form-control rounded-3 py-2" value="{{ date('Y-m-d', strtotime('-30 days')) }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="supplierToDateInput" class="form-label fw-bold text-dark small mb-1">إلى تاريخ:</label>
+                                        <input type="date" name="to_date" id="supplierToDateInput" class="form-control rounded-3 py-2" value="{{ date('Y-m-d') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hidden Container for checked supplier IDs -->
+                        <div id="supplierSelectedIdsContainer"></div>
+
+                        <!-- 3. Target Status Filter -->
+                        <div class="col-md-4">
+                            <label for="supplierTargetStatus" class="form-label fw-bold text-dark small mb-1">
+                                <i class="fa-solid fa-user-check text-muted me-1"></i> حالة المورد:
+                            </label>
+                            <select name="target_status" id="supplierTargetStatus" class="form-select rounded-3 py-2">
+                                <option value="all" selected>جميع الحسابات (الكل)</option>
+                                <option value="approved">الموثقون فقط (Approved)</option>
+                                <option value="pending">قيد المراجعة فقط (Pending)</option>
+                            </select>
+                        </div>
+
+                        <!-- 4. Target Plan -->
+                        <div class="col-md-4">
+                            <label for="bulkSupplierPlanSelect" class="form-label fw-bold text-dark small mb-1">
+                                <i class="fa-solid fa-layer-group text-primary me-1"></i> الخطة المستهدفة: <span class="text-danger">*</span>
+                            </label>
+                            <select name="plan_id" id="bulkSupplierPlanSelect" class="form-select rounded-3 py-2" required>
+                                @foreach($availablePlans as $plan)
+                                    <option value="{{ $plan->id }}">{{ $plan->name }} ({{ number_format($plan->price, 2) }} د.ج)</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- 5. Duration Days -->
+                        <div class="col-md-4">
+                            <label for="bulkSupplierDurationDays" class="form-label fw-bold text-dark small mb-1">
+                                <i class="fa-solid fa-clock text-primary me-1"></i> مدة الترقية (بالأيام): <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" min="1" max="3650" name="duration_days" id="bulkSupplierDurationDays" class="form-control rounded-3 py-2" value="30" required>
+                            <div class="d-flex gap-1 flex-wrap mt-1">
+                                <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-1.5 rounded-pill small" onclick="document.getElementById('bulkSupplierDurationDays').value = 30;">30 يوم</button>
+                                <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-1.5 rounded-pill small" onclick="document.getElementById('bulkSupplierDurationDays').value = 90;">3 أشهر</button>
+                                <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-1.5 rounded-pill small" onclick="document.getElementById('bulkSupplierDurationDays').value = 180;">6 أشهر</button>
+                                <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-1.5 rounded-pill small" onclick="document.getElementById('bulkSupplierDurationDays').value = 365;">سنة</button>
+                            </div>
+                        </div>
+
+                        <!-- 6. Options: Extend Existing & Notify -->
+                        <div class="col-12">
+                            <div class="border rounded-3 p-3 bg-light">
+                                <div class="form-check form-switch p-0 d-flex align-items-center gap-2 mb-2">
+                                    <input class="form-check-input ms-0 me-2" type="checkbox" name="extend_existing" id="bulkSupplierExtend" value="1" checked>
+                                    <label class="form-check-label small fw-semibold text-dark cursor-pointer" for="bulkSupplierExtend">
+                                        تمديد الاشتراكات النشطة (إضافة الأيام الجديدة بعد تاريخ الانتهاء الحالي للمشتركين الفعليين)
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch p-0 d-flex align-items-center gap-2">
+                                    <input class="form-check-input ms-0 me-2" type="checkbox" name="notify_suppliers" id="bulkSupplierNotify" value="1" checked>
+                                    <label class="form-check-label small fw-semibold text-dark cursor-pointer" for="bulkSupplierNotify">
+                                        إرسال إشعار فوري لجميع الموردين المشمولين في لوحات تحكمهم
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 7. Notes -->
+                        <div class="col-12">
+                            <label for="bulkSupplierUpgradeNotes" class="form-label fw-bold text-dark small mb-1">
+                                سبب / ملاحظات الترقية (تظهر للمورد في الإشعار):
+                            </label>
+                            <textarea name="notes" id="bulkSupplierUpgradeNotes" class="form-control rounded-3" rows="2" placeholder="مثال: ترقية استثنائية لجميع الموردين المسجلين / تعويض عن أعمال صيانة وتطوير سحابي..."></textarea>
+                        </div>
+
+                        <!-- Confirmation Checkbox -->
+                        <div class="col-12">
+                            <div class="form-check p-3 bg-warning bg-opacity-10 rounded-3 border border-warning-subtle d-flex align-items-center gap-2">
+                                <input class="form-check-input ms-0 me-2 mt-0" type="checkbox" id="bulkSupplierConfirmCheckbox" required>
+                                <label class="form-check-label small fw-bold text-dark mb-0 cursor-pointer" for="bulkSupplierConfirmCheckbox">
+                                    أؤكد رغبتي في تنفيذ هذه الترقية الجماعية لجميع الموردين المحددين بالمعايير أعلاه.
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light border-0 px-4 py-3 d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary rounded-3 px-4 fw-semibold" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" id="submitBulkSupplierUpgradeBtn" class="btn text-white fw-bold rounded-3 px-4 shadow-sm" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);">
+                        <i class="fa-solid fa-gem me-1"></i> تنفيذ الترقية الجماعية الآن
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(
         tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
     );
+
+    // Toggle date input fields based on bulk selection mode for suppliers
+    function toggleSupplierDateInputs() {
+        const mode = document.querySelector('input[name="selection_mode"]:checked')?.value || 'registered_before';
+        const beforeBox = document.getElementById('supplierBeforeDateBox');
+        const afterBox = document.getElementById('supplierAfterDateBox');
+        const betweenBox = document.getElementById('supplierBetweenDatesBox');
+
+        if (beforeBox) beforeBox.classList.toggle('d-none', mode !== 'registered_before');
+        if (afterBox) afterBox.classList.toggle('d-none', mode !== 'registered_after');
+        if (betweenBox) betweenBox.classList.toggle('d-none', mode !== 'registered_between');
+    }
+
+    // Checkbox and Selection Management for suppliers
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectAllCb = document.getElementById('selectAllSuppliersCheckbox');
+        const rowCheckboxes = document.querySelectorAll('.supplier-row-checkbox');
+        const countBadge = document.getElementById('selectedSuppliersCountBadge');
+        const bulkForm = document.getElementById('bulkUpgradeSupplierPlanForm');
+
+        function updateSelectedCount() {
+            const checkedBoxes = document.querySelectorAll('.supplier-row-checkbox:checked');
+            if (countBadge) {
+                countBadge.textContent = checkedBoxes.length;
+            }
+            if (selectAllCb) {
+                selectAllCb.checked = rowCheckboxes.length > 0 && checkedBoxes.length === rowCheckboxes.length;
+                selectAllCb.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < rowCheckboxes.length;
+            }
+        }
+
+        if (selectAllCb) {
+            selectAllCb.addEventListener('change', function () {
+                rowCheckboxes.forEach(cb => cb.checked = selectAllCb.checked);
+                updateSelectedCount();
+            });
+        }
+
+        rowCheckboxes.forEach(cb => {
+            cb.addEventListener('change', updateSelectedCount);
+        });
+
+        if (bulkForm) {
+            bulkForm.addEventListener('submit', function (e) {
+                const mode = document.querySelector('input[name="selection_mode"]:checked')?.value;
+                const container = document.getElementById('supplierSelectedIdsContainer');
+                if (container) container.innerHTML = '';
+
+                if (mode === 'selected_ids') {
+                    const checkedBoxes = document.querySelectorAll('.supplier-row-checkbox:checked');
+                    if (checkedBoxes.length === 0) {
+                        e.preventDefault();
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'تنبيه',
+                                text: 'يرجى تحديد مورد واحد على الأقل من الجدول قبل المتابعة.',
+                                confirmButtonColor: '#7c3aed',
+                                confirmButtonText: 'حسناً'
+                            });
+                        } else {
+                            alert('يرجى تحديد مورد واحد على الأقل من الجدول قبل المتابعة.');
+                        }
+                        return false;
+                    }
+
+                    checkedBoxes.forEach(cb => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'selected_ids[]';
+                        input.value = cb.value;
+                        container.appendChild(input);
+                    });
+                }
+
+                const submitBtn = document.getElementById('submitBulkSupplierUpgradeBtn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جاري تنفيذ الترقية...';
+                }
+            });
+        }
+    });
 </script>
 
 <style>
