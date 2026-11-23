@@ -373,22 +373,26 @@ class TenantsController extends Controller
             $userAgent = $request->header('User-Agent');
             $userId = Auth::check() ? Auth::id() : null;
 
-            // التحقق من عدم تسجيل الزيارة سابقًا لتجنب التكرار غير الضروري
-            $existingVisit = SupplierProductsVisits::where('product_id', $id)
-                ->where('ip_address', $ipAddress)
-                ->whereDate('visited_at', now()->toDateString()) // نفس اليوم
-                ->first();
-            if (!$existingVisit) {
-                // إنشاء سجل جديد
-                SupplierProductsVisits::create([
-                    'product_id' => $id,
-                    'ip_address' => $ipAddress,
-                    'user_agent' => $userAgent,
-                    'user_id' => $userId,
-                    'visited_at' => now(),
-                ]);
-                ++$product->view_count;
-                $product->save();
+            try {
+                // التحقق من عدم تسجيل الزيارة سابقًا لتجنب التكرار غير الضروري
+                $existingVisit = SupplierProductsVisits::where('product_id', $id)
+                    ->where('ip_address', $ipAddress)
+                    ->whereDate('visited_at', now()->toDateString()) // نفس اليوم
+                    ->first();
+                if (!$existingVisit) {
+                    // إنشاء سجل جديد
+                    SupplierProductsVisits::create([
+                        'product_id' => $id,
+                        'ip_address' => $ipAddress,
+                        'user_agent' => $userAgent,
+                        'user_id' => $userId,
+                        'visited_at' => now(),
+                    ]);
+                    ++$product->view_count;
+                    $product->save();
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning("Failed to record supplier product visit for product #{$id}: " . $e->getMessage());
             }
 
             // return idex view with user data
@@ -415,22 +419,26 @@ class TenantsController extends Controller
             $userAgent = $request->header('User-Agent');
             $userId = Auth::check() ? Auth::id() : null;
 
-            // التحقق من عدم تسجيل الزيارة سابقًا لتجنب التكرار غير الضروري
-            $existingVisit = SellerProductsVisits::where('product_id', $id)
-                ->where('ip_address', $ipAddress)
-                ->whereDate('visited_at', now()->toDateString()) // نفس اليوم
-                ->first();
-            if (!$existingVisit) {
-                // إنشاء سجل جديد
-                SellerProductsVisits::create([
-                    'product_id' => $id,
-                    'ip_address' => $ipAddress,
-                    'user_agent' => $userAgent,
-                    'user_id' => $userId,
-                    'visited_at' => now(),
-                ]);
-                ++$product->view_count;
-                $product->save();
+            try {
+                // التحقق من عدم تسجيل الزيارة سابقًا لتجنب التكرار غير الضروري
+                $existingVisit = SellerProductsVisits::where('product_id', $id)
+                    ->where('ip_address', $ipAddress)
+                    ->whereDate('visited_at', now()->toDateString()) // نفس اليوم
+                    ->first();
+                if (!$existingVisit) {
+                    // إنشاء سجل جديد
+                    SellerProductsVisits::create([
+                        'product_id' => $id,
+                        'ip_address' => $ipAddress,
+                        'user_agent' => $userAgent,
+                        'user_id' => $userId,
+                        'visited_at' => now(),
+                    ]);
+                    ++$product->view_count;
+                    $product->save();
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning("Failed to record seller product visit for product #{$id}: " . $e->getMessage());
             }
 
             // return idex view with user data
