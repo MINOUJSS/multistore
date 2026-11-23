@@ -1,6 +1,6 @@
 @extends('layouts.users.store.app')
 @section('title')
-    {{ tenant('domain') }} | السلة
+    {{ tenant('domain') }} | {{ __('store.cart') }}
 @endsection
 @section('meta')
     <meta name="csrf-token" content="{{ csrf_token() }}">

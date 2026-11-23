@@ -1,6 +1,6 @@
 @extends('layouts.users.store.app')
 @section('title')
-    {{ tenant('domain') }} | التصنيفات
+    {{ tenant('domain') }} | {{ __('store.checkout') }}
 @endsection
 
 @section('meta')

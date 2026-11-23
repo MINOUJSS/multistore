@@ -1,6 +1,6 @@
 @extends('layouts.users.store.app')
 @section('title')
-    {{ tenant('domain') }} | الرئيسية
+    {{ tenant('domain') }} | {{ __('store.home') }}
 @endsection
 
 @section('style')

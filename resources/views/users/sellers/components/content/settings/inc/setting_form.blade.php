@@ -48,8 +48,32 @@
                                 @enderror
                             </div>
 
-                            <div class="col-12">
-                                <label for="store_welcome_message" class="form-label fw-bold">{{$settings[18]['description']}}</label>
+                            @php
+                                $storeLangSetting = $settings->where('key', 'store_language')->first();
+                                $currentStoreLang = old('store_language', $storeLangSetting?->value ?? 'ar');
+                            @endphp
+                            <div class="col-md-6">
+                                <label for="store_language" class="form-label fw-bold">
+                                    <i class="fas fa-language me-1 text-primary"></i> {{ __('لغة المتجر الأساسية') }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                                    <select class="form-select rounded-end" id="store_language" name="store_language" required>
+                                        <option value="ar" {{ $currentStoreLang == 'ar' ? 'selected' : '' }}>🇩🇿 العربية (RTL - من اليمين لليسار)</option>
+                                        <option value="fr" {{ $currentStoreLang == 'fr' ? 'selected' : '' }}>🇫🇷 Français (LTR - De gauche à droite)</option>
+                                        <option value="en" {{ $currentStoreLang == 'en' ? 'selected' : '' }}>🇬🇧 English (LTR - Left to Right)</option>
+                                    </select>
+                                </div>
+                                <div class="form-text text-muted small">
+                                    {{ __('حدد اللغة الافتراضية لواجهة متجرك (القوائم، الأزرار، السلة، ونموذج إتمام الطلب).') }}
+                                </div>
+                                @error('store_language')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="store_welcome_message" class="form-label fw-bold">{{$settings[18]['description'] ?? __('رسالة الترحيب')}}</label>
                                 <input type="text" class="form-control" id="store_welcome_message" name="store_welcome_message" 
                                           value="{{ old('store_welcome_message', $settings[18]['value'] ?? '') }}"/>
                                 @error('store_welcome_message')

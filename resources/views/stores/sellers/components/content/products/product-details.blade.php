@@ -480,11 +480,11 @@
             </div>
             <h3>
                 @if (seller_product_has_discount($product->id))
-                    <span id="product_price">{{ $product->activeDiscount->discount_amount }}</span> <sup>د.ج</sup> <span
-                        class="text-decoration-line-through text-danger">{{ $product->price }}<sup>د.ج</sup></span><sup><span
+                    <span id="product_price">{{ $product->activeDiscount->discount_amount }}</span> <sup>{{ __("store.currency") }}</sup> <span
+                        class="text-decoration-line-through text-danger">{{ $product->price }}<sup>{{ __("store.currency") }}</sup></span><sup><span
                             class="text-success"> (-{{ $product->activeDiscount->discount_percentage }}%)</span></sup>
                 @else
-                    <span id="product_price">{{ $product->price }}</span> <sup>د.ج</sup>
+                    <span id="product_price">{{ $product->price }}</span> <sup>{{ __("store.currency") }}</sup>
                 @endif
             </h3>
             <p class="">{{ $product->short_description }}</p>
@@ -785,7 +785,7 @@
                                             name="shipping_and_point" value="home"
                                             {{ old('shipping_and_point', 'home') == 'home' ? 'checked' : '' }}>
                                         <label class="form-check-label fw-bold" for="to_home">التوصيل للمنزل</label>
-                                        <p id="to_home_price">00</p><sup> د.ج</sup>
+                                        <p id="to_home_price">00</p><sup> {{ __("store.currency") }}</sup>
                                     </div>
                                 </div>
 
@@ -797,7 +797,7 @@
                                             {{ old('shipping_and_point') == 'descktop' ? 'checked' : '' }}>
                                         <label class="form-check-label fw-bold" for="to_descktop">التوصيل
                                             للمكتب</label>
-                                        <p id="to_desck_price">00</p><sup> د.ج</sup>
+                                        <p id="to_desck_price">00</p><sup> {{ __("store.currency") }}</sup>
                                     </div>
                                 </div>
 
@@ -1045,10 +1045,10 @@
                                                 @if (seller_product_has_discount($product->id))
                                                     <span id="unit_price"
                                                         class="price">{{ $product->activeDiscount->discount_amount }}
-                                                    </span><sup>د.ج</sup>
+                                                    </span><sup>{{ __("store.currency") }}</sup>
                                                 @else
                                                     <span id="unit_price" class="price">{{ $product->price }}
-                                                    </span><sup>د.ج</sup>
+                                                    </span><sup>{{ __("store.currency") }}</sup>
                                                 @endif
                                             </div>
                                         </div>
@@ -1061,10 +1061,10 @@
                                                 @if (seller_product_has_discount($product->id))
                                                     <span id="sub_total"
                                                         class="price">{{ $product->activeDiscount->discount_amount }}
-                                                    </span><sup>د.ج</sup>
+                                                    </span><sup>{{ __("store.currency") }}</sup>
                                                 @else
                                                     <span id="sub_total" class="price">{{ $product->price }}
-                                                    </span><sup>د.ج</sup>
+                                                    </span><sup>{{ __("store.currency") }}</sup>
                                                 @endif
                                             </div>
                                         </div>
@@ -1075,7 +1075,7 @@
                                             </div>
                                             <div class="shipping-price" style="width: 20%;">
                                                 <span id="shipping_price"
-                                                    class="price">{{ number_format(00, 2) }}</span><sup> د.ج</sup>
+                                                    class="price">{{ number_format(00, 2) }}</span><sup> {{ __("store.currency") }}</sup>
                                             </div>
                                         </div>
                                         <hr>
@@ -1085,7 +1085,7 @@
                                             </div>
                                             <div class="shipping-price" style="width: 20%;">
                                                 <span id="discount"
-                                                    class="price">{{ number_format(00, 2) }}</span><sup> د.ج</sup>
+                                                    class="price">{{ number_format(00, 2) }}</span><sup> {{ __("store.currency") }}</sup>
                                             </div>
                                         </div>
                                         <hr>
@@ -1098,18 +1098,18 @@
                                                     {{-- @if (seller_product_has_discount($product->id))
                                                     <span
                                                         id="total_price">{{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}</span>
-                                                    <sup>د.ج</sup>
+                                                    <sup>{{ __("store.currency") }}</sup>
                                                 @else
                                                     <span
                                                         id="total_price">{{ number_format($product->minimum_order_qty * $product->price, 2) }}</span>
-                                                    <sup>د.ج</sup>
+                                                    <sup>{{ __("store.currency") }}</sup>
                                                 @endif --}}
                                                     <span id="total_price"
                                                         data-totalprice="@if (seller_product_has_discount($product->id)) {{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}@else{{ number_format($product->minimum_order_qty * $product->price, 2) }} @endif">
                                                         @if (seller_product_has_discount($product->id))
                                                             {{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}@else{{ number_format($product->minimum_order_qty * $product->price, 2) }}
                                                         @endif
-                                                        <sup>د.ج</sup>
+                                                        <sup>{{ __("store.currency") }}</sup>
                                                     </span>
                                                 </b>
                                             </div>
@@ -1285,15 +1285,15 @@
                                         @if (seller_product_has_discount($product->id))
                                             <p class="price fw-bold text-primary mb-3">
                                                 {{ $product->activeDiscount->discount_amount }}
-                                                <sup>د.ج</sup> <span class="text-decoration-line-through text-danger">
-                                                    {{ $product->price }}<sup>د.ج</sup></span><sup><span
+                                                <sup>{{ __("store.currency") }}</sup> <span class="text-decoration-line-through text-danger">
+                                                    {{ $product->price }}<sup>{{ __("store.currency") }}</sup></span><sup><span
                                                         class="text-success">
                                                         (-{{ $product->activeDiscount->discount_percentage }}%)
                                                     </span></sup>
                                             </p>
                                         @else
                                             <p class="price fw-bold text-primary mb-3">
-                                                {{ $product->price }} <sup>د.ج</sup>
+                                                {{ $product->price }} <sup>{{ __("store.currency") }}</sup>
                                             </p>
                                         @endif
                                     </div>
@@ -1394,15 +1394,15 @@
                                         @if (seller_product_has_discount($product->id))
                                             <p class="price fw-bold text-primary mb-3">
                                                 {{ $product->activeDiscount->discount_amount }}
-                                                <sup>د.ج</sup> <span class="text-decoration-line-through text-danger">
-                                                    {{ $product->price }}<sup>د.ج</sup></span><sup><span
+                                                <sup>{{ __("store.currency") }}</sup> <span class="text-decoration-line-through text-danger">
+                                                    {{ $product->price }}<sup>{{ __("store.currency") }}</sup></span><sup><span
                                                         class="text-success">
                                                         (-{{ $product->activeDiscount->discount_percentage }}%)
                                                     </span></sup>
                                             </p>
                                         @else
                                             <p class="price fw-bold text-primary mb-3">
-                                                {{ $product->price }} <sup>د.ج</sup>
+                                                {{ $product->price }} <sup>{{ __("store.currency") }}</sup>
                                             </p>
                                         @endif
                                     </div>

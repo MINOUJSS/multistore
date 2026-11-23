@@ -1,6 +1,6 @@
 @extends('layouts.users.store.app')
 @section('title')
-    {{ tenant('domain') }} | التصنيفات
+    {{ tenant('domain') }} | {{ __('store.categories') }}
 @endsection
 
 @section('style')
@@ -21,5 +21,5 @@
 @endsection
 
 @section('footer_js')
-        @include('stores.sellers.components.navbar.js.navbar_js');
+    @include('stores.sellers.components.navbar.js.navbar_js');
 @endsection

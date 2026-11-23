@@ -1,0 +1,88 @@
+<?php
+
+return [
+    // القائمة العلوية
+    'home' => 'الرئيسية',
+    'products' => 'منتجاتنا',
+    'categories' => 'التصنيفات',
+    'contact_us' => 'إتصل بنا',
+    'cart' => 'سلة المشتريات',
+    'search' => 'بحث',
+    'search_placeholder' => 'ابحث عن منتج...',
+    'currency' => 'د.ج',
+    'items_count' => 'منتج',
+
+    // المنتجات
+    'price' => 'السعر',
+    'original_price' => 'السعر الأصلي',
+    'discount' => 'خصم',
+    'free_shipping' => 'شحن مجاني',
+    'in_stock' => 'متوفر في المخزون',
+    'out_of_stock' => 'نفد من المخزون',
+    'quantity' => 'الكمية',
+    'add_to_cart' => 'أضف إلى السلة',
+    'buy_now' => 'اطلب الآن',
+    'order_now' => 'اطلب الآن - الدفع عند الاستلام',
+    'description' => 'الوصف والمميزات',
+    'other_products' => 'منتجات قد تعجبك',
+    'products_for_you' => 'منتجات مقترحة لك',
+    'view_count' => 'مشاهدة',
+    'category' => 'التصنيف',
+
+    // نموذج الطلب
+    'order_form_title' => 'للطلب يرجى إدخال معلوماتك أدناه',
+    'full_name' => 'الاسم الكامل',
+    'full_name_placeholder' => 'أدخل اسمك الكامل...',
+    'phone' => 'رقم الهاتف',
+    'phone_placeholder' => 'مثال: 0550123456',
+    'wilaya' => 'الولاية',
+    'select_wilaya' => '-- اختر الولاية --',
+    'dayra' => 'الدائرة',
+    'select_dayra' => '-- اختر الدائرة --',
+    'baladia' => 'البلدية',
+    'select_baladia' => '-- اختر البلدية --',
+    'shipping_type' => 'نوع التوصيل',
+    'home_delivery' => 'توصيل إلى باب المنزل',
+    'desk_pickup' => 'استلام من مكتب التوصيل (Stop Desk)',
+    'address' => 'العنوان التفصيلي',
+    'address_placeholder' => 'الحي، الشارع، رقم البناية...',
+    'notes' => 'ملاحظات إضافية',
+    'notes_placeholder' => 'أي ملاحظة بخصوص التوصيل أو المنتج...',
+    'confirm_order' => 'تأكيد الطلب الآن',
+    'submitting' => 'جاري إرسال الطلب...',
+
+    // السلة وإتمام الطلب
+    'cart_title' => 'سلة مشترياتك',
+    'empty_cart' => 'سلة المشتريات فارغة حالياً',
+    'continue_shopping' => 'متابعة التسوق',
+    'subtotal' => 'المجموع الجزئي',
+    'shipping_cost' => 'تكلفة الشحن',
+    'total' => 'المجموع الكلي',
+    'checkout' => 'إتمام الطلب',
+    'remove' => 'حذف',
+    'unit_price' => 'سعر الوحدة',
+    'payment_method' => 'طريقة الدفع',
+    'cash_on_delivery' => 'الدفع عند الاستلام',
+    'chargily_pay' => 'الدفع الإلكتروني (البطاقة الذهبية / CIB)',
+    'bank_transfer' => 'تحويل بنكي / بريدي',
+    'apply_coupon' => 'تطبيق القسيمة',
+    'coupon_code' => 'كود الخصم',
+    'coupon_discount' => 'خصم القسيمة',
+
+    // نجاح الطلب
+    'order_success_title' => 'تم تسجيل طلبك بنجاح! 🎉',
+    'order_success_desc' => 'شكراً لتسوقك معنا، سيتصل بك فريق العمل قريباً لتأكيد طلبك وتفاصيل التوصيل.',
+    'order_number' => 'رقم الطلب',
+    'back_to_home' => 'العودة للصفحة الرئيسية',
+
+    // الصفحات
+    'about_us' => 'من نحن',
+    'privacy_policy' => 'سياسة الخصوصية',
+    'terms_of_use' => 'شروط الاستخدام',
+    'exchange_policy' => 'سياسة الاستبدال والاسترجاع',
+    'shipping_policy' => 'سياسة الشحن والتوصيل',
+    'payment_policy' => 'طرق الدفع المعتمدة',
+    'faq' => 'الأسئلة الشائعة',
+    'all_rights_reserved' => 'جميع الحقوق محفوظة',
+];
+

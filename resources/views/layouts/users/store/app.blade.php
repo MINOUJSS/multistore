@@ -1,5 +1,9 @@
+@php
+    $storeLocale = app()->getLocale();
+    $isRtl = in_array($storeLocale, ['ar']);
+@endphp
 <!doctype html>
-<html lang="en" dir="rtl">
+<html lang="{{ $storeLocale }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="utf-8">
@@ -23,8 +27,13 @@
     <!---->
     <link rel="icon" type="image/png" href="{{ asset(get_store_logo(tenant('id'))) }}">
     <title>@yield('title')</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css"
-        integrity="sha384-dpuaG1suU0eT09tx5plTaGMLBsfDLzUCCUXOY2j/LSvXYuG6Bqs43ALlhIqAJVRb" crossorigin="anonymous">
+    @if ($isRtl)
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css"
+            integrity="sha384-dpuaG1suU0eT09tx5plTaGMLBsfDLzUCCUXOY2j/LSvXYuG6Bqs43ALlhIqAJVRb" crossorigin="anonymous">
+    @else
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    @endif
     <!-- fonts -->
     <!-- font -->
     <link rel="stylesheet" href="{{ asset('asset/v1/users/store') }}/fonts/all.css">

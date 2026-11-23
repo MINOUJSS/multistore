@@ -130,12 +130,12 @@
     @endforeach
 
     <div class="checkout-container">
-        <h2 class="mb-4 text-center"><i class="fas fa-shopping-cart me-2"></i>إتمام الطلب</h2>
+        <h2 class="mb-4 text-center"><i class="fas fa-shopping-cart me-2"></i>{{ __("store.checkout") }}</h2>
 
         <div class="row g-3">
             <div class="col-lg-7 col-md-6">
                 <div class="sticky-top" style="top: 20px; z-index: 1019;">
-                    <h5 class="mb-3"><i class="fas fa-truck me-2"></i>معلومات الشحن</h5>
+                    <h5 class="mb-3"><i class="fas fa-truck me-2"></i>{{ __("store.shipping_policy") }}</h5>
                     <form action="{{ route('tenant.order-with-items') }}" method="POST">
                         @csrf
                         <div class="col-12 text-center">
@@ -181,11 +181,11 @@
                             </div>
 
                             <div class="col-md-4">
-                                <label for="inputWilaya" class="form-label">الولاية</label>
+                                <label for="inputWilaya" class="form-label">{{ __("store.wilaya") }}</label>
                                 <select id="inputWilaya" name="wilaya"
                                     class="form-select @error('wilaya') is-invalid @enderror"
                                     onchange="show_shipping_prices(this.value);">
-                                    <option value="0" selected>إختر الولاية...</option>
+                                    <option value="0" selected>{{ __("store.select_wilaya") }}</option>
                                     @foreach ($wilayas as $wilaya)
                                         <option value="{{ $wilaya->id }}"
                                             {{ old('wilaya') == $wilaya->id ? 'selected' : '' }}>
@@ -202,10 +202,10 @@
                                 @enderror
                             </div>
                             <div class="col-md-4">
-                                <label for="inputDayra" class="form-label">الدئرة</label>
+                                <label for="inputDayra" class="form-label">{{ __("store.dayra") }}</label>
                                 <select id="inputDayra" name="dayra"
                                     class="form-select @error('dayra') is-invalid @enderror">
-                                    <option value="0" selected>إختر الدائرة ...</option>
+                                    <option value="0" selected>{{ __("store.select_dayra") }}</option>
                                     <option value="0">...</option>
                                 </select>
                                 @error('dayrea')
@@ -213,10 +213,10 @@
                                 @enderror
                             </div>
                             <div class="col-md-4">
-                                <label for="inputBaladia" class="form-label">البلدية</label>
+                                <label for="inputBaladia" class="form-label">{{ __("store.baladia") }}</label>
                                 <select id="inputBaladia" name="baladia"
                                     class="form-select @error('baladia') is-invalid @enderror">
-                                    <option value="0" selected>إختر البلدية ...</option>
+                                    <option value="0" selected>{{ __("store.select_baladia") }}</option>
                                     <option value="0">...</option>
                                 </select>
                                 @error('baladia')
@@ -231,7 +231,7 @@
                                         <h5>التوصيل</h5>
 
                                         @if ($free_shipping)
-                                            <p id="show_shipping_price">التوصيل مجاني</p>
+                                            <p id="show_shipping_price">{{ __("store.free_shipping") }}</p>
                                         @else
                                             <p id="show_shipping_price">إختر الولاية</p>
                                         @endif
@@ -246,9 +246,8 @@
                                                 <input class="form-check-input d-none" type="radio" id="to_home"
                                                     name="shipping_and_point" value="home"
                                                     {{ old('shipping_and_point', 'home') == 'home' ? 'checked' : '' }}>
-                                                <label class="form-check-label fw-bold" for="to_home">التوصيل
-                                                    للمنزل</label>
-                                                <p id="to_home_price">00</p><sup> د.ج</sup>
+                                                <label class="form-check-label fw-bold" for="to_home">{{ __("store.home_delivery") }}</label>
+                                                <p id="to_home_price">00</p><sup> {{ __("store.currency") }}</sup>
                                             </div>
                                         </div>
 
@@ -258,9 +257,8 @@
                                                 <input class="form-check-input d-none" type="radio"
                                                     id="to_descktop" name="shipping_and_point" value="descktop"
                                                     {{ old('shipping_and_point') == 'descktop' ? 'checked' : '' }}>
-                                                <label class="form-check-label fw-bold" for="to_descktop">التوصيل
-                                                    للمكتب</label>
-                                                <p id="to_desck_price">00</p><sup> د.ج</sup>
+                                                <label class="form-check-label fw-bold" for="to_descktop">{{ __("store.desk_pickup") }}</label>
+                                                <p id="to_desck_price">00</p><sup> {{ __("store.currency") }}</sup>
                                             </div>
                                         </div>
 
@@ -283,8 +281,8 @@
                             <div class="card p-3 text-center border option-card" id="card_home" onclick="selectOption('home');show_to_home_price();countTotalPrice();">
                                 <input class="form-check-input d-none" type="radio" id="to_home" name="shipping_and_point" value="home" 
                                     {{ old('shipping_and_point','home') == 'home' ? 'checked' : '' }}>
-                                <label class="form-check-label fw-bold" for="to_home">التوصيل للمنزل</label>
-                                <p id="to_home_price">00</p><sup> د.ج</sup>
+                                <label class="form-check-label fw-bold" for="to_home">{{ __("store.home_delivery") }}</label>
+                                <p id="to_home_price">00</p><sup> {{ __("store.currency") }}</sup>
                             </div>
                         </div> 
                         
@@ -292,8 +290,8 @@
                           <div class="card p-3 text-center border option-card" id="card_descktop" onclick="selectOption('descktop');show_to_desck_price();countTotalPrice();">
                               <input class="form-check-input d-none" type="radio" id="to_descktop" name="shipping_and_point" value="descktop" 
                                   {{ old('shipping_and_point') == 'descktop' ? 'checked' : '' }}>
-                              <label class="form-check-label fw-bold" for="to_descktop">التوصيل للمكتب</label>
-                              <p id="to_desck_price">00</p><sup> د.ج</sup>
+                              <label class="form-check-label fw-bold" for="to_descktop">{{ __("store.desk_pickup") }}</label>
+                              <p id="to_desck_price">00</p><sup> {{ __("store.currency") }}</sup>
                           </div>
                       </div>
 
@@ -338,7 +336,7 @@
                         </div>
                         {{-- </form> --}}
 
-                        <h5 class="mt-4 mb-3"><i class="fas fa-credit-card me-2"></i>طريقة الدفع</h5>
+                        <h5 class="mt-4 mb-3"><i class="fas fa-credit-card me-2"></i>{{ __("store.payment_method") }}</h5>
                         <div class="payment-methods">
                             <div class="form-check p-3 border rounded">
                                 <input class="form-check-input" type="radio" name="payment_method"
@@ -346,7 +344,7 @@
                                 <label class="form-check-label d-flex align-items-center" for="cashOnDelivery">
                                     <i class="fas fa-money-bill-wave me-2 fs-5"></i>
                                     <div>
-                                        <div>الدفع عند الاستلام</div>
+                                        <div>{{ __("store.cash_on_delivery") }}</div>
                                         <small class="text-muted">الدفع نقداً عند التسليم</small>
                                     </div>
                                 </label>
@@ -373,7 +371,7 @@
                                     <label class="form-check-label d-flex align-items-center" for="mada">
                                         <i class="fas fa-credit-card me-2 fs-5"></i>
                                         <div>
-                                            <div>حوالة بنكية</div>
+                                            <div>{{ __("store.bank_transfer") }}</div>
                                             <small class="text-muted">Ccp, Baridimob, ...</small>
                                         </div>
                                     </label>
@@ -386,7 +384,7 @@
 
             <div class="col-lg-5 col-md-6">
                 <div class="sticky-top" style="top: 20px; z-index: 1019;">
-                    <h5 class="mb-3"><i class="fas fa-receipt me-2"></i>ملخص الطلب</h5>
+                    <h5 class="mb-3"><i class="fas fa-receipt me-2"></i>{{ __("store.cart_title") }}</h5>
                     <div class="order-summary">
                         @include('stores.sellers.components.content.checkout.inc.items')
 
@@ -415,43 +413,43 @@
                         <hr class="my-3">
 
                         <div class="d-flex justify-content-between mb-2">
-                            <span>المجموع الفرعي</span>
+                            <span>{{ __("store.subtotal") }}</span>
                             @if (session()->has('cart') && session()->get('cart')->totalPrice != null)
                                 <div class="d-flex justify-content-between">
                                     <span
                                         id="sub_total">{{ number_format(session()->get('cart')->totalPrice, 2) }}</span>
-                                    <sup>د.ج</sup>
+                                    <sup>{{ __("store.currency") }}</sup>
                                 </div>
                             @else
                                 <div class="d-flex justify-content-between">
                                     <span id="sub_total">0.00</span>
-                                    <sup>د.ج</sup>
+                                    <sup>{{ __("store.currency") }}</sup>
                                 </div>
                             @endif
                         </div>
 
                         <div class="d-flex justify-content-between mb-2">
-                            <span>الشحن</span>
+                            <span>{{ __("store.shipping_cost") }}</span>
                             {{-- <span>0 ر.س</span> --}}
                             <div class="d-flex justify-content-between">
-                                <span id="shipping_price" class="price">00</span><sup>د.ج</sup>
+                                <span id="shipping_price" class="price">00</span><sup>{{ __("store.currency") }}</sup>
                             </div>
 
 
                         </div>
 
                         <div class="d-flex justify-content-between mb-3">
-                            <span>الخصم</span>
+                            <span>{{ __("store.discount") }}</span>
                             <div class="d-flex justify-content-between">
-                                <span id="discount" class="text-danger">00</span><sup>د.ج</sup>
+                                <span id="discount" class="text-danger">00</span><sup>{{ __("store.currency") }}</sup>
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-between total-price py-2 border-top border-bottom">
-                            <span>المجموع الكلي</span>
+                            <span>{{ __("store.total") }}</span>
                             <div class="d-flex justify-content-between">
                                 <span id="total">{{ number_format(session()->get('cart')->totalPrice, 2) }}</span>
-                                <sup>د.ج</sup>
+                                <sup>{{ __("store.currency") }}</sup>
                             </div>
                         </div>
 
@@ -464,7 +462,7 @@
 
                         <div class="d-grid">
                             <button class="btn btn-primary">
-                                <i class="fas fa-check-circle me-2"></i>تأكيد الطلب
+                                <i class="fas fa-check-circle me-2"></i>{{ __("store.confirm_order") }}
                             </button>
                         </div>
                         </form>

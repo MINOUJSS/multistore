@@ -1,0 +1,88 @@
+<?php
+
+return [
+    // Menu supérieur
+    'home' => 'Accueil',
+    'products' => 'Nos Produits',
+    'categories' => 'Catégories',
+    'contact_us' => 'Contactez-nous',
+    'cart' => 'Panier',
+    'search' => 'Recherche',
+    'search_placeholder' => 'Rechercher un produit...',
+    'currency' => 'DZD',
+    'items_count' => 'article(s)',
+
+    // Produits
+    'price' => 'Prix',
+    'original_price' => 'Prix d\'origine',
+    'discount' => 'Réduction',
+    'free_shipping' => 'Livraison Gratuite',
+    'in_stock' => 'En stock',
+    'out_of_stock' => 'Rupture de stock',
+    'quantity' => 'Quantité',
+    'add_to_cart' => 'Ajouter au panier',
+    'buy_now' => 'Commander maintenant',
+    'order_now' => 'Commander maintenant - Paiement à la livraison',
+    'description' => 'Description & Caractéristiques',
+    'other_products' => 'Autres produits recommandés',
+    'products_for_you' => 'Suggéré pour vous',
+    'view_count' => 'vues',
+    'category' => 'Catégorie',
+
+    // Formulaire de commande
+    'order_form_title' => 'Pour commander, veuillez remplir le formulaire ci-dessous',
+    'full_name' => 'Nom et Prénom',
+    'full_name_placeholder' => 'Entrez votre nom complet...',
+    'phone' => 'Numéro de téléphone',
+    'phone_placeholder' => 'Exemple: 0550123456',
+    'wilaya' => 'Wilaya',
+    'select_wilaya' => '-- Choisissez la wilaya --',
+    'dayra' => 'Daïra',
+    'select_dayra' => '-- Choisissez la daïra --',
+    'baladia' => 'Commune',
+    'select_baladia' => '-- Choisissez la commune --',
+    'shipping_type' => 'Mode de livraison',
+    'home_delivery' => 'Livraison à domicile',
+    'desk_pickup' => 'Récupération au bureau (Stop Desk)',
+    'address' => 'Adresse complète',
+    'address_placeholder' => 'Quartier, rue, numéro de bâtiment...',
+    'notes' => 'Remarques ou instructions',
+    'notes_placeholder' => 'Instructions spéciales pour la livraison...',
+    'confirm_order' => 'Confirmer la commande maintenant',
+    'submitting' => 'Envoi de la commande en cours...',
+
+    // Panier & Caisse
+    'cart_title' => 'Votre Panier',
+    'empty_cart' => 'Votre panier est actuellement vide',
+    'continue_shopping' => 'Continuer vos achats',
+    'subtotal' => 'Sous-total',
+    'shipping_cost' => 'Frais de livraison',
+    'total' => 'Total',
+    'checkout' => 'Passer la commande',
+    'remove' => 'Supprimer',
+    'unit_price' => 'Prix unitaire',
+    'payment_method' => 'Mode de paiement',
+    'cash_on_delivery' => 'Paiement à la livraison',
+    'chargily_pay' => 'Paiement en ligne (Carte Edahabia / CIB)',
+    'bank_transfer' => 'Virement bancaire / postal',
+    'apply_coupon' => 'Appliquer le coupon',
+    'coupon_code' => 'Code promo',
+    'coupon_discount' => 'Réduction du coupon',
+
+    // Succès de la commande
+    'order_success_title' => 'Votre commande a été enregistrée avec succès ! 🎉',
+    'order_success_desc' => 'Merci pour votre confiance. Notre équipe vous contactera sous peu pour confirmer votre commande et les détails de livraison.',
+    'order_number' => 'Numéro de commande',
+    'back_to_home' => 'Retour à l\'accueil',
+
+    // Pages
+    'about_us' => 'À propos de nous',
+    'privacy_policy' => 'Politique de confidentialité',
+    'terms_of_use' => 'Conditions d\'utilisation',
+    'exchange_policy' => 'Politique de retour et d\'échange',
+    'shipping_policy' => 'Politique d\'expédition et de livraison',
+    'payment_policy' => 'Moyens de paiement acceptés',
+    'faq' => 'Foire aux questions (FAQ)',
+    'all_rights_reserved' => 'Tous droits réservés',
+];
+
