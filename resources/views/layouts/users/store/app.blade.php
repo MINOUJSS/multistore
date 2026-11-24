@@ -127,23 +127,20 @@
                 <hr>
                 <div class="row footer-body">
                     <div class="col-md-3 footer-card" @if(($pageAbout?->status !== 'published') && ($pageShipping?->status !== 'published') && ($pagePayment?->status !== 'published')) style="display: none;" @endif>
-                        <h5 class="footer-title">عن المتجر</h5>
+                        <h5 class="footer-title">{{ __("store.about_store") }}</h5>
                         <hr class="title-underline">
                         <ul class="footer-ul">
                             @if ($pageAbout?->status === 'published')
                                 <li class="footer-li"><a
-                                        href="{{ $tenantBaseUrl }}/about">عن
-                                        المتجر</a></li>
+                                        href="{{ $tenantBaseUrl }}/about">{{ __("store.about_store") }}</a></li>
                             @endif
                             @if ($pageShipping?->status === 'published')
                                 <li class="footer-li"><a
-                                        href="{{ $tenantBaseUrl }}/shipping-policy">الشحن
-                                        و التسليم</a></li>
+                                        href="{{ $tenantBaseUrl }}/shipping-policy">{{ __("store.shipping_and_delivery") }}</a></li>
                             @endif
                             @if ($pagePayment?->status === 'published')
                                 <li class="footer-li"><a
-                                        href="{{ $tenantBaseUrl }}/payment-policy">طرق
-                                        الدفع</a></li>
+                                        href="{{ $tenantBaseUrl }}/payment-policy">{{ __("store.payment_methods") }}</a></li>
                             @endif
                         </ul>
                         <ul class="footer-ul d-flex">
@@ -202,56 +199,51 @@
                     </div>
 
                     <div class="col-md-3 footer-card" @if(($pageTerms?->status !== 'published') && ($pageExchange?->status !== 'published') && ($pagePrivacy?->status !== 'published')) style="display: none;" @endif>
-                        <h5 class="footer-title">الشروط والسياسات</h5>
+                        <h5 class="footer-title">{{ __("store.terms_and_policies") }}</h5>
                         <hr class="title-underline">
                         <ul class="footer-ul">
                             @if ($pageTerms?->status === 'published')
                             <li class="footer-li"><a
-                                    href="{{ $tenantBaseUrl }}/terms-of-use">شروط
-                                    الإستخدام</a></li>
+                                    href="{{ $tenantBaseUrl }}/terms-of-use">{{ __("store.terms_of_use") }}</a></li>
                             @endif
                             @if ($pageExchange?->status === 'published')
                             <li class="footer-li"><a
-                                    href="{{ $tenantBaseUrl }}/exchange-policy">سياسة
-                                    الإستبدال و الإسترجاع</a></li>
+                                    href="{{ $tenantBaseUrl }}/exchange-policy">{{ __("store.exchange_policy") }}</a></li>
                             @endif
                             @if ($pagePrivacy?->status === 'published')
                             <li class="footer-li"><a
-                                    href="{{ $tenantBaseUrl }}/privacy-policy">السياسة
-                                    الخصوصية</a></li>
+                                    href="{{ $tenantBaseUrl }}/privacy-policy">{{ __("store.privacy_policy") }}</a></li>
                             @endif
                         </ul>
                     </div>
 
                     <div class="col-md-3 footer-card" @if(($pageContact?->status !== 'published') && ($pageFaq?->status !== 'published')) style="display: none;" @endif>
-                        <h5 class="footer-title">اتصل بنا</h5>
+                        <h5 class="footer-title">{{ __("store.contact_us") }}</h5>
                         <hr class="title-underline">
                         <ul class="footer-ul">
                             @if ($pageContact?->status === 'published')
                             <li class="footer-li"><a
-                                    href="{{ $tenantBaseUrl }}/contact-us">اتصل
-                                    بنا</a></li>
+                                    href="{{ $tenantBaseUrl }}/contact-us">{{ __("store.contact_us") }}</a></li>
                             @endif
                             @if ($pageFaq?->status === 'published')
                             <li class="footer-li"><a
-                                    href="{{ $tenantBaseUrl }}/faq">الأسئلة
-                                    الشائعة</a></li>
+                                    href="{{ $tenantBaseUrl }}/faq">{{ __("store.faq") }}</a></li>
                             @endif
                         </ul>
                     </div>
 
                     <div class="col-md-3 footer-card">
-                        <h5 class="footer-title">تواصل معنا</h5>
+                        <h5 class="footer-title">{{ __("store.connect_with_us") }}</h5>
                         <hr class="title-underline">
                         <ul class="footer-ul d-inline">
                             @if ($storeAddressSetting && $storeAddressSetting->value)
                                 <li class="footer-li"><i class="fa-solid fa-location-dot"></i>
-                                    {{ $storeAddressSetting->description ?? 'عنوان المتجر' }}:
+                                    {{ __("store.store_address") }}:
                                     {{ $storeAddressSetting->value }}</li>
                             @endif
                             @if ($storeEmailSetting && $storeEmailSetting->value)
                                 <li class="footer-li"><i class="fa-solid fa-envelope"></i>
-                                    {{ $storeEmailSetting->description ?? 'البريد الإلكتروني' }}:
+                                    {{ __("store.email") }}:
                                     {{ $storeEmailSetting->value }}</li>
                             @endif
                         </ul>
@@ -290,13 +282,13 @@
                     </div>
                 </div>
                 <div class="row footer-footer">
-                    <hr style="width:50%;margin-right: 25%;">
+                    <hr class="mx-auto" style="width:50%;">
                     <div class="col-12 text-center">
                         @if ($userData?->type == 'supplier' && (get_supplier_data(tenant('id'))?->plan_subscription?->plan_id ?? null) == 1)
-                            جميع الحقوق محفوظة @ لـ: <a href="{{ route('site.index') }}"
+                            {{ __('store.all_rights_reserved') }} &copy; {{ __('store.for') }}: <a href="{{ route('site.index') }}"
                                 target="_blank">{!! get_platform_data('platform_name')?->value !!}</a>
                         @else
-                            جميع الحقوق محفوظة @ <a
+                            {{ __('store.all_rights_reserved') }} &copy; <a
                                 href="{{ $tenantBaseUrl }}">{!! $storeCopyright !!}</a>
                         @endif
 

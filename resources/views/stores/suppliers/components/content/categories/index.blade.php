@@ -79,7 +79,7 @@
 @if (!empty($categories))
 <section class="featured-products py-5">
   <div class="container">
-    <h2 class="text-center mb-5 fade-in title">الأصناف و المميزة</h2>
+    <h2 class="text-center mb-5 fade-in title">{{ __("store.featured_categories") }}</h2>
     <div class="row g-3 justify-content-center">
 
       <!-- كارت "كل الأصناف" -->
@@ -87,9 +87,9 @@
         <div class="card text-center shadow-sm border-0 zoom-hover p-2 h-100">
           <img src="{{ asset('asset/v1/users/store/img/categories/0.png') }}" class="rounded-circle mx-auto d-block" alt="كل الأصناف" width="80" height="80">
           <div class="card-body p-2">
-            <h6 class="card-title fw-bold mb-1 small">كل الأصناف</h6>
-            <p class="text-muted small mb-2">أحدث المنتجات</p>
-            <a href="/products" class="btn btn-sm btn-outline-primary btn-ripple w-100">عرض</a>
+            <h6 class="card-title fw-bold mb-1 small">{{ __("store.all_categories") }}</h6>
+            <p class="text-muted small mb-2">{{ __("store.latest_products") }}</p>
+            <a href="/products" class="btn btn-sm btn-outline-primary btn-ripple w-100">{{ __("store.view_category") }}</a>
           </div>
         </div>
       </div>
@@ -102,7 +102,7 @@
           <div class="card-body p-2">
             <h6 class="card-title fw-bold mb-1 small">{{ $category->category->name }}</h6>
             <p class="text-muted small mb-2">{{ Str::limit($category->category->description, 30) }}</p>
-            <a href="/products-by-category/{{ $category->category_id }}" class="btn btn-sm btn-outline-primary btn-ripple w-100">عرض</a>
+            <a href="/products-by-category/{{ $category->category_id }}" class="btn btn-sm btn-outline-primary btn-ripple w-100">{{ __("store.view_category") }}</a>
           </div>
         </div>
       </div>

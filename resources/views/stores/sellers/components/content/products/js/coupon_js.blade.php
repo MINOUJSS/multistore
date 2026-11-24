@@ -71,7 +71,7 @@
 
         // Update the total element if needed
         // document.getElementById('total_price').textContent = formattedTotal+' <sup>د.ج</sup>';
-        document.getElementById('total_price').innerHTML = formattedTotal+' <sup>د.ج</sup>';
+        document.getElementById('total_price').innerHTML = formattedTotal + ' <sup>{{ __("store.currency") }}</sup>';
         document.getElementById('total_price').setAttribute('data-totalprice', formattedTotal);
 
         // console.log('Calculated Total:', calculatedTotal);

@@ -18,9 +18,9 @@
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between">
                             <span class="fw-semibold">{{ $item['title'] }}</span>
-                            <span>{{ $item['price'] }} د.ج</span>
+                            <span>{{ $item['price'] }} {{ __("store.currency") }}</span>
                         </div>
-                        <small class="text-muted d-block">الكمية: {{ $item['qty'] }}</small>
+                        <small class="text-muted d-block">{{ __("store.quantity") }}: {{ $item['qty'] }}</small>
                         {{-- <small class="text-muted d-block">اللون: أبيض</small> --}}
                         <small class="text-muted">
                             {{-- normal --}}
@@ -37,9 +37,9 @@
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between">
                                     <span class="fw-semibold">{{ $item['title'] }}</span>
-                                    <span>{{ $item['price'] }} د.ج</span>
+                                    <span>{{ $item['price'] }} {{ __("store.currency") }}</span>
                                 </div>
-                                <small class="text-muted d-block">الكمية: {{ $item['qty'] }}</small>
+                                <small class="text-muted d-block">{{ __("store.quantity") }}: {{ $item['qty'] }}</small>
                                 {{-- <small class="text-muted d-block">اللون: أبيض</small> --}}
                                 <small class="text-muted">
                                     {{-- color only --}}
@@ -56,9 +56,9 @@
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between">
                                         <span class="fw-semibold">{{ $item['title'] }}</span>
-                                        <span>{{ $item['price'] }} د.ج</span>
+                                        <span>{{ $item['price'] }} {{ __("store.currency") }}</span>
                                     </div>
-                                    <small class="text-muted d-block">الكمية: {{ $item['qty'] }}</small>
+                                    <small class="text-muted d-block">{{ __("store.quantity") }}: {{ $item['qty'] }}</small>
                                     {{-- <small class="text-muted d-block">اللون: أبيض</small> --}}
                                     <small class="text-muted">
                                         normal from color only
@@ -78,9 +78,9 @@
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between">
                                     <span class="fw-semibold">{{ $item['title'] }}</span>
-                                    <span>{{ $item['price']+ $attribute['attribute']['additional_price'] }} د.ج</span>
+                                    <span>{{ $item['price']+ $attribute['attribute']['additional_price'] }} {{ __("store.currency") }}</span>
                                 </div>
-                                <small class="text-muted d-block">الكمية: {{ $item['qty'] }}</small>
+                                <small class="text-muted d-block">{{ __("store.quantity") }}: {{ $item['qty'] }}</small>
                                 {{-- <small class="text-muted d-block">اللون: أبيض</small> --}}
                                 <small class="text-muted">
                                     {{-- attribute only --}}
@@ -97,9 +97,9 @@
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between">
                                         <span class="fw-semibold">{{ $item['title'] }}</span>
-                                        <span>{{ $item['price'] }} د.ج</span>
+                                        <span>{{ $item['price'] }} {{ __("store.currency") }}</span>
                                     </div>
-                                    <small class="text-muted d-block">الكمية: {{ $item['qty'] }}</small>
+                                    <small class="text-muted d-block">{{ __("store.quantity") }}: {{ $item['qty'] }}</small>
                                     {{-- <small class="text-muted d-block">اللون: أبيض</small> --}}
                                     <small class="text-muted">
                                         normal from attribute only
@@ -119,9 +119,9 @@
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between">
                                     <span class="fw-semibold">{{ $item['title'] }}</span>
-                                    <span>{{ $item['price'] }} د.ج</span>
+                                    <span>{{ $item['price'] }} {{ __("store.currency") }}</span>
                                 </div>
-                                <small class="text-muted d-block">الكمية: {{ $item['qty'] }}</small>
+                                <small class="text-muted d-block">{{ __("store.quantity") }}: {{ $item['qty'] }}</small>
                                 {{-- <small class="text-muted d-block">اللون: أبيض</small> --}}
                                 <small class="text-muted">
                                     {{-- has attribute and color --}}
@@ -145,9 +145,9 @@
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between">
                                         <span class="fw-semibold">{{ $item['title'] }}</span>
-                                        <span>{{ $item['price'] }} د.ج</span>
+                                        <span>{{ $item['price'] }} {{ __("store.currency") }}</span>
                                     </div>
-                                    <small class="text-muted d-block">الكمية: {{ $item['qty'] }}</small>
+                                    <small class="text-muted d-block">{{ __("store.quantity") }}: {{ $item['qty'] }}</small>
                                     {{-- <small class="text-muted d-block">اللون: أبيض</small> --}}
                                     <small class="text-muted">
                                         normal from var = attr
@@ -167,9 +167,9 @@
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between">
                             <span class="fw-semibold">{{ $item['title'] }}</span>
-                            <span>{{ $item['price'] }} د.ج</span>
+                            <span>{{ $item['price'] }} {{ __("store.currency") }}</span>
                         </div>
-                        <small class="text-muted d-block">الكمية: {{ $item['qty'] }}</small>
+                        <small class="text-muted d-block">{{ __("store.quantity") }}: {{ $item['qty'] }}</small>
                         {{-- <small class="text-muted d-block">اللون: أبيض</small> --}}
                         <small class="text-muted">
                             لم يتم التعرف على المواصفات

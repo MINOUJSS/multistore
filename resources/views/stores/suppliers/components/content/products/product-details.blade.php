@@ -459,11 +459,11 @@
             </div>
             <h3>
                 @if (supplier_product_has_discount($product->id))
-                    <span id="product_price">{{ $product->activeDiscount->discount_amount }}</span> <sup>د.ج</sup> <span
-                        class="text-decoration-line-through text-danger">{{ $product->price }}<sup>د.ج</sup></span><sup><span
+                    <span id="product_price">{{ $product->activeDiscount->discount_amount }}</span> <sup>{{ __("store.currency") }}</sup> <span
+                        class="text-decoration-line-through text-danger">{{ $product->price }}<sup>{{ __("store.currency") }}</sup></span><sup><span
                             class="text-success"> (-{{ $product->activeDiscount->discount_percentage }}%)</span></sup>
                 @else
-                    <span id="product_price">{{ $product->price }}</span> <sup>د.ج</sup>
+                    <span id="product_price">{{ $product->price }}</span> <sup>{{ __("store.currency") }}</sup>
                 @endif
             </h3>
             <p class="">{{ $product->short_description }}</p>
@@ -542,10 +542,10 @@
                     @enderror
                 </div>
                 <div class="col-md-4">
-                    <label for="inputWilaya" class="form-label">الولاية</label>
+                    <label for="inputWilaya" class="form-label">{{ __("store.wilaya") }}</label>
                     <select id="inputWilaya" name="wilaya" class="form-select @error('wilaya') is-invalid @enderror"
                         onchange="show_shipping_prices(this.value);">
-                        <option value="0" selected>إختر الولاية...</option>
+                        <option value="0" selected>{{ __("store.select_wilaya") }}</option>
                         @foreach ($wilayas as $wilaya)
                             <option value="{{ $wilaya->wilaya_id }}"
                                 {{ old('wilaya') == $wilaya->wilaya_id ? 'selected' : '' }}>
@@ -559,9 +559,9 @@
                     @enderror
                 </div>
                 <div class="col-md-4">
-                    <label for="inputDayra" class="form-label">الدئرة</label>
+                    <label for="inputDayra" class="form-label">{{ __("store.dayra") }}</label>
                     <select id="inputDayra" name="dayra" class="form-select @error('dayrea') is-invalid @enderror">
-                        <option value="0" selected>إختر الدائرة...</option>
+                        <option value="0" selected>{{ __("store.select_dayra") }}</option>
                         <option value="0">...</option>
                     </select>
                     @error('dayrea')
@@ -569,10 +569,10 @@
                     @enderror
                 </div>
                 <div class="col-md-4">
-                    <label for="inputBaladia" class="form-label">البلدية</label>
+                    <label for="inputBaladia" class="form-label">{{ __("store.baladia") }}</label>
                     <select id="inputBaladia" name="baladia"
                         class="form-select @error('baladia') is-invalid @enderror">
-                        <option value="0" selected>إختر البلدية...</option>
+                        <option value="0" selected>{{ __("store.select_baladia") }}</option>
                         <option value="0">...</option>
                     </select>
                     @error('baladia')
@@ -584,12 +584,12 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5>
                                 <i class="fas fa-truck"></i>
-                                التوصيل
+                                {{ __("store.shipping_type") }}
                             </h5>
                             @if ($product->free_shipping === 'yes')
-                                <p id="show_shipping_price">التوصيل مجاني</p>
+                                <p id="show_shipping_price">{{ __("store.free_shipping") }}</p>
                             @else
-                                <p id="show_shipping_price">إختر الولاية</p>
+                                <p id="show_shipping_price">{{ __("store.select_wilaya") }}</p>
                             @endif
                         </div>
                         <div id="shipping_method" class="row d-flex justify-content-between align-items-center"
@@ -601,8 +601,8 @@
                                     <input class="form-check-input d-none" type="radio" id="to_home"
                                         name="shipping_and_point" value="home"
                                         {{ old('shipping_and_point', 'home') == 'home' ? 'checked' : '' }}>
-                                    <label class="form-check-label fw-bold" for="to_home">التوصيل للمنزل</label>
-                                    <p id="to_home_price">00</p><sup> د.ج</sup>
+                                    <label class="form-check-label fw-bold" for="to_home">{{ __("store.home_delivery") }}</label>
+                                    <p id="to_home_price">00</p><sup> {{ __("store.currency") }}</sup>
                                 </div>
                             </div>
 
@@ -612,8 +612,8 @@
                                     <input class="form-check-input d-none" type="radio" id="to_descktop"
                                         name="shipping_and_point" value="descktop"
                                         {{ old('shipping_and_point') == 'descktop' ? 'checked' : '' }}>
-                                    <label class="form-check-label fw-bold" for="to_descktop">التوصيل للمكتب</label>
-                                    <p id="to_desck_price">00</p><sup> د.ج</sup>
+                                    <label class="form-check-label fw-bold" for="to_descktop">{{ __("store.desk_pickup") }}</label>
+                                    <p id="to_desck_price">00</p><sup> {{ __("store.currency") }}</sup>
                                 </div>
                             </div>
 
@@ -629,7 +629,7 @@
                     <div class="row mt-3 mb-3">
                         <div class="col-md-12">
                             <h5 class="fw-bold text-dark sub-title mb-2.5 d-flex align-items-center gap-2">
-                                <i class="fas fa-palette opacity-75"></i> إختر اللون
+                                <i class="fas fa-palette opacity-75"></i> {{ __("store.select_color") }}
                             </h5>
                             <div class="color-swatches-wrapper pt-1 pb-1">
                                 @foreach ($product_variations as $product_variation)
@@ -653,7 +653,7 @@
                             @foreach ($product_attributes as $index => $product_attribute)
                                 @if ($index == 0)
                                     <h5 class="fw-bold text-dark sub-title mb-2.5 d-flex align-items-center gap-2">
-                                        <i class="fas fa-sliders-h opacity-75"></i> إختر {{ get_supplier_attribute_name($product_attribute->attribute->id) }}
+                                        <i class="fas fa-sliders-h opacity-75"></i> {{ __("store.select") }} {{ get_supplier_attribute_name($product_attribute->attribute->id) }}
                                     </h5>
                                 @endif
                             @endforeach
@@ -670,7 +670,7 @@
                                             <span>{{ $product_attribute->value }}</span>
                                             @if ($product_attribute->additional_price > 0)
                                                 <span class="attribute-price-badge">
-                                                    +{{ number_format($product_attribute->additional_price, 0) }} د.ج
+                                                    +{{ number_format($product_attribute->additional_price, 0) }} {{ __("store.currency") }}
                                                 </span>
                                             @endif
                                         </span>
@@ -691,7 +691,7 @@
                 <div class="row mb-4 mt-4">
                     <div class="col-md-12">
                         <h5 class="mb-3 fw-bold text-dark sub-title">
-                            <i class="fas fa-wallet me-2 opacity-75"></i>طريقة الدفع
+                            <i class="fas fa-wallet me-2 opacity-75"></i>{{ __("store.payment_method") }}
                         </h5>
                         @if ($has_any_payment_method)
                             <div class="payment-options-grid">
@@ -706,9 +706,9 @@
                                                     <i class="fas fa-money-bill-wave"></i>
                                                 </div>
                                                 <div class="payment-info text-start">
-                                                    <div class="fw-bold text-dark fs-6">الدفع عند الاستلام</div>
+                                                    <div class="fw-bold text-dark fs-6">{{ __("store.cash_on_delivery") }}</div>
                                                     <small class="text-muted d-block" style="font-size: 0.78rem;">
-                                                        ادفع نقداً عند استلام طلبك
+                                                        {{ __("store.cash_on_delivery_desc") }}
                                                     </small>
                                                 </div>
                                                 <div class="payment-radio-indicator"></div>
@@ -730,7 +730,7 @@
                                                 <div class="payment-info text-start">
                                                     <div class="fw-bold text-dark fs-6">Chargily Pay</div>
                                                     <small class="text-muted d-block" style="font-size: 0.78rem;">
-                                                        البطاقة الذهبية / CIB (فوري ⚡)
+                                                        {{ __("store.chargily_pay") }}
                                                     </small>
                                                 </div>
                                                 <div class="payment-radio-indicator"></div>
@@ -750,9 +750,9 @@
                                                     <i class="fas fa-university"></i>
                                                 </div>
                                                 <div class="payment-info text-start">
-                                                    <div class="fw-bold text-dark fs-6">تحويل بنكي</div>
+                                                    <div class="fw-bold text-dark fs-6">{{ __("store.bank_transfer") }}</div>
                                                     <small class="text-muted d-block" style="font-size: 0.78rem;">
-                                                        بريدي موب / CCP (تأكيد يدوي)
+                                                        CCP / BaridiMob
                                                     </small>
                                                 </div>
                                                 <div class="payment-radio-indicator"></div>
@@ -766,10 +766,10 @@
                             <div class="alert alert-warning border border-warning-subtle shadow-sm rounded-4 p-3.5 text-center mb-0">
                                 <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
                                     <i class="fas fa-wallet text-warning fs-4"></i>
-                                    <h6 class="fw-bold text-dark mb-0">وسائل الدفع غير متوفرة حالياً</h6>
+                                    <h6 class="fw-bold text-dark mb-0">{{ __("store.payment_methods_not_available") }}</h6>
                                 </div>
                                 <p class="small text-muted mb-0" style="line-height: 1.6;">
-                                    نعتذر منكم، وسائل الدفع غير متوفرة حالياً. لا يمكن إتمام عملية الشراء بدون تفعيل وسائل الدفع المعتمدة من قِبل إدارة المتجر.
+                                    {{ __("store.payment_methods_not_available_desc") }}
                                 </p>
                             </div>
                         @endif
@@ -782,7 +782,7 @@
                         <input type="text" name="coupon"
                             class="form-control @error('coupon') is-invalid @enderror" id="coupon"
                             value="{{ old('coupon') }}" data-product-id="{{ $product->id }}"
-                            placeholder="أدخل كود الكوبون هنا للحصول على خصم">
+                            placeholder="{{ __("store.coupon_placeholder") }}">
                         @error('coupon')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -837,7 +837,7 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#flush-collapseOne" aria-expanded="false"
                                     aria-controls="flush-collapseOne">
-                                    <i class="fas fa-shopping-cart"></i> ملخص الطلبية
+                                    <i class="fas fa-shopping-cart"></i> {{ __("store.order_summary") }}
                                 </button>
                             </h2>
                             <div id="flush-collapseOne" class="accordion-collapse collapse"
@@ -858,71 +858,71 @@
                                             @if (supplier_product_has_discount($product->id))
                                                 <span id="unit_price"
                                                     class="price">{{ $product->activeDiscount->discount_amount }}
-                                                </span><sup>د.ج</sup>
+                                                </span><sup>{{ __("store.currency") }}</sup>
                                             @else
                                                 <span id="unit_price" class="price">{{ $product->price }}
-                                                </span><sup>د.ج</sup>
+                                                </span><sup>{{ __("store.currency") }}</sup>
                                             @endif
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="row">
                                         <div class="shipping" style="width: 80%;">
-                                            <i class="fas fa-calculator"></i> المجموع الفرعي
+                                            <i class="fas fa-calculator"></i> {{ __("store.subtotal") }}
                                         </div>
                                         <div class="shipping-price" style="width: 20%;">
                                             @if (supplier_product_has_discount($product->id))
                                                 <span id="sub_total"
                                                     class="price">{{ $product->activeDiscount->discount_amount }}
-                                                </span><sup>د.ج</sup>
+                                                </span><sup>{{ __("store.currency") }}</sup>
                                             @else
                                                 <span id="sub_total" class="price">{{ $product->price }}
-                                                </span><sup>د.ج</sup>
+                                                </span><sup>{{ __("store.currency") }}</sup>
                                             @endif
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="row">
                                         <div class="shipping" style="width: 80%;">
-                                            <i class="fas fa-truck"></i> التوصيل
+                                            <i class="fas fa-truck"></i> {{ __("store.shipping_cost") }}
                                         </div>
                                         <div class="shipping-price" style="width: 20%;">
                                             <span id="shipping_price"
-                                                class="price">{{ number_format(00, 2) }}</span><sup> د.ج</sup>
+                                                class="price">{{ number_format(00, 2) }}</span><sup> {{ __("store.currency") }}</sup>
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="row">
                                         <div class="discount" style="width: 80%;">
-                                            <i class="fas fa-percentage"></i> الخصم
+                                            <i class="fas fa-percentage"></i> {{ __("store.discount") }}
                                         </div>
                                         <div class="shipping-price" style="width: 20%;">
                                             <span id="discount"
-                                                class="price">{{ number_format(00, 2) }}</span><sup> د.ج</sup>
+                                                class="price">{{ number_format(00, 2) }}</span><sup> {{ __("store.currency") }}</sup>
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="row">
                                         <div class="sum-text" style="width: 80%;">
-                                            <b><i class="fa fa-calculator"></i> المجموع </b>
+                                            <b><i class="fa fa-calculator"></i> {{ __("store.total") }} </b>
                                         </div>
                                         <div class="sum-value" style="width: 20%;">
                                             <b>
                                                 {{-- @if (supplier_product_has_discount($product->id))
                                                     <span
                                                         id="total_price">{{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}</span>
-                                                    <sup>د.ج</sup>
+                                                    <sup>{{ __("store.currency") }}</sup>
                                                 @else
                                                     <span
                                                         id="total_price">{{ number_format($product->minimum_order_qty * $product->price, 2) }}</span>
-                                                    <sup>د.ج</sup>
+                                                    <sup>{{ __("store.currency") }}</sup>
                                                 @endif --}}
                                                 <span id="total_price"
                                                     data-totalprice="@if (supplier_product_has_discount($product->id)) {{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}@else{{ number_format($product->minimum_order_qty * $product->price, 2) }} @endif">
                                                     @if (supplier_product_has_discount($product->id))
                                                         {{ number_format($product->minimum_order_qty * $product->activeDiscount->discount_amount, 2) }}@else{{ number_format($product->minimum_order_qty * $product->price, 2) }}
                                                     @endif
-                                                    <sup>د.ج</sup>
+                                                    <sup>{{ __("store.currency") }}</sup>
                                                 </span>
                                             </b>
                                         </div>
@@ -965,7 +965,7 @@
                     <input id="attribute_id" type="hidden" name="attribute_id" value="0" />
                     @if ($product->qty > 0 && !is_cart_has_this_product($product->id))
                         <button type="submit" class="btn btn-primary btn-sm add-to-cart-btn form-control p-2">
-                            <i class="fas fa-cart-plus"></i> أضف للسلة
+                            <i class="fas fa-cart-plus"></i> {{ __("store.add_to_cart") }}
                         </button>
                     @endif
                 </form>
@@ -985,7 +985,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <i class="fas fa-video"></i> فيديوهات المنتج
+                            <i class="fas fa-video"></i> {{ __("store.product_videos") }}
                         </div>
                         @foreach ($product->videos as $video)
                             @if ($video->type == 'youtube')
@@ -1036,7 +1036,7 @@
         {{-- start products for you  --}}
             @if(count($products_for_you)!=0)
                 <div class="col-12 mt-3">
-                <h2 class="text-center mb-5 fade-in title">قد يعجبك أيضا</h2>
+                <h2 class="text-center mb-5 fade-in title">{{ __("store.other_products") }}</h2>
                 <div class="row g-4 justify-content-center">
                 <!-- Product Card Template -->
                         @foreach ($products_for_you as $key => $product)
@@ -1046,8 +1046,7 @@
 
                                     <!-- شارة نفاد الكمية -->
                                     @if ($product->qty == 0 && $product->product_type == 'physical')
-                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">غير
-                                            متوفر</span>
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">{{ __("store.out_of_stock") }}</span>
                                     @endif
 
                                     <!-- صورة المنتج -->
@@ -1093,16 +1092,16 @@
                                             @if (supplier_product_has_discount($product->id))
                                                 <p class="price fw-bold text-primary mb-3">
                                                     {{ $product->activeDiscount->discount_amount }}
-                                                    <sup>د.ج</sup> <span
+                                                    <sup>{{ __("store.currency") }}</sup> <span
                                                         class="text-decoration-line-through text-danger">
-                                                        {{ $product->price }}<sup>د.ج</sup></span><sup><span
+                                                        {{ $product->price }}<sup>{{ __("store.currency") }}</sup></span><sup><span
                                                             class="text-success">
                                                             (-{{ $product->activeDiscount->discount_percentage }}%)
                                                         </span></sup>
                                                 </p>
                                             @else
                                                 <p class="price fw-bold text-primary mb-3">
-                                                    {{ $product->price }} <sup>د.ج</sup>
+                                                    {{ $product->price }} <sup>{{ __("store.currency") }}</sup>
                                                 </p>
                                             @endif
                                         </div>
@@ -1110,7 +1109,7 @@
                                         <!-- أزرار الإجراءات -->
                                         <div class="d-flex justify-content-between align-items-center gap-2">
                                             <a href="/product/{{ $product->id }}"
-                                                class="btn btn-outline-primary btn-sm w-100">عرض التفاصيل</a>
+                                                class="btn btn-outline-primary btn-sm w-100">{{ __("store.view_details") }}</a>
 
                                             @if ($product->qty > 0 && $product->product_type == 'physical')
                                                 <form method="post" action="{{ route('tenant.add-to-cart') }}"
@@ -1148,7 +1147,7 @@
             @endif
             @if(count($products_for_you)==0 && count($other_products)!=0)
                 <div class="col-12 mt-3">
-                <h2 class="text-center mb-5 fade-in title">إخترنا لك</h2>
+                <h2 class="text-center mb-5 fade-in title">{{ __("store.products_for_you") }}</h2>
                 <div class="row g-4 justify-content-center">
                 <!-- Product Card Template -->
                         @foreach ($other_products as $key => $product)
@@ -1158,8 +1157,7 @@
 
                                     <!-- شارة نفاد الكمية -->
                                     @if ($product->qty == 0 && $product->product_type == 'physical')
-                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">غير
-                                            متوفر</span>
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">{{ __("store.out_of_stock") }}</span>
                                     @endif
 
                                     <!-- صورة المنتج -->
@@ -1205,16 +1203,16 @@
                                             @if (seller_product_has_discount($product->id))
                                                 <p class="price fw-bold text-primary mb-3">
                                                     {{ $product->activeDiscount->discount_amount }}
-                                                    <sup>د.ج</sup> <span
+                                                    <sup>{{ __("store.currency") }}</sup> <span
                                                         class="text-decoration-line-through text-danger">
-                                                        {{ $product->price }}<sup>د.ج</sup></span><sup><span
+                                                        {{ $product->price }}<sup>{{ __("store.currency") }}</sup></span><sup><span
                                                             class="text-success">
                                                             (-{{ $product->activeDiscount->discount_percentage }}%)
                                                         </span></sup>
                                                 </p>
                                             @else
                                                 <p class="price fw-bold text-primary mb-3">
-                                                    {{ $product->price }} <sup>د.ج</sup>
+                                                    {{ $product->price }} <sup>{{ __("store.currency") }}</sup>
                                                 </p>
                                             @endif
                                         </div>
@@ -1222,7 +1220,7 @@
                                         <!-- أزرار الإجراءات -->
                                         <div class="d-flex justify-content-between align-items-center gap-2">
                                             <a href="/product/{{ $product->id }}"
-                                                class="btn btn-outline-primary btn-sm w-100">عرض التفاصيل</a>
+                                                class="btn btn-outline-primary btn-sm w-100">{{ __("store.view_details") }}</a>
 
                                             @if ($product->qty > 0 && $product->product_type == 'physical')
                                                 <form method="post" action="{{ route('tenant.add-to-cart') }}"
@@ -1269,10 +1267,10 @@
 @if (session('success'))
     <script>
         Swal.fire({
-            title: 'نجاح!',
+            title: "{{ __('store.success') }}",
             text: "{{ session('success') }}",
             icon: 'success',
-            confirmButtonText: 'حسنًا'
+            confirmButtonText: "{{ __('store.ok') }}"
         });
     </script>
 @endif

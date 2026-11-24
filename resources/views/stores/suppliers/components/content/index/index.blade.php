@@ -87,12 +87,12 @@
                     <button class="carousel-control-prev" type="button" data-bs-target="#mainHeroCarousel"
                         data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">السابق</span>
+                        <span class="visually-hidden">{{ __("store.previous") }}</span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#mainHeroCarousel"
                         data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">التالي</span>
+                        <span class="visually-hidden">{{ __("store.next") }}</span>
                     </button>
                 </div>
             </div>
@@ -142,7 +142,7 @@
     @if (!empty($products))
         <section class="py-5">
             <div class="container">
-                <h2 class="text-center mb-5 fade-in title">أحدث المنتجات</h2>
+                <h2 class="text-center mb-5 fade-in title">{{ __("store.latest_products") }}</h2>
                 <div class="row g-4 justify-content-center">
                     @foreach ($products as $key => $product)
                         <div class="col-12 col-sm-6 col-lg-3">
@@ -204,15 +204,15 @@
                                         @if (supplier_product_has_discount($product->id))
                                             <p class="price fw-bold text-primary mb-3">
                                                 {{ $product->activeDiscount->discount_amount }}
-                                                <sup>د.ج</sup> <span class="text-decoration-line-through text-danger">
-                                                    {{ $product->price }}<sup>د.ج</sup></span><sup><span
+                                                <sup>{{ __("store.currency") }}</sup> <span class="text-decoration-line-through text-danger">
+                                                    {{ $product->price }}<sup>{{ __("store.currency") }}</sup></span><sup><span
                                                         class="text-success">
                                                         (-{{ $product->activeDiscount->discount_percentage }}%)
                                                     </span></sup>
                                             </p>
                                         @else
                                             <p class="price fw-bold text-primary mb-3">
-                                                {{ $product->price }} <sup>د.ج</sup>
+                                                {{ $product->price }} <sup>{{ __("store.currency") }}</sup>
                                             </p>
                                         @endif
                                     </div>
@@ -220,7 +220,7 @@
                                     <!-- أزرار الإجراءات -->
                                     <div class="d-flex justify-content-between align-items-center gap-2">
                                         <a href="/product/{{ $product->id }}"
-                                            class="btn btn-outline-primary btn-sm w-100">عرض التفاصيل</a>
+                                            class="btn btn-outline-primary btn-sm w-100">{{ __("store.view_details") }}</a>
 
                                         @if ($product->qty > 0 && !is_cart_has_this_product($product->id))
                                             <form method="post" action="{{ route('tenant.add-to-cart') }}"
@@ -323,7 +323,7 @@
     @if (!empty($categories) && count(get_supplier_categories(tenant('id'))) > 0 && $categories_status->value == 'true')
         <section class="featured-products py-5">
             <div class="container">
-                <h2 class="text-center mb-5 fade-in title">الأصناف المميزة</h2>
+                <h2 class="text-center mb-5 fade-in title">{{ __("store.featured_categories") }}</h2>
                 <div class="row g-3 justify-content-center">
 
                     <!-- كارت "كل الأصناف" -->
@@ -332,9 +332,9 @@
                             <img src="{{ asset('asset/v1/users/store/img/categories/0.png') }}"
                                 class="rounded-circle mx-auto d-block" alt="كل الأصناف" width="80" height="80">
                             <div class="card-body p-2">
-                                <h6 class="card-title fw-bold mb-1 small">كل الأصناف</h6>
-                                <p class="text-muted small mb-2">أحدث المنتجات</p>
-                                <a href="/products" class="btn btn-sm btn-outline-primary btn-ripple w-100">عرض</a>
+                                <h6 class="card-title fw-bold mb-1 small">{{ __("store.all_categories") }}</h6>
+                                <p class="text-muted small mb-2">{{ __("store.latest_products") }}</p>
+                                <a href="/products" class="btn btn-sm btn-outline-primary btn-ripple w-100">{{ __("store.view_category") }}</a>
                             </div>
                         </div>
                     </div>
@@ -350,7 +350,7 @@
                                     <p class="text-muted small mb-2">
                                         {{ Str::limit($category->category->description, 30) }}</p>
                                     <a href="/products-by-category/{{ $category->category_id }}"
-                                        class="btn btn-sm btn-outline-primary btn-ripple w-100">عرض</a>
+                                        class="btn btn-sm btn-outline-primary btn-ripple w-100">{{ __("store.view_category") }}</a>
                                 </div>
                             </div>
                         </div>
@@ -367,7 +367,7 @@
             <div class="container">
                 <div class="row">
                     <div class="row fqa-container mb-5">
-                        <h2 class="text-center mb-5 title">الاسئلة الشائعة</h2>
+                        <h2 class="text-center mb-5 title">{{ __("store.faqs") }}</h2>
                         <div class="accordion" id="accordionPanelsStayOpenExample">
                             @foreach ($faqs as $key => $faq)
                                 @if ($faq->status == 'active')

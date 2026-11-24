@@ -29,7 +29,7 @@
                         </div>
                     </td>
 
-                    <td>{{ $item['price'] }} د.ج</td>
+                    <td>{{ $item['price'] }} {{ __("store.currency") }}</td>
 
 
                     <td>
@@ -49,7 +49,7 @@
 
                     <td class="item-total" data-product-id="{{ $item['id'] }}" data-variation-id="0"
                             data-attribute-id="0" data-item-price="{{ $item['price'] }}">
-                            {{ number_format($item['price'] * $item['qty'], 2) }} د.ج    
+                            {{ number_format($item['price'] * $item['qty'], 2) }} {{ __("store.currency") }}    
                     </td>
 
 
@@ -80,7 +80,7 @@
                                 </div>
                             </td>
 
-                            <td>{{ number_format($item['price'],2) }} د.ج</td>
+                            <td>{{ number_format($item['price'],2) }} {{ __("store.currency") }}</td>
 
 
                             <td>
@@ -101,7 +101,7 @@
                             <td class="item-total" data-product-id="{{ $item['id'] }}" data-variation-id="{{ $variation['id'] }}"
                                 data-attribute-id="0" data-item-price="{{ $item['price'] }}">
 
-                                {{ number_format($item['price'] * $variation['qty'],2) }} د.ج
+                                {{ number_format($item['price'] * $variation['qty'],2) }} {{ __("store.currency") }}
 
                             </td>
 
@@ -130,7 +130,7 @@
                                     </div>
                                 </td>
 
-                                <td>{{ $item['price'] }} د.ج</td>
+                                <td>{{ $item['price'] }} {{ __("store.currency") }}</td>
 
 
                                 <td>
@@ -186,7 +186,7 @@
                                 </div>
                             </td>
 
-                            <td>{{ number_format($item['price'] + $attribute['attribute']['additional_price'],2) }} د.ج</td>
+                            <td>{{ number_format($item['price'] + $attribute['attribute']['additional_price'],2) }} {{ __("store.currency") }}</td>
 
 
                             <td>
@@ -209,7 +209,7 @@
                                 data-attribute-id="{{ $attribute['attribute']['id'] }}"
                                 data-item-price="{{ $item['price'] + $attribute['attribute']['additional_price'] }}">
 
-                                {{ number_format(($item['price'] + $attribute['attribute']['additional_price']) * $attribute['qty'],2) }} د.ج
+                                {{ number_format(($item['price'] + $attribute['attribute']['additional_price']) * $attribute['qty'],2) }} {{ __("store.currency") }}
 
                             </td>
 
@@ -238,7 +238,7 @@
                                     </div>
                                 </td>
 
-                                <td>{{ $item['price'] }} د.ج</td>
+                                <td>{{ $item['price'] }} {{ __("store.currency") }}</td>
 
 
                                 <td>
@@ -309,9 +309,9 @@
                             </td>
                             @if (!empty($attribute['attribute']['additional_price']))
                                 <td>{{ number_format($item['price'] + $attribute['attribute']['additional_price'],2) }}
-                                    د.ج</td>
+                                    {{ __("store.currency") }}</td>
                             @else
-                                <td>{{ number_format($item['price'],2) }} د.ج</td>
+                                <td>{{ number_format($item['price'],2) }} {{ __("store.currency") }}</td>
                             @endif
 
                             <td>
@@ -341,13 +341,13 @@
                                 @if (!empty($attribute['attribute']['additional_price']))
                                     {{ number_format(($item['price'] + $attribute['attribute']['additional_price']) * $attribute['qty'],2) }}
 
-                                    د.ج
+                                    {{ __("store.currency") }}
                                 @else
                                     @if (count($item['variation_ids']) > count($item['attribute_ids']))
                                         {{ number_format($item['price'] * $item['qty'],2) }}
                                     @else
                                         {{ number_format($item['price'] * $attribute['qty'],2) }}
-                                        د.ج
+                                        {{ __("store.currency") }}
                                     @endif
                                 @endif
                             </td>
@@ -393,7 +393,7 @@
                                     </div>
                                 </td>
 
-                                <td>{{ $item['price'] }} د.ج</td>
+                                <td>{{ $item['price'] }} {{ __("store.currency") }}</td>
 
 
                                 <td>

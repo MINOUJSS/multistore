@@ -26,14 +26,13 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav hstacks gap-3 mx-auto">
                 <a class="nav-link active" aria-current="page"
-                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}">الرئيسية</a>
-                                    <a class="nav-link"
-                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/products">منتجاتنا</a>
+                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}">{{ __('store.home') }}</a>
                 <a class="nav-link"
-                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/contact-us">إتصل
-                    بنا</a>
+                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/products">{{ __('store.products') }}</a>
                 <a class="nav-link"
-                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/categories">التصنيفات</a>
+                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/contact-us">{{ __('store.contact_us') }}</a>
+                <a class="nav-link"
+                    href="{{ url(request()->server('REQUEST_SCHEME') . '://' . get_tenant_data(tenant('id'))->domains[0]->domain) }}/categories">{{ __('store.categories') }}</a>
                 <!-- <a class="nav-link disabled" aria-disabled="false">Disabled</a> -->
             </div>
             <div class="navbar-nav search-btn">
@@ -48,7 +47,7 @@
                         @else
                             0.00
                         @endif
-                        <span>د.ج</span>
+                        <span>{{ __('store.currency') }}</span>
                     </li>
                     <li class="list-group-item"><i class="fa-solid fa-cart-shopping"></i>
                         <span
@@ -91,7 +90,7 @@
             @if(count(get_supplier_categories(tenant('id'))) > 0)
             <input type="hidden" class="form-control" name="category" id="selectedCategory" value="{{ get_supplier_categories(tenant('id'))[0]->id }}">
             @endif
-            <input type="text" class="form-control" name="search" aria-label="Text input with dropdown button" style="flex-grow: 1; min-width: 0;">
+            <input type="text" class="form-control" name="search" placeholder="{{ __('store.search_placeholder') }}" aria-label="{{ __('store.search') }}" style="flex-grow: 1; min-width: 0;">
             <button type="submit" class="input-group-text" id="inputGroup-sizing-default" style="flex-shrink: 0;">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>

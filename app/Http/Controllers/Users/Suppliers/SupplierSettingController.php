@@ -81,6 +81,7 @@ class SupplierSettingController extends Controller
         // Validation rules
         $rules = [
             'store_name' => 'required|string|max:255',
+            'store_language' => 'required|in:ar,fr,en',
             'store_description' => 'nullable|string',
             'store_welcome_message' => 'nullable|string',
             'store_email' => 'nullable|email|max:255',
@@ -182,6 +183,7 @@ class SupplierSettingController extends Controller
     {
         $descriptions = [
             'store_name' => 'اسم المتجر',
+            'store_language' => 'لغة المتجر الأساسية',
             'store_description' => 'وصف المتجر',
             'store_email' => 'بريد المتجر الإلكتروني',
             'store_address' => 'عنوان المتجر',

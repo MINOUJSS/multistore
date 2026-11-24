@@ -3,7 +3,7 @@
     aria-labelledby="offcanvasScrollingLabel">
     <div class="offcanvas-header bg-light border-bottom">
         <a class="navbar-brand" href="{{ route('tenant.cart') }}">
-            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">سلة مشترياتي</h5>
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">{{ __("store.cart_title") }}</h5>
         </a>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
@@ -23,9 +23,9 @@
                                     <h6 class="mb-1"><a href="{{ route('tenant.product', $item['id']) }}"
                                             class="text-decoration-none text-dark">{{ $item['title'] }}</a></h6>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="small text-muted">الكمية:
+                                        <span class="small text-muted">{{ __("store.quantity") }}:
                                             <strong>{{ $item['qty'] }}</strong></span>
-                                        <span class="text-primary fw-bold">{{ $item['price'] }} د.ج</span>
+                                        <span class="text-primary fw-bold">{{ $item['price'] }} {{ __("store.currency") }}</span>
                                     </div>
                                 </div>
                                 <div class="d-flex flex-column gap-1">
@@ -36,7 +36,7 @@
                             </li>
                         @endforeach
                     @else
-                        لا توجد منتجات في سلة التسوق
+                        {{ __("store.empty_cart") }}
                     @endif
 
                     <!-- عنصر ثاني -->
@@ -45,8 +45,8 @@
             <div class="flex-grow-1">
               <h6 class="mb-1"><a href="#" class="text-decoration-none text-dark">ماكنة حلاقة من النوع الرفيع</a></h6>
               <div class="d-flex justify-content-between align-items-center">
-                <span class="small text-muted">الكمية: <strong>1</strong></span>
-                <span class="text-primary fw-bold">199 د.ج</span>
+                <span class="small text-muted">{{ __("store.quantity") }}: <strong>1</strong></span>
+                <span class="text-primary fw-bold">199 {{ __("store.currency") }}</span>
               </div>
             </div>
             <div class="d-flex flex-column gap-1">
@@ -62,17 +62,17 @@
         <!-- Footer -->
         <footer class="cart-footer bg-light border-top p-3">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="mb-0">مجموع سلة التسوق:</h6>
+                <h6 class="mb-0">{{ __("store.total") }}:</h6>
                 @if (session()->has('cart'))
                     <span class="text-success fw-bold fs-6">{{ number_format(session()->get('cart')->totalPrice, 2) }}
-                        د.ج</span>
+                        {{ __("store.currency") }}</span>
                 @else
-                    <span class="text-success fw-bold fs-6">0.00 د.ج</span>
+                    <span class="text-success fw-bold fs-6">0.00 {{ __("store.currency") }}</span>
                 @endif
             </div>
             <div class="d-grid gap-2">
-                <a href="{{ route('tenant.checkout') }}" class="btn btn-primary w-100">شراء الآن</a>
-                <a href="{{ route('tenant.products') }}" class="btn btn-outline-secondary w-100">استمر في التسوق</a>
+                <a href="{{ route('tenant.checkout') }}" class="btn btn-primary w-100">{{ __("store.checkout") }}</a>
+                <a href="{{ route('tenant.products') }}" class="btn btn-outline-secondary w-100">{{ __("store.continue_shopping") }}</a>
             </div>
         </footer>
     </div>

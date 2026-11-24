@@ -23,7 +23,7 @@
             </div>
             <div class="d-flex justify-content-center">
                 <a class="btn btn-primary m-3 px-4 py-2 rounded-pill fw-bold" href="{{ $download_link }}" target="_blank">
-                    <i class="fas fa-download me-1"></i> {{ __('تحميل المنتج الرقمي') }}
+                    <i class="fas fa-download me-1"></i> {{ __('store.download_digital_product') }}
                 </a>
             </div>
         </div>
@@ -37,16 +37,16 @@
         title: "{{ __('store.order_success_title') }}",
         text: "{{ session('success') }}",
         icon: "success",
-        confirmButtonText: "{{ __('حسنًا') }}"
+        confirmButtonText: "{{ __('store.ok') }}"
     });
 </script>
 @else 
 <script>
     Swal.fire({
         title: "{{ __('store.order_success_title') }}",
-        text: "{{ __('قم بتحميل منتجك الرقمي من خلال الرابط الظاهر في الصفحة') }}",
+        text: "{{ __('store.digital_product_download_desc') }}",
         icon: "success",
-        confirmButtonText: "{{ __('حسنًا') }}"
+        confirmButtonText: "{{ __('store.ok') }}"
     });
 </script>
 @endif

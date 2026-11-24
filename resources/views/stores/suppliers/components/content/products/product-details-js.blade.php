@@ -35,7 +35,7 @@ function fetchDayra(wilaya_id)
            success: function (response) {
             //    console.log(response);
                $('#inputDayra').html(response);
-               $('#inputBaladia').html('<option value="0" selected>إختر البلدية...</option value="0"><option>...</option>');
+               $('#inputBaladia').html('<option value="0" selected>{{ __("store.select_baladia") }}</option><option value="0">...</option>');
            },
            error: function (xhr) {
                console.log(xhr)
@@ -128,7 +128,7 @@ function countTotalPrice()
     sub_total.innerHTML=parseFloat(qty * parseFloat(product_price)).toFixed(2);
     totalPriceVlue =parseFloat(((qty * parseFloat(product_price)) + parseFloat(shipping))-parseFloat(discount)).toFixed(2);
     //print total price
-    totalPrice.innerHTML = totalPriceVlue+' <sup>د.ج</sup>';
+    totalPrice.innerHTML = totalPriceVlue + ' <sup>{{ __("store.currency") }}</sup>';
     totalPrice.setAttribute('data-totalprice', totalPriceVlue);
     // formtotalamount.value = totalPriceVlue;
 }
@@ -171,7 +171,7 @@ function selectOption(option) {
 
         // تحديث أسعار التوصيل
         $('#to_home_price, #shipping_price').html(`${to_home_price} `);
-        $('#show_shipping_price').html(`${to_home_price} <sup>د.ج</sup>`)
+        $('#show_shipping_price').html(`${to_home_price} <sup>{{ __("store.currency") }}</sup>`)
         $('#to_desck_price').html(`${stop_desck_price} `);
 
         // تحديث السعر الإجمالي
@@ -370,7 +370,7 @@ function selectOption(option) {
 // تحديث الأسعار في واجهة المستخدم
 function updatePrices(to_home_price, to_desck_price) {
     $('#to_home_price').html(to_home_price);
-    $('#show_shipping_price').html(`${to_home_price} <sup>د.ج</sup>`);
+    $('#show_shipping_price').html(`${to_home_price} <sup>{{ __("store.currency") }}</sup>`);
     $('#shipping_price').html(to_home_price);
     $('#to_desck_price').html(to_desck_price.toFixed(2));
 
@@ -383,7 +383,7 @@ function updatePrices(to_home_price, to_desck_price) {
     {
         var to_desck_price=document.getElementById('to_desck_price').innerHTML;
         $('#show_shipping_price').html('');
-        $('#show_shipping_price').html(to_desck_price+' <sup>د.ج</sup>');
+        $('#show_shipping_price').html(to_desck_price + ' <sup>{{ __("store.currency") }}</sup>');
         $('#shipping_price').html(to_desck_price);
     }
     //show to home price
@@ -391,7 +391,7 @@ function updatePrices(to_home_price, to_desck_price) {
     {
         var to_home_price=document.getElementById('to_home_price').innerHTML;
         $('#show_shipping_price').html('');
-        $('#show_shipping_price').html(to_home_price+' <sup>د.ج</sup>');
+        $('#show_shipping_price').html(to_home_price + ' <sup>{{ __("store.currency") }}</sup>');
         $('#shipping_price').html(to_home_price);
     } 
     

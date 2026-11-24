@@ -4,7 +4,7 @@
             <div class="container">
                 <div class="row">
                     <div class="row products-container">
-                        <h2 class="text-center mb-5 mt-5">منتجات التصنيف</h2>
+                        <h2 class="text-center mb-5 mt-5">{{ __("store.category_products") }}</h2>
                         <!-- Product Card Template -->
                         @foreach ($products as $key => $product)
                             <div class="col-12 col-sm-6 col-lg-3">
@@ -13,8 +13,7 @@
 
                                     <!-- شارة نفاد الكمية -->
                                     @if ($product->qty == 0 && $product->product_type == 'physical')
-                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">غير
-                                            متوفر</span>
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 z-2">{{ __("store.out_of_stock") }}</span>
                                     @endif
 
                                     <!-- صورة المنتج -->
@@ -67,16 +66,16 @@
                                             @if (seller_product_has_discount($product->id))
                                                 <p class="price fw-bold text-primary mb-3">
                                                     {{ $product->activeDiscount->discount_amount }}
-                                                    <sup>د.ج</sup> <span
+                                                    <sup>{{ __("store.currency") }}</sup> <span
                                                         class="text-decoration-line-through text-danger">
-                                                        {{ $product->price }}<sup>د.ج</sup></span><sup><span
+                                                        {{ $product->price }}<sup>{{ __("store.currency") }}</sup></span><sup><span
                                                             class="text-success">
                                                             (-{{ $product->activeDiscount->discount_percentage }}%)
                                                         </span></sup>
                                                 </p>
                                             @else
                                                 <p class="price fw-bold text-primary mb-3">
-                                                    {{ $product->price }} <sup>د.ج</sup>
+                                                    {{ $product->price }} <sup>{{ __("store.currency") }}</sup>
                                                 </p>
                                             @endif
                                         </div>
@@ -84,7 +83,7 @@
                                         <!-- أزرار الإجراءات -->
                                         <div class="d-flex justify-content-between align-items-center gap-2">
                                             <a href="/product/{{ $product->id }}"
-                                                class="btn btn-outline-primary btn-sm w-100">عرض التفاصيل</a>
+                                                class="btn btn-outline-primary btn-sm w-100">{{ __("store.view_details") }}</a>
 
                                             @if ($product->qty > 0 && $product->product_type == 'physical')
                                                 <form method="post" action="{{ route('tenant.add-to-cart') }}"
